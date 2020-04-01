@@ -1,0 +1,17 @@
+{
+  "name": "ks_lab",
+  "version": "1.0.0",
+  "description": "\"\"\u001b[Application de gestion de stock et de laboratoire",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Link",
+  "license": "ISC",
+  "dependencies": {
+    "ejs": "^3.0.2",
+    "express": "^4.17.1",
+    "mkdirp": "^1.0.3",
+    "mysql": "^2.18.1"
+  }
+}
