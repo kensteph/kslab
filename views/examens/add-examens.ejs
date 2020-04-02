@@ -48,80 +48,49 @@
 
                     <% if( locals.data ){
                         buttonText = "Modifier";
-                                prenomVal = data.prenom;
-                                nomVal = data.nom;
-                                datenaisVal = data.date_nais;
-                                adresseVal = data.adresse;
-                                telephoneVal = data.telephone;
-                                sexe = data.sexe;
-                                statut = data.statut;
+                                nomExamen = data.prenom;
+                                ifBilan = data.sexe;
+                                typeResultat = data.statut;
                            %>
 
                     <% }else{   
-                                prenomVal = "";
-                                nomVal = "";
-                                datenaisVal = "";
-                                adresseVal = "";
-                                telephoneVal = "";
-                                sexe = "";
-                                statut ="";
-                                buttonText = "Créer Patient";
+                                buttonText = "Enregistrer";
+                                nomExamen = "";
+                                ifBilan = "";
+                                typeResultat = "";
                            }
                             %>
                     <form method="POST" action="">
                         <div class="row">
                             <div class="col-sm-6">
                                 <div class="form-group">
-                                    <label>Prénom <span class="text-danger">*</span></label>
-                                    <input class="form-control" type="text" name="firstname" value="<%=prenomVal%>"
+                                    <label>Nom <span class="text-danger">*</span></label>
+                                    <input class="form-control" type="text" name="nomExamen" value="<%=nomExamen%>"
                                         required>
                                 </div>
                             </div>
-                            <div class="col-sm-6">
+                            
+                            <div class="col-sm-6 col-md-6 col-lg-3">
                                 <div class="form-group">
-                                    <label>Nom</label>
-                                    <input class="form-control" type="text" name="lastname" required
-                                        value="<%=nomVal%>">
-                                </div>
-                            </div>
-
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                    <label>Date de naissance</label>
-                                    <div class="cal-icon">
-                                        <input type="text" class="form-control" id="date" placeholder="jj-mm-yyyy"
-                                            required name="datenais" value="<%=datenaisVal%>">
-                                    </div>
+                                    <label>Bilan</label>
+                                    <select class="form-control select" name="ifbilan">
+                                        <option value="0" <% if(ifBilan == 0 ){ %> selected <% } %>>Non</option>
+                                        <option value="1" <% if(ifBilan == 1 ){ %> selected <% } %>>Oui</option>
+                                    </select>
                                 </div>
                             </div>
 
                             <div class="col-sm-6 col-md-6 col-lg-3">
                                 <div class="form-group">
-                                    <label>Sexe</label>
-                                    <select class="form-control select" name="gender">
-                                        <option value="M" <% if(sexe == "M" ){ %> selected <% } %>>Masculin</option>
-                                        <option value="F" <% if(sexe == "F" ){ %> selected <% } %>>Féminin</option>
+                                    <label>Type résultat</label>
+                                    <select class="form-control select" name="typeResultat">
+                                        <option value="1" <% if(typeResultat == 1 ){ %> selected <% } %>>Valeurs normales</option>
+                                        <option value="2" <% if(typeResultat == 2 ){ %> selected <% } %>>Positif/Négatif</option>
+                                        <option value="3" <% if(typeResultat == 3 ){ %> selected <% } %>>Commentaires</option>
                                     </select>
                                 </div>
                             </div>
-                            <div class="col-sm-12">
-                                <div class="row">
-                                    <div class="col-sm-12">
-                                        <div class="form-group">
-                                            <label>Address</label>
-                                            <input type="text" class="form-control " name="adresse"
-                                                value="<%=adresseVal%>">
-                                        </div>
-                                    </div>
-
-                                    <div class="col-sm-6">
-                                        <div class="form-group">
-                                            <label>Phone </label>
-                                            <input class="form-control" type="text" name="telephone"
-                                                value="<%=telephoneVal%>">
-                                        </div>
-                                    </div>
-                                </div>
+                            
                                 <% if( locals.data ){ %>
                                 <input type="hidden" name="patientID" value="<%=data.id%>">
                                 <div class="form-group">
@@ -161,13 +130,6 @@
     <script src="assets/js/moment.min.js"></script>
     <script src="assets/js/bootstrap-datetimepicker.min.js"></script>
     <script src="assets/js/app.js"></script>
-    <script>
-        $(":input").inputmask();
-        $("#date").inputmask({ "mask": "(999) 999-9999" });
-    </script>
 </body>
-
-
-<!-- add-patient24:07-->
 
 </html>

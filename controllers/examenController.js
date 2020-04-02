@@ -1,73 +1,43 @@
 const con = require('./database');
 const helpers = require('../helpers/helpers');
 module.exports = {
-    //Save Teacher in the DB
-    async savePatient(req, res) {
-        //DATA RECEIVING
-        console.log(req.body);
-        firstName = req.body.firstname;
-        lastName = req.body.lastname;
-        fullname = firstName + " " + lastName;
-        gender = req.body.gender;
-        dateOfBirth = helpers.formatDate(req.body.datenais, "EN");
-        adresse = req.body.adresse;
-        phone = req.body.telephone;
-
+    //Save Exam
+    saveExam: async function(req) {
         let promise = new Promise((resolve, reject) => {
-            //   /* Begin transaction */
-            con.beginTransaction(function (err) {
-                if (err) { throw err; }
-                //Insert info into personne table
-                let sql = "INSERT INTO tb_personnes (prenom,nom,sexe,date_nais,adresse,telephone) VALUES ('" + firstName + "','" + lastName + "','" + gender + "','" + dateOfBirth + "','" + adresse + "','" + phone + "')";
-                con.query(sql, function (err, result) {
-                    if (err) {
-                        console.log(err);
-                        con.rollback(function () {
-                            throw err;
-                        });
-                    }
-                    console.log(result);
-                    var id_personne = result.insertId;
-                    let initial = firstName.charAt(0) + lastName.charAt(0);
-                    let numero_patient = helpers.generateCode(initial, id_personne);
-                    //Insert info into professeur  table
-                    let sql2 = "INSERT INTO tb_patients (id_personne,numero_patient) VALUES ('" + id_personne + "','" + numero_patient + "')";
-                    con.query(sql2, function (err, result) {
-                        if (err) {
-                            con.rollback(function () {
-                                throw err;
-                            });
-                        }
+            let nom_examen = req.body.nomExamen;
+            let type_examen = req.body.typeResultat;
+            let ifbilan = req.body.ifbilan;
+            let sql =
+                'INSERT INTO tb_examens (nom_examen,type_resultat,is_bilan) VALUES ("'+nom_examen+'","'+type_examen+'","'+ifbilan+'")';
+            con.query(sql, function(err, result) {
+                if (err) {
+                    msg = {
+                        type: "danger",
+                        error: true,
+                        msg:
+                            " Vous avez déja ajouté "+nom_examen+" ",
+                        debug: err
+                    };
+                } else {
+                    msg = {
+                        type: "success",
+                        msg: 
+                        nom_examen+" enregistré avec succès.",
+                    };
+                }
 
-                        //COMMIT IF ALL DONE COMPLETELY
-                        con.commit(function (err) {
-                            if (err) {
-                                con.rollback(function () {
-                                    throw err;
-                                });
-                            }
-                            msg = {
-                                type: "success",
-                                success: true,
-                                msg: "Nouveau patient <strong>" + fullname + "</strong> ajouté avec succès..."
-                            }
-                            resolve(msg);
-                        });
-
-                    });
-                });
+                resolve(msg);
+                console.log(msg);
             });
-            /* End transaction */
         });
-        data = await promise;
-        //console.log(data); 
-        return data;
+        rep = await promise;
+        return rep;
     },
 
     //Load All The Courses Categories
-    listOfAllPatients: async function () {
+    listOfExams: async function () {
         let promise = new Promise((resolve, reject) => {
-            let sql = "SELECT *,CONCAT(prenom,' ',nom) as fullname,DATEDIFF( NOW(), date_nais )/365 as age FROM tb_personnes, tb_patients WHERE tb_patients.id_personne = tb_personnes.id";
+            let sql = "SELECT * FROM tb_examens ";
             con.query(sql, function (err, rows) {
                 if (err) {
                     throw err;

@@ -18,11 +18,12 @@ router.get('/add-patient', async (req, res) => {
 
 router.post('/add-patient', async (req, res) => {
     console.log(req.body);
-    let response = await patientDB.savePatient(req, res);
-    console.log(response);
+    let notifications  = await patientDB.savePatient(req, res);
+    console.log(notifications);
     let pageTitle = "Nouveau patient";
     params = {
         pageTitle: pageTitle,
+        notifications : notifications,
         page: 'NewPatient'
     };
     res.render('patients/add-patient', params);
@@ -31,7 +32,7 @@ router.post('/add-patient', async (req, res) => {
 //PATIENTS LIST
 router.get('/patients', async (req, res) => {
     let data = await patientDB.listOfAllPatients();
-    let pageTitle = "";
+    let pageTitle = "Liste des patients";
     params = {
         pageTitle: pageTitle,
         data : data,
@@ -68,6 +69,22 @@ router.post('/edit-patient', async (req, res) => {
         page: 'PatientsList'
     };
     res.render('patients/add-patient', params);
+});
+
+//DELETE PATIENT
+router.post('/delete-patient', async (req, res) => {
+    console.log(req.body);
+    res.json({success : "Test",msg : "Done.."});
+    // let notifications = await patientDB.updatePatient(req);
+    // let data = await patientDB.getPatientById(req.body.patientID);
+    // let pageTitle = "Modification du patient : ";
+    // params = {
+    //     pageTitle: pageTitle,
+    //     data : data,
+    //     notifications : notifications,
+    //     page: 'PatientsList'
+    // };
+    // res.render('patients/add-patient', params);
 });
 
 // Exportation of this router

@@ -10,6 +10,7 @@ app.use(bodyParser.urlencoded({ extended: true })); // Allow to submit forms
 
 // External routes
 app.use(require('./routes/patient'));
+app.use(require('./routes/examen'));
 
 // Global variables
 global.appName = 'KSlab ';
