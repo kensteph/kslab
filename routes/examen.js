@@ -44,32 +44,26 @@ router.get('/examens', async (req, res) => {
  //ADD TEST PARAMETERS
 router.get('/add-test-parameters', async (req, res) => {
     let examID = req.query.exam;
-    //console.log(patienID);
-    // let data = await patientDB.getPatientById(patienID);
-    // console.log("EDIT : "+data);
-    let pageTitle = "Parametres du test";
+    let data = await examenDB.getExamById(examID);
+    let exam = data.nom_examen;
+    let examsParameters = await examenDB.listOfExamsParameters();
+    console.log("EDIT : "+data.nom_examen);
+    let pageTitle = "Paramètres du test '"+exam+"'";
     params = {
         pageTitle: pageTitle,
-        //data : data,
+        data : examsParameters,
         examID : examID,
+        exam : exam,
         page: 'AddTestParameters'
     };
     res.render('examens/add-test-parameters', params);
 });
 
-// router.post('/edit-patient', async (req, res) => {
-//     let notifications = await patientDB.updatePatient(req);
-//     let data = await patientDB.getPatientById(req.body.patientID);
-//     //console.log(data);
-//     let pageTitle = "Modification du patient : ";
-//     params = {
-//         pageTitle: pageTitle,
-//         data : data,
-//         notifications : notifications,
-//         page: 'PatientsList'
-//     };
-//     res.render('patients/add-patient', params);
-// });
+router.post('/add-test-parameters', async (req, res) => {
+    console.log(req.body);
+    let notifications = await examenDB.saveTestParameters(req);
+    res.json(notifications);
+});
 
 // //DELETE PATIENT
 // router.post('/delete-patient', async (req, res) => {
