@@ -25,13 +25,13 @@
         <!-- HEADER -->
         <%- include("../parts/header") -%>
         <!-- SIDEBAR -->
-        <%- include("../parts/sidebar") -%>
-    </div>
+		<%- include("../parts/sidebar") -%>
+		
         <div class="page-wrapper">
             <div class="content">
                 <div class="row">
                     <div class="col-sm-4 col-3">
-                        <h4 class="page-title"> <%=pageTitle%> </h4>
+                        <h4 class="page-title"> <i class="fa fa-flask fa-2x"></i> <%=pageTitle%> </h4>
                     </div>
                     <div class="col-sm-8 col-9 text-right m-b-20">
                         <a href="/add-examens" class="btn btn btn-primary btn-rounded float-right"><i class="fa fa-plus"></i> Ajouter Examen</a>
@@ -51,10 +51,10 @@
 								<tbody>
 									<% data.forEach((examen) => { %>
 									<tr id="row<%= examen.id %>">
-										<td><img width="28" height="28" src="assets/img/user.jpg" class="rounded-circle m-r-5" alt="">
+										<td> 
 											<%= examen.nom_examen %>
 											<% if(examen.is_bilan){ %>
-												<a href="/add-test-parameters?exam=<%= examen.id %>"><i class="fa fa-flask"></i></a> 
+												<a href="/add-test-parameters?exam=<%= examen.id %>" title="Ajouter les paramètres"><i class="fa fa-plus-circle"></i></a> 
 											<% } %>
 										</td>
 										<td><%= examen.type_resultat %></td>

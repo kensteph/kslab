@@ -2,7 +2,7 @@
 const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
-
+const helpers = require('./helpers/helpers');
 //Uses
 app.use(express.static('public')); // All our static files
 app.set('view engine', 'ejs'); // Templating
@@ -11,6 +11,7 @@ app.use(bodyParser.urlencoded({ extended: true })); // Allow to submit forms
 // External routes
 app.use(require('./routes/patient'));
 app.use(require('./routes/examen'));
+app.use(require('./routes/stock'));
 
 // Global variables
 global.appName = 'KSlab ';
@@ -29,7 +30,6 @@ app.get('/home', async (req, res) => {
     res.render('index',params);
  });
  
-
 const port = 8788;
 app.listen(port, () => {
     console.log('KSlab server is started at port: ' + port);

@@ -54,7 +54,7 @@ router.get('/add-test-parameters', async (req, res) => {
         data : examsParameters,
         examID : examID,
         exam : exam,
-        page: 'AddTestParameters'
+        page: 'NewExam'
     };
     res.render('examens/add-test-parameters', params);
 });

@@ -46,6 +46,10 @@ module.exports = {
     //Format Date from FR to EN for the Datatbase
     formatDate(dateP, lang) {
         let splitdat = dateP.split('-');
+        if (splitdat.length == 1) { //they use / instead of -
+            splitdat = dateP.split('/');
+        }
+        console.log("AFTER REPLACEMENT : " + splitdat.length);
         let date_f = dateP;
         if (lang == 'EN') {
             date_f = splitdat[2] + '-' + splitdat[1] + '-' + splitdat[0];
@@ -143,7 +147,7 @@ module.exports = {
         //console.log('Image converted to base 64 is:\n\n' + base64data);
         return base64data;
     },
- 
+
     //Additioner les memes proprietes d une collection d 'objets
     SumArrayObjectByProperties(objectList, property) {
         var Total = objectList.reduce(function (prev, cur) {
@@ -156,11 +160,11 @@ module.exports = {
         return symbole + " " + num.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,');
     },
 
-     //Formater un nombre (2,500.25)
-     ageFormat(num, symbole) {
+    //Formater un nombre (2,500.25)
+    ageFormat(num, symbole) {
         return symbole + " " + num.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,');
     },
-   
+
     //Fonction permettant de rechercher dans une collection d'objets
     searchObject(arrayObject, property_to_search, value_to_search) {
         let found = arrayObject.find(obj => obj[property_to_search] == value_to_search);
@@ -170,5 +174,5 @@ module.exports = {
     array_unique(array) {
         return Array.from(new Set(array));
     },
-    
+
 };

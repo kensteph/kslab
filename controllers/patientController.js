@@ -49,7 +49,7 @@ module.exports = {
                             msg = {
                                 type: "success",
                                 success: true,
-                                msg: "Nouveau patient <strong>" + fullname + "</strong> ajouté avec succès..."
+                                msg: "Nouveau patient " + fullname + " ajouté avec succès..."
                             }
                             resolve(msg);
                         });

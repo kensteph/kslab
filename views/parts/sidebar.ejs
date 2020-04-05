@@ -2,8 +2,14 @@
 if (locals.page) {
     NewPatient = "";
     PatientsList = "";
+
     NewExam = "";
     ExamsList = "";
+
+    AddMateriau = "";
+    ListMateriau = "";
+    Inventaire = "";
+
     switch (page) {
        case 'NewPatient' :   NewPatient = "active";
                              break;
@@ -13,7 +19,12 @@ if (locals.page) {
                              break;
        case 'ExamsList' :    ExamsList = "active";
                              break;
-                             
+       case 'AddMateriau' :  AddMateriau = "active";
+                             break;
+       case 'ListMateriau' : ListMateriau = "active";
+                             break;
+       case 'Inventaire' :   Inventaire = "active";
+                             break;
     }
 }
 %>
@@ -41,6 +52,19 @@ if (locals.page) {
                     <ul style="display: none;">
                         <li><a class="<%=NewExam%>" href="/add-examens">Nouvel </a></li>
                         <li><a class="<%=ExamsList%>" href="/examens">Liste des examens</a></li>
+                    </ul>
+                </li>
+
+                <!-- STOCK -->
+                <li class="submenu">
+                    <a href="#"><i class="fa fa-list"></i> <span>Gestion de stock  </span> <span
+                            class="menu-arrow"></span></a>
+                    <ul style="display: none;">
+                        <li><a class="<%=AddMateriau%>" href="/add-materiau">Nouveau Matériau </a></li>
+                        <li><a class="<%=ListMateriau%>" href="/materiaux">Liste des Matériaux</a></li>
+                        <li><a class="<%=Inventaire%>" href="/inventaire">Inventaire </a></li>
+                        <li><a class="<%=Inventaire%>" href="/inventaire">Mouvement de stock </a></li>
+                        
                     </ul>
                 </li>
 
