@@ -15,7 +15,7 @@ app.use(require('./routes/stock'));
 
 // Global variables
 global.appName = 'KSlab ';
-
+global.TEST_STATUS = ['En attente','Validé','Livré']
 //Entry Point
 app.get('/', async (req, res) => {
    res.render('login');

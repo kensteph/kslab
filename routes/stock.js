@@ -52,6 +52,18 @@ router.get('/inventaire', async (req, res) => {
     res.render('stock/inventaire', params);
 });
 
+//MOUVEMENT DE STOCK
+router.get('/mv-stock', async (req, res) => {
+    let data = await stockDB.stockMoving();
+    let pageTitle = "Mouvement de stock";
+    params = {
+        pageTitle: pageTitle,
+        data : data,
+        page: 'StockMoving'
+    };
+    res.render('stock/mouvement-stock', params);
+});
+
 //ADD STOCK
 router.post('/add-stock', async (req, res) => {
     console.log(req.body);
@@ -66,21 +78,6 @@ router.post('/add-remove-stock', async (req, res) => {
     res.json(notifications);
 });
 
-// //DELETE PATIENT
-// router.post('/delete-patient', async (req, res) => {
-//     console.log(req.body);
-//     res.json({success : "Test",msg : "Done.."});
-//     // let notifications = await patientDB.updatePatient(req);
-//     // let data = await patientDB.getPatientById(req.body.patientID);
-//     // let pageTitle = "Modification du patient : ";
-//     // params = {
-//     //     pageTitle: pageTitle,
-//     //     data : data,
-//     //     notifications : notifications,
-//     //     page: 'PatientsList'
-//     // };
-//     // res.render('patients/add-patient', params);
-// });
 
 // Exportation of this router
 module.exports = router;

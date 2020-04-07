@@ -45,19 +45,41 @@ module.exports = {
     },
     //Format Date from FR to EN for the Datatbase
     formatDate(dateP, lang) {
+        console.log("Date Receive "+dateP);
         let splitdat = dateP.split('-');
         if (splitdat.length == 1) { //they use / instead of -
             splitdat = dateP.split('/');
         }
-        console.log("AFTER REPLACEMENT : " + splitdat.length);
+        console.log("DATE FR : " + splitdat+" TO "+lang);
         let date_f = dateP;
-        if (lang == 'EN') {
+        if (lang == 'FR') {
             date_f = splitdat[2] + '-' + splitdat[1] + '-' + splitdat[0];
         }
-        if (lang == 'FR') {
-            date_f = splitdat[0] + '-' + splitdat[1] + '-' + splitdat[2];
+        if (lang == 'EN') {
+            date_f = splitdat[2] + '-' + splitdat[1] + '-' + splitdat[0];
+           
         }
+        console.log("DATE FORMAT : " + date_f+" TO "+lang);
         return date_f;
+       
+    },
+    changeDateSymbol(dateF){
+        //dateF = "2020/02/03";
+        let pos = dateF.search("/");
+        let symbole = "";
+        let splitdat = "";
+        let newSymbole = "";
+        if(pos == -1){
+            symbole = "-";
+            newSymbole ="/";
+        }else{
+            symbole = "/";
+            newSymbole ="-";
+        }
+        splitdat = dateF.split(symbole);
+        let finaldate = splitdat.join(newSymbole);
+        console.log(" SYMBOLE : "+symbole+" NEW SYMBOLE : "+newSymbole+" SPLIT : "+finaldate);
+        return finaldate;
     },
     //get the next or current Academic year
     getAcademicYear() {

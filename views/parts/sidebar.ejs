@@ -9,6 +9,10 @@ if (locals.page) {
     AddMateriau = "";
     ListMateriau = "";
     Inventaire = "";
+    StockMoving = "";
+
+    NewTest = "";
+    ListTest = "";
 
     switch (page) {
        case 'NewPatient' :   NewPatient = "active";
@@ -25,6 +29,14 @@ if (locals.page) {
                              break;
        case 'Inventaire' :   Inventaire = "active";
                              break;
+       case 'StockMoving' :  StockMoving = "active";
+                             break;
+       case 'NewTest' :      NewTest = "active";
+                             break;
+       case 'ListTest' :     ListTest = "active";
+                             break;
+                             
+                             
     }
 }
 %>
@@ -33,8 +45,11 @@ if (locals.page) {
         <div id="sidebar-menu" class="sidebar-menu">
             <ul>
                 <li class="menu-title">Menu</li>
-                <li class="active">
+                <li class="">
                     <a href="/home"><i class="fa fa-dashboard"></i> <span>Tableau de bord</span></a>
+                </li>
+                <li class="<%=NewTest%>">
+                    <a href="/test-laboratoire"><i class="fa fa-flask"></i> <span>Test Patient</span></a>
                 </li>
                 <!-- PATIENT --> 
                 <li class="submenu">
@@ -63,7 +78,17 @@ if (locals.page) {
                         <li><a class="<%=AddMateriau%>" href="/add-materiau">Nouveau Matériau </a></li>
                         <li><a class="<%=ListMateriau%>" href="/materiaux">Liste des Matériaux</a></li>
                         <li><a class="<%=Inventaire%>" href="/inventaire">Inventaire </a></li>
-                        <li><a class="<%=Inventaire%>" href="/inventaire">Mouvement de stock </a></li>
+                        <li><a class="<%=StockMoving%>" href="/mv-stock">Mouvement de stock </a></li>
+                        
+                    </ul>
+                </li>
+
+                <!-- GESTION TEST LABORATOIRE -->
+                <li class="submenu">
+                    <a href="#"><i class="fa fa-folder"></i> <span>Test Laboratoire </span> <span
+                            class="menu-arrow"></span></a>
+                    <ul style="display: none;">
+                        <li><a class="<%=ListTest%>" href="/Tests">Liste des Tests</a></li>
                         
                     </ul>
                 </li>

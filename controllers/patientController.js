@@ -49,6 +49,7 @@ module.exports = {
                             msg = {
                                 type: "success",
                                 success: true,
+                                patientID : id_personne,
                                 msg: "Nouveau patient " + fullname + " ajouté avec succès..."
                             }
                             resolve(msg);

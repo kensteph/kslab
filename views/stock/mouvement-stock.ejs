@@ -77,40 +77,31 @@
                             <table class="table table-striped custom-table datatable mb-0">
                                 <thead>
                                     <tr>
+                                        <th>Date transaction</th>
                                         <th>Numéro Lot</th>
                                         <th>Matériau</th>
-                                        <th>Date réception</th>
-                                        <th>Date expiration</th>
-                                        <th>Qté initiale</th>
-                                        <th>Qté utilisée</th>
-                                        <th>Qté endomagée</th>
-                                        <th>Qté restante</th>
-                                        <th>Status</th>
+                                        <th>Quantité</th>
+                                        <th>Transaction</th>
                                         <th class="text-right">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <% data.forEach((stock) => {
-                                        let nb_jours_restant = stock.days;
-                                        let type = "green";
-                                        if( nb_jours_restant <=31 && nb_jours_restant >0 ){
-                                            type = "orange";
-                                        }else if(nb_jours_restant <=0){
-                                            type = "red";
-                                            nb_jours_restant = "Expiré";
+                                        let fa = "";
+                                        if(stock.transaction == "Add"){
+                                            fa = "fa fa-plus";
+                                        }else if(stock.transaction == "substract"){
+                                            fa = "fa fa-minus";
+                                        }else{
+                                            fa = "fa fa-trash";
                                         }
-                                     %>
+                                    %>
                                     <tr>
-                                        <td><a href="invoice-view.html"><%=stock.numero_lot%></a></td>
+                                        <td><%=stock.date_record%></td>
+                                        <td><a href=""><%=stock.lot%></a></td>
                                         <td><%=stock.nom_materiau%></td>
-                                        <td><%=stock.date_recue%></td>
-                                        <td><%=stock.date_expiration%></td>
-                                        <td><%=stock.qte_recue%></td>
-                                        <td><%=stock.qte_utilisee%></td>
-                                        <td><%=stock.qte_endomage%></td>
-                                        <td><%=stock.qte_restante%></td>
-                                        <td><span class="custom-badge status-<%= type %>"><%= nb_jours_restant %></span></td>
-
+                                        <td><%=stock.qte%></td>
+                                        <td><i class="<%= fa%>"></i></td>
                                         <td class="text-right">
                                             <div class="dropdown dropdown-action">
                                                 <a href="#" class="action-icon dropdown-toggle" data-toggle="dropdown"
