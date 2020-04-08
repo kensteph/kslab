@@ -54,7 +54,7 @@
                                 <div class="col-md-9">
                                     <div class="form-group">
                                         <label>Sélectionnez le (les) test (s)</label>
-                                        <select class="select" multiple name="testSelected">
+                                        <select class="select" multiple name="testSelected[]">
                                             <% dataExam.forEach((exam) => { %>
                                                 <option  value="<%= exam.id %>"><%= exam.nom_examen %></option>
                                             <% }) %>

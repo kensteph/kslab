@@ -35,7 +35,10 @@
                     </div>
                     <div class="col-sm-8 col-9 text-right m-b-20">
                         <a href="/add-patient" class="btn btn btn-primary btn-rounded float-right"><i class="fa fa-plus"></i> Ajouter Patient</a>
-                    </div>
+					</div>
+					<div class="col-3-xxxl col-xl-3 col-lg-3 col-3 form-group">
+						<input autocomplete="off" type="text" id="search" class="form-control" placeholder="Rechercher...">
+				 	</div>
                 </div>
 				<div class="row">
 					<div class="col-md-12">
@@ -53,12 +56,10 @@
 										<th class="text-right">Action</th>
 									</tr>
 								</thead>
-								<tbody>
+								<tbody id="table">
 									<% data.forEach((patient) => { %>
 									<tr id="row<%= patient.id %>">
-										<td><img width="28" height="28" src="assets/img/user.jpg" class="rounded-circle m-r-5" alt="">
-											<%= patient.fullname %>
-										</td>
+										<td><%= patient.fullname %></td>
 										<td><%= patient.numero_patient %></td>
 										<td><%= patient.sexe %></td>
 										<td title="<%= patient.date_nais %>"><%= patient.age.toFixed(1) %></td>
@@ -115,6 +116,7 @@
     <script src="assets/js/moment.min.js"></script>
     <script src="assets/js/bootstrap-datetimepicker.min.js"></script>
 	<script src="assets/js/app.js"></script>
+	<script src="assets/js/my_js.js"></script>
 	<script>
 		function setId(value){
 			$("#patientID").val(value);

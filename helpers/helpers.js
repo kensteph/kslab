@@ -33,7 +33,7 @@ module.exports = {
         if (lang == 'FR') {
             date = Day + '-' + Month + '-' + Year;
         }
-        console.log(date);
+        //console.log(date);
         return date;
     },
     getDaysInMonth(month, year) {
@@ -45,12 +45,12 @@ module.exports = {
     },
     //Format Date from FR to EN for the Datatbase
     formatDate(dateP, lang) {
-        console.log("Date Receive "+dateP);
+       // console.log("Date Receive "+dateP);
         let splitdat = dateP.split('-');
         if (splitdat.length == 1) { //they use / instead of -
             splitdat = dateP.split('/');
         }
-        console.log("DATE FR : " + splitdat+" TO "+lang);
+        //console.log("DATE FR : " + splitdat+" TO "+lang);
         let date_f = dateP;
         if (lang == 'FR') {
             date_f = splitdat[2] + '-' + splitdat[1] + '-' + splitdat[0];
@@ -59,7 +59,7 @@ module.exports = {
             date_f = splitdat[2] + '-' + splitdat[1] + '-' + splitdat[0];
            
         }
-        console.log("DATE FORMAT : " + date_f+" TO "+lang);
+        //console.log("DATE FORMAT : " + date_f+" TO "+lang);
         return date_f;
        
     },
@@ -78,7 +78,7 @@ module.exports = {
         }
         splitdat = dateF.split(symbole);
         let finaldate = splitdat.join(newSymbole);
-        console.log(" SYMBOLE : "+symbole+" NEW SYMBOLE : "+newSymbole+" SPLIT : "+finaldate);
+        //console.log(" SYMBOLE : "+symbole+" NEW SYMBOLE : "+newSymbole+" SPLIT : "+finaldate);
         return finaldate;
     },
     //get the next or current Academic year

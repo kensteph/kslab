@@ -23,10 +23,13 @@ var self = module.exports = {
                         var id_test_request = result.insertId;
                         //Insert info into tb_test_requests_contents  table
                         //BULK INSERTION
-                        let testSelected = req.body.testSelected
+                        let testSelected = req.body.testSelected;
+                        let nbTests = testSelected.length;
+                        //console.log("NB TESTS : "+testSelected);
                         var values = [];
-                        for (var i = 0; i < testSelected.length; i++) {
+                        for (var i = 0; i < nbTests; i++) {
                             let test = testSelected[i]; //Parametres
+                            //console.log("TESTS : "+test);
                             line = [];
                             line[0] = id_test_request;
                             line[1] = test;
@@ -85,7 +88,7 @@ var self = module.exports = {
             let line = [];
             if(status ==  "All"){ status ="";}else{  status =" AND tb_test_requests.statut ="+status;}
             let sql = "SELECT *,CONCAT(prenom,' ',nom) as fullname,tb_test_requests.id as id_request,tb_test_requests.statut as test_status FROM tb_test_requests,tb_patients,tb_personnes WHERE tb_test_requests.patient=tb_patients.id_personne AND tb_patients.id_personne=tb_personnes.id AND DATE(date_record) BETWEEN '"+dateFrom+"' AND '"+dateTo+"'  "+status;
-            console.log(sql);
+            //console.log(sql);
             con.query(sql, async function (err, rows) {
                 if (err) {
                     throw err;

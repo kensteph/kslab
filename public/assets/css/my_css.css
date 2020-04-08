@@ -1,0 +1,24 @@
+#myInput {
+    background-image: url('/css/searchicon.png'); /* Add a search icon to input */
+    background-position: 10px 12px; /* Position the search icon */
+    background-repeat: no-repeat; /* Do not repeat the icon image */
+    width: 100%; /* Full-width */
+    font-size: 16px; /* Increase font-size */
+    padding: 12px 20px 12px 40px; /* Add some padding */
+    border: 1px solid #ddd; /* Add a grey border */
+    margin-bottom: 12px; /* Add some space below the input */
+  }
+
+  .loader {
+    border: 16px solid #f3f3f3; /* Light grey */
+    border-top: 16px solid #3498db; /* Blue */
+    border-radius: 50%;
+    width: 50px;
+    height:50px;
+    animation: spin 2s linear infinite;
+  }
+
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
