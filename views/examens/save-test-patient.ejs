@@ -1,14 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
-
-
 <!-- appointments23:19-->
 
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
     <link rel="shortcut icon" type="image/x-icon" href="assets/img/favicon.ico">
-    <title>Preclinic - Medical & Hospital - Bootstrap 4 Admin Template</title>
+    <title><%=appName%>| <%=pageTitle%></title>
     <link rel="stylesheet" type="text/css" href="assets/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="assets/css/font-awesome.min.css">
     <link rel="stylesheet" type="text/css" href="assets/css/select2.min.css">
@@ -44,6 +42,7 @@
                                         <th>ID Examen</th>
                                         <th>Examen</th>
                                         <th>Résultat</th>
+                                        <th>Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -54,6 +53,12 @@
                                         <td><a href="#" class="btn btn-white"
                                                 onclick="launchSaveTestModal('<%=info.id%>','<%=info.nom_examen%>')">Enregistrer
                                                 Résultat</a></td>
+                                        <td>
+                                            <form action="/display-test-result" method="POST">
+                                                <input type="hidden" name="id_test_request" value="<%=id_test_request%>">
+                                                <button class="btn btn-primary submit-btn">Afficher</button>
+                                            </form>
+                                        </td>
                                     </tr>
                                     <% }) %>
                                 </tbody>
@@ -63,18 +68,16 @@
                 </div>
             </div>
 
-            <div id="addRemoveUnit" class="modal fade" role="dialog">
+            <div id="addRemoveUnit" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
                 <div class="modal-dialog modal-lg">
                     <div class="modal-content">
                         <div class="modal-header">
                             <h4 class="modal-title">Résultat du test <strong id="materiauName"></strong> | <%=patientSelected.dossier%> </h4>
                             <button type="button" class="close" data-dismiss="modal">&times;</button>
                         </div>
-                        <div class="modal-body">
+                        <div class="modal-body text-center">
                             <form id="addRemoveStockForm">
-                                <input type="hidden" id="testId" name="materiauId">
-                                <input type="hidden" id="materiau" name="materiauName">
-                                <input type="hidden" id="lot" name="lot">
+                                <input type="hidden" id="testRequestId" name="testRequestId" value="<%=id_test_request%>">
                                 <div class="form-inline" id="Resultat">
 
                                 </div>
@@ -101,21 +104,24 @@
     <script src="assets/js/select2.min.js"></script>
     <script src="assets/js/app.js"></script>
     <script>
+
         $("#addRemoveStockForm").submit(function (e) {
             e.preventDefault();
-            addorRemoveStock();
+            saveTestResultDB();
         });
         function launchSaveTestModal(testId, testName) {
+            $("#notify").show().html("");
             $("#materiauName").html(testName);
             $("#testId").val(testId);
             let fields = "";
 
             $.post("/get-test-parameters", { examID: testId }, function (data) {
                 for (item of data) {
-                    console.log(item); //item.id_param_exam
-                    let pos_neg = "<div class='col-sm-6 col-md-6 col-lg-6'><select class='form-control select' name='type'><option value=''>---</option> <option value='Positif'>Positif</option><option value='Négatif'>Négatif</option></select></div>";
-                    let fieldsVN = "<div class='col-sm-6 col-md-6 col-lg-6 m-b-10'><input type='text' name=test[] placeholder='" + item.nom_examen + "' class='form-control'></div>";
-                    let comment = "<div class='col-sm-6 col-md-6 col-lg-6 m-b-10'><textarea cols='30' rows='4' class='form-control' name='commentaire[]' placeholder='" + item.nom_examen + "'></textarea></div>";
+                    console.log(item.type_resultat); //item.id_param_exam
+                    let hidden_field = "<input type = 'hidden' name='test[]' value='" + item.id + "' >"
+                    let pos_neg = "<div class='col-sm-6 col-md-6 col-lg-6'><select class='form-control select' name='resultat[]' id='" + item.id + "'><option value=''>---</option> <option value='Positif'>Positif</option><option value='Négatif'>Négatif</option></select></div>";
+                    let fieldsVN = "<div class='col-sm-6 col-md-6 col-lg-6 m-b-10'><input type='text' name=resultat[] id='" + item.id + "' placeholder='" + item.nom_examen + "' class='form-control'></div>";
+                    let comment = "<div class='col-sm-6 col-md-6 col-lg-6 m-b-10'><textarea cols='30' rows='4' class='form-control' name='resultat[]' id='" + item.id + "' placeholder='" + item.nom_examen + "'></textarea></div>";
                     let appropriateField = "";
                     if (item.type_resultat == 1) { //Valeur Normale
                         appropriateField = fieldsVN;
@@ -124,12 +130,31 @@
                     } else { //Commentaire
                         appropriateField = comment;
                     }
-                    fields += appropriateField;
+                    fields += appropriateField+hidden_field;
                 }
                 $("#Resultat").html(fields);
             });
-
             $("#addRemoveUnit").modal();
+        }
+
+       saveTestResultDB = function () {
+            $("#notify").show().html("");
+            let formData = $("#addRemoveStockForm").serialize();
+            $.post("/save-test-result", formData, function (data) {
+                console.log(data);
+                if (data.success) { //Success 
+                    $("#notify").html(data.msg).fadeOut(5000);
+                } else { // already saved get the result
+                    $.post("/get-test-result", formData, function (data1) {
+                        for(rs of data1){
+                            console.log(rs);
+                            $("#"+rs.examen_id).val(rs.resultat);
+                        }
+                        $("#notify").html(data.msg);
+                        //show the modify button and hide the save button
+                    });   
+                }
+            });
         }
     </script>
 </body>

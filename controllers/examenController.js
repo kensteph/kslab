@@ -76,7 +76,7 @@ var self = module.exports = {
                     //throw err;
                     resolve([{ fullname: "" }]);
                 } else {
-                    resolve(rows[0]);
+                    resolve(rows);
                 }
             });
         });
@@ -137,8 +137,8 @@ var self = module.exports = {
         rep = await promise;
         return rep;
     },
-       //TEST REQUEST CONTENTS
-       testRequestContent: async function (id) {
+    //TEST REQUEST CONTENTS
+    testRequestContent: async function (id) {
         let promise = new Promise((resolve, reject) => {
             let sql = "SELECT * FROM tb_test_requests_contents,tb_examens WHERE tb_test_requests_contents.examen_id=tb_examens.id AND  test_request_id = ? ";
             //console.log(sql+" ID : "+id);
@@ -155,22 +155,164 @@ var self = module.exports = {
         //console.log(data);
         return data;
     },
- //TEST REQUEST CONTENTS
- getExamParameters: async function (id) {
-    let promise = new Promise((resolve, reject) => {
-        let sql = "SELECT * FROM tb_parametres_examens,tb_examens WHERE tb_parametres_examens.id_param_exam=tb_examens.id AND id_examen = ? ";
-        //console.log(sql+" ID : "+id);
-        con.query(sql, id, function (err, rows) {
-            if (err) {
-                //throw err;
-                resolve([{ fullname: "" }]);
+    //TEST REQUEST CONTENTS
+    getExamParameters: async function (id) {
+        let promise = new Promise((resolve, reject) => {
+            let sql = "SELECT * FROM tb_parametres_examens,tb_examens WHERE tb_parametres_examens.id_param_exam=tb_examens.id AND id_examen = ? ";
+            //console.log(sql+" ID : "+id);
+            con.query(sql, id, function (err, rows) {
+                if (err) {
+                    //throw err;
+                    resolve([{ fullname: "" }]);
+                } else {
+                    resolve(rows);
+                }
+            });
+        });
+        data = await promise;
+        //console.log(data);
+        return data;
+    },
+
+    //============================= SAVE TEST RESULT ==================================================
+    //Save Test Result
+    saveTestResult: async function (req) {
+        let promise = new Promise((resolve, reject) => {
+            if (req.body.test) {
+                //BULK INSERT
+                let test_request_id = req.body.testRequestId;
+                let tests_id = req.body.test;
+                let testResults = req.body.resultat;
+                let values = [];
+                let pos = 0;
+                for (item of testResults) {
+                    let resultat = testResults[pos];
+                    let examen_id = tests_id[pos];
+                    let line = [];
+                    line[0] = test_request_id;
+                    line[1] = examen_id;
+                    line[2] = resultat;
+                    values.push(line);
+                    pos++;
+                }
+                let sql =
+                    'INSERT INTO tb_resultats (test_request_id	,examen_id,resultat) VALUES ?';
+                con.query(sql, [values], async function (err, result) {
+                    if (err) {
+                        msg = {
+                            type: "danger",
+                            msg:
+                                "<font color='red'><strong>Vous avez déja  enregistré ces résultats.</strong></font>",
+                            debug: err
+                        };
+                    } else {
+                        // UPDATE TEST STATUS
+                        let rep = await self.updateTestResultStatus(test_request_id, 1);
+                        msg = {
+                            type: "success",
+                            success: true,
+                            msg:
+                                "<font color='green'><strong>Résultat enregistré avec succès...</strong></font>",
+                            nb_success: result.affectedRows,
+                        };
+                    }
+
+                    resolve(msg);
+                    //console.log(msg);
+                });
             } else {
-                resolve(rows);
+                msg = {
+                    type: "danger",
+                    msg:
+                        "<font color='red'><strong>Vous devez choisir des paramètres.</strong></font>",
+                };
+                resolve(msg);
             }
         });
-    });
-    data = await promise;
-    //console.log(data);
-    return data;
-},
+        rep = await promise;
+        return rep;
+    },
+    //Save Modalites paiement
+    updateTestResult: async function (test_request_id, examen_id, resultat) {
+        let promise = new Promise((resolve, reject) => {
+            let sql =
+                'UPDATE tb_test_requests_contents SET resultat="' + resultat + '" WHERE test_request_id =' + test_request_id + ' AND  examen_id=' + examen_id + ' ';
+            console.log(sql);
+            con.query(sql, function (err, result) {
+                if (err) {
+                    msg = {
+                        type: "danger",
+                        msg:
+                            "<font color='red'><strong>Vous avez déja attribué ces paramètres.</strong></font>",
+                        debug: err
+                    };
+                } else {
+                    msg = {
+                        type: "success",
+                        success: true,
+                        msg:
+                            "<font color='green'><strong>Résultat enregistré avec succès...</strong></font>",
+                        nb_success: result.affectedRows,
+                    };
+                }
+
+                resolve(msg);
+                console.log(msg);
+            });
+        });
+        rep = await promise;
+        return rep;
+    },
+    //TEST REQUEST CONTENTS
+    getTestResult: async function (test_request_id, examen_id) {
+        let promise = new Promise((resolve, reject) => {
+            let sql = "SELECT * FROM tb_resultats,tb_examens WHERE tb_resultats.examen_id=tb_examens.id AND test_request_id =? AND tb_resultats.examen_id = ?  ";
+            //console.log(sql+" ID : "+id);
+            con.query(sql, [test_request_id, examen_id], function (err, rows) {
+                if (err) {
+                    throw err;
+                    resolve([{ fullname: "" }]);
+                } else {
+                    resolve(rows[0]);
+                }
+            });
+        });
+        data = await promise;
+        //console.log(data);
+        return data;
+    },
+    //UPDATE TEST STATUS
+    updateTestResultStatus: async function (test_request_id, statut) {
+        let promise = new Promise((resolve, reject) => {
+            let sql =
+                'UPDATE tb_test_requests SET statut=' + statut + ' WHERE id =' + test_request_id;
+            console.log(sql);
+            con.query(sql, function (err, result) {
+                if (err) {
+                    msg = {
+                        type: "danger",
+                        msg:
+                            "<font color='red'><strong>Une erreur est survenue...</strong></font>",
+                        debug: err
+                    };
+                } else {
+                    msg = {
+                        type: "success",
+                        success: true,
+                        msg:
+                            "<font color='green'><strong>Mise à jour...</strong></font>",
+                        nb_success: result.affectedRows,
+                    };
+                }
+
+                resolve(msg);
+                console.log(msg);
+            });
+        });
+        rep = await promise;
+        return rep;
+    },
+
+
+
 }

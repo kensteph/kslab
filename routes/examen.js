@@ -48,9 +48,8 @@ router.get('/examens', async (req, res) => {
 router.get('/add-test-parameters', async (req, res) => {
     let examID = req.query.exam;
     let data = await examenDB.getExamById(examID);
-    let exam = data.nom_examen;
+    let exam = data[0].nom_examen;
     let examsParameters = await examenDB.listOfExamsParameters();
-    console.log("EDIT : " + data.nom_examen);
     let pageTitle = "Paramètres du test '" + exam + "'";
     params = {
         pageTitle: pageTitle,
@@ -167,12 +166,13 @@ router.post('/SaveTestResult', async (req, res) => {
     let patientSelected = { fullname : fullname , num_patient : num_patient , dossier : dossier_patient};
     let id_test_request = req.body.testRequestId;
     let data = await examenDB.testRequestContent(id_test_request);
-    console.log(data);
+    //console.log(data);
     let pageTitle = "Enregistrement résultat pour :";
     params = {
         pageTitle: pageTitle,
         data: data,
         patientSelected: patientSelected,
+        id_test_request : id_test_request,
         page: 'SaveTestResult'
     };
     res.render('examens/save-test-patient', params);
@@ -182,7 +182,76 @@ router.post('/get-test-parameters', async (req, res) => {
     console.log(req.body);
     let id_exam = req.body.examID;
     let info = await examenDB.getExamParameters(id_exam);
+    if(info.length == 0){
+        info = await examenDB.getExamById(id_exam);
+    }
+    // let testResult = await examenDB.getTestResult(5,6);
+    // console.log(testResult);
     res.json(info);
 });
+
+//SAVE TEST RESULT TO DB
+router.post('/save-test-result', async (req, res) => {
+    console.log(req.body);
+    let notifications = await examenDB.saveTestResult(req);
+    res.json(notifications);
+});
+
+//GET THES TEST'S RESULT
+router.post('/get-test-result', async (req, res) => {
+    let tests_id = req.body.test;
+    let test_request_id = req.body.testRequestId;
+    let data = [];
+    for(idTest of tests_id){
+        let testResult = await examenDB.getTestResult(test_request_id,idTest);
+        data.push(testResult);
+    }
+    console.log(data);
+    res.json(data);
+});
+
+//DISPLAY TEST RESULT
+router.post('/display-test-result', async (req, res) => {
+    console.log(req.body);
+    let test_request_id = req.body.id_test_request;
+    let data = await examenDB.testRequestContent(test_request_id);
+    let resultaFinal = [];
+    for(test of data){
+        console.log("TESTS LIST : "+test.examen_id);
+        //Pour chaque TEST on va chercher ses parametres
+        let id_exam = test.examen_id ;
+        let name_exam = test.nom_examen ;
+        let infoParams = await examenDB.getExamParameters(id_exam);
+        if(infoParams.length == 0){
+            infoParams = await examenDB.getExamById(id_exam);
+        }
+        console.log("PARAMETERS FOR "+name_exam+" : "+infoParams);
+        //POUR CHAQUE PARAMETRE ON VA RECUPERER le resultat
+        let Resultats = [];
+        for(testParam of infoParams){
+            //console.log(testParam);
+            let testResult = await examenDB.getTestResult(test_request_id,testParam.id_param_exam);
+            console.log(testResult);
+            if( typeof testResult =="undefined"){
+                testResult = {resultat : ""};
+            }
+            Resultats.push(testResult);
+        }
+        
+        let info = {TestName : name_exam , Parameters : infoParams,Resultats : Resultats};
+        resultaFinal.push(info);
+    }
+
+    console.log("FINAL : "+resultaFinal[0].Parameters[0].nom_examen+" : "+resultaFinal[0].Resultats[0].resultat);
+    
+    let pageTitle = "Enregistrement résultat pour :";
+    params = {
+        pageTitle: pageTitle,
+        data: resultaFinal,
+        page: 'NewTest'
+    };
+    res.render('examens/display-test-result', params);
+});
+
 // Exportation of this router
 module.exports = router;
