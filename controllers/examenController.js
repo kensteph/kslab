@@ -50,7 +50,7 @@ var self = module.exports = {
         //console.log(data); 
         return data;
     },
-    //Load All The Courses Categories
+    //
     listOfExamsParameters: async function () {
         let promise = new Promise((resolve, reject) => {
             let sql = "SELECT * FROM tb_examens WHERE is_bilan=0 ";
@@ -155,5 +155,22 @@ var self = module.exports = {
         //console.log(data);
         return data;
     },
-
+ //TEST REQUEST CONTENTS
+ getExamParameters: async function (id) {
+    let promise = new Promise((resolve, reject) => {
+        let sql = "SELECT * FROM tb_parametres_examens,tb_examens WHERE tb_parametres_examens.id_param_exam=tb_examens.id AND id_examen = ? ";
+        //console.log(sql+" ID : "+id);
+        con.query(sql, id, function (err, rows) {
+            if (err) {
+                //throw err;
+                resolve([{ fullname: "" }]);
+            } else {
+                resolve(rows);
+            }
+        });
+    });
+    data = await promise;
+    //console.log(data);
+    return data;
+},
 }

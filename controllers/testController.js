@@ -100,7 +100,7 @@ var self = module.exports = {
                             examens.push(info[i].nom_examen);
                         }
                         let patient_exams = examens.join();
-                        let line_info = { date_record: item.date_record, numero_patient: item.numero_patient, patient : item.fullname, examens: patient_exams,statut : item.test_status };
+                        let line_info = {request_id : item.id_request, date_record: item.date_record, numero_patient: item.numero_patient, patient : item.fullname, examens: patient_exams,statut : item.test_status };
                         line.push(line_info);
                     }
                     resolve(line);
@@ -112,5 +112,34 @@ var self = module.exports = {
         data = await promise;
         return data;
     },
+        //LIST REQUEST TESTS
+        singlePatientTestRequestlist: async function (patient,test_request_id) {
+            let promise = new Promise((resolve, reject) => {
+                let line = []; 
+                let sql = "SELECT *,CONCAT(prenom,' ',nom) as fullname,tb_test_requests.id as id_request,tb_test_requests.statut as test_status FROM tb_test_requests,tb_patients,tb_personnes WHERE tb_test_requests.patient=tb_patients.id_personne AND tb_patients.id_personne=tb_personnes.id AND";
+                //console.log(sql);
+                con.query(sql, async function (err, rows) {
+                    if (err) {
+                        throw err;
+                    } else {
+                        for (item of rows) {
+                            let info = await examController.testRequestContent(item.id_request);
+                            let examens = [];
+                            for (var i = 0; i < info.length; i++) {
+                                let test = {id : info[i].id, nom_examen : info[i].nom_examen };
+                                examens.push(test);
+                            }
+                            let line_info = { date_record: item.date_record, numero_patient: item.numero_patient, patient : item.fullname, examens: examens,statut : item.test_status };
+                            line.push(line_info);
+                        }
+                        resolve(line);
+                    }
+    
+                });
+    
+            });
+            data = await promise;
+            return data;
+        },
 
 }

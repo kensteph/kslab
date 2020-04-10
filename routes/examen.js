@@ -158,6 +158,31 @@ router.post('/Tests', async (req, res) => {
     };
     res.render('examens/test-request-list', params);
 });
-
+//SAVE TEST RESULT
+router.post('/SaveTestResult', async (req, res) => {
+    console.log(req.body);
+    let fullname = req.body.patientName;
+    let num_patient = req.body.patientNumber ;
+    let dossier_patient = fullname+" ["+num_patient+"]";
+    let patientSelected = { fullname : fullname , num_patient : num_patient , dossier : dossier_patient};
+    let id_test_request = req.body.testRequestId;
+    let data = await examenDB.testRequestContent(id_test_request);
+    console.log(data);
+    let pageTitle = "Enregistrement résultat pour :";
+    params = {
+        pageTitle: pageTitle,
+        data: data,
+        patientSelected: patientSelected,
+        page: 'SaveTestResult'
+    };
+    res.render('examens/save-test-patient', params);
+});
+//GET THES TEST'S PARAMETERS
+router.post('/get-test-parameters', async (req, res) => {
+    console.log(req.body);
+    let id_exam = req.body.examID;
+    let info = await examenDB.getExamParameters(id_exam);
+    res.json(info);
+});
 // Exportation of this router
 module.exports = router;

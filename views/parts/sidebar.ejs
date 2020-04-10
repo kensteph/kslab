@@ -13,6 +13,7 @@ if (locals.page) {
 
     NewTest = "";
     ListTest = "";
+    SaveTestResult ="";
 
     switch (page) {
        case 'NewPatient' :   NewPatient = "active";
@@ -35,7 +36,8 @@ if (locals.page) {
                              break;
        case 'ListTest' :     ListTest = "active";
                              break;
-                             
+       case 'SaveTestResult' : SaveTestResult = "active";
+                             break;                      
                              
     }
 }
@@ -89,7 +91,7 @@ if (locals.page) {
                             class="menu-arrow"></span></a>
                     <ul style="display: none;">
                         <li><a class="<%=ListTest%>" href="/Tests">Liste des Tests</a></li>
-                        
+                        <li><a class="<%=SaveTestResult%>" href="/SaveTestResult">Enregistrer Résultat</a></li>
                     </ul>
                 </li>
 

@@ -75,6 +75,7 @@
                             <table class="table table-striped custom-table datatable mb-0">
                                 <thead>
                                     <tr>
+                                        <th>Test ID</th>
                                         <th>Date</th>
                                         <th>Numéro Patient</th>
                                         <th>Patient</th>
@@ -96,6 +97,7 @@
                                         }
                                      %>
                                     <tr>
+                                        <td><%=stock.request_id%></td>
                                         <td><a href="#"><%=stock.date_record%></a></td>
                                         <td><%=stock.numero_patient%></td>
                                         <td><%=stock.patient%></td>
@@ -109,10 +111,14 @@
                                                 <a href="#" class="action-icon dropdown-toggle" data-toggle="dropdown"
                                                     aria-expanded="false"><i class="fa fa-ellipsis-v"></i></a>
                                                 <div class="dropdown-menu dropdown-menu-right">
-                                                    <a class="dropdown-item" href="#" title="Mouvement de Stock"
-                                                        onclick="launchStockManagement('<%=stock.nom_materiau%>','<%=stock.id%>','<%=stock.numero_lot%>')"><i
-                                                            class="fa fa-plus-square m-r-5"></i> <i
-                                                            class="fa fa-minus-square m-r-5"></i> Ajout/retrait</a>
+                                                   <form action="/SaveTestResult" method="POST" id="displayTestRequest<%=stock.request_id%>">
+                                                    <input type="hidden" name="patientName" value="<%=stock.patient%>">
+                                                    <input type="hidden" name="patientNumber" value="<%=stock.numero_patient%>">
+                                                    <input type="hidden" name="testRequestId" value="<%=stock.request_id%>">
+                                                        
+                                                        <a href="#" class="dropdown-item" onclick="submitForm('<%=stock.request_id%>')" ><i
+                                                        class="fa fa-pencil m-r-5"></i> Résultat</a>
+                                                   </form>
                                                     <a class="dropdown-item" href="edit-invoice.html"><i
                                                             class="fa fa-pencil m-r-5"></i> Edit</a>
                                                     <a class="dropdown-item" href="#" data-toggle="modal"
@@ -200,6 +206,9 @@
     <script src="assets/js/bootstrap-datetimepicker.min.js"></script>
     <script src="assets/js/app.js"></script>
     <script>
+        function submitForm(id){
+            $("#displayTestRequest"+id).submit();
+        }
         $("#addRemoveStockForm").submit(function (e) {
             e.preventDefault();
             addorRemoveStock();
