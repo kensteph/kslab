@@ -48,7 +48,7 @@
 									<tr>
 										<th>Examen</th>
 										<th>Type résultat</th>
-										<th class="text-right">Action</th>
+										<th class="text-right">Actions</th>
 									</tr>
 								</thead>
 								<tbody id="table">
@@ -65,8 +65,9 @@
 											<div class="dropdown dropdown-action">
 												<a href="#" class="action-icon dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fa fa-ellipsis-v"></i></a>
 												<div class="dropdown-menu dropdown-menu-right">
-													<a class="dropdown-item" href="/edit-patient?patient=<%= examen.id %>"><i class="fa fa-pencil m-r-5"></i> Edit</a>
-													<a class="dropdown-item" href="#" onclick="setId('<%= examen.id %>')" ><i class="fa fa-trash-o m-r-5"></i> Delete</a>
+													<a class="dropdown-item" href="/edit-exam?patient=<%= examen.id %>"><i class="fa fa-pencil m-r-5"></i> Modifier</a>
+													<a class="dropdown-item" href="#" onclick="setId('<%= examen.id %>')" ><i class="fa fa-trash-o m-r-5"></i> Supprimer</a>
+													<a class="dropdown-item" href="/add-test-materiaux?test=<%= examen.id %>"><i class="fa fa-flask m-r-5"></i> Matériaux</a>
 												</div>
 											</div>
 										</td>

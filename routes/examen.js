@@ -6,6 +6,7 @@ const router = express.Router();
 const examenDB = require('../controllers/examenController.js');
 const testDB = require('../controllers/testController.js');
 const patientDB = require('../controllers/patientController');
+const stockDB = require('../controllers/stockController.js');
 const helpers = require('../helpers/helpers');
 router.use(bodyParser.urlencoded({ extended: true }));
 router.use(express.static('public'));
@@ -67,6 +68,29 @@ router.post('/add-test-parameters', async (req, res) => {
     res.json(notifications);
 });
 
+//ASSOCIATION TEST-MATERIAUX 
+router.get('/add-test-materiaux', async (req, res) => {
+    let examID = req.query.test;
+    let data = await examenDB.getExamById(examID);
+    let exam = data[0].nom_examen;
+    let materiaux = await stockDB.listOfMateriaux();
+    console.log(materiaux);
+    let pageTitle = "Matériaux inventoriés associés au test '" + exam + "'";
+    params = {
+        pageTitle: pageTitle,
+        data: materiaux,
+        examID: examID,
+        exam: exam,
+        page: 'NewExam'
+    };
+    res.render('examens/add-test-materiaux', params);
+});
+
+router.post('/add-test-materiaux', async (req, res) => {
+    console.log(req.body);
+    let notifications = await examenDB.saveTestParameters(req);
+    res.json(notifications);
+});
 // ============================================== TEST LABORATOIRE PATIENTS ====================================
 
 router.get('/test-laboratoire', async (req, res) => {
@@ -88,6 +112,9 @@ router.post('/test-laboratoire', async (req, res) => {
     let pageTitle = "Demande de  test laboratoire";
     let data = await patientDB.listOfAllPatients();
     let dataExam = await examenDB.listOfExams();
+    // let id_exam = data.testId;
+    // let info = await stockDB.getTestMateriaux(id_exam);
+    // console.log("MATERIAUX : "+info);
     let patientSelected = -1;
     if (req.body.patientSelected) {
         patientSelected = req.body.patientSelected;
@@ -214,7 +241,9 @@ router.post('/get-test-result', async (req, res) => {
 router.post('/display-test-result', async (req, res) => {
     console.log(req.body);
     let test_request_id = req.body.id_test_request;
+    let patient = req.body.patient;
     let data = await examenDB.testRequestContent(test_request_id);
+    let date_resultat =helpers.formatDate(helpers.getCurrentDate(),"FR");
     let resultaFinal = [];
     for(test of data){
         console.log("TESTS LIST : "+test.examen_id);
@@ -244,10 +273,12 @@ router.post('/display-test-result', async (req, res) => {
 
     console.log("FINAL : "+resultaFinal[0].Parameters[0].nom_examen+" : "+resultaFinal[0].Resultats[0].resultat);
     
-    let pageTitle = "Enregistrement résultat pour :";
+    let pageTitle = "Résultat Tests Laboratoire";
     params = {
         pageTitle: pageTitle,
         data: resultaFinal,
+        patient : patient,
+        date : date_resultat,
         page: 'NewTest'
     };
     res.render('examens/display-test-result', params);

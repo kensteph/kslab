@@ -77,7 +77,7 @@
     <script src="assets/js/app.js"></script>
     <script>
         saveTestParameters = function(){
-             $("#msg").show().html();
+             $("#msg").show().html("");
               let   formData = $("#saveParamForm").serialize();
                 $.post("/add-test-parameters" ,formData, function(data){
                       console.log(data);

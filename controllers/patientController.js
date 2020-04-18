@@ -100,6 +100,26 @@ module.exports = {
         return data;
     },
 
+        //Nombre de patients
+        patientcountByStatus: async function (statut) {
+            let promise = new Promise((resolve, reject) => {
+                let sql = "SELECT COUNT(id) as nb_patient FROM tb_personnes, tb_patients WHERE tb_patients.id_personne = tb_personnes.id AND tb_personnes.statut = ? ";
+                //console.log(sql+" ID : "+id_personne);
+                con.query(sql, id_personne, function (err, rows) {
+                    if (err) {
+                        //throw err;
+                        resolve([{ fullname: "" }]);
+                    } else {
+                        resolve(rows[0]);
+                    }
+                });
+            });
+            data = await promise;
+            //console.log(data);
+            return data;
+        },
+    
+
     //UPDATE INFO PATIENT
     updatePatient: async function (req) {
         firstName = req.body.firstname;

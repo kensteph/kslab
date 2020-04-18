@@ -285,7 +285,7 @@ var self = module.exports = {
     updateTestResultStatus: async function (test_request_id, statut) {
         let promise = new Promise((resolve, reject) => {
             let sql =
-                'UPDATE tb_test_requests SET statut=' + statut + ' WHERE id =' + test_request_id;
+                'UPDATE tb_test_requests SET statut=' + statut + ',date_resultat=NOW() WHERE id =' + test_request_id;
             console.log(sql);
             con.query(sql, function (err, result) {
                 if (err) {

@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+
+
+<!-- add-schedule24:07-->
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
+    <link rel="shortcut icon" type="image/x-icon" href="assets/img/favicon.ico">
+    <title><%=appName%>| <%=pageTitle%></title>
+    <link rel="stylesheet" type="text/css" href="assets/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/select2.min.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/bootstrap-datetimepicker.min.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/style.css">
+    <!--[if lt IE 9]>
+		<script src="assets/js/html5shiv.min.js"></script>
+		<script src="assets/js/respond.min.js"></script>
+	<![endif]-->
+</head>
+
+<body>
+    <div class="main-wrapper">
+        <div class="header">
+            <!-- HEADER -->
+            <%- include("../parts/header") -%>
+            <!-- SIDEBAR -->
+            <%- include("../parts/sidebar") -%>
+        </div>
+        <div class="page-wrapper">
+            <div class="content">
+                <div class="row">
+                    <div class="col-lg-8 offset-lg-2">
+                        <h4 class="page-title"> <%=pageTitle%> </h4>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-8 offset-lg-2">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>Sélectionnez les matériaux</label>
+                                    <select class="select" multiple name="materiau" id="MateriauSelected">
+                                        <% data.forEach((examen) => { %>
+                                        <option value="<%= examen.id %>"><%= examen.nom_materiau %></option>
+                                        <% }) %>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <label>Quantité</label>
+                                <div class="form-inline">
+                                    <input id="qte" type="number" onclick="select()" class="form-control"
+                                        style="width: 70px;" min="1" value="1" name="qte">
+                                    <a href="#" title="Ajouter" onclick="addToList()"><i
+                                            class="fa fa-plus-square fa-3x m-l-5 status-green"></i></a>
+                                    <a href="#" title="Réinitialiser" onclick="resetList()"><i
+                                            class="fa fa-refresh fa-3x m-l-5 status-red"></i></a>
+                                    <a href="#" title="Enregistrer" onclick="linkTestToMateriau()"><i
+                                                class="fa fa-save fa-3x m-l-5"></i></a>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="row">
+                            <form id="saveParamForm">
+                                <ul id="matAssos"></ul>
+                                <input type="hidden" name="testId" value="<%=examID%>">
+                            </form>
+                            <div class="form-group">
+                                <div id="msg" class="m-b-10"></div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div class="sidebar-overlay" data-reff=""></div>
+    <script src="assets/js/jquery-3.2.1.min.js"></script>
+    <script src="assets/js/popper.min.js"></script>
+    <script src="assets/js/bootstrap.min.js"></script>
+    <script src="assets/js/jquery.slimscroll.js"></script>
+    <script src="assets/js/select2.min.js"></script>
+    <script src="assets/js/moment.min.js"></script>
+    <script src="assets/js/bootstrap-datetimepicker.min.js"></script>
+    <script src="assets/js/app.js"></script>
+    <script>
+        let materiauList = [];
+        let idAlreadyAdded = [];
+        addToList = function () {
+            let materiau = $("#MateriauSelected option:selected").text();
+            let materiauId = $("#MateriauSelected option:selected").val();
+            let qte = $("#qte").val();
+            $("#msg").show().html("");
+            if (materiau !== "") {
+                if (idAlreadyAdded.indexOf(materiauId) === -1) { //Si on a pas deja ajoute
+                    let entry = { id: materiauId, materiau: materiau, qte: qte };
+                    materiauList.push(entry);
+                    idAlreadyAdded.push(materiauId);
+                    //idAlreadyAdded = Array.from(new Set(idAlreadyAdded));
+                }
+            } else {
+                $("#msg").show().html("<font color='red'>Vous devez choisir un matériau...</font>");
+            }
+            let li = "";
+            for (item of materiauList) {
+                let qte = item.qte;
+                let idMat = item.id;
+                let fields = "<input type='hidden' name='qtes[]' value='" + qte + "'> <input type='hidden' name='materiaux[]' value='" + idMat + "'>  ";
+                let line = qte + " " + item.materiau;
+                li += "<li>" + line + fields + "</li>";
+            }
+            $("#matAssos").html("" + li);
+        }
+
+        resetList = function () {
+            materiauList = [];
+            idAlreadyAdded = [];
+            $("#matAssos").html("");
+            $("#msg").show().html("");
+            $("#MateriauSelected").prop('selectedIndex', 0);
+        }
+        linkTestToMateriau = function () {
+            $("#msg").show().html("");
+            let formData = $("#saveParamForm").serialize();
+            $.post("/link-test-materiau", formData, function (data) {
+                console.log(data);
+                if (data.success) { //Success 
+                    $("#msg").html(data.msg);//.fadeOut( 5000 );
+                } else {
+                    $("#msg").html(data.msg);
+                }
+            });
+        }
+    </script>
+</body>
+
+
+<!-- add-schedule24:07-->
+
+</html>

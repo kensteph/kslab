@@ -8,7 +8,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
     <link rel="shortcut icon" type="image/x-icon" href="assets/img/favicon.ico">
-    <title>Preclinic - Medical & Hospital - Bootstrap 4 Admin Template</title>
+    <title><%=appName%>| <%=pageTitle%></title>
     <link rel="stylesheet" type="text/css" href="assets/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="assets/css/font-awesome.min.css">
     <link rel="stylesheet" type="text/css" href="assets/css/style.css">
@@ -28,12 +28,15 @@
             <div class="content">
                 <div class="row">
                     <div class="col-sm-5 col-4">
-                        <h4 class="page-title">Payslip</h4>
+                        <h4 class="page-title"></h4>
                     </div>
                     <div class="col-sm-7 col-8 text-right m-b-30">
-                        <div class="btn-group btn-group-sm">
-                            <button class="btn btn-white"><i class="fa fa-print fa-lg"></i> Print</button>
-                        </div>
+                        <form action="/print-resultat" method="POST" target="_blank">
+                            <div class="btn-group btn-group-sm">
+                                <button class="btn btn-white"><i class="fa fa-print fa-lg"></i> Imprimer</button>
+                            </div>
+                        </form>
+                        
                     </div>
                 </div>
                 <div class="row">
@@ -51,9 +54,9 @@
                                 </div>
                                 <div class="col-sm-6 m-b-20">
                                     <div class="invoice-details">
-                                        <h3 class="text-uppercase">Payslip #49029</h3>
+                                        <h4 class="text-uppercase"><%=patient%></h4>
                                         <ul class="list-unstyled">
-                                            <li>Salary Month: <span>July, 2018</span></li>
+                                            <li>Date : <span><%=date%></span></li>
                                         </ul>
                                     </div>
                                 </div>
@@ -77,17 +80,17 @@
                                                             <span class="float-right"><%=info.Resultats[pos].resultat%></span>
                                                         </td>
                                                     </tr>
-                                                <% }) %>
+                                                <% pos++; }) %>
                                                 
                                             </tbody>
                                         </table>
                                     </div>
                                 </div>
                                 <% }) %>
-                                <div class="col-sm-12">
+                                <!-- <div class="col-sm-12">
                                     <p><strong>Net Salary: $59698</strong> (Fifty nine thousand six hundred and ninety
                                         eight only.)</p>
-                                </div>
+                                </div> -->
                             </div>
                         </div>
                     </div>

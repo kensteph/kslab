@@ -22,7 +22,7 @@ router.post('/add-materiau', async (req, res) => {
     let pageTitle = "Nouveau Matériau";
     params = {
         pageTitle: pageTitle,
-        notifications : notifications,
+        notifications: notifications,
         page: 'AddMateriau'
     };
     res.render('stock/add-materiau', params);
@@ -34,7 +34,7 @@ router.get('/materiaux', async (req, res) => {
     let pageTitle = "Liste des materiaux";
     params = {
         pageTitle: pageTitle,
-        data : data,
+        data: data,
         page: 'ListMateriau'
     };
     res.render('stock/materiaux-list', params);
@@ -46,7 +46,7 @@ router.get('/inventaire', async (req, res) => {
     let pageTitle = "Inventaire";
     params = {
         pageTitle: pageTitle,
-        data : data,
+        data: data,
         page: 'Inventaire'
     };
     res.render('stock/inventaire', params);
@@ -58,7 +58,7 @@ router.get('/mv-stock', async (req, res) => {
     let pageTitle = "Mouvement de stock";
     params = {
         pageTitle: pageTitle,
-        data : data,
+        data: data,
         page: 'StockMoving'
     };
     res.render('stock/mouvement-stock', params);
@@ -78,6 +78,62 @@ router.post('/add-remove-stock', async (req, res) => {
     res.json(notifications);
 });
 
+//LINK TEST TO MATERIAU
+router.post('/link-test-materiau', async (req, res) => {
+    let data = req.body;
+    if (data.qtes) {
+        console.log(data);
+    } else {
+        console.log("NO DATA");
+    }
+    let notifications = await stockDB.linkTestToMateriau(req);
+    res.json(notifications);
+});
 
+//DISPONIBILITE MATERIAU /QTE DISPONIBLE
+
+//GET THES TEST'S MATERIAUX
+router.post('/verify-materiaux-availability', async (req, res) => {
+    console.log("Verification");
+    let data_posted = req.body;
+    let testSelected = data_posted.testSelected;
+    console.log(data_posted);
+    let alert = [];
+    //Pour chaque test demande on va verifier la disponibilite des materiaux
+    for (test_id of testSelected) {
+        let info = await stockDB.getTestMateriaux(test_id);
+        //console.log(info);
+        //Pour chaque materiau verifier sa disponibilite
+        let pos = 1;
+        for (materiau of info) {
+            let materiauID = materiau.materiau;
+            let materiauName = materiau.nom_materiau;
+            let qte_to_use = materiau.qte;
+            let qte_dispo = await stockDB.countAvailableMateriaux(materiauID);
+            if(qte_dispo == null){ qte_dispo = 0;}
+            let diference = qte_dispo - qte_to_use;
+            if(diference<0){
+                let sms = pos+"- <font color='red'>Pas assez de <strong>"+materiauName+"</strong> en stock. QTE DISPO : "+qte_dispo+"</font>";
+                alert.push(sms);
+            }else{
+                console.log("GOOD TO GO "); 
+            }
+            
+            // console.log("QUANTITE DISPO : " + qte_dispo + " " +materiauName );
+            // console.log("QUANTITE A UTILISER : " + qte_to_use + " " +materiauName );
+            // console.log(alert);
+            pos++; 
+        }
+    }
+    res.json(alert);
+    // let id_exam = req.body.examID;
+    // let info = await stockDB.getTestMateriaux(id_exam);
+    // if(info.length == 0){
+    //     info = await examenDB.getExamById(id_exam);
+    // }
+    // let testResult = await examenDB.getTestResult(5,6);
+    // console.log(testResult);
+    //res.json(info);
+});
 // Exportation of this router
 module.exports = router;
