@@ -1,13 +1,16 @@
 const puppeteer = require('puppeteer');
 const fs = require('fs-extra');
 const hbs = require('handlebars');
+const ejs = require('ejs');
 var self = module.exports = {
      getFile : async function (templateName, data) {
-        const filepath = "./print/templates/"+`${templateName}.hbs`;//path.join(process.cwd(), 'templates', `${templateName}.hbs`);
-        //console.log("PATH : " + filepath);
+        const filepath = "./print/templates/"+`${templateName}.ejs`;//path.join(process.cwd(), 'templates', `${templateName}.hbs`);
+        console.log("PATH : " + filepath);
         const html = await fs.readFile(filepath, 'utf-8');
+        let content = ejs.render(html,data);
+        //hbs.compile(html)(data);
         //console.log("CONTENT : " + html);
-        return hbs.compile(html)(data);
+        return content;
     },
     print: async function(template,data,path){
         console.log("CONTENT LOADING.... ");

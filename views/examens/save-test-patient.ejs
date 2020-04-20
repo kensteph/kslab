@@ -30,7 +30,17 @@
                         <h4><%=pageTitle%> </h4>
                         <h4 class="page-title">
                             <i class="fa fa-folder-open-o"></i> <%=patientSelected.num_patient%> |
-                            <%=patientSelected.fullname%> </h4>
+                            <%=patientSelected.fullname%> 
+                            <a href="#"  rel="noopener noreferrer">
+                                <i style="cursor: pointer;" title="Apperçue du résultat" class="fa fa-file-pdf-o" onclick=" displayResult()"></i> 
+                            </a>
+                            
+                        </h4>
+                            <form id="displayResult" target="_blank" action="/display-test-result" method="POST">
+                                <input type="hidden" name="id_test_request" value="<%=id_test_request%>">
+                                <input type="hidden" name="patient" value="<%=patientSelected.dossier%>">
+                            </form>
+                            
                     </div>
                 </div>
                 <div class="row">
@@ -42,7 +52,6 @@
                                         <th>ID Examen</th>
                                         <th>Examen</th>
                                         <th>Résultat</th>
-                                        <th>Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -53,13 +62,6 @@
                                         <td><a href="#" class="btn btn-white"
                                                 onclick="launchSaveTestModal('<%=info.id%>','<%=info.nom_examen%>')">Enregistrer
                                                 Résultat</a></td>
-                                        <td>
-                                            <form action="/display-test-result" method="POST">
-                                                <input type="hidden" name="id_test_request" value="<%=id_test_request%>">
-                                                <input type="hidden" name="patient" value="<%=patientSelected.dossier%>">
-                                                <button class="btn btn-primary submit-btn">Afficher</button>
-                                            </form>
-                                        </td>
                                     </tr>
                                     <% }) %>
                                 </tbody>
@@ -105,7 +107,10 @@
     <script src="assets/js/select2.min.js"></script>
     <script src="assets/js/app.js"></script>
     <script>
-
+        //Display the test result
+        function displayResult(){
+            $("#displayResult").submit();
+        }
         $("#addRemoveStockForm").submit(function (e) {
             e.preventDefault();
             saveTestResultDB();

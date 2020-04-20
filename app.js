@@ -20,6 +20,9 @@ app.use(require('./routes/print'));
 
 // Global variables
 global.appName = 'KSlab ';
+global.entName = 'KSlab ';
+global.entAddress = '42,Rue Charlemagne Péralte ';
+global.entCity = 'Pétion-Ville,Haiti ';
 global.TEST_STATUS = ['En attente','Enregistré','Validé','Livré']
 //Entry Point
 app.get('/', async (req, res) => {
@@ -40,6 +43,9 @@ app.get('/home', async (req, res) => {
         stats : {NbPatientsActif : nb_patient ,nb_test_a_valider : nb_test_a_valider,all_test  : all_test, test_a_enregistrer : test_a_enregistrer,test_a_livrer : test_a_livrer},
         page: 'Home'
     };
+    //Logo
+    global.LOGO = helpers.base64("public/assets/img/logo-dark.png");
+    //console.log("LOGO : "+LOGO);
     res.render('index',params);
  });
  

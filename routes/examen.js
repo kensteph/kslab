@@ -8,8 +8,11 @@ const testDB = require('../controllers/testController.js');
 const patientDB = require('../controllers/patientController');
 const stockDB = require('../controllers/stockController.js');
 const helpers = require('../helpers/helpers');
-router.use(bodyParser.urlencoded({ extended: true }));
-router.use(express.static('public'));
+const fs = require('fs-extra');
+const printer = require('../print/print');
+
+// router.use(bodyParser.urlencoded({ extended: true }));
+// router.use(express.static('public'));
 // ADD EXAM
 router.get('/add-examens', async (req, res) => {
     let pageTitle = "Nouvel examen";
@@ -281,7 +284,19 @@ router.post('/display-test-result', async (req, res) => {
         date : date_resultat,
         page: 'NewTest'
     };
-    res.render('examens/display-test-result', params);
+    let filename = patient+".pdf";
+    let pathfile = "./"+filename;
+    await printer.print('invoice',params,pathfile);
+    //console.log(data);
+    //Display the file in the browser
+    var stream = fs.ReadStream(pathfile);
+    // Be careful of special characters
+    filename = encodeURIComponent(filename);
+    // Ideally this should strip them
+    res.setHeader('Content-disposition', 'inline; filename="' + filename + '"');
+    res.setHeader('Content-type', 'application/pdf');
+    stream.pipe(res);
+    //res.render('examens/display-test-result', params);
 });
 
 // Exportation of this router

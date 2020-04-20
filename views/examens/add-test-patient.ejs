@@ -116,7 +116,9 @@
             $.post("/verify-materiaux-availability", formData, function (data) {
                 console.log(data);
                 let message = "";
-                data.push("<br>Voulez-vous quand meme enregistrer la demande ?");
+                if(data.length>1){
+                    data.push("<br>Voulez-vous quand meme enregistrer la demande ?");
+                }
                 $("#msg").html(data.join("<br>"));
                 //   for(msg of data){
                 //     me
