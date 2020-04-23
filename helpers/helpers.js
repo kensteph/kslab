@@ -122,6 +122,15 @@ module.exports = {
             }
         });
     },
+    //Count Dir Items
+    countDir(path){
+        var totalFiles = 1;
+        fs.readdir(path, function(error, files) {  
+            totalFiles = files.length; // return the number of files
+            console.log("process...");
+        });
+        return totalFiles;
+    },
     simpleUpload(req, res, full_path_directory) {
         try {
             if (!req.files) {

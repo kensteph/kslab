@@ -22,6 +22,7 @@ var self = module.exports = {
         //await page.goto('https://kstreaming.one/s-w-a-t-saison-2-0706/16/', { waitUntil: 'networkidle2' });
         page.setContent(content);
         await page.emulateMediaFeatures('screen');
+        await page.addStyleTag({path: "./print/templates/print.css"});
         await page.pdf({ path: path, format: 'A4',printBackground: true, });
         await browser.close();
         console.log("Done...");

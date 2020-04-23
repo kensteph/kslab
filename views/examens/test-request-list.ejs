@@ -41,7 +41,8 @@
                             <div class="form-group form-focus">
                                 <label class="focus-label">Du</label>
                                 <div class="cal-icon">
-                                    <input class="form-control floating datetimepicker" value="<%= dateFrom %>" type="text" name="dateFrom">
+                                    <input class="form-control floating datetimepicker" value="<%= dateFrom %>"
+                                        type="text" name="dateFrom">
                                 </div>
                             </div>
                         </div>
@@ -49,7 +50,8 @@
                             <div class="form-group form-focus">
                                 <label class="focus-label">Au</label>
                                 <div class="cal-icon">
-                                    <input class="form-control floating datetimepicker" value="<%= dateTo %>" type="text" name="dateTo">
+                                    <input class="form-control floating datetimepicker" value="<%= dateTo %>"
+                                        type="text" name="dateTo">
                                 </div>
                             </div>
                         </div>
@@ -59,7 +61,8 @@
                                 <select class="select floating" name="statut">
                                     <option value="All">Tous</option>
                                     <% TEST_STATUS.forEach((item,index) => { %>
-                                    <option <% if( statut == index ){ %> <%= "selected" %> <% } %> value="<%= index %>"><%= item %></option>
+                                    <option <% if( statut == index ){ %> <%= "selected" %> <% } %> value="<%= index %>">
+                                        <%= item %></option>
                                     <% }) %>
                                 </select>
                             </div>
@@ -75,13 +78,12 @@
                             <table class="table table-striped custom-table datatable mb-0">
                                 <thead>
                                     <tr>
-                                        <th>Test ID</th>
+                                        <th>Test</th>
+                                        <th>Statut</th>
                                         <th>Date</th>
-                                        <th>Numéro Patient</th>
                                         <th>Patient</th>
                                         <th>Examens</th>
-                                        <th>Statut</th>
-                                        <th class="text-right">Action</th>
+                                        <th class="text-right">Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -95,35 +97,53 @@
                                         }else{
                                             type = "green";
                                         }
+                                        let patientSelected = stock.patient+" ["+stock.numero_patient+"]";
                                      %>
                                     <tr>
                                         <td><%=stock.request_id%></td>
-                                        <td><a href="#"><%=stock.date_record%></a></td>
-                                        <td><%=stock.numero_patient%></td>
-                                        <td><%=stock.patient%></td>
-                                        <td><%=stock.examens%></td>
                                         <td><span
                                                 class="custom-badge status-<%= type %>"><%= TEST_STATUS[statut] %></span>
-                                        </td>
-
+                                        <td><a href="#"><%=stock.date_record%></a></td>
+                                        <td><%=stock.patient+" | "+stock.numero_patient%></td>
+                                        <td><%=stock.examens%></td>
                                         <td class="text-right">
                                             <div class="dropdown dropdown-action">
                                                 <a href="#" class="action-icon dropdown-toggle" data-toggle="dropdown"
                                                     aria-expanded="false"><i class="fa fa-ellipsis-v"></i></a>
                                                 <div class="dropdown-menu dropdown-menu-right">
-                                                   <form action="/SaveTestResult" method="POST" id="displayTestRequest<%=stock.request_id%>">
-                                                    <input type="hidden" name="patientName" value="<%=stock.patient%>">
-                                                    <input type="hidden" name="patientNumber" value="<%=stock.numero_patient%>">
-                                                    <input type="hidden" name="testRequestId" value="<%=stock.request_id%>">
-                                                        
-                                                        <a href="#" class="dropdown-item" onclick="submitForm('<%=stock.request_id%>')" ><i
-                                                        class="fa fa-pencil m-r-5"></i> Résultat</a>
-                                                   </form>
-                                                    <a class="dropdown-item" href="edit-invoice.html"><i
-                                                            class="fa fa-pencil m-r-5"></i> Edit</a>
-                                                    <a class="dropdown-item" href="#" data-toggle="modal"
-                                                        data-target="#delete_invoice"><i
-                                                            class="fa fa-trash-o m-r-5"></i> Delete</a>
+                                                    <form action="/SaveTestResult" method="POST"
+                                                        id="displayTestRequest<%=stock.request_id%>">
+                                                        <input type="hidden" name="patientName"
+                                                            value="<%=stock.patient%>">
+                                                        <input type="hidden" name="patientNumber"
+                                                            value="<%=stock.numero_patient%>">
+                                                        <input type="hidden" name="testRequestId"
+                                                            value="<%=stock.request_id%>">
+
+                                                        <a href="#" class="dropdown-item"
+                                                            onclick="submitForm('<%=stock.request_id%>')"><i
+                                                                class="fa fa-pencil m-r-5"></i>Enregistrer/Modifier Résultat</a>
+                                                    </form>
+                                                    <% if(statut == 1){ %>
+                                                    <form target="_blank" action="/verify-test-result" method="POST" id="Verify<%=stock.request_id%>">
+                                                        <input type="hidden" name="id_test_request"
+                                                            value="<%=stock.request_id%>">
+                                                        <input type="hidden" name="patient"
+                                                            value="<%=patientSelected%>">
+                                                        <a href="#" onclick="submitFormVerifiy('<%=stock.request_id%>')" class="dropdown-item" target="_blank" title="Vérifier les résutats"><i
+                                                                class="fa fa-check"></i> Vérifier les résutats</a>
+                                                    </form>
+                                                    <% } %>
+
+                                                    <% if(statut == 2){ %>
+                                                        <a href="#" id="btnDelivery<%=stock.request_id%>" onclick="launchModal('<%=stock.request_id%>','<%=patientSelected%>')" class="dropdown-item" ><i
+                                                                    class="fa fa-check"></i> Livrer les résutats</a>
+                                                    <% } %>
+                                                    <form id="PrintForm<%=stock.request_id%>" target="_blank" action="/display-test-result" method="POST">
+                                                        <input type="hidden" name="id_test_request" value="<%=stock.request_id%>">
+                                                        <input type="hidden" name="patient" value="<%=patientSelected%>">
+                                                            <a href="#" class="dropdown-item"  onclick="printTest('<%=stock.request_id%>')"><i class="fa fa-print fa-lg"></i> Imprimer les résultats</a>
+                                                    </form>
                                                 </div>
                                             </div>
                                         </td>
@@ -137,62 +157,26 @@
             </div>
 
         </div>
-        <div id="addRemoveUnit" class="modal fade" role="dialog">
-            <div class="modal-dialog">
-                <div class="modal-content modal-md">
-                    <div class="modal-header">
-                        <h4 class="modal-title">Ajouter/retirer <strong id="materiauName"></strong></h4>
-                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    </div>
-                    <div class="modal-body">
-                        <form id="addRemoveStockForm">
-                            <input type="hidden" id="materiauId" name="materiauId">
-                            <input type="hidden" id="materiau" name="materiauName">
-                            <input type="hidden" id="lot" name="lot">
-                            <div class="form-inline">
-                                <div class="col-sm-6 col-md-6 col-lg-6">
-                                    <label>Type transaction</label>
-                                    <select class="form-control select" name="type">
-                                        <option value="substract">Retirer</option>
-                                        <option value="add">Ajouter</option>
-                                        <option value="endommagee"> Endommagée</option>
-                                    </select>
-                                </div>
-                                <div class="col-sm-6 col-md-6 col-lg-6  text-left">
-                                    <label>Quantité <span class="text-danger">*</span></label>
-                                    <input required class="form-control" id="qte" type="number" min="1" name="qte">
-                                </div>
-                            </div>
-                            <div class="form-group text-center m-t-20">
-                                <label>Commentaire</label>
-                                <textarea cols="30" rows="4" class="form-control" name="commentaire"></textarea>
-                            </div>
 
-                            <div id="notify" class="m-t-20 text-center"></div>
-                            <div class="m-t-20 text-center">
-                                <button class="btn btn-primary submit-btn">Enregistrer</button>
-                            </div>
-                        </form>
-
-
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div id="delete_invoice" class="modal fade delete-modal" role="dialog">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <div class="modal-body text-center">
+        <div id="TestDelivery" class="modal fade delete-modal" role="dialog" data-keyboard="false">
+			<div class="modal-dialog modal-dialog-centered">
+				<div class="modal-content">
+					<div class="modal-body text-center">
                         <img src="assets/img/sent.png" alt="" width="50" height="46">
-                        <h3>Are you sure want to delete this Invoice?</h3>
-                        <div class="m-t-20"> <a href="#" class="btn btn-white" data-dismiss="modal">Close</a>
-                            <button type="submit" class="btn btn-danger">Delete</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+                        <form id="DeliveryForm">
+                            <input type="hidden" name="testRequestId" id="Test">
+                            <input type="hidden" name="statut" value="3" id="Statut">
+                        </form>
+						Voulez-vous livrer les résultats de <strong id="patientS"></strong> ?
+						<div id="msg"></div>
+						<div class="m-t-20"> <a href="#" class="btn btn-danger" data-dismiss="modal">Non</a>
+							<button type="submit" class="btn btn-success" onclick="livrerTest()">Oui</button>
+						</div>
+					</div>
+				</div>
+			</div>
+			
+		</div>
     </div>
     <div class="sidebar-overlay" data-reff=""></div>
     <script src="assets/js/jquery-3.2.1.min.js"></script>
@@ -206,31 +190,32 @@
     <script src="assets/js/bootstrap-datetimepicker.min.js"></script>
     <script src="assets/js/app.js"></script>
     <script>
-        function submitForm(id){
-            $("#displayTestRequest"+id).submit();
+        function submitForm(id) {
+            $("#displayTestRequest" + id).submit();
         }
-        $("#addRemoveStockForm").submit(function (e) {
-            e.preventDefault();
-            addorRemoveStock();
-        });
-        function launchStockManagement(matName, matId, lot) {
-            $("#materiauName").html(matName + "-" + lot);
-            $("#materiauId").val(matId);
-            $("#materiau").val(matName);
-            $("#lot").val(lot);
-            $("#addRemoveUnit").modal();
+        function submitFormVerifiy(id) {
+            $("#Verify" + id).submit();
         }
-        addorRemoveStock = function () {
-            $("#notify").show().html();
-            let formData = $("#addRemoveStockForm").serialize();
-            $.post("/add-remove-stock", formData, function (data) {
-                console.log(data);
-                if (data.success) { //Success 
-                    $("#notify").html(data.msg);//.fadeOut(5000);
-                } else {
-                    $("#notify").html(data.msg);
-                }
-            });
+        function launchModal(test_id,patient){
+            $("#patientS").html(""+patient);
+            $("#Test").val(test_id);
+            $("#TestDelivery").modal();
+        }
+        function printTest(test){
+            $("#PrintForm"+test).submit();
+        }
+        livrerTest = function(){
+                let   formData = $("#DeliveryForm").serialize();
+                    $.post("/update-test-status" ,formData, function(data){
+                        console.log(data);
+                        if(data.success){ //Success 
+                            let id = formData.testRequestId;
+                            $("#btnDelivery"+id).hide();
+                            $('#TestDelivery').modal('hide')
+                        }else{
+                            $("#msg").html(data.error);
+                        } 
+                    });
         }
     </script>
 </body>

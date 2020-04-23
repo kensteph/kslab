@@ -1,0 +1,59 @@
+table {
+    font-family: arial, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+td,
+th {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 3px;
+}
+
+tr:nth-child(even) {
+    background-color: #d4d4d4;
+}
+
+.logo{
+    margin-top: 30px;
+}
+.header-form {
+    text-align: center;
+    width: 70%;
+    margin-top: 10px;
+}
+
+h3 {
+    color: #0f0f0f;
+    font-family: arial, sans-serif;
+    font-size: 16px;
+    font-weight: bold;
+    margin-top: 0px;
+    margin-bottom: 1px;
+}
+
+.row {
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+    margin-right: -15px;
+    margin-left: 15px;
+
+}
+
+.col-sm-6 {
+    position: relative;
+    width: 45%;
+    padding-right: 15px;
+    padding-left: 15px;
+}
+
+.exam {
+    font-size: 12px;
+}
+
+li {
+    list-style-type: none;
+}

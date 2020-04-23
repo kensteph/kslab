@@ -5,6 +5,8 @@ const bodyParser = require('body-parser');
 const helpers = require('./helpers/helpers');
 const stats = require('./controllers/stats');
 const path = require('path');
+const cron = require("node-cron");
+const fsExtra = require('fs-extra')
 //Uses
 //app.use(express.static('public')); // All our static files
 app.use(express.static(path.join(__dirname, '/public')));
@@ -48,6 +50,23 @@ app.get('/home', async (req, res) => {
     //console.log("LOGO : "+LOGO);
     res.render('index',params);
  });
+
+ //CRON JOB
+   // schedule tasks to be run on the server
+   cron.schedule("* * * * *", function() {
+    console.log("---------------------");
+    console.log("Running Cron Job");
+    let fileDir = "./tmp";
+    let nb_files =  helpers.countDir(fileDir);
+    console.log("Count Items : "+nb_files);
+    if(nb_files >0){
+        fsExtra.emptyDir(fileDir);
+        console.log(nb_files+" removed from the directory empty...");
+    }else{
+        console.log("The directory is already empty...");
+    }
+    
+  });
  
 const port = 8788;
 app.listen(port, () => {

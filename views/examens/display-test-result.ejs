@@ -18,12 +18,10 @@
 	<![endif]-->
 </head>
 
-<body>
+<body class="mini-sidebar">
     <div class="main-wrapper">
         <!-- HEADER -->
         <%- include("../parts/header") -%>
-        <!-- SIDEBAR -->
-        <%- include("../parts/sidebar") -%>
         <div class="page-wrapper">
             <div class="content">
                 <div class="row">
@@ -31,7 +29,9 @@
                         <h4 class="page-title"></h4>
                     </div>
                     <div class="col-sm-7 col-8 text-right m-b-30">
-                        <form action="/print-resultat" method="POST" target="_blank">
+                        <form id="displayResult" target="_blank" action="/display-test-result" method="POST">
+                            <input type="hidden" name="id_test_request" value="<%=testRequestId%>">
+                            <input type="hidden" name="patient" value="<%=patient%>">
                             <div class="btn-group btn-group-sm">
                                 <button class="btn btn-white"><i class="fa fa-print fa-lg"></i> Imprimer</button>
                             </div>
@@ -44,23 +44,9 @@
                         <div class="card-box">
                             <h4 class="payslip-title">Résultat Test Laboratoire</h4>
                             <div class="row">
-                                <div class="col-sm-6 m-b-20">
-                                    <img src="assets/img/logo-dark.png" class="inv-logo" alt="">
-                                    <ul class="list-unstyled mb-0">
-                                        <li><%=entName%></li>
-                                        <li><%=entAddress%></li>
-                                        <li><%=entCity%></li>
-                                    </ul>
+                                <div class="col-sm-6">
+                                    <h4 class="text-uppercase"><%=patient%></h4>
                                 </div>
-                                <div class="col-sm-6 m-b-20">
-                                    <div class="invoice-details">
-                                        <h4 class="text-uppercase"><%=patient%></h4>
-                                        <ul class="list-unstyled">
-                                            <li>Date : <span><%=date%></span></li>
-                                        </ul>
-                                    </div>
-                                </div>
-
                             </div>
 
                             <div class="row">
@@ -95,8 +81,35 @@
                         </div>
                     </div>
                 </div>
+                <div class="row">
+                    <div class="col-sm-5 col-4">
+                        <h4 class="page-title"></h4>
+                    </div>
+                    <div class="col-sm-7 col-8 text-right m-b-30">
+                       <a class="btn btn-white" id="btnValider"  data-toggle="modal" data-target="#valideTest"><i class="fa fa-check-square fa-lg"></i> Valider</a>
+                     </div>
+                </div>
             </div>
         </div>
+        <div id="valideTest" class="modal fade delete-modal" role="dialog" data-keyboard="false">
+			<div class="modal-dialog modal-dialog-centered">
+				<div class="modal-content">
+					<div class="modal-body text-center">
+						<img src="assets/img/sent.png" alt="" width="50" height="46">
+						<form id="deleteForm">
+                            <input type="hidden" name="testRequestId" value="<%=testRequestId%>">
+                            <input type="hidden" name="statut" value="2">
+						</form>
+						<h3>Voulez-vous enregistrer la vérification?</h3>
+						<div id="msg"></div>
+						<div class="m-t-20"> <a href="#" class="btn btn-danger" data-dismiss="modal">Non</a>
+							<button type="submit" class="btn btn-success" onclick="ValiderTest()">Oui</button>
+						</div>
+					</div>
+				</div>
+			</div>
+			
+		</div>
     </div>
     <div class="sidebar-overlay" data-reff=""></div>
     <script src="assets/js/jquery-3.2.1.min.js"></script>
@@ -104,6 +117,22 @@
     <script src="assets/js/bootstrap.min.js"></script>
     <script src="assets/js/jquery.slimscroll.js"></script>
     <script src="assets/js/app.js"></script>
+    <script>
+        	ValiderTest = function(){
+                $("#msg").show().html();
+                let   formData = $("#deleteForm").serialize();
+                    $.post("/update-test-status" ,formData, function(data){
+                        console.log(data);
+                        if(data.success){ //Success 
+                            $("#btnValider").prop("disabled", true);
+                            $("#btnValider").css("background-color", "lightgreen");
+                            $('#valideTest').modal('hide')
+                        }else{
+                            $("#msg").html(data.error);
+                        } 
+                    });
+        }
+    </script>
 </body>
 
 
