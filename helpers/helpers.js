@@ -45,7 +45,7 @@ module.exports = {
     },
     //Format Date from FR to EN for the Datatbase
     formatDate(dateP, lang) {
-       // console.log("Date Receive "+dateP);
+        // console.log("Date Receive "+dateP);
         let splitdat = dateP.split('-');
         if (splitdat.length == 1) { //they use / instead of -
             splitdat = dateP.split('/');
@@ -57,24 +57,24 @@ module.exports = {
         }
         if (lang == 'EN') {
             date_f = splitdat[2] + '-' + splitdat[1] + '-' + splitdat[0];
-           
+
         }
         //console.log("DATE FORMAT : " + date_f+" TO "+lang);
         return date_f;
-       
+
     },
-    changeDateSymbol(dateF){
+    changeDateSymbol(dateF) {
         //dateF = "2020/02/03";
         let pos = dateF.search("/");
         let symbole = "";
         let splitdat = "";
         let newSymbole = "";
-        if(pos == -1){
+        if (pos == -1) {
             symbole = "-";
-            newSymbole ="/";
-        }else{
+            newSymbole = "/";
+        } else {
             symbole = "/";
-            newSymbole ="-";
+            newSymbole = "-";
         }
         splitdat = dateF.split(symbole);
         let finaldate = splitdat.join(newSymbole);
@@ -123,9 +123,9 @@ module.exports = {
         });
     },
     //Count Dir Items
-    countDir(path){
+    countDir(path) {
         var totalFiles = 1;
-        fs.readdir(path, function(error, files) {  
+        fs.readdir(path, function (error, files) {
             totalFiles = files.length; // return the number of files
             console.log("process...");
         });
@@ -204,6 +204,26 @@ module.exports = {
     //Return an unique array from a given one
     array_unique(array) {
         return Array.from(new Set(array));
+    },
+
+    titleByAge(age, sexe) {
+        age = parseFloat(age);
+        console.log("AGE : "+age+" SEXE : "+sexe);
+        let title = "";
+        if (age <= 4) {
+            title = "bebe";
+        } else if (age <= 12) {
+            title = "enfant";
+        } else if (age <= 20) {
+            title = "adolescent";
+        } else {
+            if (sexe == "F") {
+                title = "femme";
+            } else {
+                title = "homme";
+            }
+        }
+        return title;
     },
 
 };

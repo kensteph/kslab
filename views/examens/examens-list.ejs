@@ -59,6 +59,9 @@
 											<% if(examen.is_bilan){ %>
 												<a href="/add-test-parameters?exam=<%= examen.id %>" title="Ajouter les paramètres"><i class="fa fa-plus-circle"></i></a> 
 											<% } %>
+											<% if(examen.is_bilan == 0 && examen.type_resultat==1){ %>
+												<a href="#" title="Ajouter les valeurs normales" onclick="addVN('<%= examen.id %>')"> | Valeurs Normales</i></a> 
+											<% } %>
 										</td>
 										<td><%= examen.type_resultat %></td>
 										<td class="text-right">
@@ -82,6 +85,51 @@
 
 		</div>
 		
+		<div id="addValeursNormales" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content modal-md">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Valeurs Normales</h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="SaveVNtoDB">
+							<input type="hidden" id="examId" name="examId">
+							<div class="form-inline">
+								<div class="col-sm-3 col-md-3 col-lg-3">
+									<input class="form-control" placeholder="Unité de mesure" type="text" name="unite">
+                                </div>
+							</div>
+                            <div class="form-inline">
+                                <div class="col-sm-5 col-md-5 col-lg-5 text-left m-t-10">
+									<input class="form-control" placeholder="Nouveau Né"  type="text" name="bebe">
+								</div>
+								<div class="col-sm-5 col-md-5 col-lg-5  m-t-10  m-l-5">
+									<input class="form-control" placeholder="Enfant"  type="text" name="enfant">
+								</div>
+								<div class="col-sm-5 col-md-5 col-lg-5  m-t-10">
+									<input class="form-control" placeholder="Adolescent"  type="text" name="ado">
+								</div>
+								<div class="col-sm-5 col-md-5 col-lg-5  m-t-10  m-l-5">
+									<input class="form-control" placeholder="Femme"  type="text" name="femme">
+								</div>
+								<div class="col-sm-5 col-md-5 col-lg-5  m-t-10">
+									<input class="form-control" placeholder="Homme"  type="text" name="homme">
+								</div>
+							</div>
+							
+                            <div id="msg" class="m-t-20 text-center"></div>
+                            <div class="m-t-20 text-center">
+                                <button class="btn btn-primary submit-btn">Enregistrer</button>
+                            </div>
+                        </form>
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
 		<div id="delete_patient" class="modal fade delete-modal" role="dialog" data-keyboard="false">
 			<div class="modal-dialog modal-dialog-centered">
 				<div class="modal-content">
@@ -116,15 +164,19 @@
 	<script src="assets/js/app.js"></script>
 	<script src="assets/js/my_js.js"></script>
 	<script>
-		function setId(value){
-			$("#patientID").val(value);
-			$("#delete_patient").modal();
+
+$("#SaveVNtoDB").submit(function(e){
+            e.preventDefault();
+            saveVN();
+        });
+		function addVN(id_exam){
+			$("#examId").val(id_exam);
+			$("#addValeursNormales").modal();
 		}
-		deletePatient = function(){
-             $("#msg").show().html();
-			 let patientID = $("#patientID").val();
-              let   formData = $("#deleteForm").serialize();
-                $.post("/delete-patient" ,formData, function(data){
+		saveVN = function(){
+             $("#msg").show().html("");
+              let   formData = $("#SaveVNtoDB").serialize();
+                $.post("/save-test-valeurs-normales" ,formData, function(data){
                       $("#loader").hide();
                       console.log(data);
                       if(data.success){ //Success 

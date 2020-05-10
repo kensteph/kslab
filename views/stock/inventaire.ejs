@@ -32,44 +32,27 @@
             <div class="content">
                 <div class="row">
                     <div class="col-sm-5 col-4">
-                        <h4 class="page-title"> <i class="fa fa-list fa-2x"></i> <%=pageTitle%> </h4>
-                    </div>
-                    <div class="col-sm-7 col-8 text-right m-b-30">
-                        <a href="create-invoice.html" class="btn btn-primary btn-rounded"><i class="fa fa-plus"></i>
-                            Create New Invoice</a>
+                        <h4 class="page-title"><%=pageTitle%> </h4>
                     </div>
                 </div>
                 <div class="row filter-row">
-                    <div class="col-sm-6 col-md-3">
-                        <div class="form-group form-focus">
-                            <label class="focus-label">From</label>
-                            <div class="cal-icon">
-                                <input class="form-control floating datetimepicker" type="text">
+                    <form action="" method="POST" class="form-inline m-b-10">
+                        <div class="col-sm-6 col-md-6">
+                            <div class="form-group form-focus select-focus">
+                                <label class="focus-label">Statut</label>
+                                <select class="select floating" name="statut">
+                                    <option value="All">Tous</option>
+                                    <option <% if( statut == "Critique" ){ %> <%= "selected" %> <% } %> >Critique</option>
+                                    <option <% if( statut == "Expiré" ){ %> <%= "selected" %> <% } %> >Expiré</option>
+                                    <option <% if( statut == "Valide" ){ %> <%= "selected" %> <% } %> >Valide</option>
+                                </select>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-sm-6 col-md-3">
-                        <div class="form-group form-focus">
-                            <label class="focus-label">To</label>
-                            <div class="cal-icon">
-                                <input class="form-control floating datetimepicker" type="text">
-                            </div>
+                        <div class="col-sm-6 col-md-6">
+                            <button class="btn btn-success">Rechercher</button>
                         </div>
-                    </div>
-                    <div class="col-sm-6 col-md-3">
-                        <div class="form-group form-focus select-focus">
-                            <label class="focus-label">Status</label>
-                            <select class="select floating">
-                                <option>Select Status</option>
-                                <option>Pending</option>
-                                <option>Paid</option>
-                                <option>Partially Paid</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-sm-6 col-md-3">
-                        <a href="#" class="btn btn-success btn-block"> Search </a>
-                    </div>
+                    </form>
+
                 </div>
                 <div class="row">
                     <div class="col-md-12">
@@ -101,15 +84,16 @@
                                         }
                                      %>
                                     <tr>
-                                        <td><a href="invoice-view.html"><%=stock.numero_lot%></a></td>
-                                        <td><%=stock.nom_materiau%></td>
+                                        <td><%=stock.numero_lot%></td>
+                                        <td><a href="/materiaux?mat=<%=stock.id%>"><%=stock.nom_materiau%></a></td>
                                         <td><%=stock.date_recue%></td>
                                         <td><%=stock.date_expiration%></td>
                                         <td><%=stock.qte_recue%></td>
                                         <td><%=stock.qte_utilisee%></td>
                                         <td><%=stock.qte_endomage%></td>
                                         <td><%=stock.qte_restante%></td>
-                                        <td><span class="custom-badge status-<%= type %>"><%= nb_jours_restant %></span></td>
+                                        <td><span class="custom-badge status-<%= type %>"><%= nb_jours_restant %></span>
+                                        </td>
 
                                         <td class="text-right">
                                             <div class="dropdown dropdown-action">
@@ -207,7 +191,7 @@
     <script src="assets/js/bootstrap-datetimepicker.min.js"></script>
     <script src="assets/js/app.js"></script>
     <script>
-        $("#addRemoveStockForm").submit(function(e){
+        $("#addRemoveStockForm").submit(function (e) {
             e.preventDefault();
             addorRemoveStock();
         });

@@ -97,7 +97,7 @@
                                         }else{
                                             type = "green";
                                         }
-                                        let patientSelected = stock.patient+" ["+stock.numero_patient+"]";
+                                        let patientSelected = stock.patient;
                                      %>
                                     <tr>
                                         <td><%=stock.request_id%></td>
@@ -130,7 +130,7 @@
                                                             value="<%=stock.request_id%>">
                                                         <input type="hidden" name="patient"
                                                             value="<%=patientSelected%>">
-                                                        <a href="#" onclick="submitFormVerifiy('<%=stock.request_id%>')" class="dropdown-item" target="_blank" title="Vérifier les résutats"><i
+                                                        <a href="#" onclick="submitFormVerifiy('<%=stock.request_id%>')" class="dropdown-item" title="Vérifier les résutats"><i
                                                                 class="fa fa-check"></i> Vérifier les résutats</a>
                                                     </form>
                                                     <% } %>
@@ -142,7 +142,10 @@
                                                     <form id="PrintForm<%=stock.request_id%>" target="_blank" action="/display-test-result" method="POST">
                                                         <input type="hidden" name="id_test_request" value="<%=stock.request_id%>">
                                                         <input type="hidden" name="patient" value="<%=patientSelected%>">
-                                                            <a href="#" class="dropdown-item"  onclick="printTest('<%=stock.request_id%>')"><i class="fa fa-print fa-lg"></i> Imprimer les résultats</a>
+                                                        <input type="hidden" name="patientAge" value="<%=stock.age%>">
+                                                        <input type="hidden" name="patientSexe" value="<%=stock.sexe%>">
+                                                        <input type="hidden" name="patientNumber" value="<%=stock.numero_patient%>">
+                                                        <a href="#" class="dropdown-item"  onclick="printTest('<%=stock.request_id%>')"><i class="fa fa-print fa-lg"></i> Imprimer les résultats</a>
                                                     </form>
                                                 </div>
                                             </div>

@@ -12,65 +12,93 @@
 
 <body>
     
-    <div class="row">
+    <div class="row-header">
         <div class="logo">
-            <img style="margin-left: 10px;;" src="data:image/jpeg;base64,<%=LOGO%>" alt="img" width="100" height="100">
+            <img style="margin-left: 10px;" src="data:image/jpeg;base64,<%=LOGO%>" alt="img" width="100" height="100">
         </div>
         <div class="header-form">
             <p>
-                <h3>Polyclinique – Pharmacie – Laboratoire Médicale </h3>
-                <h3>Ultrasonographie pelvienne - Électrocardiogramme</h3>
-                Delmas 33 Prolongé # 24 B<br>
-                Delmas ht 6120<br>
-                Tél :(509) 28 17 1550 / (509) 38 17 8518 <br>
-                Email : centremedicalcliniplus@gmail.com <br><br>
-                <h3>Résultat Test Laboratoire</h3>
+                <h3> <%=line1%> </h3>
+                <h3><%=line2%></h3>
+                <% if(line3 !=""){ %>
+                 <%=line3%><br>
+                <% } %>
+                <% if(line4 !=""){ %>
+                    <%=line4%><br>
+                <% } %>
+                <% if(line5 !=""){ %>
+                    <%=line5%><br>
+                <% } %>
+                <% if(line6 !=""){ %>
+                    <%=line6%><br><br>
+                <% } %>
+                <h3><hr></h3>
             </p>
         </div>
     </div>
-    <div class="row">
-        <div class="col-sm-6">
+    <div class="row-header">
+        <div class="title">Laboratoire Médical</div>
+    </div>
+    <div class="row-header">
+        <div class="col-sm-3">
             <ul class="list-unstyled mb-0">
-                <li> <strong> Patient : </strong> <%=patient%></li>
-                <li> <strong> Date Prélèvement : </strong> <%=date%></li>
+                <li> <strong> Numéro : </strong> <%=testNumber%></li>
+                <li> <strong> Nom et Prénom : </strong> <%=patient%></li>
+                <li> <strong> Docteur / Institution : </strong> <%=date%></li>
+            </ul>
+
+        </div>
+
+        <div class="col-sm-3">
+            <ul class="list-unstyled mb-0">
                 <li> <strong> Date Résultat : </strong> <%=date%></li>
+                <li> <strong> Numéro Patient : </strong> <%=patientNumber%></li>
+                <li> <strong> Sexe : </strong> <%=patientSexe%></li>
             </ul>
 
         </div>
 
     </div>
 
-    <div class="row">
-        <% data.forEach((info) => { %>
+    
+<% data.forEach((info) => { %>
+<div class="row">    
         <div class="col-sm-6">
-            <div>
-                <h4><strong><%=info.TestName%></strong></h4>
-                <table class="table table-bordered">
+                <h4><%=info.TestName %></h4>
+                <table class="table">
                     <tbody>
+                        <% if(info.TestTypeResult==1){ %>
+                            <tr class="exam">
+                                <td></td>
+                                <td></td>
+                                <td>Valeurs Normales</td>
+                            </tr>
+                        <% } %>
                         <% 
-                                                let pos = 0;
-                                                info.Parameters.forEach((testParameters) => { 
-                                                %>
+                        let pos = 0;
+                        info.Parameters.forEach((testParameters) => { 
+                        %>
                         <tr>
                             <td class="exam">
-                                <strong><%=testParameters.nom_examen%></strong>
+                               <%=testParameters.nom_examen%>
                             </td>
-                            <td class="exam">
+                            <td class="resultat">
                                 <span class="float-right"><%=info.Resultats[pos].resultat%></span>
                             </td>
+                            <% if(info.TestTypeResult==1){ %>
+                                <td class="resultat">
+                                    <span class="float-right"><%=info.VN[pos].vn%></span>
+                                </td>
+                            <% } %>
                         </tr>
                         <% pos++; }) %>
 
                     </tbody>
                 </table>
-            </div>
-        </div>
-        <% }) %>
-        <!-- <div class="col-sm-12">
-                                    <p><strong>Net Salary: $59698</strong> (Fifty nine thousand six hundred and ninety
-                                        eight only.)</p>
-                                </div> -->
     </div>
+</div>
+        <% }) %>
+   
 </body>
 
 </html>

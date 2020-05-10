@@ -30,7 +30,11 @@ router.post('/add-materiau', async (req, res) => {
 });
 //MATERIAUX LIST
 router.get('/materiaux', async (req, res) => {
-    let data = await stockDB.listOfMateriaux();
+    let materiauID = "All";
+    if(req.query.mat){
+        materiauID = req.query.mat;
+    }
+    let data = await stockDB.listOfMateriaux(materiauID);
     let pageTitle = "Liste des materiaux";
     params = {
         pageTitle: pageTitle,
@@ -42,11 +46,50 @@ router.get('/materiaux', async (req, res) => {
 
 //INVENTAIRE
 router.get('/inventaire', async (req, res) => {
-    let data = await stockDB.listOfAllStock();
-    let pageTitle = "Inventaire";
+    let statut = 'All';
+    if(req.query.statut){ statut = req.query.statut; }
+    let data ="";
+    if(statut == "Critique"){
+        data = await stockDB.listOfAllAlertStock(30);
+    }else if(statut == "Expiré"){
+        data = await stockDB.listOfAllExpiredStock();
+    }else if(statut == "Valide"){
+        data = await stockDB.listOfAllValidStock(30);
+    }else{
+        data = await stockDB.listOfAllStock();
+    }
+    statut = statut !="All" ? statut+"s" : "";
+    let pageTitle = "Inventaire des stocks "+ statut;
     params = {
         pageTitle: pageTitle,
         data: data,
+        statut : statut,
+        page: 'Inventaire'
+    };
+    res.render('stock/inventaire', params);
+});
+
+//INVENTAIRE POST
+router.post('/inventaire', async (req, res) => {
+    let statut = 'All';
+    if(req.body.statut){ statut = req.body.statut; }
+    let data ="";
+    if(statut == "Critique"){
+        data = await stockDB.listOfAllAlertStock(30);
+    }else if(statut == "Expiré"){
+        data = await stockDB.listOfAllExpiredStock();
+    }else if(statut == "Valide"){
+        data = await stockDB.listOfAllValidStock(30);
+    }else{
+        data = await stockDB.listOfAllStock();
+    }
+    
+    statut = statut !="All" ? statut+"s" : "";
+    let pageTitle = "Inventaire des stocks "+ statut;
+    params = {
+        pageTitle: pageTitle,
+        data: data,
+        statut : statut,
         page: 'Inventaire'
     };
     res.render('stock/inventaire', params);

@@ -117,6 +117,7 @@
     <script src="assets/js/bootstrap-datetimepicker.min.js"></script>
 	<script src="assets/js/app.js"></script>
 	<script src="assets/js/my_js.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
 	<script>
 		function setId(value){
 			$("#patientID").val(value);
@@ -141,6 +142,12 @@
 	</script>
 </body>
 
+<script>
+	var socket = io();
+	function sendNotif(){
+		socket.emit("messageSent",{name : "Stephanie"});
+	}
+</script>
 
 <!-- patients23:19-->
 </html>

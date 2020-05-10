@@ -702,7 +702,7 @@ textarea.form-control {
 -----------------------*/
 
 .header {
-	background-color: #009efb;
+	background-color:#cbe8ce;
 	left: 0;
 	position: fixed;
 	right: 0;
@@ -1180,6 +1180,19 @@ textarea.form-control {
 	font-size: 40px;
 	height: 65px;
 }
+.dash-widget-bg5 {
+	width: 65px;
+	float: left;
+	color: #fff;
+	display: block;
+	font-size: 50px;
+	text-align: center;
+	line-height: 65px;
+	background: #fff;
+	border-radius: 50%;
+	font-size: 40px;
+	height: 65px;
+}
 .card-table.card-table-top .card-body {
 	height: 175px;
 	overflow-y: auto;
@@ -1400,6 +1413,13 @@ ul.chat-user-total li i.old-users {
 }
 .dash-widget-info > span.widget-title4 {
 	background: #ffbc35;
+	color: #fff;
+	padding: 5px 10px;
+	border-radius: 4px;
+	font-size: 13px;
+}
+.dash-widget-info > span.widget-title5 {
+	background: #d82d27;
 	color: #fff;
 	padding: 5px 10px;
 	border-radius: 4px;

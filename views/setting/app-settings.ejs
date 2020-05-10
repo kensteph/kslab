@@ -28,36 +28,57 @@
             <div class="content">
                 <div class="row">
                     <div class="col-lg-8 offset-lg-2">
-                        <form>
-                            <h4 class="page-title">Theme Settings</h4>
+                        <form method="POST" action="/settings" id="settingsForm" enctype="multipart/form-data">
+                            <h4 class="page-title">Paramètres</h4>
                             <div class="form-group row">
-                                <label class="col-lg-3 col-form-label">Website Name</label>
+                                <label class="col-lg-3 col-form-label">Entête première ligne</label>
                                 <div class="col-lg-9">
-                                    <input name="website_name" class="form-control" value="PreClinic" type="text">
+                                    <input name="line1" class="form-control" value="<%=data.line1%>" type="text">
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <label class="col-lg-3 col-form-label">Light Logo</label>
+                                <label class="col-lg-3 col-form-label">Entête deuxième ligne</label>
+                                <div class="col-lg-9">
+                                    <input name="line2" class="form-control" value="<%=data.line2%>" type="text">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-lg-3 col-form-label">Entête troisième ligne</label>
+                                <div class="col-lg-9">
+                                    <input name="line3" class="form-control" value="<%=data.line3%>" type="text">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-lg-3 col-form-label">Entête quatrième ligne</label>
+                                <div class="col-lg-9">
+                                    <input name="line4" class="form-control" value="<%=data.line4%>" type="text">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-lg-3 col-form-label">Entête cinquième ligne</label>
+                                <div class="col-lg-9">
+                                    <input name="line5" class="form-control" value="<%=data.line5%>" type="text">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-lg-3 col-form-label">Entête sixième ligne</label>
+                                <div class="col-lg-9">
+                                    <input name="line6" class="form-control" value="<%=data.line6%>" type="text">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-lg-3 col-form-label">Logo</label>
                                 <div class="col-lg-7">
-                                    <input class="form-control" type="file">
+                                    <input class="form-control" type="file" name="logo">
                                     <span class="form-text text-muted">Recommended image size is 40px x 40px</span>
                                 </div>
                                 <div class="col-lg-2">
-                                    <div class="img-thumbnail float-right"><img src="assets/img/logo-dark.png" alt="" width="40" height="40"></div>
+                                    <div class="img-thumbnail float-right"><img src="data:image/jpeg;base64,<%=LOGO%>" alt="" width="40" height="40"></div>
                                 </div>
                             </div>
-                            <div class="form-group row">
-                                <label class="col-lg-3 col-form-label">Favicon</label>
-                                <div class="col-lg-7">
-                                    <input class="form-control" type="file">
-                                    <span class="form-text text-muted">Recommended image size is 16px x 16px</span>
-                                </div>
-                                <div class="col-lg-2">
-                                    <div class="settings-image img-thumbnail float-right"><img src="assets/img/favicon.ico" class="img-fluid" width="16" height="16" alt=""></div>
-                                </div>
-                            </div>
+                            <div id="notify"></div>
                             <div class="m-t-20 text-center">
-                                <button class="btn btn-primary submit-btn">Save</button>
+                                <button onclick="saveSettings()" class="btn btn-primary submit-btn">Save</button>
                             </div>
                         </form>
                     </div>
@@ -74,6 +95,26 @@
     <script src="assets/js/app.js"></script>
 </body>
 
-
+<script>
+           saveSettings = function () {
+            $("#notify").show().html("");
+            let formData = $("#settingsForm").serialize();
+            $.post("/settings", formData, function (data) {
+                console.log(data);
+                if (data.success) { //Success 
+                    $("#notify").html(data.msg).fadeOut(5000);
+                } else { // already saved get the result
+                    $.post("/settings", formData, function (data1) {
+                        for(rs of data1){
+                            console.log(rs);
+                            $("#"+rs.examen_id).val(rs.resultat);
+                        }
+                        $("#notify").html(data.msg);
+                        //show the modify button and hide the save button
+                    });   
+                }
+            });
+        }
+</script>
 <!-- theme-settings24:05-->
 </html>

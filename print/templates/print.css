@@ -12,25 +12,44 @@ th {
 }
 
 tr:nth-child(even) {
-    background-color: #d4d4d4;
+    /* background-color: #d4d4d4; */
 }
 
 .logo{
     margin-top: 30px;
+    padding-left: 30px;
 }
 .header-form {
-    text-align: center;
+    text-align: right;
     width: 70%;
     margin-top: 10px;
+}
+
+.title {
+    text-align: center;
+    width: 100%;
+    margin-top: 10px;
+    font-size: 18px;
+    font-weight: bold;
 }
 
 h3 {
     color: #0f0f0f;
     font-family: arial, sans-serif;
-    font-size: 16px;
+    font-size: 12px;
     font-weight: bold;
     margin-top: 0px;
+    margin-left: -15px;
     margin-bottom: 1px;
+}
+
+h4 {
+    color: #0f0f0f;
+    font-family: arial, sans-serif;
+    font-size: 10px;
+    font-weight: bold;
+    margin-top: 7px;
+    margin-bottom: 7px;
 }
 
 .row {
@@ -38,20 +57,44 @@ h3 {
     display: flex;
     -ms-flex-wrap: wrap;
     flex-wrap: wrap;
-    margin-right: -15px;
-    margin-left: 15px;
+    /* margin-right: -15px; */
+    margin-left: 7%;
+
+}
+
+.row-header {
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+    /* margin-right: -15px; */
+    margin-left: 5%;
 
 }
 
 .col-sm-6 {
     position: relative;
-    width: 45%;
+    width: 90%;
     padding-right: 15px;
     padding-left: 15px;
 }
 
-.exam {
+.col-sm-3 {
+    position: relative;
+    width: 45%;
+    padding-right: 15px;
+    padding-left: 15px;
+    font-family: arial, sans-serif;
     font-size: 12px;
+}
+
+.exam {
+    font-size: 10px;
+    font-weight: bold;
+}
+
+.resultat {
+    font-size: 10px;
 }
 
 li {

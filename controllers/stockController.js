@@ -33,9 +33,14 @@ module.exports = {
     },
 
     //Materiaux LIST
-    listOfMateriaux: async function () {
+    listOfMateriaux: async function (materiauId) {
         let promise = new Promise((resolve, reject) => {
-            let sql = "SELECT * FROM tb_materiaux ";
+            let sql = "";
+            if(materiauId == "All"){
+                sql = "SELECT * FROM tb_materiaux ";
+            }else{
+                sql = "SELECT * FROM tb_materiaux WHERE id="+materiauId;
+            }
             con.query(sql, function (err, rows) {
                 if (err) {
                     throw err;
@@ -275,6 +280,52 @@ module.exports = {
         console.log(data);
         return data;
     },
+    //Liste des stocks expires
+    listOfAllExpiredStock: async function () {
+        let promise = new Promise((resolve, reject) => {
+            let sql = "SELECT *,DATEDIFF( date_expiration , Now() ) as days FROM tb_stocks,tb_materiaux WHERE tb_stocks.materiau=tb_materiaux.id AND DATEDIFF( date_expiration , Now() )<=0";
+            con.query(sql, function (err, rows) {
+                if (err) {
+                    throw err;
+                } else {
+                    resolve(rows);
+                }
+            });
+        });
+        data = await promise;
+        return data;
+    },
+        //Liste des stocks valide
+        listOfAllValidStock: async function (nbJour) {
+            let promise = new Promise((resolve, reject) => {
+                let sql = "SELECT *,DATEDIFF( date_expiration , Now() ) as days FROM tb_stocks,tb_materiaux WHERE tb_stocks.materiau=tb_materiaux.id AND DATEDIFF( date_expiration , Now() )>"+nbJour;
+                con.query(sql, function (err, rows) {
+                    if (err) {
+                        throw err;
+                    } else {
+                        resolve(rows);
+                    }
+                });
+            });
+            data = await promise;
+            return data;
+        },
+       //Liste des stocks Critique
+       listOfAllAlertStock: async function (nbJour) {
+        let promise = new Promise((resolve, reject) => {
+            let sql = "SELECT *,DATEDIFF( date_expiration , Now() ) as days FROM tb_stocks,tb_materiaux WHERE tb_stocks.materiau=tb_materiaux.id AND DATEDIFF( date_expiration , Now() )>0 AND DATEDIFF( date_expiration , Now() )<="+nbJour;
+            con.query(sql, function (err, rows) {
+                if (err) {
+                    throw err;
+                } else {
+                    resolve(rows);
+                }
+            });
+        });
+        data = await promise;
+        return data;
+    },
+        
     //Load All stock
     listOfAllStockByProduct: async function (id_product,stock_status) {
         let promise = new Promise((resolve, reject) => {
