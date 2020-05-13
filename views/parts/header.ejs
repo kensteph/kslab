@@ -1,6 +1,7 @@
 <div class="header">
     <div class="header-left">
-        <a href="/home" class="logo">
+        <% let home="/test-laboratoire"; if(USER_MENU_ACCES.includes("Tableau de bord") || USER_MENU_ACCES[0]=="All"){ home="/home";}%>
+        <a href="<%=home%>" class="logo">
             <img src="data:image/jpeg;base64,<%=LOGO%>" width="35" height="35" alt=""> <span><%=appName%></span>
         </a>
     </div>
@@ -30,13 +31,11 @@
                     <img class="rounded-circle" src="assets/img/user.jpg" width="24" alt="Admin">
                     <span class="status online"></span>
                 </span>
-                <span>Admin</span>
+                <span><%=USER_NAME%></span>
             </a>
             <div class="dropdown-menu">
-                <a class="dropdown-item" href="profile.html">My Profile</a>
-                <a class="dropdown-item" href="edit-profile.html">Edit Profile</a>
-                <a class="dropdown-item" href="settings.html">Settings</a>
-                <a class="dropdown-item" href="login.html">Logout</a>
+                <a class="dropdown-item" href="/change-pwd">Changement de mot de passe</a>
+                <a class="dropdown-item" href="/logout">Déconnexion</a>
             </div>
         </li>
     </ul>
@@ -44,10 +43,8 @@
         <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i
                 class="fa fa-ellipsis-v"></i></a>
         <div class="dropdown-menu dropdown-menu-right">
-            <a class="dropdown-item" href="profile.html">My Profile</a>
-            <a class="dropdown-item" href="edit-profile.html">Edit Profile</a>
-            <a class="dropdown-item" href="settings.html">Settings</a>
-            <a class="dropdown-item" href="login.html">Logout</a>
+            <a class="dropdown-item" href="/change-pwd">Changement de mot de passe</a>
+                <a class="dropdown-item" href="/logout">Déconnexion</a>
         </div>
     </div>
 </div>

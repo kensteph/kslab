@@ -41,8 +41,12 @@
                             <div class="row">
                                 <div class="col-md-9">
                                     <div class="form-inline">
-                                        <label>Sélectionnez le patient OU ajoutez un nouveau &nbsp;<a
-                                                href="/add-patient"><i class="fa fa-user-plus fa-2x"></i></a></label>
+                                        <label>Sélectionnez le patient
+                                            <% if(SUBMENU_ITEM_ACCESS.includes("Ajouter Patient") || SUBMENU_ITEM_ACCESS[0]=="All"){%>
+                                                 OU ajoutez un nouveau &nbsp;<a
+                                                href="/add-patient"><i class="fa fa-user-plus fa-2x"></i></a>
+                                            <% } %>
+                                        </label>
                                         <select class="select" multiple name="patient" id="patient">
                                             <% data.forEach((patient) => { 
                                                 let item = patient.fullname+" | "+patient.numero_patient+" | "+patient.telephone;
@@ -114,7 +118,7 @@
             $("#msg").html("");
             let formData = $("#saveParamForm").serialize();
             $.post("/verify-materiaux-availability", formData, function (data) {
-                console.log(data);
+                //console.log(data);
                 let message = "";
                 if(data.length>1){
                     data.push("<br>Voulez-vous quand meme enregistrer la demande ?");

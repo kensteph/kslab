@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<!-- appointments23:19-->
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
+    <link rel="shortcut icon" type="image/x-icon" href="assets/img/favicon.ico">
+    <title><%=appName%>| Changement de mot de passe</title>
+    <link rel="stylesheet" type="text/css" href="assets/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/select2.min.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/style.css">
+    <!--[if lt IE 9]>
+		<script src="assets/js/html5shiv.min.js"></script>
+		<script src="assets/js/respond.min.js"></script>
+	<![endif]-->
+</head>
+
+<body>
+    <div class="main-wrapper">
+        <!-- HEADER -->
+        <%- include("../parts/header") -%>
+        <!-- SIDEBAR -->
+        <%- include("../parts/sidebar") -%>
+        <div class="page-wrapper">
+            <div class="content">
+                <div class="row">
+                    <div class="col-md-6 offset-md-3">
+                        <h4 class="page-title">Changement de mot de passe</h4>
+                        <form id="changePassForm">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="form-group">
+                                        <label>Ancien mot de passe</label>
+                                        <input name="Opass" type="password" class="form-control">
+                                        <input type="hidden" name="user_id" value="<%=USER_ID%>">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label>Nouveau mot de passe</label>
+                                        <input name="Npass" type="password" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label>Confirmer mot de passe</label>
+                                        <input name="Cpass" type="password" class="form-control">
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="notify"></div>
+                            <div class="row">
+                                <div class="col-sm-12 text-center m-t-20">
+                                    <button type="button" onclick="changePassword()" class="btn btn-primary submit-btn">Changer</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="sidebar-overlay" data-reff=""></div>
+    <script src="assets/js/jquery-3.2.1.min.js"></script>
+    <script src="assets/js/popper.min.js"></script>
+    <script src="assets/js/bootstrap.min.js"></script>
+    <script src="assets/js/jquery.slimscroll.js"></script>
+    <script src="assets/js/select2.min.js"></script>
+    <script src="assets/js/app.js"></script>
+    <script>
+       changePassword = function () {
+            $("#notify").show().html("");
+            let formData = $("#changePassForm").serialize();
+            $.post("/change-pwd", formData, function (data) {
+                console.log(data); 
+                    $("#notify").html(data.msg).fadeOut(5000);
+            });
+        }
+    </script>
+</body>
+
+
+<!-- appointments23:20-->
+
+</html>

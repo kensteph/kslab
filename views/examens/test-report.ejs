@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+
+
+<!-- invoices23:24-->
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
+    <link rel="shortcut icon" type="image/x-icon" href="assets/img/favicon.ico">
+    <title><%=appName%>| <%=pageTitle%></title>
+    <link rel="stylesheet" type="text/css" href="assets/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/dataTables.bootstrap4.min.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/select2.min.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/bootstrap-datetimepicker.min.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/style.css">
+    <!--[if lt IE 9]>
+		<script src="assets/js/html5shiv.min.js"></script>
+		<script src="assets/js/respond.min.js"></script>
+	<![endif]-->
+</head>
+
+<body>
+    <div class="main-wrapper">
+        <!-- HEADER -->
+        <%- include("../parts/header") -%>
+        <!-- SIDEBAR -->
+        <%- include("../parts/sidebar") -%>
+
+        <div class="page-wrapper">
+            <div class="content">
+                <div class="row">
+                    <div class="col-sm-9 col-9">
+                        <h4 class="page-title"> <i class="fa fa-folder-open fa-2x"></i> <%=pageTitle%> </h4>
+                    </div>
+                </div>
+                <div class="row filter-row">
+                    <form action="" method="POST" class="form-inline m-b-10">
+                        <div class="col-sm-6 col-md-3">
+                            <div class="form-group form-focus select-focus">
+                                <label class="focus-label">Statut</label>
+                                <select class="select floating" name="statut">
+                                    <option value="All">Tous</option>
+                                    <% TEST_STATUS.forEach((item,index) => { %>
+                                    <option <% if( statut == index ){ %> <%= "selected" %> <% } %> value="<%= index %>">
+                                        <%= item %></option>
+                                    <% }) %>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-md-3">
+                            <div class="form-group form-focus">
+                                <label class="focus-label">Du</label>
+                                <div class="cal-icon">
+                                    <input class="form-control floating datetimepicker" value="<%= dateFrom %>"
+                                        type="text" name="dateFrom">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-md-3">
+                            <div class="form-group form-focus">
+                                <label class="focus-label">Au</label>
+                                <div class="cal-icon">
+                                    <input class="form-control floating datetimepicker" value="<%= dateTo %>"
+                                        type="text" name="dateTo">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-sm-6 col-md-3">
+                            <button class="btn btn-success btn-block"> Rechercher </button>
+                        </div>
+                    </form>
+                    <% if(data.length >0){   %>
+                    <form id="PrintForm" target="_blank" action="/print-test-report" method="POST">
+                        <input type="hidden" name="dateFrom" value="<%=dateFromDB%>">
+                        <input type="hidden" name="dateTo" value="<%=dateToDB%>">
+                        <a href="#" class="dropdown-item"  onclick="printReport()"><i class="fa fa-print fa-lg"></i> Imprimer le rapport</a>
+                    </form>
+                    <% }  %>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="table-responsive">
+                            <table class="table table-striped custom-table datatable mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>Examens</th>
+                                        <th>Quantité</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% data.forEach((report) => {   %>
+                                    <tr>
+                                        <td><%=report.Examen%></td>
+                                        <td><%=report.qty%></td>
+                                    </tr>
+                                    <% }) %>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+    <div class="sidebar-overlay" data-reff=""></div>
+    <script src="assets/js/jquery-3.2.1.min.js"></script>
+    <script src="assets/js/popper.min.js"></script>
+    <script src="assets/js/bootstrap.min.js"></script>
+    <script src="assets/js/jquery.dataTables.min.js"></script>
+    <script src="assets/js/dataTables.bootstrap4.min.js"></script>
+    <script src="assets/js/select2.min.js"></script>
+    <script src="assets/js/jquery.slimscroll.js"></script>
+    <script src="assets/js/moment.min.js"></script>
+    <script src="assets/js/bootstrap-datetimepicker.min.js"></script>
+    <script src="assets/js/app.js"></script>
+    <script>
+        function printReport(){
+            $("#PrintForm").submit();
+        }
+    </script>
+
+</body>
+
+
+<!-- invoices23:25-->
+
+</html>

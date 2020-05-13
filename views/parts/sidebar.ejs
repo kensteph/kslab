@@ -19,6 +19,9 @@ if (locals.page) {
 
     GeneralSettings = "";
 
+    Administration = "";
+    User = "";
+    backUpDB = "";
     switch (page) {
        case 'Home' :         Home = "active";
                              break;
@@ -45,8 +48,13 @@ if (locals.page) {
        case 'SaveTestResult' : SaveTestResult = "active";
                              break;   
        case 'GeneralSettings' : GeneralSettings = "active";
+                             break;  
+       case 'Administration' : Administration = "active";
                              break;                       
-                             
+       case 'User'           : User = "active"  ;
+                             break;  
+       case 'backUpDB'           : backUpDB = "active"  ;
+                             break;                                  
                              
     }
 }
@@ -56,31 +64,46 @@ if (locals.page) {
         <div id="sidebar-menu" class="sidebar-menu">
             <ul>
                 <li class="menu-title">Menu</li>
+                <% if(USER_MENU_ACCES.includes("Tableau de bord") || USER_MENU_ACCES[0]=="All"){%>
                 <li class="<%=Home%>">
                     <a href="/home"><i class="fa fa-dashboard"></i> <span>Tableau de bord</span></a>
                 </li>
+                <% } %>
                 <!-- TEST LABORATOIRE -->
+                <% if(USER_MENU_ACCES.includes("Test Patient") || USER_MENU_ACCES[0]=="All"){%>
                 <li class="<%=NewTest%>">
                     <a href="/test-laboratoire"><i class="fa fa-flask"></i> <span>Test Patient</span></a>
                 </li>
+                <% } %>
                 <!-- GESTION TEST LABORATOIRE -->
+                <% if(USER_MENU_ACCES.includes("Test Laboratoire") || USER_MENU_ACCES[0]=="All"){%>
                 <li class="submenu">
                     <a href="#"><i class="fa fa-folder"></i> <span>Test Laboratoire </span> <span
                             class="menu-arrow"></span></a>
                     <ul style="display: none;">
+                        <% if(SUBMENU_ITEM_ACCESS.includes("Liste des Tests") || USER_MENU_ACCES[0]=="All"){%>
                         <li><a class="<%=ListTest%>" href="/Tests">Liste des Tests</a></li>
+                        <% } %>
                     </ul>
                 </li>
+                <% } %>
                 <!-- PATIENT -->
+                <% if(USER_MENU_ACCES.includes("Patients") || USER_MENU_ACCES[0]=="All"){%>
                 <li class="submenu">
                     <a href="#"><i class="fa fa-wheelchair"></i> <span> Patients </span> <span
                             class="menu-arrow"></span></a>
                     <ul style="display: none;">
+                        <% if(SUBMENU_ITEM_ACCESS.includes("Ajouter Patient") || SUBMENU_ITEM_ACCESS[0]=="All"){%>
                         <li><a class="<%=NewPatient%>" href="/add-patient">Nouveau </a></li>
+                        <% } %>
+                        <% if(SUBMENU_ITEM_ACCESS.includes("Liste des Patients") || SUBMENU_ITEM_ACCESS[0]=="All"){%>
                         <li><a class="<%=PatientsList%>" href="/patients">Liste des patients</a></li>
+                        <% } %>
                     </ul>
                 </li>
+                <% } %>
                 <!-- EXAMENS -->
+                <% if(USER_MENU_ACCES.includes("Examens") || USER_MENU_ACCES[0]=="All"){%>
                 <li class="submenu">
                     <a href="#"><i class="fa fa-flask"></i> <span> Examens </span> <span class="menu-arrow"></span></a>
                     <ul style="display: none;">
@@ -88,8 +111,10 @@ if (locals.page) {
                         <li><a class="<%=ExamsList%>" href="/examens">Liste des examens</a></li>
                     </ul>
                 </li>
+                <% } %>
 
                 <!-- STOCK -->
+                <% if(USER_MENU_ACCES.includes("Gestion de stock") || USER_MENU_ACCES[0]=="All"){%>
                 <li class="submenu">
                     <a href="#"><i class="fa fa-list"></i> <span>Gestion de stock </span> <span
                             class="menu-arrow"></span></a>
@@ -101,15 +126,31 @@ if (locals.page) {
 
                     </ul>
                 </li>
+                <% } %>
 
-                <!-- PARAMETRES -->
+                <!-- PARAMETRES  -->
+                <% if(USER_MENU_ACCES.includes("Paramètres") || USER_MENU_ACCES[0]=="All"){%>
                 <li class="submenu">
                     <a href="#"><i class="fa fa-cogs"></i> <span>Paramètres </span> <span class="menu-arrow"></span></a>
                     <ul style="display: none;">
                         <li><a class="<%=GeneralSettings%>" href="/settings">Général</a></li>
                     </ul>
                 </li>
+                <% } %>
 
+                <!-- Administration -->
+                <% if(USER_MENU_ACCES.includes("Administration") || USER_MENU_ACCES[0]=="All"){%>
+                <li class="submenu">
+                    <a href="#"><i class="fa fa-file-excel-o"></i> <span>Administration </span> <span
+                            class="menu-arrow"></span></a>
+                    <ul style="display: none;">
+                        <li><a class="<%=Administration%>" href="/lab-tests-report">Rapport des Tests</a></li>
+                        <li><a class="<%=User%>" href="/users">Utilisateurs</a></li>
+                        <li><a class="<%=backUpDB%>" href="/backup-db"
+                                title="Sauvegarde de la base de donnée">Sauvegarde BD</a></li>
+                    </ul>
+                </li>
+                <% } %>
             </ul>
         </div>
     </div>

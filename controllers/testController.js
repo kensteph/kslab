@@ -4,56 +4,56 @@ const examController = require('./examenController');
 const stockDB = require('./stockController.js');
 var self = module.exports = {
     //================================= TEST LABORATOIRE PATIENT ======================================
-        //Add Valeurs Normales
-        addValeursNormales: async function (req) {
-            let promise = new Promise((resolve, reject) => {
-                let examId = req.body.examId;
-                let bebe = req.body.bebe;
-                let enfant = req.body.enfant;
-                let ado = req.body.ado;
-                let femme = req.body.femme;
-                let homme = req.body.homme;
-                let unite = req.body.unite;
-                let sql =
-                    'INSERT INTO tb_valeurs_normales (exam_id,bebe,enfant,adolescent,femme,homme,unite) VALUES ('+examId+',"' + bebe + '","' + enfant + '","' + ado + '","' + femme + '","' + homme + '","' + unite + '")';
-                con.query(sql, function (err, result) {
-                    if (err) {
-                        msg = {
-                            error: " Vous avez déja enregistré ces valeurs ",
-                            debug: err
-                        };
-                    } else {
-                        msg = {
-                            success: 
-                                "Valeurs enregistrées avec succès.",
-                        };
-                    }
-    
-                    resolve(msg);
-                    console.log(msg);
-                });
+    //Add Valeurs Normales
+    addValeursNormales: async function (req) {
+        let promise = new Promise((resolve, reject) => {
+            let examId = req.body.examId;
+            let bebe = req.body.bebe;
+            let enfant = req.body.enfant;
+            let ado = req.body.ado;
+            let femme = req.body.femme;
+            let homme = req.body.homme;
+            let unite = req.body.unite;
+            let sql =
+                'INSERT INTO tb_valeurs_normales (exam_id,bebe,enfant,adolescent,femme,homme,unite) VALUES (' + examId + ',"' + bebe + '","' + enfant + '","' + ado + '","' + femme + '","' + homme + '","' + unite + '")';
+            con.query(sql, function (err, result) {
+                if (err) {
+                    msg = {
+                        error: " Vous avez déja enregistré ces valeurs ",
+                        debug: err
+                    };
+                } else {
+                    msg = {
+                        success:
+                            "Valeurs enregistrées avec succès.",
+                    };
+                }
+
+                resolve(msg);
+                console.log(msg);
             });
-            rep = await promise;
-            return rep;
-        },
-        //Valeur Normale d'un test
-        valeurNormalExam: async function (field_p,exam_id) {
-            let promise = new Promise((resolve, reject) => {
-                let sql = "";
-                sql = "SELECT CONCAT("+field_p+",' ',unite ) as vn FROM tb_valeurs_normales WHERE exam_id="+exam_id;
-                console.log(sql);
-                con.query(sql, function (err, rows) {
-                    if (err) {
-                        throw err;
-                    } else {
-                        resolve(rows[0]);
-                    }
-                });
+        });
+        rep = await promise;
+        return rep;
+    },
+    //Valeur Normale d'un test
+    valeurNormalExam: async function (field_p, exam_id) {
+        let promise = new Promise((resolve, reject) => {
+            let sql = "";
+            sql = "SELECT CONCAT(" + field_p + ",' ',unite ) as vn FROM tb_valeurs_normales WHERE exam_id=" + exam_id;
+            console.log(sql);
+            con.query(sql, function (err, rows) {
+                if (err) {
+                    throw err;
+                } else {
+                    resolve(rows[0]);
+                }
             });
-            data = await promise;
-            console.log(data); 
-            return data;
-        },
+        });
+        data = await promise;
+        console.log(data);
+        return data;
+    },
     //Save Test in the DB
     async saveTestRequest(req) {
         let promise = new Promise((resolve, reject) => {
@@ -134,7 +134,7 @@ var self = module.exports = {
                                             let rep = await stockDB.RemoveItemFromStock(con, numero_lot, materiauId, materiauName, transactionType, qte, commentaire);
                                             break; //On sort de la boucle parce qu'on a deja preleve
                                         } else {
-                                            if (diff >=0) {
+                                            if (diff >= 0) {
                                                 commentaire = qte + " " + materiauName + " a été prélevé du stock pour le test # " + id_test_request;
                                                 let rep = await stockDB.RemoveItemFromStock(con, numero_lot, materiauId, materiauName, transactionType, qte, commentaire);
                                                 new_qte_to_take = new_qte_to_take - qte;
@@ -143,7 +143,7 @@ var self = module.exports = {
                                         }
 
                                     }
-                                   // console.log(stockByMateriau);
+                                    // console.log(stockByMateriau);
                                 }
                             }
 
@@ -191,16 +191,16 @@ var self = module.exports = {
     testRequestlist: async function (dateFrom, dateTo, status) {
         let promise = new Promise((resolve, reject) => {
             let line = [];
-            let sql ="";
-            if(dateFrom == "All"){
+            let sql = "";
+            if (dateFrom == "All") {
                 if (status == "All") { status = ""; } else { status = " AND tb_test_requests.statut =" + status; }
-            sql = "SELECT *,CONCAT(prenom,' ',nom) as fullname,DATEDIFF( NOW(), date_nais )/365 as age,tb_test_requests.id as id_request,tb_test_requests.statut as test_status FROM tb_test_requests,tb_patients,tb_personnes WHERE tb_test_requests.patient=tb_patients.id_personne AND tb_patients.id_personne=tb_personnes.id "+ status;
-            }else{
+                sql = "SELECT *,CONCAT(prenom,' ',nom) as fullname,DATEDIFF( NOW(), date_nais )/365 as age,tb_test_requests.id as id_request,tb_test_requests.statut as test_status FROM tb_test_requests,tb_patients,tb_personnes WHERE tb_test_requests.patient=tb_patients.id_personne AND tb_patients.id_personne=tb_personnes.id " + status;
+            } else {
                 if (status == "All") { status = ""; } else { status = " AND tb_test_requests.statut =" + status; }
                 sql = "SELECT *,CONCAT(prenom,' ',nom) as fullname,DATEDIFF( NOW(), date_nais )/365 as age,tb_test_requests.id as id_request,tb_test_requests.statut as test_status FROM tb_test_requests,tb_patients,tb_personnes WHERE tb_test_requests.patient=tb_patients.id_personne AND tb_patients.id_personne=tb_personnes.id AND DATE(date_record) BETWEEN '" + dateFrom + "' AND '" + dateTo + "'  " + status;
-            
+
             }
-            console.log(sql);
+            // console.log(sql);
             con.query(sql, async function (err, rows) {
                 if (err) {
                     throw err;
@@ -212,7 +212,7 @@ var self = module.exports = {
                             examens.push(info[i].nom_examen);
                         }
                         let patient_exams = examens.join();
-                        let line_info = { request_id: item.id_request, date_record: item.date_record, numero_patient: item.numero_patient, patient: item.fullname,age : item.age,sexe: item.sexe, examens: patient_exams, statut: item.test_status };
+                        let line_info = { request_id: item.id_request, date_record: item.date_record, numero_patient: item.numero_patient, patient: item.fullname, age: item.age, sexe: item.sexe, examens: patient_exams, statut: item.test_status };
                         line.push(line_info);
                     }
                     resolve(line);
@@ -253,5 +253,55 @@ var self = module.exports = {
         data = await promise;
         return data;
     },
+
+    //======================== RAPPORT DES TESTS =================================================
+    singleTestReport: async function (dateFrom, dateTo, exma_id) {
+        let promise = new Promise((resolve, reject) => {
+            let sql = "SELECT COUNT(examen_id) as nb FROM tb_test_requests_contents WHERE DATE(date_record) BETWEEN '" + dateFrom + "' AND '" + dateTo + "' AND examen_id =?";
+            //console.log(sql);
+            con.query(sql, exma_id, async function (err, rows) {
+                if (err) {
+                    throw err;
+                } else {
+                    resolve(rows[0].nb);
+                }
+
+            });
+
+        });
+        data = await promise;
+        return data;
+    },
+    //LISTE DES TESTS EFFECTUES POUR UNE PERIODE
+    testRquestListForPeriod: async function (dateFrom, dateTo) {
+        let promise = new Promise((resolve, reject) => {
+            let line = [];
+            let sql = "SELECT DISTINCT(examen_id) as examen_id FROM tb_test_requests_contents WHERE DATE(date_record) BETWEEN '" + dateFrom + "' AND '" + dateTo + "'";
+            console.log(sql);
+            con.query(sql,  async function (err, rows) {
+                if (err) {
+                    throw err;
+                } else {
+                    console.log("RESULT "+rows);
+                    for (item of rows) {
+                        //console.log("ITEM"+item.examen_id);
+                        //Info about the exam
+                        let infoExam = await examController.getExamById(item.examen_id);
+                        let qteDemande = await self.singleTestReport(dateFrom, dateTo,item.examen_id);
+                        let line_info = { 
+                            Examen : infoExam[0].nom_examen,
+                            qty : qteDemande
+                         };
+                        line.push(line_info);
+                    }
+                    resolve(line);
+                }
+            });
+        });
+        data = await promise;
+        //console.log(data); 
+        return data;
+    },
+
 
 }

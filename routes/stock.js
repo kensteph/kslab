@@ -2,6 +2,10 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const router = express.Router();
+const printer = require('../print/print');
+const helpers = require('../helpers/helpers');
+const fs = require('fs-extra');
+const con = require('../controllers/database');
 // const helpers = require('../helpers/helpers');
 const stockDB = require('../controllers/stockController.js');
 router.use(bodyParser.urlencoded({ extended: true }));
@@ -19,6 +23,8 @@ router.get('/add-materiau', async (req, res) => {
 router.post('/add-materiau', async (req, res) => {
     console.log(req.body);
     let notifications = await stockDB.addMateriau(req);
+    //commentaire = qte + " " + materiauName + " a été prélevé du stock pour le test # " + id_test_request;
+    //RemoveItemFromStock(con,numero_lot,materiauId,materiauName,transactionType,qte,commentaire);
     let pageTitle = "Nouveau Matériau";
     params = {
         pageTitle: pageTitle,
@@ -117,7 +123,23 @@ router.post('/add-stock', async (req, res) => {
 //ADD OR REMOVE ITEMS STOCK
 router.post('/add-remove-stock', async (req, res) => {
     console.log(req.body);
-    let notifications = await stockDB.addRemoveItemStock(req);
+    let numero_lot =req.body.lot;
+    let materiauId =req.body.materiauId;
+    let materiauName=req.body.materiauName;
+    let transactionType=req.body.type;
+    let qte=req.body.qte;;
+    let commentaire=req.body.commentaire;;
+    let notifications = await stockDB.RemoveItemFromStock(con,numero_lot,materiauId,materiauName,transactionType,qte,commentaire);
+    //let notifications = await stockDB.addRemoveItemStock(req);
+    res.json(notifications);
+});
+
+//CHANGE STOCK STATUS
+router.post('/change-stock-status', async (req, res) => {
+    console.log(req.body);
+    let statut = req.body.statut
+    let lot = req.body.lod_id;
+    let notifications = await stockDB.setStockStatus(lot,statut);
     res.json(notifications);
 });
 
@@ -178,5 +200,45 @@ router.post('/verify-materiaux-availability', async (req, res) => {
     // console.log(testResult);
     //res.json(info);
 });
+
+//======================== PRINT INVENTORY REPORT ================================
+
+router.post('/print-inventory-report', async (req, res) => {
+    let statut = 'All';
+    if(req.body.statut){ statut = req.body.statut; }
+    let data ="";
+    if(statut == "Critique"){
+        data = await stockDB.listOfAllAlertStock(30);
+    }else if(statut == "Expiré"){
+        data = await stockDB.listOfAllExpiredStock();
+    }else if(statut == "Valide"){
+        data = await stockDB.listOfAllValidStock(30);
+    }else{
+        data = await stockDB.listOfAllStock();
+    }
+    let dateN =helpers.getCurrentDate();
+    statut = statut !="All" ? statut+"s" : "";
+    let pageTitle = "Inventaire des stocks "+ statut+" pour le "+helpers.formatDate(dateN,"FR");
+    let report = dateN;
+    let filename = report + ".pdf";
+    let pathfile = "./tmp/" + filename;
+    let template_name ="inventory";
+    params = {
+        data: data,
+        pageTitle : pageTitle
+    };
+    await printer.print(template_name, params, pathfile);
+    //Display the file in the browser
+    var stream = fs.ReadStream(pathfile);
+    // Be careful of special characters
+    filename = encodeURIComponent(filename);
+    // Ideally this should strip them
+    res.setHeader('Content-disposition', 'inline; filename="' + filename + '"');
+    res.setHeader('Content-type', 'application/pdf');
+    stream.pipe(res);
+});
+
+
+
 // Exportation of this router
 module.exports = router;

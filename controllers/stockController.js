@@ -277,7 +277,7 @@ module.exports = {
             });
         });
         data = await promise;
-        console.log(data);
+        //console.log(data);
         return data;
     },
     //Liste des stocks expires
@@ -355,7 +355,7 @@ module.exports = {
             });
         });
         data = await promise;
-        console.log(data);
+        //console.log(data);
         return data;
     },
     //LINK TEST TO MATERIAU
@@ -449,4 +449,29 @@ module.exports = {
         //console.log(data);
         return data;
     },
+    //SET STOCK STATUS
+           //Delete PATIENT
+           setStockStatus: async function (numero_lot,statut) {
+            let promise = new Promise((resolve, reject) => {
+                let sql = "UPDATE tb_stocks SET statut ="+statut+" WHERE numero_lot =?";
+                con.query(sql, numero_lot, function (err, rows) {
+                    if (err) {
+                        resolve({
+                            msg: "Une erreur est survenue. S'il vous plait réessayez.",
+                            type: "danger",
+                            debug : err
+                        });
+                    } else {
+                        resolve({
+                            msg: "Les informations concernant " + numero_lot + " ont été modifiées avec succès.",
+                            type: "success"
+                        });
+                    }
+                });
+            });
+            data = await promise;
+            //console.log(data);
+            return data;
+        },
+
 }

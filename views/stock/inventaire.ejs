@@ -42,9 +42,10 @@
                                 <label class="focus-label">Statut</label>
                                 <select class="select floating" name="statut">
                                     <option value="All">Tous</option>
-                                    <option <% if( statut == "Critique" ){ %> <%= "selected" %> <% } %> >Critique</option>
-                                    <option <% if( statut == "Expiré" ){ %> <%= "selected" %> <% } %> >Expiré</option>
-                                    <option <% if( statut == "Valide" ){ %> <%= "selected" %> <% } %> >Valide</option>
+                                    <option <% if( statut == "Critique" ){ %> <%= "selected" %> <% } %>>Critique
+                                    </option>
+                                    <option <% if( statut == "Expiré" ){ %> <%= "selected" %> <% } %>>Expiré</option>
+                                    <option <% if( statut == "Valide" ){ %> <%= "selected" %> <% } %>>Valide</option>
                                 </select>
                             </div>
                         </div>
@@ -52,7 +53,13 @@
                             <button class="btn btn-success">Rechercher</button>
                         </div>
                     </form>
-
+                    <% if(data.length >0){   %>
+                    <form id="PrintForm" target="_blank" action="/print-inventory-report" method="POST">
+                        <input type="hidden" name="dateFrom" value="">
+                        <a href="#" class="dropdown-item" onclick="printReport()"><i class="fa fa-print fa-lg"></i>
+                            Imprimer le rapport</a>
+                    </form>
+                    <% }  %>
                 </div>
                 <div class="row">
                     <div class="col-md-12">
@@ -69,6 +76,7 @@
                                         <th>Qté endomagée</th>
                                         <th>Qté restante</th>
                                         <th>Status</th>
+                                        <th>Validité</th>
                                         <th class="text-right">Action</th>
                                     </tr>
                                 </thead>
@@ -94,7 +102,7 @@
                                         <td><%=stock.qte_restante%></td>
                                         <td><span class="custom-badge status-<%= type %>"><%= nb_jours_restant %></span>
                                         </td>
-
+                                        <td><%=STOCK_STATUS[stock.statut]%></td>
                                         <td class="text-right">
                                             <div class="dropdown dropdown-action">
                                                 <a href="#" class="action-icon dropdown-toggle" data-toggle="dropdown"
@@ -104,11 +112,8 @@
                                                         onclick="launchStockManagement('<%=stock.nom_materiau%>','<%=stock.id%>','<%=stock.numero_lot%>')"><i
                                                             class="fa fa-plus-square m-r-5"></i> <i
                                                             class="fa fa-minus-square m-r-5"></i> Ajout/retrait</a>
-                                                    <a class="dropdown-item" href="edit-invoice.html"><i
-                                                            class="fa fa-pencil m-r-5"></i> Edit</a>
-                                                    <a class="dropdown-item" href="#" data-toggle="modal"
-                                                        data-target="#delete_invoice"><i
-                                                            class="fa fa-trash-o m-r-5"></i> Delete</a>
+                                                    <a class="dropdown-item" href="#" onclick="launchStocValide('<%=stock.nom_materiau%>','<%=stock.id%>','<%=stock.numero_lot%>','<%=stock.statut%>')"><i
+                                                            class="fa fa-trash-o m-r-5"></i> Valide/Invalide</a>
                                                 </div>
                                             </div>
                                         </td>
@@ -165,14 +170,21 @@
             </div>
         </div>
 
-        <div id="delete_invoice" class="modal fade delete-modal" role="dialog">
+        <div id="stockValide" class="modal fade delete-modal" role="dialog">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-body text-center">
                         <img src="assets/img/sent.png" alt="" width="50" height="46">
-                        <h3>Are you sure want to delete this Invoice?</h3>
-                        <div class="m-t-20"> <a href="#" class="btn btn-white" data-dismiss="modal">Close</a>
-                            <button type="submit" class="btn btn-danger">Delete</button>
+                        <h2 id="stockId"></h2>
+                        <h3>Voulez-vous modifier la validité de ce lot?</h3>
+                        <div class="m-t-20"> 
+                            <form id="validForm">
+                                <input type="hidden" name="lod_id" id="lot_id">
+                                <input type="hidden" name="statut" id="statut">
+                            </form>
+                        <div id="Notif" class="m-b-10"></div>
+                            <button type="submit" onclick="changeStockStatus()" class="btn btn-danger" id="btnValider"></button>
+                            <a href="#" class="btn btn-white" data-dismiss="modal">Fermer</a>
                         </div>
                     </div>
                 </div>
@@ -191,6 +203,9 @@
     <script src="assets/js/bootstrap-datetimepicker.min.js"></script>
     <script src="assets/js/app.js"></script>
     <script>
+        function printReport() {
+            $("#PrintForm").submit();
+        }
         $("#addRemoveStockForm").submit(function (e) {
             e.preventDefault();
             addorRemoveStock();
@@ -202,6 +217,22 @@
             $("#lot").val(lot);
             $("#addRemoveUnit").modal();
         }
+        function launchStocValide(matName, matId, lot,statut) {
+            $("#stockId").html(matName + "-" + lot);
+            $("#materiauId").val(matId);
+            $("#materiau").val(matName);
+            $("#lot_id").val(lot);
+            let text = "Valide";
+            if(statut == 1){ 
+                text = "Invalide"
+                $("#statut").val(0);
+            }else{
+                $("#btnValider").addClass("btn btn-success");
+                $("#statut").val(1);
+            }
+            $("#btnValider").html(text);
+            $("#stockValide").modal();
+        }
         addorRemoveStock = function () {
             $("#notify").show().html();
             let formData = $("#addRemoveStockForm").serialize();
@@ -211,6 +242,19 @@
                     $("#notify").html(data.msg);//.fadeOut(5000);
                 } else {
                     $("#notify").html(data.msg);
+                }
+            });
+        }
+
+        changeStockStatus = function () {
+            $("#Notif").show().html();
+            let formData = $("#validForm").serialize();
+            $.post("/change-stock-status", formData, function (data) {
+                console.log(data);
+                if (data.success) { //Success 
+                    $("#Notif").html(data.msg);//.fadeOut(5000);
+                } else {
+                    $("#Notif").html(data.msg);
                 }
             });
         }

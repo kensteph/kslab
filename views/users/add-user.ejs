@@ -40,9 +40,9 @@
                     <% if( locals.notifications){ %>
                         <div class="alert alert-<%= locals.notifications.type %> alert-dismissible fade show" role="alert">
                             <%= locals.notifications.msg %> 
-                            <form method="POST" action="/test-laboratoire">
+                            <form method="POST" action="/user-permissions">
                                 <input type="hidden" value="<%= locals.notifications.patientID%>" name="patientSelected">
-                                <button class="btn btn-primary ">Examen laboratoire</button>
+                                <button class="btn btn-primary ">Attribution d'accès</button>
                             </form>
                             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                                 <span aria-hidden="true">×</span>
@@ -60,6 +60,8 @@
                                 sexe = data.sexe;
                                 statut = data.statut;
                                 email = data.email;
+                                username = data.user_name;
+                                read_only = " readonly";
                            %>
 
                     <% }else{   
@@ -70,8 +72,10 @@
                                 telephoneVal = "";
                                 sexe = "";
                                 statut ="";
-                                email = "";
-                                buttonText = "Créer Patient";
+                                email="";
+                                username ="";
+                                buttonText = "Créer Utilisateur";
+                                read_only = "";
                            }
                             %>
                     <form method="POST" action="">
@@ -127,12 +131,18 @@
                                                 value="<%=telephoneVal%>">
                                         </div>
                                     </div>
-
                                     <div class="col-sm-6">
                                         <div class="form-group">
                                             <label>Email </label>
                                             <input class="form-control" type="email" name="email"
                                                 value="<%=email%>">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label>Nom d'utilisateur </label>
+                                            <input class="form-control" type="text" required name="username"
+                                                value="<%=username%>" <%=read_only%>>
                                         </div>
                                     </div>
                                 </div>

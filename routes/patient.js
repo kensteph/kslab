@@ -6,6 +6,7 @@ const router = express.Router();
 const patientDB = require('../controllers/patientController.js');
 router.use(bodyParser.urlencoded({ extended: true }));
 router.use(express.static('public'));
+
 // ADD PATIENT
 router.get('/add-patient', async (req, res) => {
     let pageTitle = "Nouveau patient";

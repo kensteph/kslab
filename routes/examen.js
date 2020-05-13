@@ -107,6 +107,7 @@ router.get('/test-laboratoire', async (req, res) => {
     let data = await patientDB.listOfAllPatients();
     let dataExam = await examenDB.listOfExams();
     let patientSelected = -1;
+    //console.log("USER : "+req.session.user);
     params = {
         pageTitle: pageTitle,
         data: data,
@@ -411,6 +412,126 @@ router.post('/verify-test-result', async (req, res) => {
         page: 'NewTest'
     };
     res.render('examens/display-test-result', params);
+});
+
+// ======================================== REPORTS ==============================================
+
+//LIST DES TESTS
+router.get('/lab-tests-report', async (req, res) => {
+    let dateFrom = helpers.getCurrentDate();
+    let dateTo = helpers.getCurrentDate();
+    let status = "All";
+    if(req.query.date && req.query.status){
+        dateFrom = "All";
+        status = req.query.status;
+    }
+    console.log(dateFrom+" | "+status);
+    let data = await testDB.testRquestListForPeriod(dateFrom, dateTo);
+    console.log(data);
+    let text_date = "";
+    if(dateFrom == dateTo){
+        text_date = "Du "+helpers.formatDate(dateFrom,"FR");
+    }else{
+        text_date = "Du "+helpers.formatDate(dateFrom,"FR")+" au "+helpers.formatDate(dateTo,"FR");
+    }
+    
+    let pageTitle = "Rapport des tests laboratoire "+ text_date + " (" + data.length + ")";
+    //DATES
+    dateFrom = helpers.formatDate(dateFrom, "FR");
+    dateFrom = helpers.changeDateSymbol(dateFrom);
+    dateTo = helpers.formatDate(dateTo, "FR");
+    dateTo = helpers.changeDateSymbol(dateTo);
+
+    params = {
+        pageTitle: pageTitle,
+        data: data,
+        dateFrom: dateFrom,
+        dateTo: dateTo,
+        dateFromDB : helpers.getCurrentDate(),
+        dateToDB : helpers.getCurrentDate(),
+        statut: status,
+        page: 'Administration'
+    };
+    res.render('examens/test-report', params);
+});
+router.post('/lab-tests-report', async (req, res) => {
+    console.log("DATA :"+req.query);
+    let dateFrom = req.body.dateFrom;
+    let dateTo = req.body.dateTo;
+    let status = req.body.statut;
+    dateFromDB = helpers.formatDate(dateFrom, "EN");
+    dateToDB = helpers.formatDate(dateTo, "EN");
+    if(req.query.date && req.query.status){
+        dateFrom = "All";
+        status = req.query.status;
+    }
+    // console.log(dateFrom+" | "+status);
+    // let report = await testDB.singleTestReport(dateFromDB, dateToDB, 1);
+    // console.log("NB TEST "+report);
+    //
+    let data = await testDB.testRquestListForPeriod(dateFromDB, dateToDB);
+    console.log(data);
+    let text_date = "";
+    if(dateFromDB == dateToDB){
+        text_date = "Du "+helpers.formatDate(dateFromDB,"FR");
+    }else{
+        text_date = "Du "+helpers.formatDate(dateFromDB,"FR")+" au "+helpers.formatDate(dateToDB,"FR");
+    }
+    
+    let text_status = status != "All" ? TEST_STATUS[status] : "";
+    let pageTitle = "Rapport des tests laboratoire " + text_status + text_date + " (" + data.length + ")";
+    //DATES
+    // dateFrom = helpers.formatDate(dateFrom,"FR");
+    // dateFrom = helpers.changeDateSymbol(dateFrom);
+    // dateTo = helpers.formatDate(dateTo,"FR");
+    // dateTo = helpers.changeDateSymbol(dateTo);
+    params = {
+        pageTitle: pageTitle,
+        data: data,
+        dateFrom: dateFrom,
+        dateTo: dateTo,
+        dateFromDB : dateFromDB,
+        dateToDB : dateToDB,
+        statut: status,
+        page: 'Administration'
+    };
+    res.render('examens/test-report', params);
+});
+
+//PRINT TEST REPORT
+router.post('/print-test-report', async (req, res) => {
+    console.log(req.body);
+    let report =helpers.getCurrentDate();
+    let filename = report + ".pdf";
+    let pathfile = "./tmp/" + filename;
+    let template_name ="report";
+    let dateFrom = req.body.dateFrom;
+    let dateTo = req.body.dateTo;
+    let data = await testDB.testRquestListForPeriod(dateFrom, dateTo);
+    console.log(data);
+    let text_date = "";
+    if(dateFrom == dateTo){
+        text_date = "du "+helpers.formatDate(dateFrom,"FR");
+    }else{
+        text_date = "du "+helpers.formatDate(dateFrom,"FR")+" au "+helpers.formatDate(dateTo,"FR");
+    }
+    let pageTitle = "Rapport des tests laboratoire " + text_date ;
+    params = {
+        data: data,
+        dateFrom: dateFrom,
+        dateTo: dateTo,
+        pageTitle : pageTitle
+    };
+    await printer.print(template_name, params, pathfile);
+    //Display the file in the browser
+    var stream = fs.ReadStream(pathfile);
+    // Be careful of special characters
+    filename = encodeURIComponent(filename);
+    // Ideally this should strip them
+    res.setHeader('Content-disposition', 'inline; filename="' + filename + '"');
+    res.setHeader('Content-type', 'application/pdf');
+    stream.pipe(res);
+    //res.render('examens/display-test-result', params);
 });
 
 

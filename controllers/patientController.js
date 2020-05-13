@@ -12,13 +12,14 @@ module.exports = {
         dateOfBirth = helpers.formatDate(req.body.datenais, "EN");
         adresse = req.body.adresse;
         phone = req.body.telephone;
+        email = req.body.email;
 
         let promise = new Promise((resolve, reject) => {
             //   /* Begin transaction */
             con.beginTransaction(function (err) {
                 if (err) { throw err; }
                 //Insert info into personne table
-                let sql = "INSERT INTO tb_personnes (prenom,nom,sexe,date_nais,adresse,telephone) VALUES ('" + firstName + "','" + lastName + "','" + gender + "','" + dateOfBirth + "','" + adresse + "','" + phone + "')";
+                let sql = "INSERT INTO tb_personnes (prenom,nom,sexe,date_nais,adresse,telephone,email) VALUES ('" + firstName + "','" + lastName + "','" + gender + "','" + dateOfBirth + "','" + adresse + "','" + phone + "','" + email + "')";
                 con.query(sql, function (err, result) {
                     if (err) {
                         console.log(err);
