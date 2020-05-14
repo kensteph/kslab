@@ -83,17 +83,22 @@
                                         <th>Quantité</th>
                                         <th>Transaction</th>
                                         <th>Commentaire</th>
+                                        <th>Acteur</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <% data.forEach((stock) => {
                                         let fa = "";
+                                        let title = "";
                                         if(stock.transaction == "Add"){
                                             fa = "fa fa-plus";
+                                            title = "Augmentation de stock";
                                         }else if(stock.transaction == "substract"){
                                             fa = "fa fa-minus";
+                                            title = "Diminution de stock";
                                         }else{
                                             fa = "fa fa-trash";
+                                            title = "Stock endommagé";
                                         }
                                     %>
                                     <tr>
@@ -101,8 +106,9 @@
                                         <td><a href=""><%=stock.lot%></a></td>
                                         <td><%=stock.nom_materiau%></td>
                                         <td><%=stock.qte%></td>
-                                        <td><i class="<%= fa%>"></i></td>
+                                        <td><i class="<%= fa%>" title="<%= title%>"></i></td>
                                         <td><%=stock.commentaire%></td>
+                                        <td><%=stock.acteur%></td>
                                     </tr>
                                     <% }) %>
                                 </tbody>

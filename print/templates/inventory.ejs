@@ -53,7 +53,8 @@
                             <th class="report">Qté utilisée</th>
                             <th class="report">Qté endomagée</th>
                             <th class="report">Qté restante</th>
-                            <th class="report">Status</th>
+                            <th class="report">Stock_min</th>
+                            <th class="report">Nbre de jours</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -76,6 +77,7 @@
                             <td class="report"><%=stock.qte_utilisee%></td>
                             <td class="report"><%=stock.qte_endomage%></td>
                             <td class="report"><%=stock.qte_restante%></td>
+                            <td class="report"><%=stock.min_stock%></td>
                             <td class="report"><%= nb_jours_restant %></td>
                         </tr>
                         <% }) %>

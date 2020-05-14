@@ -208,7 +208,7 @@ module.exports = {
 
     titleByAge(age, sexe) {
         age = parseFloat(age);
-        console.log("AGE : "+age+" SEXE : "+sexe);
+        console.log("AGE : " + age + " SEXE : " + sexe);
         let title = "";
         if (age <= 4) {
             title = "bebe";
@@ -225,5 +225,41 @@ module.exports = {
         }
         return title;
     },
+    //============================================ EMAIL ============================================
+    sendEmail(ent_email, pass, recipient_email, attach_file, subject, body) {
+        var nodemailer = require('nodemailer');
 
+        var mail = nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+                user: ent_email,
+                pass: pass
+            }
+        });
+
+        var mailOptions = {
+            from: ent_email,
+            to: recipient_email,
+            subject: subject,
+            html: body,
+            attachments: [
+                {
+                    filename: attach_file,
+                    content: 'Résultat'
+                },
+                {   // file on disk as an attachment
+                    filename: 'resultat.pdf',
+                    path: './tmp/10-05-2020.pdf' // stream this file
+                }
+            ]
+        };
+
+        mail.sendMail(mailOptions, function (error, info) {
+            if (error) {
+                console.log(error);
+            } else {
+                console.log('Email sent: ' + info.response);
+            }
+        });
+    }
 };

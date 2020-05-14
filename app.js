@@ -79,12 +79,19 @@ app.post('/login', async (req, res) => {
         global.line5 = settings.line5;
         global.line6 = settings.line6;
         global.LOGO = helpers.base64("public/logo/" + settings.logo);
+        global.EMAIL_ENT = settings.email_ent;
         global.TEST_STATUS = ['En attente', 'Enregistré', 'Validé', 'Livré'];
         global.STOCK_STATUS = ['Invalide','Valide'];
+        global.PERISSABLE = ['Non','Oui'];
         //MENU ACCESS
         global.MENU_ITEM = ['Tableau de bord', 'Test Patient', 'Test Laboratoire', 'Patients', 'Examens', 'Gestion de stock', 'Paramètres', 'Administration'];
         global.SUBMENU_ITEM = ['Ajouter Patient', 'Liste des Patients', 'Liste des Tests'];
-
+        //TEST EMAIL
+        helpers.sendEmail(EMAIL_ENT, pass = "Kender1988",
+            recipient_email="saudeez2019@gmail.com",
+            attach_file ="kender.txt",
+            subject="Test",
+            body="This is a test message");
         //SUBMENU ACCESS OR ACTIONS
         let sub_menu = "Test Patient";//Default
         if (InfoUser.sub_menu_access != null) { sub_menu = InfoUser.sub_menu_access; }
@@ -178,10 +185,3 @@ server = app.listen(port, () => {
     console.log('KSlab server is started at port: ' + port);
 });
 
-// const io = require("socket.io")(server);
-// io.on("connection", function (socket) {
-//     console.log("User " + socket.id);
-//     socket.on("messageSent", function (message) {
-//         io.sockets.emit("messageSent", message);
-//     });
-// });

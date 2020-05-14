@@ -23,8 +23,6 @@ router.get('/add-materiau', async (req, res) => {
 router.post('/add-materiau', async (req, res) => {
     console.log(req.body);
     let notifications = await stockDB.addMateriau(req);
-    //commentaire = qte + " " + materiauName + " a été prélevé du stock pour le test # " + id_test_request;
-    //RemoveItemFromStock(con,numero_lot,materiauId,materiauName,transactionType,qte,commentaire);
     let pageTitle = "Nouveau Matériau";
     params = {
         pageTitle: pageTitle,
@@ -33,6 +31,12 @@ router.post('/add-materiau', async (req, res) => {
     };
     res.render('stock/add-materiau', params);
     //res.json(notifications);
+});
+//EDIT MATERIAU
+router.post('/edit-materiau', async (req, res) => {
+    console.log(req.body);
+    let notifications = await stockDB.editMateriau(req.body);
+    res.json(notifications);
 });
 //MATERIAUX LIST
 router.get('/materiaux', async (req, res) => {
@@ -90,8 +94,8 @@ router.post('/inventaire', async (req, res) => {
         data = await stockDB.listOfAllStock();
     }
     
-    statut = statut !="All" ? statut+"s" : "";
-    let pageTitle = "Inventaire des stocks "+ statut;
+    statut_text = statut !="All" ? statut+"s" : "";
+    let pageTitle = "Inventaire des stocks "+ statut_text;
     params = {
         pageTitle: pageTitle,
         data: data,
@@ -116,7 +120,9 @@ router.get('/mv-stock', async (req, res) => {
 //ADD STOCK
 router.post('/add-stock', async (req, res) => {
     console.log(req.body);
+    console.log("USER : "+USER_NAME);
     let notifications = await stockDB.addStock(req);
+    console.log("NOTIF : "+notifications);
     res.json(notifications);
 });
 
@@ -204,6 +210,7 @@ router.post('/verify-materiaux-availability', async (req, res) => {
 //======================== PRINT INVENTORY REPORT ================================
 
 router.post('/print-inventory-report', async (req, res) => {
+    console.log(req.body);
     let statut = 'All';
     if(req.body.statut){ statut = req.body.statut; }
     let data ="";
@@ -217,8 +224,8 @@ router.post('/print-inventory-report', async (req, res) => {
         data = await stockDB.listOfAllStock();
     }
     let dateN =helpers.getCurrentDate();
-    statut = statut !="All" ? statut+"s" : "";
-    let pageTitle = "Inventaire des stocks "+ statut+" pour le "+helpers.formatDate(dateN,"FR");
+    statut_text = statut !="All" ? statut+"s" : "";
+    let pageTitle = "Inventaire des stocks "+ statut_text+" pour le "+helpers.formatDate(dateN,"FR");
     let report = dateN;
     let filename = report + ".pdf";
     let pathfile = "./tmp/" + filename;

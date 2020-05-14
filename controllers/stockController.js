@@ -32,14 +32,42 @@ module.exports = {
         return rep;
     },
 
+        //SET STOCK STATUS
+        editMateriau: async function (info) {
+            let promise = new Promise((resolve, reject) => {
+                let min_stock = info.min_stock;
+                let materiauName = info.materiauName;
+                let perissable =  info.perissable;
+                let materiauId = info.materiauId;
+                let sql = "UPDATE tb_materiaux SET nom_materiau ='" + materiauName + "',min_stock =" + min_stock + ",expirable =" + perissable + " WHERE id =?";
+                con.query(sql,materiauId, function (err, rows) {
+                    if (err) {
+                        resolve({
+                            msg: "Une erreur est survenue. S'il vous plait réessayez.",
+                            type: "danger",
+                            debug: err
+                        });
+                    } else {
+                        resolve({
+                            msg: "Les informations concernant " + materiauName + " ont été modifiées avec succès.",
+                            type: "success"
+                        });
+                    }
+                });
+            });
+            data = await promise;
+            //console.log(data);
+            return data;
+        },
+
     //Materiaux LIST
     listOfMateriaux: async function (materiauId) {
         let promise = new Promise((resolve, reject) => {
             let sql = "";
-            if(materiauId == "All"){
+            if (materiauId == "All") {
                 sql = "SELECT * FROM tb_materiaux ";
-            }else{
-                sql = "SELECT * FROM tb_materiaux WHERE id="+materiauId;
+            } else {
+                sql = "SELECT * FROM tb_materiaux WHERE id=" + materiauId;
             }
             con.query(sql, function (err, rows) {
                 if (err) {
@@ -65,28 +93,67 @@ module.exports = {
             let qteEndomage = req.body.qteEndomage;
             let qteRestante = qteRecue - qteEndomage;
             if (qteEndomage == "") { qteEndomage = 0; } else { qteEndomage = parseInt(qteEndomage); }
-            let sql =
-                'INSERT INTO tb_stocks (numero_lot,materiau,date_recue,date_expiration,qte_recue,qte_endomage,qte_restante) VALUES ("' + numero_lot + '","' + materiauId + '","' + dateRecue + '","' + dateExpiration + '",' + qteRecue + ',' + qteEndomage + ',' + qteRestante + ')';
-            con.query(sql, function (err, result) {
-                if (err) {
-                    msg = {
-                        type: "danger",
-                        error: true,
-                        msg:
-                            "<font color='red'> Vous avez déja ajouté ce lot " + numero_lot + "</font> ",
-                        debug: err
-                    };
-                } else {
-                    msg = {
-                        type: "success",
-                        msg:
-                            "<font color='green'> Stock <strong>" + materiauName + "</strong> enregistré avec succès.</font>",
-                    };
-                }
+            let msg="";
+            //   /* Begin transaction */
+            con.beginTransaction((err) => {
+                if (err) { throw err; }
+                let sql =
+                    'INSERT INTO tb_stocks (numero_lot,materiau,date_recue,date_expiration,qte_recue,qte_endomage,qte_restante,acteur) VALUES ("' + numero_lot + '","' + materiauId + '","' + dateRecue + '","' + dateExpiration + '",' + qteRecue + ',' + qteEndomage + ',' + qteRestante + ',"' + USER_NAME + '")';
+                con.query(sql, function (err, result) {
+                    if (err) {
+                        msg = {
+                            type: "danger",
+                            error: true,
+                            msg:
+                                "<font color='red'> Vous avez déja ajouté ce lot " + numero_lot + "</font> ",
+                            debug: err
+                        };
+                    } else {
+                        let commentaire =qteRecue+" "+materiauName+" ont été ajoutés au stock. QTE endomagée : "+qteEndomage;
+                        let transactionType ="Add";
+                        //Insert info into tb_evolution_stock table
+                        let sql = 'INSERT INTO tb_evolution_stock (lot,materiau,qte,transaction,commentaire,acteur) VALUES ("' + numero_lot + '","' + materiauId + '","' + qteRecue + '","' + transactionType + '","' + commentaire + '","' + USER_NAME + '")';
 
-                resolve(msg);
-                console.log(msg);
+                        con.query(sql, function (err, result) {
+                            if (err) {
+                                console.log(err);
+                                con.rollback(function () {
+                                    throw err;
+                                    msg = {
+                                        type: "danger",
+                                        error: true,
+                                        msg:
+                                            "<font color='red'> Vous avez déja ajouté ce lot " + numero_lot + "</font> ",
+                                        debug: err
+                                    };
+                                });
+                            }else{
+                                con.commit(function (err) {
+                                    if (err) {
+                                        console.log(err);
+                                        con.rollback(function () {
+                                            throw err;
+                                        });
+                                    }
+                                    msg = {
+                                        success: "success",
+                                        msg:
+                                            "<font color='green'> Stock <strong>" + materiauName + "</strong> enregistré avec succès.</font>",
+                                    };
+                                    resolve(msg);
+                                    //console.log(msg);
+                                });
+                                
+                            }
+
+                        });
+                        
+                    }
+
+                    
+                });
             });
+
         });
         rep = await promise;
         return rep;
@@ -105,7 +172,7 @@ module.exports = {
             con.beginTransaction(function (err) {
                 if (err) { throw err; }
                 //Insert info into tb_evolution_stock table
-                let sql = 'INSERT INTO tb_evolution_stock (lot,materiau,qte,transaction,commentaire) VALUES ("' + numero_lot + '","' + materiauId + '","' + qte + '","' + transactionType + '","' + commentaire + '")';
+                let sql = 'INSERT INTO tb_evolution_stock (lot,materiau,qte,transaction,commentaire,acteur) VALUES ("' + numero_lot + '","' + materiauId + '","' + qte + '","' + transactionType + '","' + commentaire + '","' + USER_NAME + '")';
 
                 con.query(sql, function (err, result) {
                     if (err) {
@@ -172,7 +239,7 @@ module.exports = {
         return data;
     },
     //Add or REMOVE ITEMS STOCK Materiau
-    async RemoveItemFromStock(con,numero_lot,materiauId,materiauName,transactionType,qte,commentaire) {
+    async RemoveItemFromStock(con, numero_lot, materiauId, materiauName, transactionType, qte, commentaire) {
         let promise = new Promise((resolve, reject) => {
             //   /* Begin transaction */
             con.beginTransaction(function (err) {
@@ -295,25 +362,10 @@ module.exports = {
         data = await promise;
         return data;
     },
-        //Liste des stocks valide
-        listOfAllValidStock: async function (nbJour) {
-            let promise = new Promise((resolve, reject) => {
-                let sql = "SELECT *,DATEDIFF( date_expiration , Now() ) as days FROM tb_stocks,tb_materiaux WHERE tb_stocks.materiau=tb_materiaux.id AND DATEDIFF( date_expiration , Now() )>"+nbJour;
-                con.query(sql, function (err, rows) {
-                    if (err) {
-                        throw err;
-                    } else {
-                        resolve(rows);
-                    }
-                });
-            });
-            data = await promise;
-            return data;
-        },
-       //Liste des stocks Critique
-       listOfAllAlertStock: async function (nbJour) {
+    //Liste des stocks valide
+    listOfAllValidStock: async function (nbJour) {
         let promise = new Promise((resolve, reject) => {
-            let sql = "SELECT *,DATEDIFF( date_expiration , Now() ) as days FROM tb_stocks,tb_materiaux WHERE tb_stocks.materiau=tb_materiaux.id AND DATEDIFF( date_expiration , Now() )>0 AND DATEDIFF( date_expiration , Now() )<="+nbJour;
+            let sql = "SELECT *,DATEDIFF( date_expiration , Now() ) as days FROM tb_stocks,tb_materiaux WHERE tb_stocks.materiau=tb_materiaux.id AND DATEDIFF( date_expiration , Now() )>" + nbJour;
             con.query(sql, function (err, rows) {
                 if (err) {
                     throw err;
@@ -325,12 +377,27 @@ module.exports = {
         data = await promise;
         return data;
     },
-        
+    //Liste des stocks Critique
+    listOfAllAlertStock: async function (nbJour) {
+        let promise = new Promise((resolve, reject) => {
+            let sql = "SELECT *,DATEDIFF( date_expiration , Now() ) as days FROM tb_stocks,tb_materiaux WHERE tb_stocks.materiau=tb_materiaux.id AND DATEDIFF( date_expiration , Now() )>0 AND DATEDIFF( date_expiration , Now() )<=" + nbJour+" OR min_stock >=qte_restante AND statut=1";
+            con.query(sql, function (err, rows) {
+                if (err) {
+                    throw err;
+                } else {
+                    resolve(rows);
+                }
+            });
+        });
+        data = await promise;
+        return data;
+    },
+
     //Load All stock
-    listOfAllStockByProduct: async function (id_product,stock_status) {
+    listOfAllStockByProduct: async function (id_product, stock_status) {
         let promise = new Promise((resolve, reject) => {
             let sql = "SELECT *,DATEDIFF( date_expiration , Now() ) as days FROM tb_stocks,tb_materiaux WHERE tb_stocks.materiau=tb_materiaux.id AND tb_stocks.materiau=? AND statut=? ORDER BY date_expiration ASC";
-            con.query(sql,[id_product,stock_status], function (err, rows) {
+            con.query(sql, [id_product, stock_status], function (err, rows) {
                 if (err) {
                     throw err;
                 } else {
@@ -450,28 +517,27 @@ module.exports = {
         return data;
     },
     //SET STOCK STATUS
-           //Delete PATIENT
-           setStockStatus: async function (numero_lot,statut) {
-            let promise = new Promise((resolve, reject) => {
-                let sql = "UPDATE tb_stocks SET statut ="+statut+" WHERE numero_lot =?";
-                con.query(sql, numero_lot, function (err, rows) {
-                    if (err) {
-                        resolve({
-                            msg: "Une erreur est survenue. S'il vous plait réessayez.",
-                            type: "danger",
-                            debug : err
-                        });
-                    } else {
-                        resolve({
-                            msg: "Les informations concernant " + numero_lot + " ont été modifiées avec succès.",
-                            type: "success"
-                        });
-                    }
-                });
+    setStockStatus: async function (numero_lot, statut) {
+        let promise = new Promise((resolve, reject) => {
+            let sql = "UPDATE tb_stocks SET statut =" + statut + " WHERE numero_lot =?";
+            con.query(sql, numero_lot, function (err, rows) {
+                if (err) {
+                    resolve({
+                        msg: "Une erreur est survenue. S'il vous plait réessayez.",
+                        type: "danger",
+                        debug: err
+                    });
+                } else {
+                    resolve({
+                        msg: "Les informations concernant " + numero_lot + " ont été modifiées avec succès.",
+                        type: "success"
+                    });
+                }
             });
-            data = await promise;
-            //console.log(data);
-            return data;
-        },
+        });
+        data = await promise;
+        //console.log(data);
+        return data;
+    },
 
 }

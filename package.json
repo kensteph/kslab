@@ -23,6 +23,7 @@
     "mysql-backup": "^1.0.0",
     "mysqldump": "^3.1.0",
     "node-cron": "^2.0.3",
+    "nodemailer": "^6.4.6",
     "passport": "^0.4.1",
     "passport-local": "^1.0.0",
     "puppeteer": "^2.1.1",

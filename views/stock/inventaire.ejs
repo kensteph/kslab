@@ -56,6 +56,7 @@
                     <% if(data.length >0){   %>
                     <form id="PrintForm" target="_blank" action="/print-inventory-report" method="POST">
                         <input type="hidden" name="dateFrom" value="">
+                        <input type="hidden" name="statut" value="<%=statut%>">
                         <a href="#" class="dropdown-item" onclick="printReport()"><i class="fa fa-print fa-lg"></i>
                             Imprimer le rapport</a>
                     </form>
@@ -84,6 +85,7 @@
                                     <% data.forEach((stock) => {
                                         let nb_jours_restant = stock.days;
                                         let type = "green";
+                                        let stock_min = 0;
                                         if( nb_jours_restant <=31 && nb_jours_restant >0 ){
                                             type = "orange";
                                         }else if(nb_jours_restant <=0){

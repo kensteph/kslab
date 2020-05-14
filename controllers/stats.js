@@ -88,7 +88,7 @@ var self = module.exports = {
     StockAlertCount: async function (nbJours) {
         let promise = new Promise((resolve, reject) => {
             let sql = "";
-            sql = "SELECT COUNT(tb_stocks.id) as nb FROM tb_stocks,tb_materiaux WHERE tb_stocks.materiau=tb_materiaux.id AND DATEDIFF( date_expiration , Now() )>0 AND DATEDIFF( date_expiration , Now() )<=" + nbJours;
+            sql = "SELECT COUNT(tb_stocks.id) as nb FROM tb_stocks,tb_materiaux WHERE tb_stocks.materiau=tb_materiaux.id AND DATEDIFF( date_expiration , Now() )>0 AND DATEDIFF( date_expiration , Now() )<=" + nbJours+" OR min_stock >=qte_restante AND statut=1";
             //console.log(sql+" ID : "+id_personne);
             con.query(sql, function (err, rows) {
                 if (err) {
