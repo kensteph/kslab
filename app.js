@@ -87,11 +87,11 @@ app.post('/login', async (req, res) => {
         global.MENU_ITEM = ['Tableau de bord', 'Test Patient', 'Test Laboratoire', 'Patients', 'Examens', 'Gestion de stock', 'Paramètres', 'Administration'];
         global.SUBMENU_ITEM = ['Ajouter Patient', 'Liste des Patients', 'Liste des Tests'];
         //TEST EMAIL
-        helpers.sendEmail(EMAIL_ENT, pass = "Kender1988",
-            recipient_email="saudeez2019@gmail.com",
-            attach_file ="kender.txt",
-            subject="Test",
-            body="This is a test message");
+        // helpers.sendEmail(EMAIL_ENT, pass = "Kender1988",
+        //     recipient_email="saudeez2019@gmail.com",
+        //     attach_file ="kender.txt",
+        //     subject="Test",
+        //     body="This is a test message");
         //SUBMENU ACCESS OR ACTIONS
         let sub_menu = "Test Patient";//Default
         if (InfoUser.sub_menu_access != null) { sub_menu = InfoUser.sub_menu_access; }

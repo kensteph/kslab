@@ -59,11 +59,12 @@ var self = module.exports = {
         let promise = new Promise((resolve, reject) => {
             if (req.body.testSelected) { // Si ili y a test
                 let patient = req.body.patient;
+                let docteur = req.body.docteur;
                 //   /* Begin transaction */
                 con.beginTransaction(function (err) {
                     if (err) { throw err; }
                     //Insert info into personne table
-                    let sql = "INSERT INTO tb_test_requests (patient) VALUES ('" + patient + "')";
+                    let sql = "INSERT INTO tb_test_requests (patient,docteur) VALUES ('" + patient + "','" + docteur + "')";
                     con.query(sql, function (err, result) {
                         if (err) {
                             console.log(err);
@@ -212,7 +213,7 @@ var self = module.exports = {
                             examens.push(info[i].nom_examen);
                         }
                         let patient_exams = examens.join();
-                        let line_info = { request_id: item.id_request, date_record: item.date_record, numero_patient: item.numero_patient, patient: item.fullname, age: item.age, sexe: item.sexe, examens: patient_exams, statut: item.test_status };
+                        let line_info = { request_id: item.id_request, date_record: item.date_record, numero_patient: item.numero_patient, patient: item.fullname, docteur: item.docteur, age: item.age, sexe: item.sexe, examens: patient_exams, statut: item.test_status };
                         line.push(line_info);
                     }
                     resolve(line);
@@ -222,6 +223,29 @@ var self = module.exports = {
 
         });
         data = await promise;
+        return data;
+    },
+    //EDIT DOCTOR OR INSTITUTION
+    modifyDoctorInfo: async function (id_test, doctor) {
+        let promise = new Promise((resolve, reject) => {
+            let sql = "UPDATE tb_test_requests SET docteur ='" + doctor + "' WHERE id =?";
+            con.query(sql, id_test, function (err, rows) {
+                if (err) {
+                    resolve({
+                        msg: "Une erreur est survenue. S'il vous palit réessayez.",
+                        error: "danger",
+                        debug: err
+                    });
+                } else {
+                    resolve({
+                        msg: "Le docteur/Institution " + doctor + " modifié avec succès.",
+                        success: "success"
+                    });
+                }
+            });
+        });
+        data = await promise;
+        console.log(data);
         return data;
     },
     //LIST REQUEST TESTS
@@ -278,20 +302,20 @@ var self = module.exports = {
             let line = [];
             let sql = "SELECT DISTINCT(examen_id) as examen_id FROM tb_test_requests_contents WHERE DATE(date_record) BETWEEN '" + dateFrom + "' AND '" + dateTo + "'";
             console.log(sql);
-            con.query(sql,  async function (err, rows) {
+            con.query(sql, async function (err, rows) {
                 if (err) {
                     throw err;
                 } else {
-                    console.log("RESULT "+rows);
+                    console.log("RESULT " + rows);
                     for (item of rows) {
                         //console.log("ITEM"+item.examen_id);
                         //Info about the exam
                         let infoExam = await examController.getExamById(item.examen_id);
-                        let qteDemande = await self.singleTestReport(dateFrom, dateTo,item.examen_id);
-                        let line_info = { 
-                            Examen : infoExam[0].nom_examen,
-                            qty : qteDemande
-                         };
+                        let qteDemande = await self.singleTestReport(dateFrom, dateTo, item.examen_id);
+                        let line_info = {
+                            Examen: infoExam[0].nom_examen,
+                            qty: qteDemande
+                        };
                         line.push(line_info);
                     }
                     resolve(line);

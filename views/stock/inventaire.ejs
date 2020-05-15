@@ -76,6 +76,7 @@
                                         <th>Qté utilisée</th>
                                         <th>Qté endomagée</th>
                                         <th>Qté restante</th>
+                                        <th>Qté min</th>
                                         <th>Status</th>
                                         <th>Validité</th>
                                         <th class="text-right">Action</th>
@@ -102,6 +103,7 @@
                                         <td><%=stock.qte_utilisee%></td>
                                         <td><%=stock.qte_endomage%></td>
                                         <td><%=stock.qte_restante%></td>
+                                        <td><%=stock.min_stock%></td>
                                         <td><span class="custom-badge status-<%= type %>"><%= nb_jours_restant %></span>
                                         </td>
                                         <td><%=STOCK_STATUS[stock.statut]%></td>

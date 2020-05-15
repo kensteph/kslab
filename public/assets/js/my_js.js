@@ -8,11 +8,11 @@ $(document).ready(function () {
         //     return !~text.indexOf(val);
         // }).hide();
         //$("#myInput").on("keyup", function() {
-            var value = $(this).val().toLowerCase();
-            $("#table tr").filter(function() {
-              $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-            });
-          //});
+        var value = $(this).val().toLowerCase();
+        $("#table tr").filter(function () {
+            $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+        });
+        //});
     });
     var notifArrayId = [];
     function notifList(data) {
@@ -22,7 +22,7 @@ $(document).ready(function () {
         sms += '<span class="avatar">';
         sms += '<img alt="John Doe" src="assets/img/user.jpg" class="img-fluid"></span>';
         sms += '<div class="media-body">';
-        sms += '<p class="noti-details"><span class="noti-title">'+data.nom_materiau+'</span> added';
+        sms += '<p class="noti-details"><span class="noti-title">' + data.nom_materiau + '</span> added';
         sms += 'new task <span class="noti-title">Patient appointment booking</span></p>';
         sms += '<p class="noti-time"><span class="notification-time">4 mins ago</span></p>'
         sms += '</div> </div></a></li>';
@@ -36,11 +36,35 @@ $(document).ready(function () {
         $.get("/notifications", function (data, status) {
             //alert("Data: " + data + "\nStatus: " + status);
             $("#countNotifs").html(data.length);
-            for(notif of data){
+            for (notif of data) {
                 notifList(notif);
             }
-           
+
         });
 
     }
+
+    //SEARCH FOR A PATIENT
+    $('#searchPatientInput').keyup(function (e) {
+        let wordToSearch = $(this).val().trim();
+        if(wordToSearch.length>=2){
+            $.post("/live-search-patient",{key : wordToSearch}, function (data) {
+                console.log(data);
+                if (data) {
+                    $("#ResultList").html("");
+                    for(i=0; i<data.length; i++){
+                        let item = data[i];
+                        let line = "<li> <a href='#' onclick='selectPatient("+item.id_personne+")' >"+item.patient+"</a></li>";
+                        $("#ResultList").append(line);
+                    }
+                } else {
+                    //alert(data.msg);
+                    $("#ResultList").html("Aucun résultat...");
+                }
+            });
+        }else{
+            $("#ResultList").html("");
+        }
+    });
+
 });

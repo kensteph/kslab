@@ -30,6 +30,28 @@ router.post('/add-patient', async (req, res) => {
     res.render('patients/add-patient', params);
 });
 
+// SEARCH PATIENT
+router.post('/live-search-patient', async (req, res) => {
+    console.log(req.body);
+    let key = req.body.key
+    let patient = await patientDB.liveSearchPatient(key);
+    console.log(patient);
+    res.json(patient);
+});
+//DISPLAY PATIENT SELECTED
+router.post('/search-patient', async (req, res) => {
+    // console.log(req.body);
+    // let notifications  = await patientDB.savePatient(req, res);
+    // console.log(notifications);
+    // let pageTitle = "Nouveau patient";
+    // params = {
+    //     pageTitle: pageTitle,
+    //     notifications : notifications,
+    //     page: 'NewPatient'
+    // };
+    res.render('patients/search-patient', params={});
+});
+
 //PATIENTS LIST
 router.get('/patients', async (req, res) => {
     let data = await patientDB.listOfAllPatients();

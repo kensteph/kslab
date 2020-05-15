@@ -50,7 +50,7 @@ module.exports = {
                             msg = {
                                 type: "success",
                                 success: true,
-                                patientID : id_personne,
+                                patientID: id_personne,
                                 msg: "Nouveau patient " + fullname + " ajouté avec succès..."
                             }
                             resolve(msg);
@@ -101,25 +101,47 @@ module.exports = {
         return data;
     },
 
-        //Nombre de patients
-        patientcountByStatus: async function (statut) {
-            let promise = new Promise((resolve, reject) => {
-                let sql = "SELECT COUNT(id) as nb_patient FROM tb_personnes, tb_patients WHERE tb_patients.id_personne = tb_personnes.id AND tb_personnes.statut = ? ";
-                //console.log(sql+" ID : "+id_personne);
-                con.query(sql, id_personne, function (err, rows) {
-                    if (err) {
-                        //throw err;
-                        resolve([{ fullname: "" }]);
-                    } else {
-                        resolve(rows[0]);
-                    }
-                });
+     //Load All The Courses Categories
+     liveSearchPatient: async function (patient) {
+        let promise = new Promise((resolve, reject) => {
+            let sql =
+            'SELECT id_personne,CONCAT(prenom," ",nom," (ID : ",tb_personnes.id,")"," ",numero_patient) as patient,tb_personnes.id from tb_personnes,tb_patients WHERE tb_personnes.id=tb_patients.id_personne AND CONCAT(prenom," ",nom," (ID : ",tb_personnes.id,")"," ",numero_patient) LIKE "%' +
+            patient +
+            '%"';
+            console.log(sql+" ID : "+patient);
+            con.query(sql,patient, function (err, rows) {
+                if (err) {
+                    //throw err;
+                    resolve([{ fullname: "" }]);
+                } else {
+                    resolve(rows);
+                }
             });
-            data = await promise;
-            //console.log(data);
-            return data;
-        },
-    
+        });
+        data = await promise;
+        //console.log(data);
+        return data;
+    },
+
+    //Nombre de patients
+    patientcountByStatus: async function (statut) {
+        let promise = new Promise((resolve, reject) => {
+            let sql = "SELECT COUNT(id) as nb_patient FROM tb_personnes, tb_patients WHERE tb_patients.id_personne = tb_personnes.id AND tb_personnes.statut = ? ";
+            //console.log(sql+" ID : "+id_personne);
+            con.query(sql, id_personne, function (err, rows) {
+                if (err) {
+                    //throw err;
+                    resolve([{ fullname: "" }]);
+                } else {
+                    resolve(rows[0]);
+                }
+            });
+        });
+        data = await promise;
+        //console.log(data);
+        return data;
+    },
+
 
     //UPDATE INFO PATIENT
     updatePatient: async function (req) {
@@ -132,16 +154,16 @@ module.exports = {
         phone = req.body.telephone;
         status = req.body.status;
         id_personne = req.body.patientID;
-        let params = [firstName, lastName, gender, dateOfBirth, adresse, phone,status, id_personne];
+        let params = [firstName, lastName, gender, dateOfBirth, adresse, phone, status, id_personne];
         let promise = new Promise((resolve, reject) => {
             let sql = "UPDATE tb_personnes SET prenom = ?,nom =? ,sexe =? ,date_nais =? ,adresse =? ,telephone =?,statut =? WHERE id =?";
-            console.log(sql+" ID : "+id_personne);
+            console.log(sql + " ID : " + id_personne);
             con.query(sql, params, function (err, rows) {
                 if (err) {
                     resolve({
                         msg: "Une erreur est survenue. S'il vous palit réessayez.",
                         type: "danger",
-                        debug : err
+                        debug: err
                     });
                 } else {
                     resolve({
@@ -156,29 +178,29 @@ module.exports = {
         return data;
     },
 
-        //Delete PATIENT
-        deletePatient: async function (id_personne) {
-            let promise = new Promise((resolve, reject) => {
-                let sql = "UPDATE tb_personnes SET visible =? WHERE id =?";
-                console.log(sql+" ID : "+id_personne);
-                con.query(sql, id_personne, function (err, rows) {
-                    if (err) {
-                        resolve({
-                            msg: "Une erreur est survenue. S'il vous palit réessayez.",
-                            type: "danger",
-                            debug : err
-                        });
-                    } else {
-                        resolve({
-                            msg: "Les informations concernant " + fullname + " ont été modifiées avec succès.",
-                            type: "success"
-                        });
-                    }
-                });
+    //Delete PATIENT
+    deletePatient: async function (id_personne) {
+        let promise = new Promise((resolve, reject) => {
+            let sql = "UPDATE tb_personnes SET visible =? WHERE id =?";
+            console.log(sql + " ID : " + id_personne);
+            con.query(sql, id_personne, function (err, rows) {
+                if (err) {
+                    resolve({
+                        msg: "Une erreur est survenue. S'il vous palit réessayez.",
+                        type: "danger",
+                        debug: err
+                    });
+                } else {
+                    resolve({
+                        msg: "Les informations concernant " + fullname + " ont été modifiées avec succès.",
+                        type: "success"
+                    });
+                }
             });
-            data = await promise;
-            console.log(data);
-            return data;
-        },
+        });
+        data = await promise;
+        console.log(data);
+        return data;
+    },
 
 }

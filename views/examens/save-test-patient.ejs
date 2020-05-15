@@ -34,17 +34,30 @@
                             <a href="#"  rel="noopener noreferrer">
                                 <i style="cursor: pointer;" title="Apperçue du résultat" class="fa fa-file-pdf-o" onclick=" displayResult()"></i> 
                             </a>
-                            
                         </h4>
                             <form id="displayResult" target="_blank" action="/display-test-result" method="POST">
                                 <input type="hidden" name="id_test_request" value="<%=id_test_request%>">
                                 <input type="hidden" name="patient" value="<%=patientSelected.dossier%>">
+                                <input type="hidden" name="docteur" value="<%=patientSelected.docteur%>">
                             </form>
                             
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-md-12">
+                            <form id="editDocteurForm" class="m-b-10">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <input class="form-control" title="Docteur/Institution" placeholder="Docteur/Institution" onfocus="select()" type="text" name="Docteur" id="Docteur" value="<%=patientSelected.docteur%>">
+                                        <input type="hidden" name="id_test_request" value="<%=id_test_request%>">
+                                        <strong id="Enotify"></strong>
+                                    </div>
+                                    <a href="#" data-toggle="modal" data-target="#editDocteur" >
+                                        <i style="cursor: pointer;" title="Modifier le docteur/Institution" class="fa fa-save fa-2x"></i> 
+                                    </a>
+                                </div>
+                                
+                            </form>
                         <div class="table-responsive">
                             <table class="table table-striped custom-table">
                                 <thead>
@@ -94,6 +107,21 @@
                         </div>
                     </div>
                 </div>
+            </div>
+            <div id="editDocteur" class="modal fade delete-modal" role="dialog" data-keyboard="false" data-backdrop="static">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-body text-center">
+                            <img src="assets/img/sent.png" alt="" width="50" height="46" class="m-b-10"><br>
+                            Voulez-vous modifier  <strong id="DocteurInstitution"><%=patientSelected.docteur%></strong> ?
+                            <div id="msg"></div>
+                            <div class="m-t-20"> <a href="#" class="btn btn-danger" data-dismiss="modal">Non</a>
+                                <button type="submit" class="btn btn-success" onclick="editDoctorInfo()">Oui</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
             </div>
 
 
@@ -159,6 +187,19 @@
                         $("#notify").html(data.msg);
                         //show the modify button and hide the save button
                     });   
+                }
+            });
+        }
+
+        editDoctorInfo =function(){
+            let formData = $("#editDocteurForm").serialize();
+            $.post("/edit-doctor-info", formData, function (data) {
+                console.log(data);
+                if (data.success) { //Success 
+                    $("#Enotify").html(data.msg).fadeOut(5000);
+                    $("#editDocteur").modal("hide");
+                } else { // already saved get the result
+                    
                 }
             });
         }

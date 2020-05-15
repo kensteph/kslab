@@ -380,7 +380,7 @@ module.exports = {
     //Liste des stocks Critique
     listOfAllAlertStock: async function (nbJour) {
         let promise = new Promise((resolve, reject) => {
-            let sql = "SELECT *,DATEDIFF( date_expiration , Now() ) as days FROM tb_stocks,tb_materiaux WHERE tb_stocks.materiau=tb_materiaux.id AND DATEDIFF( date_expiration , Now() )>0 AND DATEDIFF( date_expiration , Now() )<=" + nbJour+" OR min_stock >=qte_restante AND statut=1";
+            let sql = "SELECT *,DATEDIFF( date_expiration , Now() ) as days FROM tb_stocks,tb_materiaux WHERE tb_stocks.materiau=tb_materiaux.id AND DATEDIFF( date_expiration , Now() )>0 AND DATEDIFF( date_expiration , Now() )<=" + nbJour+" OR min_stock >=qte_restante AND statut=1 AND DATEDIFF( date_expiration , Now() )>0 AND DATEDIFF( date_expiration , Now() )<=" + nbJour;
             con.query(sql, function (err, rows) {
                 if (err) {
                     throw err;

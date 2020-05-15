@@ -211,8 +211,9 @@ router.post('/SaveTestResult', async (req, res) => {
     console.log(req.body);
     let fullname = req.body.patientName;
     let num_patient = req.body.patientNumber;
+    let docteur = req.body.docteur;
     let dossier_patient = fullname + " [" + num_patient + "]";
-    let patientSelected = { fullname: fullname, num_patient: num_patient, dossier: dossier_patient };
+    let patientSelected = { fullname: fullname, num_patient: num_patient, dossier: dossier_patient,docteur : docteur };
     let id_test_request = req.body.testRequestId;
     let data = await examenDB.testRequestContent(id_test_request);
     //console.log(data);
@@ -246,6 +247,14 @@ router.post('/save-test-result', async (req, res) => {
     res.json(notifications);
 });
 
+//EDIT DOCTOR OR INSTITUTION 
+router.post('/edit-doctor-info', async (req, res) => {
+    let testRequestId = req.body.id_test_request;
+    let doctor = req.body.Docteur;
+    let notifications = await testDB.modifyDoctorInfo(testRequestId,doctor);
+    res.json(notifications);
+});
+
 //UPDATE TEST STATUS
 router.post('/update-test-status', async (req, res) => {
     console.log(req.body);
@@ -268,7 +277,7 @@ router.post('/get-test-result', async (req, res) => {
     res.json(data);
 });
 
-//PRINT TEST RESULT
+//================================= PRINT TEST RESULT ===================================================
 router.post('/display-test-result', async (req, res) => {
     console.log(req.body);
     let test_request_id = req.body.id_test_request;
@@ -276,6 +285,7 @@ router.post('/display-test-result', async (req, res) => {
     let patientAge = req.body.patientAge;
     let patientSexe = req.body.patientSexe;
     let patientNumber = req.body.patientNumber;
+    let docteur = req.body.docteur;
     let title = helpers.titleByAge(patientAge,patientSexe);
     console.log("YOU ARE A : "+title);
     let data = await examenDB.testRequestContent(test_request_id);
@@ -339,6 +349,7 @@ router.post('/display-test-result', async (req, res) => {
         testNumber : test_request_id,
         patientNumber : patientNumber,
         patientSexe : patientSexe,
+        docteur : docteur,
         date: date_resultat,
         page: 'NewTest'
     };

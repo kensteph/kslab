@@ -2,6 +2,7 @@
 if (locals.page) {
     Home = "";
 
+    SearchPatient = "";
     NewPatient = "";
     PatientsList = "";
 
@@ -25,6 +26,8 @@ if (locals.page) {
     switch (page) {
        case 'Home' :         Home = "active";
                              break;
+       case 'SearchPatient' :SearchPatient = "active";
+                             break;                    
        case 'NewPatient' :   NewPatient = "active";
                              break;
        case 'PatientsList' : PatientsList = "active";
@@ -94,6 +97,9 @@ if (locals.page) {
                             class="menu-arrow"></span></a>
                     <ul style="display: none;">
                         <% if(SUBMENU_ITEM_ACCESS.includes("Ajouter Patient") || SUBMENU_ITEM_ACCESS[0]=="All"){%>
+                        <li><a data-toggle="modal" data-target="#SearchPatient" href="#">Rechercher </a></li>
+                        <% } %>
+                        <% if(SUBMENU_ITEM_ACCESS.includes("Ajouter Patient") || SUBMENU_ITEM_ACCESS[0]=="All"){%>
                         <li><a class="<%=NewPatient%>" href="/add-patient">Nouveau </a></li>
                         <% } %>
                         <% if(SUBMENU_ITEM_ACCESS.includes("Liste des Patients") || SUBMENU_ITEM_ACCESS[0]=="All"){%>
@@ -152,6 +158,33 @@ if (locals.page) {
                 </li>
                 <% } %>
             </ul>
+        </div>
+    </div>
+</div>
+
+<div id="SearchPatient" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Rechercher Patient</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body text-center">
+                <form action="/search-patient" method="POST">
+                    <input name="liveSearch" id="searchPatientInput" required autocomplete="off" spellcheck="false" type="text"
+                        placeholder="Rechercher un patient ..." class="form-control">
+                    <input type="hidden" name="PatientSelected" id="PatientSelected" value="-1">
+                    <div class="m-t-10">
+                        <ul id="ResultList"></ul>
+                    </div>
+                    <div id="notify" class="m-t-20 text-center"></div>
+                    <div class="m-t-20 text-center">
+                        <button class="btn btn-primary submit-btn">Rechercher</button>
+                    </div>
+                </form>
+
+
+            </div>
         </div>
     </div>
 </div>

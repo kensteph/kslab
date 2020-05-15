@@ -82,6 +82,7 @@
                                         <th>Statut</th>
                                         <th>Date</th>
                                         <th>Patient</th>
+                                        <th>Docteur/Institution</th>
                                         <th>Examens</th>
                                         <th class="text-right">Actions</th>
                                     </tr>
@@ -105,6 +106,7 @@
                                                 class="custom-badge status-<%= type %>"><%= TEST_STATUS[statut] %></span>
                                         <td><a href="#"><%=stock.date_record%></a></td>
                                         <td><%=stock.patient+" | "+stock.numero_patient%></td>
+                                        <td><%=stock.docteur%></td>
                                         <td><%=stock.examens%></td>
                                         <td class="text-right">
                                             <div class="dropdown dropdown-action">
@@ -119,7 +121,7 @@
                                                             value="<%=stock.numero_patient%>">
                                                         <input type="hidden" name="testRequestId"
                                                             value="<%=stock.request_id%>">
-
+                                                        <input type="hidden" name="docteur" value="<%=stock.docteur%>">
                                                         <a href="#" class="dropdown-item"
                                                             onclick="submitForm('<%=stock.request_id%>')"><i
                                                                 class="fa fa-pencil m-r-5"></i>Enregistrer/Modifier Résultat</a>
@@ -145,6 +147,7 @@
                                                         <input type="hidden" name="patientAge" value="<%=stock.age%>">
                                                         <input type="hidden" name="patientSexe" value="<%=stock.sexe%>">
                                                         <input type="hidden" name="patientNumber" value="<%=stock.numero_patient%>">
+                                                        <input type="hidden" name="docteur" value="<%=stock.docteur%>">
                                                         <a href="#" class="dropdown-item"  onclick="printTest('<%=stock.request_id%>')"><i class="fa fa-print fa-lg"></i> Imprimer les résultats</a>
                                                     </form>
                                                 </div>
