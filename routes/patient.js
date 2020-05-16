@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const router = express.Router();
 // const helpers = require('../helpers/helpers');
 const patientDB = require('../controllers/patientController.js');
+const testLabDB = require('../controllers/testController');
 router.use(bodyParser.urlencoded({ extended: true }));
 router.use(express.static('public'));
 
@@ -32,24 +33,30 @@ router.post('/add-patient', async (req, res) => {
 
 // SEARCH PATIENT
 router.post('/live-search-patient', async (req, res) => {
-    console.log(req.body);
+    //console.log(req.body);
     let key = req.body.key
     let patient = await patientDB.liveSearchPatient(key);
-    console.log(patient);
+    //console.log(patient);
     res.json(patient);
 });
 //DISPLAY PATIENT SELECTED
 router.post('/search-patient', async (req, res) => {
-    // console.log(req.body);
-    // let notifications  = await patientDB.savePatient(req, res);
-    // console.log(notifications);
-    // let pageTitle = "Nouveau patient";
-    // params = {
-    //     pageTitle: pageTitle,
-    //     notifications : notifications,
-    //     page: 'NewPatient'
-    // };
-    res.render('patients/search-patient', params={});
+     let patient = req.body.liveSearch;
+     let patientID = req.body.PatientSelected;
+     let data = await patientDB.getPatientById(patientID);
+     let examens = await testLabDB.singlePatientTestRequestlist(patientID);
+    // for(var i=0; i<examens.length; i++){
+    //     let line = examens[i];
+    //     console.log(line);
+    // }
+     let pageTitle = "Recherche | "+patient;
+    params = {
+        pageTitle: pageTitle,
+        data : data,
+        examens : examens,
+        page: 'SearchPatient'
+    };
+    res.render('patients/patient-profile', params);
 });
 
 //PATIENTS LIST

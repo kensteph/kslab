@@ -97,13 +97,13 @@ if (locals.page) {
                             class="menu-arrow"></span></a>
                     <ul style="display: none;">
                         <% if(SUBMENU_ITEM_ACCESS.includes("Ajouter Patient") || SUBMENU_ITEM_ACCESS[0]=="All"){%>
-                        <li><a data-toggle="modal" data-target="#SearchPatient" href="#">Rechercher </a></li>
+                        <li><a  class="<%=SearchPatient%>"data-toggle="modal" data-target="#SearchPatient" href="#">Rechercher </a></li>
                         <% } %>
                         <% if(SUBMENU_ITEM_ACCESS.includes("Ajouter Patient") || SUBMENU_ITEM_ACCESS[0]=="All"){%>
                         <li><a class="<%=NewPatient%>" href="/add-patient">Nouveau </a></li>
                         <% } %>
                         <% if(SUBMENU_ITEM_ACCESS.includes("Liste des Patients") || SUBMENU_ITEM_ACCESS[0]=="All"){%>
-                        <li><a class="<%=PatientsList%>" href="/patients">Liste des patients</a></li>
+                        <!-- <li><a class="<%=PatientsList%>" href="/patients">Liste des patients</a></li> -->
                         <% } %>
                     </ul>
                 </li>
@@ -171,7 +171,7 @@ if (locals.page) {
             </div>
             <div class="modal-body text-center">
                 <form action="/search-patient" method="POST">
-                    <input name="liveSearch" id="searchPatientInput" required autocomplete="off" spellcheck="false" type="text"
+                    <input name="liveSearch" tabindex="-1"  id="searchPatientInput" required autocomplete="off" spellcheck="false" type="text"
                         placeholder="Rechercher un patient ..." class="form-control">
                     <input type="hidden" name="PatientSelected" id="PatientSelected" value="-1">
                     <div class="m-t-10">

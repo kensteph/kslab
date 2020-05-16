@@ -65,13 +65,26 @@
                                         required>
                                 </div>
                             </div>
-
-                                <% if( locals.data ){ %>
-                                <input type="hidden" name="MateriauID" value="<%=data.id%>">
-                                <% } %>
-                                <div class="m-t-20 text-center">
-                                    <button class="btn btn-primary submit-btn"><%=buttonText%></button>
+                        </div>
+                            <div class="row">
+                                <div class="col-sm-2 col-md-2 col-lg-2">
+                                    <label>Stock minimum <span class="text-danger">*</span></label>
+                                    <input required class="form-control" onclick="select()" type="number" min="0" id="Minstock" name="min_stock">
                                 </div>
+                                <div class="col-sm-2 col-md-2 col-lg-2">
+                                    <label>Périssable <span class="text-danger">*</span></label>
+                                    <select class="select floating" name="perissable" id="perissable">
+                                        <option value="0">NON</option>
+                                        <option value="1">OUI</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row m-l-5">
+                                <div class="m-t-20 text-center">
+                                    <button class="btn btn-primary submit-btn">Enregistrer</button>
+                                </div>
+                            </div>
+                        
                     </form>
                 </div>
             </div>
@@ -88,6 +101,8 @@
     <script src="assets/js/moment.min.js"></script>
     <script src="assets/js/bootstrap-datetimepicker.min.js"></script>
     <script src="assets/js/app.js"></script>
+    <!-- FOOTER -->
+    <%- include("../parts/footer") -%>
 </body>
 
 </html>

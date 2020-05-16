@@ -45,6 +45,7 @@ $(document).ready(function () {
     }
 
     //SEARCH FOR A PATIENT
+    document.getElementById("searchPatientInput").focus();
     $('#searchPatientInput').keyup(function (e) {
         let wordToSearch = $(this).val().trim();
         if(wordToSearch.length>=2){
@@ -54,7 +55,8 @@ $(document).ready(function () {
                     $("#ResultList").html("");
                     for(i=0; i<data.length; i++){
                         let item = data[i];
-                        let line = "<li> <a href='#' onclick='selectPatient("+item.id_personne+")' >"+item.patient+"</a></li>";
+                        let patient = "'"+item.patient+"'";;
+                        let line = '<li> <a href="#" onclick="selectPatient('+item.id_personne+','+patient+')" >'+item.patient+'</a></li>';
                         $("#ResultList").append(line);
                     }
                 } else {

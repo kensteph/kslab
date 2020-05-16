@@ -70,7 +70,7 @@ var self = module.exports = {
     getExamById: async function (id) {
         let promise = new Promise((resolve, reject) => {
             let sql = "SELECT * FROM tb_examens WHERE id = ? ";
-            //console.log(sql+" ID : "+id_personne);
+            console.log(sql+" ID : "+id);
             con.query(sql, id, function (err, rows) {
                 if (err) {
                     //throw err;

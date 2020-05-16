@@ -1,6 +1,8 @@
+<script src="assets/js/my_js.js"></script>
 <script>
-    function selectPatient(patientID){
-        alert(patientID);
+    function selectPatient(patientID,patient){
         $("#PatientSelected").val(patientID);
+        $("#searchPatientInput").val(patient);
+        $("#ResultList").html("");
     }
 </script>

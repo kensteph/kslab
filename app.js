@@ -70,7 +70,7 @@ app.post('/login', async (req, res) => {
         let InfoUser = auth[0];
         // Global variables
         let settings = await stats.getSettings();
-        console.log(settings);
+        //console.log(settings);
         global.appName = 'KSlab ';
         global.line1 = settings.line1;
         global.line2 = settings.line2;
@@ -83,6 +83,7 @@ app.post('/login', async (req, res) => {
         global.TEST_STATUS = ['En attente', 'Enregistré', 'Validé', 'Livré'];
         global.STOCK_STATUS = ['Invalide','Valide'];
         global.PERISSABLE = ['Non','Oui'];
+        global.TYPE_RESULTAT = ['','Valeurs normales','Positif/Négatif','Commentaires'];
         //MENU ACCESS
         global.MENU_ITEM = ['Tableau de bord', 'Test Patient', 'Test Laboratoire', 'Patients', 'Examens', 'Gestion de stock', 'Paramètres', 'Administration'];
         global.SUBMENU_ITEM = ['Ajouter Patient', 'Liste des Patients', 'Liste des Tests'];
@@ -100,8 +101,8 @@ app.post('/login', async (req, res) => {
         let menu = "Test Patient";//Default
         if (InfoUser.menu_access != null) { menu = InfoUser.menu_access; }
         global.USER_MENU_ACCES = menu.split("|");
-        console.log("USER_MENU_ACCES : " + USER_MENU_ACCES);
-        console.log("SUBMENU_ITEM_ACCESS : " + SUBMENU_ITEM_ACCESS);
+        //console.log("USER_MENU_ACCES : " + USER_MENU_ACCES);
+        //console.log("SUBMENU_ITEM_ACCESS : " + SUBMENU_ITEM_ACCESS);
         //USERNAME
         global.USER_NAME = user_name;
         //USER_ID

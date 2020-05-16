@@ -373,7 +373,7 @@ var self = module.exports = {
         userAuthentication: async function (username,password) {
             let promise = new Promise((resolve, reject) => {
                 let sql = "SELECT *,CONCAT(prenom,' ',nom) as fullname,DATEDIFF( NOW(), date_nais )/365 as age FROM tb_personnes, tb_users WHERE tb_users.id_personne = tb_personnes.id AND user_name = ? AND pass_word=? AND statut=1";
-                console.log(sql + " CREDENTIALS : "+username+" | "+password);
+                //console.log(sql + " CREDENTIALS : "+username+" | "+password);
                 con.query(sql,[username,password], function (err, rows) {
                     if (err) {
                         //throw err;

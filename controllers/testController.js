@@ -249,23 +249,28 @@ var self = module.exports = {
         return data;
     },
     //LIST REQUEST TESTS
-    singlePatientTestRequestlist: async function (patient, test_request_id) {
+    singlePatientTestRequestlist: async function (patient) {
         let promise = new Promise((resolve, reject) => {
             let line = [];
-            let sql = "SELECT *,CONCAT(prenom,' ',nom) as fullname,tb_test_requests.id as id_request,tb_test_requests.statut as test_status FROM tb_test_requests,tb_patients,tb_personnes WHERE tb_test_requests.patient=tb_patients.id_personne AND tb_patients.id_personne=tb_personnes.id AND";
+            let sql = "SELECT *,CONCAT(prenom,' ',nom) as fullname,tb_test_requests.id as id_request,tb_test_requests.statut as test_status FROM tb_test_requests,tb_patients,tb_personnes WHERE tb_test_requests.patient=tb_patients.id_personne AND tb_patients.id_personne=tb_personnes.id AND tb_personnes.id=? ORDER BY tb_test_requests.id ";
             //console.log(sql);
-            con.query(sql, async function (err, rows) {
+            con.query(sql,patient, async function (err, rows) {
                 if (err) {
                     throw err;
                 } else {
+                    let test_name = [];
                     for (item of rows) {
                         let info = await examController.testRequestContent(item.id_request);
+                        let ExamID = info[0].examen_id;
+                        let infoExam = await examController.getExamById(ExamID);
+                        test_name.push(infoExam[0].nom_examen);
                         let examens = [];
                         for (var i = 0; i < info.length; i++) {
                             let test = { id: info[i].id, nom_examen: info[i].nom_examen };
                             examens.push(test);
                         }
-                        let line_info = { date_record: item.date_record, numero_patient: item.numero_patient, patient: item.fullname, examens: examens, statut: item.test_status };
+                        let exam_line = test_name.join("|");
+                        let line_info = { date_record: item.date_record, numero_patient: item.numero_patient, patient: item.fullname, examens: examens, statut: item.test_status, line_exam : exam_line ,docteur: item.docteur};
                         line.push(line_info);
                     }
                     resolve(line);

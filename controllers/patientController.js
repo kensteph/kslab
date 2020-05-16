@@ -108,7 +108,7 @@ module.exports = {
             'SELECT id_personne,CONCAT(prenom," ",nom," (ID : ",tb_personnes.id,")"," ",numero_patient) as patient,tb_personnes.id from tb_personnes,tb_patients WHERE tb_personnes.id=tb_patients.id_personne AND CONCAT(prenom," ",nom," (ID : ",tb_personnes.id,")"," ",numero_patient) LIKE "%' +
             patient +
             '%"';
-            console.log(sql+" ID : "+patient);
+            //console.log(sql+" ID : "+patient);
             con.query(sql,patient, function (err, rows) {
                 if (err) {
                     //throw err;

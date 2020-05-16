@@ -5,8 +5,10 @@ module.exports = {
     addMateriau: async function (req) {
         let promise = new Promise((resolve, reject) => {
             let nom_materiau = req.body.nomMateriau;
+            let min_stock = req.body.min_stock;
+            let expirable = req.body.perissable;
             let sql =
-                'INSERT INTO tb_materiaux (nom_materiau) VALUES ("' + nom_materiau + '")';
+                'INSERT INTO tb_materiaux (nom_materiau,min_stock,expirable) VALUES ("' + nom_materiau + '",' + min_stock + ',' + expirable + ')';
             con.query(sql, function (err, result) {
                 if (err) {
                     msg = {
