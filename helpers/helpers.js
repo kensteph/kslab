@@ -12,11 +12,41 @@ module.exports = {
         return codeGen;
     },
     //DATE
+    getPastYear() {
+        var dt = new Date();
+        dt.setMonth(-12);
+        pastYear = dt.getFullYear(); //Get the current year in 4 digits
+        return pastYear;
+    },
+    getCurrentYear() {
+        var dt = new Date();
+        //dt.setMonth(12);
+        CurrYear = dt.getFullYear(); //Get the current year in 4 digits
+        return CurrYear;
+    },
     getNextYear() {
         var dt = new Date();
         dt.setMonth(12);
         nextYear = dt.getFullYear(); //Get the current year in 4 digits
         return nextYear;
+    },
+
+    getCurrentMonth() {
+        var dt = new Date();
+        nextYear = dt.getMonth() + 1; //Get the current year in 4 digits
+        return nextYear;
+    },
+    getPastMonth() {
+        var dt = new Date();
+        nextYear = dt.getMonth(); //Get the current year in 4 digits
+        return nextYear;
+    },
+    getCurrentDateTime() {
+        var today = new Date();
+        var date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
+        var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+        var dateTime = date + ' ' + time;
+        return dateTime;
     },
 
     getCurrentDate(lang) {

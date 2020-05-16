@@ -126,18 +126,21 @@
 
                 </div>
                 <div class="row">
+                    <div id="testCurrentY" style="display: none;"><%=stats.countTestRequestCurrentYear%></div>
+                    <div id="testPastY" style="display: none;"><%=stats.countTestRequestPastYear%></div>
                     <div class="col-12 col-md-6 col-lg-6 col-xl-6">
                         <div class="card">
                             <div class="card-body">
                                 <div class="chart-title">
                                     <h4>Demande d'examens</h4>
-                                    <span class="float-right"><i class="fa fa-caret-up" aria-hidden="true"></i> 15%
-                                        Higher than Last Month</span>
+                                    <span class="float-right"><i class="<%=stats.classVal%>" aria-hidden="true"></i> <%=stats.comment%></span>
                                 </div>
                                 <canvas id="linegraph"></canvas>
                             </div>
                         </div>
                     </div>
+                    <div id="countCurrentY" style="display: none;"><%=stats.countPatientCurrentYear%></div>
+                    <div id="countPastY" style="display: none;"><%=stats.countPatientPastYear%></div>
                     <div class="col-12 col-md-6 col-lg-6 col-xl-6">
                         <div class="card">
                             <div class="card-body">
@@ -157,6 +160,7 @@
                 </div>
             </div>
         </div>
+
         <div class="sidebar-overlay" data-reff=""></div>
         <script src="assets/js/jquery-3.2.1.min.js"></script>
         <script src="assets/js/popper.min.js"></script>
@@ -166,18 +170,21 @@
         <script src="assets/js/app.js"></script>
         <script>
             // Line Chart
-
+            var countTestRequestPastYear = $("#testPastY").html();
+            var ArrayTestRequestPastYear = countTestRequestPastYear.split(",");
+            var countTestRequestCurrentYear = $("#testCurrentY").html();
+            var ArrayTestRequestCurrentYear = countTestRequestCurrentYear.split(",");
             var lineChartData = {
                 labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
                 datasets: [{
                     label: "Année en cours",
                     backgroundColor: "rgba(0, 158, 251, 0.5)",
-                    data: [140, 90, 80, 100, 120, 50, 70, 50, 50, 100, 50, 90]
+                    data: ArrayTestRequestCurrentYear
                 }, {
                     label: "Année précédente",
                     backgroundColor: "rgba(255, 188, 53, 0.5)",
                     fill: true,
-                    data: [28, 48, 40, 19, 86, 27, 20, 90, 50, 20, 90, 20]
+                    data: ArrayTestRequestPastYear
                 }]
             };
 
@@ -197,9 +204,11 @@
                 }
             });
 
-
+            var countPatientPastYear = $("#countPastY").html();
+            var ArraycountPatientPastYear = countPatientPastYear.split(",");
+            var countPatientCurrentYear = $("#countCurrentY").html();
+            var ArraycountPatientCurrentYear = countPatientCurrentYear.split(",");
             // Bar Chart
-
             var barChartData = {
                 labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
                 datasets: [{
@@ -207,14 +216,14 @@
                     backgroundColor: 'rgba(0, 158, 251, 0.5)',
                     borderColor: 'rgba(0, 158, 251, 1)',
                     borderWidth: 1,
-                    data: [35, 59, 80, 81, 56, 55, 40]
+                    data: ArraycountPatientCurrentYear
                 },
                 {
                     label: 'Année précédente',
                     backgroundColor: 'rgba(255, 188, 53, 0.5)',
                     borderColor: 'rgba(255, 188, 53, 1)',
                     borderWidth: 1,
-                    data: [28, 48, 40, 19, 86, 27, 90]
+                    data: ArraycountPatientPastYear
                 }
                 ]
             };

@@ -153,10 +153,11 @@ module.exports = {
         adresse = req.body.adresse;
         phone = req.body.telephone;
         status = req.body.status;
+        email = req.body.email;
         id_personne = req.body.patientID;
-        let params = [firstName, lastName, gender, dateOfBirth, adresse, phone, status, id_personne];
+        let params = [firstName, lastName, gender, dateOfBirth, adresse, phone, status,email, id_personne];
         let promise = new Promise((resolve, reject) => {
-            let sql = "UPDATE tb_personnes SET prenom = ?,nom =? ,sexe =? ,date_nais =? ,adresse =? ,telephone =?,statut =? WHERE id =?";
+            let sql = "UPDATE tb_personnes SET prenom = ?,nom =? ,sexe =? ,date_nais =? ,adresse =? ,telephone =?,statut =?,email=? WHERE id =?";
             console.log(sql + " ID : " + id_personne);
             con.query(sql, params, function (err, rows) {
                 if (err) {

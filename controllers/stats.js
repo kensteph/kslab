@@ -19,6 +19,42 @@ var self = module.exports = {
         //console.log(data);
         return data;
     },
+    //Nombre de patients par annee
+    patientcountByYearMonth: async function (year,month) {
+        let promise = new Promise((resolve, reject) => {
+            let sql = "SELECT COUNT(id_personne) as nb_patient FROM tb_patients WHERE YEAR(date_ajout)="+year+" AND MONTH(date_ajout) ="+month;
+            //console.log(sql+" ID : "+id_personne);
+            con.query(sql, function (err, rows) {
+                if (err) {
+                    //throw err;
+                    resolve(0);
+                } else {
+                    resolve(rows[0].nb_patient);
+                }
+            });
+        });
+        data = await promise;
+        //console.log(data);
+        return data;
+    },
+        //Nombre de demande de TEST par anneee
+        testRequestCountByYearMonth: async function (year,month) {
+            let promise = new Promise((resolve, reject) => {
+                let sql = "SELECT COUNT(id) as nb_patient FROM tb_test_requests WHERE YEAR(date_record)="+year+" AND MONTH(date_record) ="+month;
+                //console.log(sql+" ID : "+id_personne);
+                con.query(sql, function (err, rows) {
+                    if (err) {
+                        //throw err;
+                        resolve(0);
+                    } else {
+                        resolve(rows[0].nb_patient);
+                    }
+                });
+            });
+            data = await promise;
+            //console.log(data);
+            return data;
+        },
     //Nombre de test par statut
     testcountByStatus: async function (statut) {
         let promise = new Promise((resolve, reject) => {

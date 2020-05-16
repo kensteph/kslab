@@ -5,6 +5,7 @@ const router = express.Router();
 // const helpers = require('../helpers/helpers');
 const stockDB = require('../controllers/stockController.js');
 const settingsDB = require('../controllers/stats');
+const helpers = require('../helpers/helpers');
 router.use(bodyParser.urlencoded({ extended: true }));
 router.use(express.static('public'));
 
@@ -166,34 +167,40 @@ router.get('/notifications-list', async (req, res) => {
 //GET DB HISTORIQUE BACKUP
 router.get('/backup-db', async (req, res) => {
     let pageTitle = "Historique des sauvegardes ";
-    var mysqlDump = require('mysqldump');
-    var fs = require('fs');
-    const con = require('../controllers/database');
-    // mysqlDump({
-    //     host: 'localhost',
-    //     user: 'root',
-    //     password: 'root',
-    //     database: 'kslab',
-    //     // tables:['players'], // only these tables
-    //     // where: {'players': 'id < 1000'}, // Only test players with id < 1000
-    //     // ifNotExist:true, // Create table if not exist
-    // }).then(dump => {
-    //     fs.writeFileSync('test.sql', dump); // Create data.sql file with dump result
-    // });
-
-    const mysqlBackup = require('mysql-backup');
-
-    mysqlBackup({
+const mysqldump = require('mysqldump');
+let path_directory = "C:/Users/KS/OneDrive/Saudeez";
+// dump the result straight to a file
+mysqldump({
+    connection: {
         host: 'localhost',
         user: 'root',
         password: 'root',
         database: 'kslab',
-    }).then(dump => {
-        console.log(dump);
-    });
-    var exec = require('child_process').exec;
-    //mysqldump --all-databases mydb1 --user=root --password > backup-mydb1.sql
-    var child = exec('mysqldump --all-databases kslab --user=root --password=root > backup-mydb1.sql');
+    },
+    dumpToFile: path_directory+'/'+helpers.getCurrentDate()+'.sql',
+});
+
+// dump the result straight to a compressed file
+// mysqldump({
+//     connection: {
+//         host: 'localhost',
+//         user: 'root',
+//         password: '123456',
+//         database: 'my_database',
+//     },
+//     dumpToFile: './dump.sql.gz',
+//     compressFile: true,
+// });
+ 
+// // return the dump from the function and not to a file
+// const result = await mysqldump({
+//     connection: {
+//         host: 'localhost',
+//         user: 'root',
+//         password: '123456',
+//         database: 'my_database',
+//     },
+// });
 
     res.render('setting/backup-db', { page: 'backUpDB', pageTitle: pageTitle });
 });

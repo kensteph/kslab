@@ -81,9 +81,10 @@ router.post('/save-test-valeurs-normales', async (req, res) => {
 router.get('/add-test-materiaux', async (req, res) => {
     let examID = req.query.test;
     let data = await examenDB.getExamById(examID);
+    let matAssos = await stockDB.listeMateriauxAssocieATest(examID);
     let exam = data[0].nom_examen;
-    let materiaux = await stockDB.listOfMateriaux();
-    console.log(materiaux);
+    let materiaux = await stockDB.listOfMateriaux("All");
+    console.log(matAssos);
     let pageTitle = "Matériaux inventoriés associés au test '" + exam + "'";
     params = {
         pageTitle: pageTitle,

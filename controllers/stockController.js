@@ -83,6 +83,22 @@ module.exports = {
         //console.log(data); 
         return data;
     },
+        //Materiaux LIST
+        listeMateriauxAssocieATest: async function (testId) {
+            let promise = new Promise((resolve, reject) => {
+                let sql = "SELECT * FROM tb_materiaux,tb_link_materiau_test WHERE tb_link_materiau_test.materiau=tb_materiaux.id AND test_id=" + testId;
+                con.query(sql, function (err, rows) {
+                    if (err) {
+                        throw err;
+                    } else {
+                        resolve(rows);
+                    }
+                });
+            });
+            data = await promise;
+            //console.log(data); 
+            return data;
+        },
     //Add STOCK Materiau
     addStock: async function (req) {
         let promise = new Promise((resolve, reject) => {

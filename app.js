@@ -134,6 +134,46 @@ app.get('/home', async (req, res) => {
     let total_materiaux_in_stock = await stats.StockCount();
     let stockExpiredCount = await stats.StockExpiredCount();
     let stockAlertCount = await stats.StockAlertCount(30);//
+    //NOMBRE DE PATIENT SUR 1 AN
+    let currentYear = helpers.getCurrentYear();
+    let pastYear = helpers.getPastYear();
+    let currentMonth = helpers.getCurrentMonth();
+    let pastMonth = helpers.getPastMonth(currentMonth);
+    let nb_test_past_month = 0;
+    let nb_test_curr_month = 0;
+    
+    console.log("PM : "+ pastMonth+"  CM : "+currentMonth);
+    let countPatientCurrentYear =[];
+    for(i=1; i<13; i++){ //Month
+        let nbPatientCY = await stats.patientcountByYearMonth(currentYear,i);
+        countPatientCurrentYear.push(nbPatientCY);
+    }
+    let countPatientPastYear =[];
+    for(i=1; i<13; i++){ //Month
+        let nbPatientCY = await stats.patientcountByYearMonth(pastYear,i);
+        countPatientPastYear.push(nbPatientCY);
+    }
+
+    //NOMBRE DE TEST SUR 1 AN
+    let countTestRequestCurrentYear =[];
+    for(i=1; i<13; i++){ //Month
+        let nbPatientCY = await stats.testRequestCountByYearMonth(currentYear,i);
+        if(pastMonth == i){ nb_test_past_month = nbPatientCY;}
+        if(currentMonth == i){ nb_test_curr_month = nbPatientCY;}
+        countTestRequestCurrentYear.push(nbPatientCY);
+    }
+    let diff = nb_test_curr_month - nb_test_past_month ;
+    let text_c = " en moins ";
+    let classVal="fa fa-caret-down";
+    if(diff > 0){ text_c = " en plus "; classVal="fa fa-caret-up"; }
+    let comment = Math.abs(diff)+" "+text_c+"du mois précédent";
+    if(diff == 0){ comment="";  classVal="";}
+    let countTestRequestPastYear =[];
+    for(i=1; i<13; i++){ //Month
+        let nbPatientCY = await stats.testRequestCountByYearMonth(pastYear,i);
+        countTestRequestPastYear.push(nbPatientCY);
+    }
+    console.log(countTestRequestPastYear + ""+ countTestRequestCurrentYear);
     params = {
         pageTitle: pageTitle,
         stats: {
@@ -145,6 +185,12 @@ app.get('/home', async (req, res) => {
             TotProduct: total_materiaux_in_stock,
             StockExpiredCount: stockExpiredCount,
             StockAlertCount: stockAlertCount,
+            countPatientPastYear : countPatientPastYear,
+            countPatientCurrentYear : countPatientCurrentYear,
+            countTestRequestPastYear : countTestRequestPastYear,
+            countTestRequestCurrentYear : countTestRequestCurrentYear,
+            comment : comment,
+            classVal : classVal,
         },
         page: 'Home'
     };
@@ -157,7 +203,7 @@ app.post('/home', async (req, res) => {
 });
 
 //CRON JOB
-// schedule tasks to be run on the server
+//schedule tasks to be run on the server
 //    cron.schedule("* * * * *", async function() {
 //     console.log("---------------------");
 //     console.log("Running Cron Job");
@@ -170,8 +216,8 @@ app.post('/home', async (req, res) => {
 //     }else{
 //         console.log("The directory is already empty...");
 //     }
-//     let stockCritic = await stockDB.listOfAllExpiredStock();
-//     console.log(stockCritic);
+//     // let stockCritic = await stockDB.listOfAllExpiredStock();
+//     // console.log(stockCritic);
 //   });
 
 //GET NOTIFICATIONS
