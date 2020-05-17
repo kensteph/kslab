@@ -124,31 +124,45 @@
                                                         <input type="hidden" name="docteur" value="<%=stock.docteur%>">
                                                         <a href="#" class="dropdown-item"
                                                             onclick="submitForm('<%=stock.request_id%>')"><i
-                                                                class="fa fa-pencil m-r-5"></i>Enregistrer/Modifier Résultat</a>
+                                                                class="fa fa-pencil m-r-5"></i>Enregistrer/Modifier
+                                                            Résultat</a>
                                                     </form>
                                                     <% if(statut == 1){ %>
-                                                    <form target="_blank" action="/verify-test-result" method="POST" id="Verify<%=stock.request_id%>">
+                                                    <form target="_blank" action="/verify-test-result" method="POST"
+                                                        id="Verify<%=stock.request_id%>">
                                                         <input type="hidden" name="id_test_request"
                                                             value="<%=stock.request_id%>">
                                                         <input type="hidden" name="patient"
                                                             value="<%=patientSelected%>">
-                                                        <a href="#" onclick="submitFormVerifiy('<%=stock.request_id%>')" class="dropdown-item" title="Vérifier les résutats"><i
+                                                        <a href="#" onclick="submitFormVerifiy('<%=stock.request_id%>')"
+                                                            class="dropdown-item" title="Vérifier les résutats"><i
                                                                 class="fa fa-check"></i> Vérifier les résutats</a>
                                                     </form>
                                                     <% } %>
 
                                                     <% if(statut == 2){ %>
-                                                        <a href="#" id="btnDelivery<%=stock.request_id%>" onclick="launchModal('<%=stock.request_id%>','<%=patientSelected%>')" class="dropdown-item" ><i
-                                                                    class="fa fa-check"></i> Livrer les résutats</a>
+                                                    <a href="#" id="btnDelivery<%=stock.request_id%>"
+                                                        onclick="launchModal('<%=stock.request_id%>','<%=patientSelected%>')"
+                                                        class="dropdown-item"><i class="fa fa-check"></i> Livrer les
+                                                        résutats</a>
                                                     <% } %>
-                                                    <form id="PrintForm<%=stock.request_id%>" target="_blank" action="/display-test-result" method="POST">
-                                                        <input type="hidden" name="id_test_request" value="<%=stock.request_id%>">
-                                                        <input type="hidden" name="patient" value="<%=patientSelected%>">
+                                                    <a href="#" onclick="launchSignature('<%=stock.request_id%>')"
+                                                        class="dropdown-item"><i class="fa fa-check"></i> Signature</a>
+                                                    <form id="PrintForm<%=stock.request_id%>" target="_blank"
+                                                        action="/display-test-result" method="POST">
+                                                        <input type="hidden" name="id_test_request"
+                                                            value="<%=stock.request_id%>">
+                                                        <input type="hidden" name="patient"
+                                                            value="<%=patientSelected%>">
                                                         <input type="hidden" name="patientAge" value="<%=stock.age%>">
                                                         <input type="hidden" name="patientSexe" value="<%=stock.sexe%>">
-                                                        <input type="hidden" name="patientNumber" value="<%=stock.numero_patient%>">
+                                                        <input type="hidden" name="patientNumber"
+                                                            value="<%=stock.numero_patient%>">
                                                         <input type="hidden" name="docteur" value="<%=stock.docteur%>">
-                                                        <a href="#" class="dropdown-item"  onclick="printTest('<%=stock.request_id%>')"><i class="fa fa-print fa-lg"></i> Imprimer les résultats</a>
+                                                        <a href="#" class="dropdown-item"
+                                                            onclick="printTest('<%=stock.request_id%>')"><i
+                                                                class="fa fa-print fa-lg"></i> Imprimer les
+                                                            résultats</a>
                                                     </form>
                                                 </div>
                                             </div>
@@ -165,24 +179,58 @@
         </div>
 
         <div id="TestDelivery" class="modal fade delete-modal" role="dialog" data-keyboard="false">
-			<div class="modal-dialog modal-dialog-centered">
-				<div class="modal-content">
-					<div class="modal-body text-center">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-body text-center">
                         <img src="assets/img/sent.png" alt="" width="50" height="46">
                         <form id="DeliveryForm">
                             <input type="hidden" name="testRequestId" id="Test">
                             <input type="hidden" name="statut" value="3" id="Statut">
                         </form>
-						Voulez-vous livrer les résultats de <strong id="patientS"></strong> ?
-						<div id="msg"></div>
-						<div class="m-t-20"> <a href="#" class="btn btn-danger" data-dismiss="modal">Non</a>
-							<button type="submit" class="btn btn-success" onclick="livrerTest()">Oui</button>
-						</div>
-					</div>
-				</div>
-			</div>
-			
-		</div>
+                        Voulez-vous livrer les résultats de <strong id="patientS"></strong> ?
+                        <div id="msg"></div>
+                        <div class="m-t-20"> <a href="#" class="btn btn-danger" data-dismiss="modal">Non</a>
+                            <button type="submit" class="btn btn-success" onclick="livrerTest()">Oui</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+
+
+        <div id="TestSignature" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content modal-md">
+                    <div class="modal-header">
+                        <h4 class="modal-title"><strong id="titleSignature"></strong></h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="SignatureForm">
+                            <div class="form-inline">
+                                <div class="col-sm-7 col-md-7 col-lg-7">
+                                    <input type="text" placeholder="Réaliser par" name="realiser_par" class="form-control">
+                                </div>
+                                <div class="col-sm-4 col-md-4 col-lg-4" style="margin-left: -15px;">
+                                    <input type="text" placeholder="Poste" name="poste" class="form-control">
+                                    <input type="hidden" name="testRequestId" id="testSignature">
+                                </div>
+                            </div>
+
+                            <div id="notifySignature" class="m-t-20 text-center"></div>
+                        </form>
+                        <div class="m-t-20 text-center">
+                            <button onclick="updateSignature()" class="btn btn-primary submit-btn">Enregistrer</button>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
     </div>
     <div class="sidebar-overlay" data-reff=""></div>
     <script src="assets/js/jquery-3.2.1.min.js"></script>
@@ -202,26 +250,43 @@
         function submitFormVerifiy(id) {
             $("#Verify" + id).submit();
         }
-        function launchModal(test_id,patient){
-            $("#patientS").html(""+patient);
+        function launchModal(test_id, patient) {
+            $("#patientS").html("" + patient);
             $("#Test").val(test_id);
             $("#TestDelivery").modal();
         }
-        function printTest(test){
-            $("#PrintForm"+test).submit();
+        function printTest(test) {
+            $("#PrintForm" + test).submit();
         }
-        livrerTest = function(){
-                let   formData = $("#DeliveryForm").serialize();
-                    $.post("/update-test-status" ,formData, function(data){
-                        console.log(data);
-                        if(data.success){ //Success 
-                            let id = formData.testRequestId;
-                            $("#btnDelivery"+id).hide();
-                            $('#TestDelivery').modal('hide')
-                        }else{
-                            $("#msg").html(data.error);
-                        } 
-                    });
+        livrerTest = function () {
+            let formData = $("#DeliveryForm").serialize();
+            $.post("/update-test-status", formData, function (data) {
+                console.log(data);
+                if (data.success) { //Success 
+                    let id = formData.testRequestId;
+                    $("#btnDelivery" + id).hide();
+                    $('#TestDelivery').modal('hide')
+                } else {
+                    $("#msg").html(data.error);
+                }
+            });
+        }
+
+        function launchSignature(test_id) {
+            $("#notifySignature").html("");
+            $("#titleSignature").html("Signature pour le test " + test_id);
+            $("#testSignature").val(test_id);
+            $("#TestSignature").modal();
+        }
+        updateSignature = function () {
+            let formData = $("#SignatureForm").serialize();
+            $.post("/update-test-signature", formData, function (data) {
+                if (data.success) { //Success 
+                    $("#notifySignature").html(data.msg);
+                } else {
+                    $("#notifySignature").html(data.msg);
+                }
+            });
         }
     </script>
     <!-- FOOTER -->

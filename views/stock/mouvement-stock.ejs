@@ -35,7 +35,7 @@
                         <h4 class="page-title"><%=pageTitle%> </h4>
                     </div>
                     <div class="col-sm-7 col-8 text-right m-b-30">
-                        <a href="create-invoice.html" class="btn btn-primary btn-rounded"><i class="fa fa-plus"></i>
+                        <a href="create-invoice.html" class="btn btn-primary btn-rounded"><i class="fa fa-arrow-up"></i>
                             Create New Invoice</a>
                     </div>
                 </div>
@@ -89,15 +89,17 @@
                                 <tbody>
                                     <% data.forEach((stock) => {
                                         let fa = "";
+                                        let color = "color : red;";
                                         let title = "";
-                                        if(stock.transaction == "Add"){
-                                            fa = "fa fa-plus";
+                                        if(stock.transaction == "add"){
+                                            fa = "fa fa-arrow-up";
                                             title = "Augmentation de stock";
+                                            color = "color : green;";
                                         }else if(stock.transaction == "substract"){
-                                            fa = "fa fa-minus";
+                                            fa = "fa fa-arrow-down";
                                             title = "Diminution de stock";
                                         }else{
-                                            fa = "fa fa-trash";
+                                            fa = "fa fa-arrow-down ";
                                             title = "Stock endommagé";
                                         }
                                     %>
@@ -106,7 +108,7 @@
                                         <td><a href=""><%=stock.lot%></a></td>
                                         <td><%=stock.nom_materiau%></td>
                                         <td><%=stock.qte%></td>
-                                        <td><i class="<%= fa%>" title="<%= title%>"></i></td>
+                                        <td><i style="<%= color %>" class="<%= fa%>" title="<%= title%>"></i></td>
                                         <td><%=stock.commentaire%></td>
                                         <td><%=stock.acteur%></td>
                                     </tr>

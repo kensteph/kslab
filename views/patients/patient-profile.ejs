@@ -31,11 +31,6 @@
                     <div class="col-sm-7 col-6">
                         <h4 class="page-title">Profile <%=data.fullname%></h4>
                     </div>
-
-                    <div class="col-sm-5 col-6 text-right m-b-30">
-                        <a href="/edit-patient?patient=<%= data.id %>" class="btn btn-primary btn-rounded"><i
-                                class="fa fa-plus"></i> Modifier</a>
-                    </div>
                 </div>
                 <div class="card-box profile-header">
                     <div class="row">
@@ -53,8 +48,9 @@
                                                 <h3 class="user-name m-t-0 mb-0"><%=data.fullname%></h3>
                                                 <small class="text-muted">Gynecologist</small>
                                                 <div class="staff-id">Patient ID : <%=data.numero_patient%></div>
-                                                <div class="staff-msg"><a href="chat.html" class="btn btn-primary">Send
-                                                        Message</a></div>
+                                                <div class="staff-msg">
+                                                    <a href="/edit-patient?patient=<%= data.id %>" class="btn btn-primary">Modifier</a>
+                                                </div>
                                             </div>
                                         </div>
                                         <div class="col-md-7">

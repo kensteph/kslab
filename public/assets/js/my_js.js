@@ -45,7 +45,6 @@ $(document).ready(function () {
     }
 
     //SEARCH FOR A PATIENT
-    document.getElementById("searchPatientInput").focus();
     $('#searchPatientInput').keyup(function (e) {
         let wordToSearch = $(this).val().trim();
         if(wordToSearch.length>=2){

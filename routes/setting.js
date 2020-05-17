@@ -165,44 +165,23 @@ router.get('/notifications-list', async (req, res) => {
 
 //================================================ BACKUP DB =================================================
 //GET DB HISTORIQUE BACKUP
-router.get('/backup-db', async (req, res) => {
-    let pageTitle = "Historique des sauvegardes ";
-const mysqldump = require('mysqldump');
-let path_directory = "C:/Users/KS/OneDrive/Saudeez";
-// dump the result straight to a file
-mysqldump({
-    connection: {
-        host: 'localhost',
-        user: 'root',
-        password: 'root',
-        database: 'kslab',
-    },
-    dumpToFile: path_directory+'/'+helpers.getCurrentDate()+'.sql',
-});
-
-// dump the result straight to a compressed file
-// mysqldump({
-//     connection: {
-//         host: 'localhost',
-//         user: 'root',
-//         password: '123456',
-//         database: 'my_database',
-//     },
-//     dumpToFile: './dump.sql.gz',
-//     compressFile: true,
-// });
- 
-// // return the dump from the function and not to a file
-// const result = await mysqldump({
-//     connection: {
-//         host: 'localhost',
-//         user: 'root',
-//         password: '123456',
-//         database: 'my_database',
-//     },
-// });
-
-    res.render('setting/backup-db', { page: 'backUpDB', pageTitle: pageTitle });
+router.post('/backup-db', async (req, res) => {
+    //let pageTitle = "Historique des sauvegardes ";
+    let path_back_up =req.body.backupPath;
+    let msg = {};
+    if(path_back_up.trim() == ""){
+       path_back_up = global.backupPath;
+    }
+    let rep = helpers.DatatbaseBackup(path_back_up);
+    if(rep){
+        msg = {success:true , msg : "<font color='green'>Sauvegarde effectuée avec succès.</font> Chemin : "+path_back_up};
+        console.log(msg);
+    }else{
+        msg = {success: false , msg : "<font color='red'>Une erreur s'est produite. Veuillez réessayer.</font>"};
+        console.log(msg);
+    }
+    res.json(msg);
+    //res.render('setting/backup-db', { page: 'backUpDB', pageTitle: pageTitle });
 });
 
 

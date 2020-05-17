@@ -36,8 +36,8 @@
                     </div>
                 </div>
                 <div class="row filter-row">
-                    <form action="" method="POST" class="form-inline m-b-10">
-                        <div class="col-sm-6 col-md-6">
+                    <form action="" method="POST" class="form-inline m-b-10" style="width: 60%;">
+                        <div class="col-sm-3 col-md-3">
                             <div class="form-group form-focus select-focus">
                                 <label class="focus-label">Statut</label>
                                 <select class="select floating" name="statut">
@@ -49,7 +49,20 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="col-sm-6 col-md-6">
+                        <div class="col-sm-4 col-md-4">
+                            <div class="form-group form-focus select-focus">
+                                <label class="focus-label">Matériau</label>
+                                <select class="select floating" name="materiauSelected">
+                                    <option value="All">Tous</option>
+                                    <% materiauxList.forEach((materiau) => { %>
+                                    <option value="<%=materiau.id%>" <% if( materiauSelected == materiau.id ){ %> <%= "selected" %> <% } %> > 
+                                        <%=materiau.nom_materiau%>
+                                    </option>
+                                    <% }) %>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-3 col-md-3">
                             <button class="btn btn-success">Rechercher</button>
                         </div>
                     </form>
@@ -57,6 +70,7 @@
                     <form id="PrintForm" target="_blank" action="/print-inventory-report" method="POST">
                         <input type="hidden" name="dateFrom" value="">
                         <input type="hidden" name="statut" value="<%=statut%>">
+                        <input type="hidden" name="materiauSelected" value="<%=materiauSelected%>">
                         <a href="#" class="dropdown-item" onclick="printReport()"><i class="fa fa-print fa-lg"></i>
                             Imprimer le rapport</a>
                     </form>
@@ -162,9 +176,9 @@
                                 <textarea cols="30" rows="4" class="form-control" name="commentaire"></textarea>
                             </div>
 
-                            <div id="notify" class="m-t-20 text-center"></div>
+                            <div id="notifyStock" class="m-t-20 text-center"></div>
                             <div class="m-t-20 text-center">
-                                <button class="btn btn-primary submit-btn">Enregistrer</button>
+                                <button id="btnAddOrRemove" class="btn btn-primary submit-btn">Enregistrer</button>
                             </div>
                         </form>
 
@@ -215,7 +229,10 @@
             addorRemoveStock();
         });
         function launchStockManagement(matName, matId, lot) {
+            $("#btnAddOrRemove").prop("disabled", false);
+            $("#notifyStock").show().html("");
             $("#materiauName").html(matName + "-" + lot);
+            $("#qte").val("");
             $("#materiauId").val(matId);
             $("#materiau").val(matName);
             $("#lot").val(lot);
@@ -238,20 +255,20 @@
             $("#stockValide").modal();
         }
         addorRemoveStock = function () {
-            $("#notify").show().html();
             let formData = $("#addRemoveStockForm").serialize();
             $.post("/add-remove-stock", formData, function (data) {
                 console.log(data);
                 if (data.success) { //Success 
-                    $("#notify").html(data.msg);//.fadeOut(5000);
+                    $("#notifyStock").html(data.msg);
+                    $("#btnAddOrRemove").prop("disabled", true);
                 } else {
-                    $("#notify").html(data.msg);
+                    $("#notifyStock").html(data.msg);
                 }
             });
         }
 
         changeStockStatus = function () {
-            $("#Notif").show().html();
+            $("#Notif").show().html("");
             let formData = $("#validForm").serialize();
             $.post("/change-stock-status", formData, function (data) {
                 console.log(data);

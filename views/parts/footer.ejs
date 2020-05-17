@@ -5,4 +5,15 @@
         $("#searchPatientInput").val(patient);
         $("#ResultList").html("");
     }
+
+    function dbBackUp(){
+        let formData = $("#dbBackupForm").serialize();
+            $.post("/backup-db", formData, function (data) {
+                if (data.success) { //Success 
+                    $("#sauvegardeNotify").html(data.msg)
+                } else { 
+                    $("#sauvegardeNotify").html(data.msg)
+                }
+            });
+    }
 </script>

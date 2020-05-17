@@ -1,7 +1,6 @@
 var mkdirp = require('mkdirp');
 var fs = require('fs');
-
-module.exports = {
+var self = module.exports = {
     //Generate Code for the Student
     generateCode: function (initial, idPersonne) {
         var dt = new Date();
@@ -38,7 +37,9 @@ module.exports = {
     },
     getPastMonth() {
         var dt = new Date();
-        nextYear = dt.getMonth(); //Get the current year in 4 digits
+        dt.setDate(dt.getDate()-30); //Get the current year in 4 digits
+        nextYear = dt.getMonth()+1;
+        console.log(nextYear);
         return nextYear;
     },
     getCurrentDateTime() {
@@ -291,5 +292,52 @@ module.exports = {
                 console.log('Email sent: ' + info.response);
             }
         });
-    }
+    },
+
+//===================================== DB BACKUP ===================================
+DatatbaseBackup(path){
+const mysqldump = require('mysqldump');
+let path_directory = path;
+let resp = false;
+// dump the result straight to a file
+try {
+    mysqldump({
+        connection: {
+            host: 'localhost',
+            user: 'root',
+            password: 'root',
+            database: 'kslab',
+        },
+        dumpToFile: path_directory+'/'+self.getCurrentDate()+'.sql',
+    }); 
+    resp = true;
+} catch (error) {
+    console.log("BACKUP DB MSG : "+error);
+}
+
+return resp;
+// dump the result straight to a compressed file
+// mysqldump({
+//     connection: {
+//         host: 'localhost',
+//         user: 'root',
+//         password: '123456',
+//         database: 'my_database',
+//     },
+//     dumpToFile: './dump.sql.gz',
+//     compressFile: true,
+// });
+ 
+// // return the dump from the function and not to a file
+// const result = await mysqldump({
+//     connection: {
+//         host: 'localhost',
+//         user: 'root',
+//         password: '123456',
+//         database: 'my_database',
+//     },
+// });
+
+},
+
 };

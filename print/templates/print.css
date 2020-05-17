@@ -22,6 +22,27 @@ hr{
     margin-top: 30px;
     padding-left: 30px;
 }
+.signature{
+    width: 50%;
+    margin-top: 400px;
+    padding-left:450px;
+}
+.realisateur{
+    text-align:center;
+    margin-bottom: -7px;
+    font-size: 14px;
+    font-weight: bold;
+}
+hr{
+    text-align:center;
+    width: 50%;
+    margin-top: 15px;
+}
+
+.poste{
+    text-align: center;
+    font-size: 13px;
+}
 .header-form {
     text-align: right;
     width: 70%;

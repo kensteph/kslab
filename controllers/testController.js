@@ -248,11 +248,34 @@ var self = module.exports = {
         console.log(data);
         return data;
     },
+    //EDIT SIGNATURE AU BAS DE LA PAGE
+    modifySignatureInfo: async function (id_test, realisateur,poste) {
+        let promise = new Promise((resolve, reject) => {
+            let sql = "UPDATE tb_test_requests SET realiser_par ='" + realisateur + "',poste ='" + poste + "' WHERE id =?";
+            con.query(sql, id_test, function (err, rows) {
+                if (err) {
+                    resolve({
+                        msg: "Une erreur est survenue. S'il vous palit réessayez.",
+                        error: "danger",
+                        debug: err
+                    });
+                } else {
+                    resolve({
+                        msg: "Signature <strong>" + realisateur + "</strong> / <i>"+poste+"</i> ajouté avec succès.",
+                        success: "success"
+                    });
+                }
+            });
+        });
+        data = await promise;
+        console.log(data);
+        return data;
+    },
     //LIST REQUEST TESTS
     singlePatientTestRequestlist: async function (patient) {
         let promise = new Promise((resolve, reject) => {
             let line = [];
-            let sql = "SELECT *,CONCAT(prenom,' ',nom) as fullname,tb_test_requests.id as id_request,tb_test_requests.statut as test_status FROM tb_test_requests,tb_patients,tb_personnes WHERE tb_test_requests.patient=tb_patients.id_personne AND tb_patients.id_personne=tb_personnes.id AND tb_personnes.id=? ORDER BY tb_test_requests.id ";
+            let sql = "SELECT *,CONCAT(prenom,' ',nom) as fullname,tb_test_requests.id as id_request,tb_test_requests.statut as test_status FROM tb_test_requests,tb_patients,tb_personnes WHERE tb_test_requests.patient=tb_patients.id_personne AND tb_patients.id_personne=tb_personnes.id AND tb_personnes.id=? ORDER BY tb_test_requests.id DESC ";
             //console.log(sql);
             con.query(sql,patient, async function (err, rows) {
                 if (err) {

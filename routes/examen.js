@@ -15,12 +15,24 @@ const printer = require('../print/print');
 // router.use(express.static('public'));
 // ADD EXAM
 router.get('/add-examens', async (req, res) => {
-    let pageTitle = "Nouvel examen";
-    params = {
-        pageTitle: pageTitle,
-        page: 'NewExam'
-    };
-    res.render('examens/add-examens', params);
+    if (typeof req.session.UserData != "undefined") {
+        if (req.session.UserData.user_sub_menu_access.includes("Ajouter examens") || req.session.UserData.user_sub_menu_access[0] == "All") {
+            /// FULL ACCESS
+            let pageTitle = "Nouvel examen";
+            params = {
+                pageTitle: pageTitle,
+                UserData: req.session.UserData,
+                page: 'NewExam'
+            };
+            res.render('examens/add-examens', params);
+
+        } else {
+            res.redirect(global.USER_HOME_PAGE);
+        }
+
+    } else {
+        res.redirect("/");
+    }
 });
 
 router.post('/add-examens', async (req, res) => {
@@ -31,6 +43,7 @@ router.post('/add-examens', async (req, res) => {
     params = {
         pageTitle: pageTitle,
         notifications: notifications,
+        UserData : req.session.UserData,
         page: 'NewExam'
     };
     res.render('examens/add-examens', params);
@@ -38,14 +51,26 @@ router.post('/add-examens', async (req, res) => {
 
 // //EXAMS LIST
 router.get('/examens', async (req, res) => {
-    let data = await examenDB.listOfExams();
-    let pageTitle = "Liste des examens";
-    params = {
-        pageTitle: pageTitle,
-        data: data,
-        page: 'ExamsList'
-    };
-    res.render('examens/examens-list', params);
+    if (typeof req.session.UserData != "undefined") {
+        if (req.session.UserData.user_sub_menu_access.includes("Voir la liste des examens") || req.session.UserData.user_sub_menu_access[0] == "All") {
+            /// FULL ACCESS
+            let data = await examenDB.listOfExams();
+            let pageTitle = "Liste des examens";
+            params = {
+                pageTitle: pageTitle,
+                data: data,
+                UserData: req.session.UserData,
+                page: 'ExamsList'
+            };
+            res.render('examens/examens-list', params);
+
+        } else {
+            res.redirect(global.USER_HOME_PAGE);
+        }
+
+    } else {
+        res.redirect("/");
+    }
 });
 
 //ADD TEST PARAMETERS
@@ -60,6 +85,7 @@ router.get('/add-test-parameters', async (req, res) => {
         data: examsParameters,
         examID: examID,
         exam: exam,
+        UserData : req.session.UserData,
         page: 'NewExam'
     };
     res.render('examens/add-test-parameters', params);
@@ -91,6 +117,7 @@ router.get('/add-test-materiaux', async (req, res) => {
         data: materiaux,
         examID: examID,
         exam: exam,
+        UserData : req.session.UserData,
         page: 'NewExam'
     };
     res.render('examens/add-test-materiaux', params);
@@ -114,6 +141,7 @@ router.get('/test-laboratoire', async (req, res) => {
         data: data,
         dataExam: dataExam,
         patientSelected: patientSelected,
+        UserData : req.session.UserData,
         page: 'NewTest'
     };
     res.render('examens/add-test-patient', params);
@@ -135,6 +163,7 @@ router.post('/test-laboratoire', async (req, res) => {
         data: data,
         dataExam: dataExam,
         patientSelected: patientSelected,
+        UserData : req.session.UserData,
         page: 'NewTest'
     };
     res.render('examens/add-test-patient', params);
@@ -150,45 +179,56 @@ router.post('/save-test-request', async (req, res) => {
 
 //LIST DES TESTS
 router.get('/Tests', async (req, res) => {
-    let dateFrom = helpers.getCurrentDate();
-    let dateTo = helpers.getCurrentDate();
-    let status = "All";
-    if(req.query.date && req.query.status){
-        dateFrom = "All";
-        status = req.query.status;
+ if (typeof req.session.UserData != "undefined") {
+        if (req.session.UserData.user_sub_menu_access.includes("Liste des demandes de Tests") || req.session.UserData.user_sub_menu_access[0] == "All") {
+          /// FULL ACCESS
+          let dateFrom = helpers.getCurrentDate();
+          let dateTo = helpers.getCurrentDate();
+          let status = "All";
+          if (req.query.date && req.query.status) {
+              dateFrom = "All";
+              status = req.query.status;
+          }
+          console.log(dateFrom + " | " + status);
+          let data = await testDB.testRequestlist(dateFrom, dateTo, status);
+          let pageTitle = "Tests laboratoire (" + data.length + ")";
+          console.log(data);
+          //DATES
+          dateFrom = helpers.formatDate(dateFrom, "FR");
+          dateFrom = helpers.changeDateSymbol(dateFrom);
+          dateTo = helpers.formatDate(dateTo, "FR");
+          dateTo = helpers.changeDateSymbol(dateTo);
+      
+          params = {
+              pageTitle: pageTitle,
+              data: data,
+              dateFrom: dateFrom,
+              dateTo: dateTo,
+              statut: status,
+              UserData : req.session.UserData,
+              page: 'ListTest'
+          };
+          res.render('examens/test-request-list', params);
+        } else {
+            res.redirect(global.USER_HOME_PAGE);
+        }
+    
+    } else {
+        res.redirect("/");
     }
-    console.log(dateFrom+" | "+status);
-    let data = await testDB.testRequestlist(dateFrom, dateTo, status);
-    let pageTitle = "Tests laboratoire (" + data.length + ")";
-    console.log(data);
-    //DATES
-    dateFrom = helpers.formatDate(dateFrom, "FR");
-    dateFrom = helpers.changeDateSymbol(dateFrom);
-    dateTo = helpers.formatDate(dateTo, "FR");
-    dateTo = helpers.changeDateSymbol(dateTo);
-
-    params = {
-        pageTitle: pageTitle,
-        data: data,
-        dateFrom: dateFrom,
-        dateTo: dateTo,
-        statut: status,
-        page: 'ListTest'
-    };
-    res.render('examens/test-request-list', params);
 });
 router.post('/Tests', async (req, res) => {
-    console.log("DATA :"+req.query);
+    console.log("DATA :" + req.query);
     let dateFrom = req.body.dateFrom;
     let dateTo = req.body.dateTo;
     let status = req.body.statut;
     dateFromDB = helpers.formatDate(dateFrom, "EN");
     dateToDB = helpers.formatDate(dateTo, "EN");
-    if(req.query.date && req.query.status){
+    if (req.query.date && req.query.status) {
         dateFrom = "All";
         status = req.query.status;
     }
-    console.log(dateFrom+" | "+status);
+    console.log(dateFrom + " | " + status);
     let data = await testDB.testRequestlist(dateFromDB, dateToDB, status);
     let text_status = status != "All" ? TEST_STATUS[status] : "";
     let pageTitle = "Tests laboratoire " + text_status + " (" + data.length + ")";
@@ -203,6 +243,7 @@ router.post('/Tests', async (req, res) => {
         dateFrom: dateFrom,
         dateTo: dateTo,
         statut: status,
+        UserData : req.session.UserData,
         page: 'ListTest'
     };
     res.render('examens/test-request-list', params);
@@ -214,7 +255,7 @@ router.post('/SaveTestResult', async (req, res) => {
     let num_patient = req.body.patientNumber;
     let docteur = req.body.docteur;
     let dossier_patient = fullname + " [" + num_patient + "]";
-    let patientSelected = { fullname: fullname, num_patient: num_patient, dossier: dossier_patient,docteur : docteur };
+    let patientSelected = { fullname: fullname, num_patient: num_patient, dossier: dossier_patient, docteur: docteur };
     let id_test_request = req.body.testRequestId;
     let data = await examenDB.testRequestContent(id_test_request);
     //console.log(data);
@@ -224,6 +265,7 @@ router.post('/SaveTestResult', async (req, res) => {
         data: data,
         patientSelected: patientSelected,
         id_test_request: id_test_request,
+        UserData : req.session.UserData,
         page: 'ListTest'
     };
     res.render('examens/save-test-patient', params);
@@ -252,7 +294,16 @@ router.post('/save-test-result', async (req, res) => {
 router.post('/edit-doctor-info', async (req, res) => {
     let testRequestId = req.body.id_test_request;
     let doctor = req.body.Docteur;
-    let notifications = await testDB.modifyDoctorInfo(testRequestId,doctor);
+    let notifications = await testDB.modifyDoctorInfo(testRequestId, doctor);
+    res.json(notifications);
+});
+
+//EDIT TEST SIGNATURE
+router.post('/update-test-signature', async (req, res) => {
+    let testRequestId = req.body.testRequestId;
+    let realisateur = req.body.realiser_par;
+    let poste = req.body.poste;
+    let notifications = await testDB.modifySignatureInfo(testRequestId, realisateur, poste);
     res.json(notifications);
 });
 
@@ -287,8 +338,8 @@ router.post('/display-test-result', async (req, res) => {
     let patientSexe = req.body.patientSexe;
     let patientNumber = req.body.patientNumber;
     let docteur = req.body.docteur;
-    let title = helpers.titleByAge(patientAge,patientSexe);
-    console.log("YOU ARE A : "+title);
+    let title = helpers.titleByAge(patientAge, patientSexe);
+    console.log("YOU ARE A : " + title);
     let data = await examenDB.testRequestContent(test_request_id);
     let date_resultat = helpers.formatDate(helpers.getCurrentDate(), "FR");
     let resultaFinal = [];
@@ -307,28 +358,28 @@ router.post('/display-test-result', async (req, res) => {
         if (infoParams.length == 0) {
             infoParams = await examenDB.getExamById(id_exam);
             let testResult = await examenDB.getTestResult(test_request_id, id_exam);
-            let VN = await testDB.valeurNormalExam(title,id_exam);
+            let VN = await testDB.valeurNormalExam(title, id_exam);
             if (typeof testResult == "undefined") {
                 testResult = { resultat: "" };
             }
-            if (typeof VN  == "undefined") {
-                VN =  { vn: "" };
+            if (typeof VN == "undefined") {
+                VN = { vn: "" };
             }
             Resultats.push(testResult);
             ValeurNormal.push(VN);
         } else {
-           // console.log("PARAMETERS FOR " + name_exam +"["+ type_exam_resultat+"]"+ " : " + infoParams[0]);
-            
+            // console.log("PARAMETERS FOR " + name_exam +"["+ type_exam_resultat+"]"+ " : " + infoParams[0]);
+
             for (testParam of infoParams) {
                 //console.log(testParam);
                 let testResult = await examenDB.getTestResult(test_request_id, testParam.id_param_exam);
-                let VN = await testDB.valeurNormalExam(title,testParam.id_param_exam);
+                let VN = await testDB.valeurNormalExam(title, testParam.id_param_exam);
                 //console.log(VN);
                 if (typeof testResult == "undefined") {
                     testResult = { resultat: "" };
                 }
-                if (typeof VN  == "undefined") {
-                    VN =  { vn: "" };
+                if (typeof VN == "undefined") {
+                    VN = { vn: "" };
                 }
                 Resultats.push(testResult);
                 ValeurNormal.push(VN);
@@ -336,10 +387,10 @@ router.post('/display-test-result', async (req, res) => {
             //console.log(ValeurNormal);
         }
 
-        let info = { TestName: name_exam,TestTypeResult: type_exam_resultat, Parameters: infoParams, Resultats: Resultats,VN : ValeurNormal};
+        let info = { TestName: name_exam, TestTypeResult: type_exam_resultat, Parameters: infoParams, Resultats: Resultats, VN: ValeurNormal };
         resultaFinal.push(info);
     }
-     console.log("VN : "+resultaFinal[0].VN[3].vn);
+    console.log("VN : " + resultaFinal[0].VN[3].vn);
     //console.log("FINAL : " + resultaFinal[0].Parameters[0].nom_examen + " : " + resultaFinal[0].Resultats[0].resultat);
 
     let pageTitle = "Résultat Tests Laboratoire";
@@ -347,11 +398,12 @@ router.post('/display-test-result', async (req, res) => {
         pageTitle: pageTitle,
         data: resultaFinal,
         patient: patient,
-        testNumber : test_request_id,
-        patientNumber : patientNumber,
-        patientSexe : patientSexe,
-        docteur : docteur,
+        testNumber: test_request_id,
+        patientNumber: patientNumber,
+        patientSexe: patientSexe,
+        docteur: docteur,
         date: date_resultat,
+        UserData : req.session.UserData,
         page: 'NewTest'
     };
     let filename = patient + ".pdf";
@@ -395,7 +447,7 @@ router.post('/verify-test-result', async (req, res) => {
             Resultats.push(testResult);
         } else {
             console.log("PARAMETERS FOR " + name_exam + " : " + infoParams[0]);
-            
+
             for (testParam of infoParams) {
                 //console.log(testParam);
                 let testResult = await examenDB.getTestResult(test_request_id, testParam.id_param_exam);
@@ -413,14 +465,14 @@ router.post('/verify-test-result', async (req, res) => {
 
     console.log("FINAL : " + resultaFinal[0].Parameters[0].nom_examen + " : " + resultaFinal[0].Resultats[0].resultat);
 
-    let pageTitle = "Résultats Tests # "+test_request_id+" | "+patient;
+    let pageTitle = "Résultats Tests # " + test_request_id + " | " + patient;
     params = {
         pageTitle: pageTitle,
         data: resultaFinal,
         patient: patient,
         date: date_resultat,
-        testRequestId  : test_request_id,
-        
+        testRequestId: test_request_id,
+        UserData : req.session.UserData,
         page: 'NewTest'
     };
     res.render('examens/display-test-result', params);
@@ -433,21 +485,21 @@ router.get('/lab-tests-report', async (req, res) => {
     let dateFrom = helpers.getCurrentDate();
     let dateTo = helpers.getCurrentDate();
     let status = "All";
-    if(req.query.date && req.query.status){
+    if (req.query.date && req.query.status) {
         dateFrom = "All";
         status = req.query.status;
     }
-    console.log(dateFrom+" | "+status);
+    console.log(dateFrom + " | " + status);
     let data = await testDB.testRquestListForPeriod(dateFrom, dateTo);
     console.log(data);
     let text_date = "";
-    if(dateFrom == dateTo){
-        text_date = "Du "+helpers.formatDate(dateFrom,"FR");
-    }else{
-        text_date = "Du "+helpers.formatDate(dateFrom,"FR")+" au "+helpers.formatDate(dateTo,"FR");
+    if (dateFrom == dateTo) {
+        text_date = "Du " + helpers.formatDate(dateFrom, "FR");
+    } else {
+        text_date = "Du " + helpers.formatDate(dateFrom, "FR") + " au " + helpers.formatDate(dateTo, "FR");
     }
-    
-    let pageTitle = "Rapport des tests laboratoire "+ text_date + " (" + data.length + ")";
+
+    let pageTitle = "Rapport des tests laboratoire " + text_date + " (" + data.length + ")";
     //DATES
     dateFrom = helpers.formatDate(dateFrom, "FR");
     dateFrom = helpers.changeDateSymbol(dateFrom);
@@ -459,21 +511,22 @@ router.get('/lab-tests-report', async (req, res) => {
         data: data,
         dateFrom: dateFrom,
         dateTo: dateTo,
-        dateFromDB : helpers.getCurrentDate(),
-        dateToDB : helpers.getCurrentDate(),
+        dateFromDB: helpers.getCurrentDate(),
+        dateToDB: helpers.getCurrentDate(),
         statut: status,
+        UserData : req.session.UserData,
         page: 'Administration'
     };
     res.render('examens/test-report', params);
 });
 router.post('/lab-tests-report', async (req, res) => {
-    console.log("DATA :"+req.query);
+    console.log("DATA :" + req.query);
     let dateFrom = req.body.dateFrom;
     let dateTo = req.body.dateTo;
     let status = req.body.statut;
     dateFromDB = helpers.formatDate(dateFrom, "EN");
     dateToDB = helpers.formatDate(dateTo, "EN");
-    if(req.query.date && req.query.status){
+    if (req.query.date && req.query.status) {
         dateFrom = "All";
         status = req.query.status;
     }
@@ -484,12 +537,12 @@ router.post('/lab-tests-report', async (req, res) => {
     let data = await testDB.testRquestListForPeriod(dateFromDB, dateToDB);
     console.log(data);
     let text_date = "";
-    if(dateFromDB == dateToDB){
-        text_date = "Du "+helpers.formatDate(dateFromDB,"FR");
-    }else{
-        text_date = "Du "+helpers.formatDate(dateFromDB,"FR")+" au "+helpers.formatDate(dateToDB,"FR");
+    if (dateFromDB == dateToDB) {
+        text_date = "Du " + helpers.formatDate(dateFromDB, "FR");
+    } else {
+        text_date = "Du " + helpers.formatDate(dateFromDB, "FR") + " au " + helpers.formatDate(dateToDB, "FR");
     }
-    
+
     let text_status = status != "All" ? TEST_STATUS[status] : "";
     let pageTitle = "Rapport des tests laboratoire " + text_status + text_date + " (" + data.length + ")";
     //DATES
@@ -502,9 +555,10 @@ router.post('/lab-tests-report', async (req, res) => {
         data: data,
         dateFrom: dateFrom,
         dateTo: dateTo,
-        dateFromDB : dateFromDB,
-        dateToDB : dateToDB,
+        dateFromDB: dateFromDB,
+        dateToDB: dateToDB,
         statut: status,
+        UserData : req.session.UserData,
         page: 'Administration'
     };
     res.render('examens/test-report', params);
@@ -513,26 +567,27 @@ router.post('/lab-tests-report', async (req, res) => {
 //PRINT TEST REPORT
 router.post('/print-test-report', async (req, res) => {
     console.log(req.body);
-    let report =helpers.getCurrentDate();
+    let report = helpers.getCurrentDate();
     let filename = report + ".pdf";
     let pathfile = "./tmp/" + filename;
-    let template_name ="report";
+    let template_name = "report";
     let dateFrom = req.body.dateFrom;
     let dateTo = req.body.dateTo;
     let data = await testDB.testRquestListForPeriod(dateFrom, dateTo);
     console.log(data);
     let text_date = "";
-    if(dateFrom == dateTo){
-        text_date = "du "+helpers.formatDate(dateFrom,"FR");
-    }else{
-        text_date = "du "+helpers.formatDate(dateFrom,"FR")+" au "+helpers.formatDate(dateTo,"FR");
+    if (dateFrom == dateTo) {
+        text_date = "du " + helpers.formatDate(dateFrom, "FR");
+    } else {
+        text_date = "du " + helpers.formatDate(dateFrom, "FR") + " au " + helpers.formatDate(dateTo, "FR");
     }
-    let pageTitle = "Rapport des tests laboratoire " + text_date ;
+    let pageTitle = "Rapport des tests laboratoire " + text_date;
     params = {
         data: data,
         dateFrom: dateFrom,
         dateTo: dateTo,
-        pageTitle : pageTitle
+        UserData : req.session.UserData,
+        pageTitle: pageTitle
     };
     await printer.print(template_name, params, pathfile);
     //Display the file in the browser

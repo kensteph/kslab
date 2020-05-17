@@ -57,23 +57,29 @@ router.get('/materiaux', async (req, res) => {
 //INVENTAIRE
 router.get('/inventaire', async (req, res) => {
     let statut = 'All';
+    let materiauSelected = 'All';
     if(req.query.statut){ statut = req.query.statut; }
+    if(req.query.materiauSelected){ statut = req.query.materiauSelected; }
     let data ="";
     if(statut == "Critique"){
-        data = await stockDB.listOfAllAlertStock(30);
+        data = await stockDB.listOfAllAlertStock(materiauSelected,global.NBJOUR_STOCK_ALERT);
     }else if(statut == "Expiré"){
-        data = await stockDB.listOfAllExpiredStock();
+        data = await stockDB.listOfAllExpiredStock(materiauSelected);
     }else if(statut == "Valide"){
-        data = await stockDB.listOfAllValidStock(30);
+        data = await stockDB.listOfAllValidStock(materiauSelected);
     }else{
-        data = await stockDB.listOfAllStock();
+        data = await stockDB.listOfAllStock(materiauSelected);
     }
-    statut = statut !="All" ? statut+"s" : "";
-    let pageTitle = "Inventaire des stocks "+ statut;
+    await stockDB.stockToNotify(global.NBJOUR_STOCK_ALERT);
+    statut_text = statut !="All" ? statut+"s" : "";
+    let pageTitle = "Inventaire des stocks "+ statut_text;
+    let materiauxList = await stockDB.listOfMateriaux("All");
     params = {
         pageTitle: pageTitle,
         data: data,
         statut : statut,
+        materiauxList : materiauxList,
+        materiauSelected : materiauSelected,
         page: 'Inventaire'
     };
     res.render('stock/inventaire', params);
@@ -81,25 +87,30 @@ router.get('/inventaire', async (req, res) => {
 
 //INVENTAIRE POST
 router.post('/inventaire', async (req, res) => {
+    console.log(req.body);
     let statut = 'All';
+    let materiauSelected = 'All';
     if(req.body.statut){ statut = req.body.statut; }
+    if(req.body.materiauSelected){ materiauSelected = req.body.materiauSelected; }
     let data ="";
     if(statut == "Critique"){
-        data = await stockDB.listOfAllAlertStock(30);
+        data = await stockDB.listOfAllAlertStock(materiauSelected,global.NBJOUR_STOCK_ALERT);
     }else if(statut == "Expiré"){
-        data = await stockDB.listOfAllExpiredStock();
+        data = await stockDB.listOfAllExpiredStock(materiauSelected);
     }else if(statut == "Valide"){
-        data = await stockDB.listOfAllValidStock(30);
+        data = await stockDB.listOfAllValidStock(materiauSelected);
     }else{
-        data = await stockDB.listOfAllStock();
+        data = await stockDB.listOfAllStock(materiauSelected);
     }
-    
     statut_text = statut !="All" ? statut+"s" : "";
     let pageTitle = "Inventaire des stocks "+ statut_text;
+    let materiauxList = await stockDB.listOfMateriaux("All");
     params = {
         pageTitle: pageTitle,
         data: data,
         statut : statut,
+        materiauxList : materiauxList,
+        materiauSelected : materiauSelected,
         page: 'Inventaire'
     };
     res.render('stock/inventaire', params);
@@ -136,7 +147,7 @@ router.post('/add-remove-stock', async (req, res) => {
     let qte=req.body.qte;;
     let commentaire=req.body.commentaire;;
     let notifications = await stockDB.RemoveItemFromStock(con,numero_lot,materiauId,materiauName,transactionType,qte,commentaire);
-    //let notifications = await stockDB.addRemoveItemStock(req);
+    console.log("ADD/REMOVE "+notifications.success);
     res.json(notifications);
 });
 
@@ -212,16 +223,18 @@ router.post('/verify-materiaux-availability', async (req, res) => {
 router.post('/print-inventory-report', async (req, res) => {
     console.log(req.body);
     let statut = 'All';
+    let materiauSelected ="All";
     if(req.body.statut){ statut = req.body.statut; }
+    if(req.body.materiauSelected){ materiauSelected = req.body.materiauSelected; }
     let data ="";
     if(statut == "Critique"){
-        data = await stockDB.listOfAllAlertStock(30);
+        data = await stockDB.listOfAllAlertStock(materiauSelected,global.NBJOUR_STOCK_ALERT);
     }else if(statut == "Expiré"){
-        data = await stockDB.listOfAllExpiredStock();
+        data = await stockDB.listOfAllExpiredStock(materiauSelected);
     }else if(statut == "Valide"){
-        data = await stockDB.listOfAllValidStock(30);
+        data = await stockDB.listOfAllValidStock(materiauSelected);
     }else{
-        data = await stockDB.listOfAllStock();
+        data = await stockDB.listOfAllStock(materiauSelected);
     }
     let dateN =helpers.getCurrentDate();
     statut_text = statut !="All" ? statut+"s" : "";

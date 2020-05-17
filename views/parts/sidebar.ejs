@@ -67,49 +67,49 @@ if (locals.page) {
         <div id="sidebar-menu" class="sidebar-menu">
             <ul>
                 <li class="menu-title">Menu</li>
-                <% if(USER_MENU_ACCES.includes("Tableau de bord") || USER_MENU_ACCES[0]=="All"){%>
+                <% if(UserData.user_menu_access.includes("Tableau de bord") || UserData.user_menu_access[0]=="All"){%>
                 <li class="<%=Home%>">
                     <a href="/home"><i class="fa fa-dashboard"></i> <span>Tableau de bord</span></a>
                 </li>
                 <% } %>
                 <!-- TEST LABORATOIRE -->
-                <% if(USER_MENU_ACCES.includes("Test Patient") || USER_MENU_ACCES[0]=="All"){%>
+                <% if(UserData.user_menu_access.includes("Test Patient") || UserData.user_menu_access[0]=="All"){%>
                 <li class="<%=NewTest%>">
                     <a href="/test-laboratoire"><i class="fa fa-flask"></i> <span>Test Patient</span></a>
                 </li>
                 <% } %>
                 <!-- GESTION TEST LABORATOIRE -->
-                <% if(USER_MENU_ACCES.includes("Test Laboratoire") || USER_MENU_ACCES[0]=="All"){%>
+                <% if(UserData.user_menu_access.includes("Test Laboratoire") || UserData.user_menu_access[0]=="All"){%>
                 <li class="submenu">
-                    <a href="#"><i class="fa fa-folder"></i> <span>Test Laboratoire </span> <span
+                    <a href="#"><i class="fa fa-file-o"></i> <span>Test Laboratoire </span> <span
                             class="menu-arrow"></span></a>
                     <ul style="display: none;">
-                        <% if(SUBMENU_ITEM_ACCESS.includes("Liste des Tests") || USER_MENU_ACCES[0]=="All"){%>
+                        <% if(UserData.user_sub_menu_access.includes("Liste des Tests") || UserData.user_menu_access[0]=="All"){%>
                         <li><a class="<%=ListTest%>" href="/Tests">Liste des Tests</a></li>
                         <% } %>
                     </ul>
                 </li>
                 <% } %>
                 <!-- PATIENT -->
-                <% if(USER_MENU_ACCES.includes("Patients") || USER_MENU_ACCES[0]=="All"){%>
+                <% if(UserData.user_menu_access.includes("Patients") || UserData.user_menu_access[0]=="All"){%>
                 <li class="submenu">
                     <a href="#"><i class="fa fa-wheelchair"></i> <span> Patients </span> <span
                             class="menu-arrow"></span></a>
                     <ul style="display: none;">
-                        <% if(SUBMENU_ITEM_ACCESS.includes("Ajouter Patient") || SUBMENU_ITEM_ACCESS[0]=="All"){%>
+                        <% if(UserData.user_sub_menu_access.includes("Rechercher Patient") || UserData.user_sub_menu_access[0]=="All"){%>
                         <li><a  class="<%=SearchPatient%>"data-toggle="modal" data-target="#SearchPatient" href="#">Rechercher </a></li>
                         <% } %>
-                        <% if(SUBMENU_ITEM_ACCESS.includes("Ajouter Patient") || SUBMENU_ITEM_ACCESS[0]=="All"){%>
+                        <% if(UserData.user_sub_menu_access.includes("Ajouter Patient") || UserData.user_sub_menu_access[0]=="All"){%>
                         <li><a class="<%=NewPatient%>" href="/add-patient">Nouveau </a></li>
                         <% } %>
-                        <% if(SUBMENU_ITEM_ACCESS.includes("Liste des Patients") || SUBMENU_ITEM_ACCESS[0]=="All"){%>
+                        <% if(UserData.user_sub_menu_access.includes("Liste des Patients") || UserData.user_sub_menu_access[0]=="All"){%>
                         <!-- <li><a class="<%=PatientsList%>" href="/patients">Liste des patients</a></li> -->
                         <% } %>
                     </ul>
                 </li>
                 <% } %>
                 <!-- EXAMENS -->
-                <% if(USER_MENU_ACCES.includes("Examens") || USER_MENU_ACCES[0]=="All"){%>
+                <% if(UserData.user_menu_access.includes("Examens") || UserData.user_menu_access[0]=="All"){%>
                 <li class="submenu">
                     <a href="#"><i class="fa fa-flask"></i> <span> Examens </span> <span class="menu-arrow"></span></a>
                     <ul style="display: none;">
@@ -120,7 +120,7 @@ if (locals.page) {
                 <% } %>
 
                 <!-- STOCK -->
-                <% if(USER_MENU_ACCES.includes("Gestion de stock") || USER_MENU_ACCES[0]=="All"){%>
+                <% if(UserData.user_menu_access.includes("Gestion de stock") || UserData.user_menu_access[0]=="All"){%>
                 <li class="submenu">
                     <a href="#"><i class="fa fa-list"></i> <span>Gestion de stock </span> <span
                             class="menu-arrow"></span></a>
@@ -135,7 +135,7 @@ if (locals.page) {
                 <% } %>
 
                 <!-- PARAMETRES  -->
-                <% if(USER_MENU_ACCES.includes("Paramètres") || USER_MENU_ACCES[0]=="All"){%>
+                <% if(UserData.user_menu_access.includes("Paramètres") || UserData.user_menu_access[0]=="All"){%>
                 <li class="submenu">
                     <a href="#"><i class="fa fa-cogs"></i> <span>Paramètres </span> <span class="menu-arrow"></span></a>
                     <ul style="display: none;">
@@ -145,14 +145,14 @@ if (locals.page) {
                 <% } %>
 
                 <!-- Administration -->
-                <% if(USER_MENU_ACCES.includes("Administration") || USER_MENU_ACCES[0]=="All"){%>
+                <% if(UserData.user_menu_access.includes("Administration") || UserData.user_menu_access[0]=="All"){%>
                 <li class="submenu">
-                    <a href="#"><i class="fa fa-file-excel-o"></i> <span>Administration </span> <span
+                    <a href="#"><i class="fa fa-folder-open"></i> <span>Administration </span> <span
                             class="menu-arrow"></span></a>
                     <ul style="display: none;">
                         <li><a class="<%=Administration%>" href="/lab-tests-report">Rapport des Tests</a></li>
                         <li><a class="<%=User%>" href="/users">Utilisateurs</a></li>
-                        <li><a class="<%=backUpDB%>" href="/backup-db"
+                        <li><a class="<%=backUpDB%>" href="#" data-toggle="modal" data-target="#BackupDB"
                                 title="Sauvegarde de la base de donnée">Sauvegarde BD</a></li>
                     </ul>
                 </li>
@@ -171,7 +171,7 @@ if (locals.page) {
             </div>
             <div class="modal-body text-center">
                 <form action="/search-patient" method="POST">
-                    <input name="liveSearch" tabindex="-1"  id="searchPatientInput" required autocomplete="off" spellcheck="false" type="text"
+                    <input name="liveSearch"  id="searchPatientInput" required autocomplete="off" spellcheck="false" type="text"
                         placeholder="Rechercher un patient ..." class="form-control">
                     <input type="hidden" name="PatientSelected" id="PatientSelected" value="-1">
                     <div class="m-t-10">
@@ -183,6 +183,27 @@ if (locals.page) {
                     </div>
                 </form>
 
+
+            </div>
+        </div>
+    </div>
+</div>
+<div id="BackupDB" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Sauvegarde de la base de données</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body text-center">
+                <form id="dbBackupForm">
+                    <input name="backupPath" required  type="text" value="<%=backupPath%>" onfocus="select()"
+                        placeholder="Lieu de sauvegarde ..." class="form-control">
+                    <div id="sauvegardeNotify" class="m-t-20 text-center"></div>
+                </form>
+                <div class="m-t-20 text-center">
+                    <button onclick="dbBackUp()" class="btn btn-primary submit-btn">Sauvegarder</button>
+                </div>
 
             </div>
         </div>

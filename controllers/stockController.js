@@ -1,6 +1,6 @@
 const con = require('./database');
 const helpers = require('../helpers/helpers');
-module.exports = {
+var self = module.exports = {
     //Add Materiau
     addMateriau: async function (req) {
         let promise = new Promise((resolve, reject) => {
@@ -263,7 +263,7 @@ module.exports = {
             con.beginTransaction(function (err) {
                 if (err) { throw err; }
                 //Insert info into tb_evolution_stock table
-                let sql = 'INSERT INTO tb_evolution_stock (lot,materiau,qte,transaction,commentaire) VALUES ("' + numero_lot + '","' + materiauId + '","' + qte + '","' + transactionType + '","' + commentaire + '")';
+                let sql = 'INSERT INTO tb_evolution_stock (lot,materiau,qte,transaction,commentaire,acteur) VALUES ("' + numero_lot + '","' + materiauId + '","' + qte + '","' + transactionType + '","' + commentaire + '","' + USER_NAME + '")';
 
                 con.query(sql, function (err, result) {
                     if (err) {
@@ -350,9 +350,15 @@ module.exports = {
     },
     //LIST OF STOCKS
     //Load All stock
-    listOfAllStock: async function () {
+    listOfAllStock: async function (materiauId) {
         let promise = new Promise((resolve, reject) => {
-            let sql = "SELECT *,DATEDIFF( date_expiration , Now() ) as days FROM tb_stocks,tb_materiaux WHERE tb_stocks.materiau=tb_materiaux.id";
+            let sql = "";
+            if(materiauId =="All"){
+                sql = "SELECT *,DATEDIFF( date_expiration , Now() ) as days FROM tb_stocks,tb_materiaux WHERE tb_stocks.materiau=tb_materiaux.id";
+            }else{
+                sql = "SELECT *,DATEDIFF( date_expiration , Now() ) as days FROM tb_stocks,tb_materiaux WHERE tb_stocks.materiau=tb_materiaux.id AND tb_materiaux.id="+materiauId; 
+            }
+            
             con.query(sql, function (err, rows) {
                 if (err) {
                     throw err;
@@ -366,9 +372,15 @@ module.exports = {
         return data;
     },
     //Liste des stocks expires
-    listOfAllExpiredStock: async function () {
+    listOfAllExpiredStock: async function (materiauID) {
         let promise = new Promise((resolve, reject) => {
-            let sql = "SELECT *,DATEDIFF( date_expiration , Now() ) as days FROM tb_stocks,tb_materiaux WHERE tb_stocks.materiau=tb_materiaux.id AND DATEDIFF( date_expiration , Now() )<=0";
+            let sql="";
+            if(materiauID == "All"){
+                sql = "SELECT *,DATEDIFF( date_expiration , Now() ) as days FROM tb_stocks,tb_materiaux WHERE tb_stocks.materiau=tb_materiaux.id AND DATEDIFF( date_expiration , Now() )<=0";
+            }else{
+                sql = "SELECT *,DATEDIFF( date_expiration , Now() ) as days FROM tb_stocks,tb_materiaux WHERE tb_stocks.materiau=tb_materiaux.id AND DATEDIFF( date_expiration , Now() )<=0 AND tb_materiaux.id="+materiauID;
+            }
+            
             con.query(sql, function (err, rows) {
                 if (err) {
                     throw err;
@@ -381,9 +393,15 @@ module.exports = {
         return data;
     },
     //Liste des stocks valide
-    listOfAllValidStock: async function (nbJour) {
+    listOfAllValidStock: async function (materiauId) {
         let promise = new Promise((resolve, reject) => {
-            let sql = "SELECT *,DATEDIFF( date_expiration , Now() ) as days FROM tb_stocks,tb_materiaux WHERE tb_stocks.materiau=tb_materiaux.id AND DATEDIFF( date_expiration , Now() )>" + nbJour;
+            let sql = "";
+            if(materiauId == "All"){
+                sql = "SELECT *,DATEDIFF( date_expiration , Now() ) as days FROM tb_stocks,tb_materiaux WHERE tb_stocks.materiau=tb_materiaux.id AND statut=1 ";
+            }else{
+                sql = "SELECT *,DATEDIFF( date_expiration , Now() ) as days FROM tb_stocks,tb_materiaux WHERE tb_stocks.materiau=tb_materiaux.id AND statut=1 AND tb_materiaux.id="+materiauId;
+            }
+            
             con.query(sql, function (err, rows) {
                 if (err) {
                     throw err;
@@ -395,10 +413,36 @@ module.exports = {
         data = await promise;
         return data;
     },
+    //SELECT *,DATEDIFF( date_expiration , Now() ) as days FROM tb_stocks,tb_materiaux WHERE tb_stocks.materiau=tb_materiaux.id AND DATEDIFF( date_expiration , Now() )BETWEEN 0 AND 90 AND statut=1
+    //
     //Liste des stocks Critique
-    listOfAllAlertStock: async function (nbJour) {
+    listOfAllAlertStock: async function (materiauSelected,nbJour) {
+        let stockAlert = await self.stockToNotify(nbJour);
         let promise = new Promise((resolve, reject) => {
-            let sql = "SELECT *,DATEDIFF( date_expiration , Now() ) as days FROM tb_stocks,tb_materiaux WHERE tb_stocks.materiau=tb_materiaux.id AND DATEDIFF( date_expiration , Now() )>0 AND DATEDIFF( date_expiration , Now() )<=" + nbJour+" OR min_stock >=qte_restante AND statut=1 AND DATEDIFF( date_expiration , Now() )>0 AND DATEDIFF( date_expiration , Now() )<=" + nbJour;
+            let sql = ""; 
+            if(materiauSelected == "All"){
+                sql = "SELECT *,DATEDIFF( date_expiration , Now() ) as days FROM tb_stocks,tb_materiaux WHERE tb_stocks.materiau=tb_materiaux.id AND numero_lot IN ("+stockAlert.join(",")+")";
+            }else{
+                sql = "SELECT *,DATEDIFF( date_expiration , Now() ) as days FROM tb_stocks,tb_materiaux WHERE tb_stocks.materiau=tb_materiaux.id AND numero_lot IN ("+stockAlert.join(",")+") AND tb_materiaux.id="+materiauSelected;
+            }
+            
+            //console.log(sql);
+            con.query(sql,function (err, rows) {
+                if (err) {
+                    throw err;
+                } else {
+                    resolve(rows);
+                }
+            });
+        });
+        data = await promise;
+        return data;
+    },
+    //Liste des stocks Critique selon la date expriration
+    StockToBeExpired: async function (nbJour) {
+        let promise = new Promise((resolve, reject) => {
+            let sql = "SELECT numero_lot FROM tb_stocks WHERE  DATEDIFF( date_expiration , Now()) BETWEEN 0 AND "+nbJour+" AND statut=1";
+            //console.log(sql);
             con.query(sql, function (err, rows) {
                 if (err) {
                     throw err;
@@ -410,7 +454,44 @@ module.exports = {
         data = await promise;
         return data;
     },
-
+        //Liste des stocks Critique selon le seuil d'alert (stock minimum)
+        StockMinimumReach: async function () {
+            let promise = new Promise((resolve, reject) => {
+                let sql = "SELECT numero_lot FROM tb_stocks,tb_materiaux WHERE tb_stocks.materiau=tb_materiaux.id AND  qte_restante<=min_stock AND statut=1";
+                //console.log(sql);
+                con.query(sql, function (err, rows) {
+                    if (err) {
+                        throw err;
+                    } else {
+                        resolve(rows);
+                    }
+                });
+            });
+            data = await promise;
+            return data;
+        },
+    //Liste des stocks en jaune
+    stockToNotify : async function(nbj){
+        let toBeExpired = await self.StockToBeExpired(nbj);
+        let minStock = await self.StockMinimumReach();
+        let stockList =[];
+        //console.log("TO BE EXPIRED : ");
+        toBeExpired.forEach(element => {
+            //console.log(element.numero_lot);
+            stockList.push("'"+element.numero_lot+"'");
+        });
+        //console.log("STOCK MINIMUM : ");
+        minStock.forEach(element => {
+            //console.log(element.numero_lot);
+            if(!stockList.includes("'"+element.numero_lot+"'")){
+                stockList.push("'"+element.numero_lot+"'");
+            }
+            
+        });
+       // console.log("STOCK FINAL : "+stockList);
+        
+        return stockList;
+    },
     //Load All stock
     listOfAllStockByProduct: async function (id_product, stock_status) {
         let promise = new Promise((resolve, reject) => {
@@ -424,7 +505,7 @@ module.exports = {
             });
         });
         data = await promise;
-        console.log(data);
+        //console.log(data);
         return data;
     },
     //Mouvement de stock IN and OUT

@@ -42,7 +42,7 @@
                                 <div class="col-md-9">
                                     <div class="form-inline">
                                         <label>Sélectionnez le patient
-                                            <% if(SUBMENU_ITEM_ACCESS.includes("Ajouter Patient") || SUBMENU_ITEM_ACCESS[0]=="All"){%>
+                                            <% if(UserData.user_sub_menu_access.includes("Ajouter Patient") || UserData.user_sub_menu_access[0]=="All"){%>
                                                  OU ajoutez un nouveau &nbsp;<a
                                                 href="/add-patient"><i class="fa fa-user-plus fa-2x"></i></a>
                                             <% } %>
@@ -85,6 +85,7 @@
 
         </div>
     </div>
+    
     <div class="sidebar-overlay" data-reff=""></div>
     <script src="assets/js/jquery-3.2.1.min.js"></script>
     <script src="assets/js/popper.min.js"></script>
