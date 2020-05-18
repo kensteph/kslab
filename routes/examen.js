@@ -73,6 +73,27 @@ router.get('/examens', async (req, res) => {
     }
 });
 
+//DISPLAY EXAM DETAILS 
+router.get('/exam-details', async (req, res) => {
+    let examID = req.query.examId;
+    let data = await examenDB.getExamById(examID);
+    let paramInfo = await examenDB.getExamParameters(examID);
+    console.log(paramInfo);
+    let exam = data[0].nom_examen;
+    let examsParameters = await examenDB.listOfExamsParameters();
+    let pageTitle = "Détails du test '" + exam + "'";
+    params = {
+        pageTitle: pageTitle,
+        examsParameters: examsParameters,
+        examID: examID,
+        exam: exam,
+        paramInfo : paramInfo,
+        UserData : req.session.UserData,
+        page: 'NewExam'
+    };
+    res.render('examens/exam-details', params);
+});
+
 //ADD TEST PARAMETERS
 router.get('/add-test-parameters', async (req, res) => {
     let examID = req.query.exam;
@@ -144,7 +165,7 @@ router.get('/test-laboratoire', async (req, res) => {
         UserData : req.session.UserData,
         page: 'NewTest'
     };
-    res.render('examens/add-test-patient', params);
+    res.render('examens/request-exam', params);
 });
 
 router.post('/test-laboratoire', async (req, res) => {

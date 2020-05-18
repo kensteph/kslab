@@ -14,7 +14,7 @@ router.get('/settings', async (req, res) => {
     let pageTitle = "Paramètres ";
     let response = await settingsDB.getSettings();
     console.log(response);
-    res.render('setting/app-settings', { page: 'GeneralSettings', pageTitle: pageTitle, data: response });
+    res.render('setting/app-settings', { page: 'GeneralSettings', pageTitle: pageTitle, data: response , UserData : req.session.UserData,});
 });
 
 //SAVE SETTINGS

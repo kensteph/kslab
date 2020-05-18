@@ -98,7 +98,7 @@ app.post('/login', async (req, res) => {
         global.USER_HOME_PAGE = '/test-laboratoire';//Default for sample User
         //MENU ACCESS
         global.MENU_ITEM = ['Tableau de bord', 'Test Patient', 'Test Laboratoire', 'Patients', 'Examens', 'Gestion de stock', 'Paramètres', 'Administration'];
-        global.SUBMENU_ITEM = ['Ajouter Patient', 'Liste des Patients','Modifier Patients','Rechercher Patient','Liste des demandes de Tests','Ajouter examens','Voir la liste des examens','Modifier examens'];
+        global.SUBMENU_ITEM = ['Ajouter Patient', 'Liste des Patients', 'Modifier Patients', 'Rechercher Patient', 'Liste des demandes de Tests', 'Ajouter examens', 'Voir la liste des examens', 'Modifier examens'];
         //TEST EMAIL
         // helpers.sendEmail(EMAIL_ENT, pass = "Kender1988",
         //     recipient_email="saudeez2019@gmail.com",
@@ -128,14 +128,15 @@ app.post('/login', async (req, res) => {
             user_sub_menu_access: sub_menu.split("|"),
         }
         req.session.UserData = UserData;
+        req.session.username = user_name;
         //console.log("SESSION ID " + req.session.UserData.user_sub_menu_access);
 
         if (InfoUser.change_pass) {  // Force the User to change his password
-            res.render("users/change-pwd", { page: "Home" ,UserData : req.session.UserData,}); // Change Password
+            res.render("users/change-pwd", { page: "Home", UserData: req.session.UserData, }); // Change Password
         } else {
             let page = "/test-laboratoire";
             if (UserData.user_menu_access.includes("Tableau de bord") || UserData.user_menu_access[0] == "All") { page = "/home" }
-            res.redirect(page,); // Panel Admin
+            res.redirect(page); // Panel Admin
         }
 
     } else {
@@ -231,22 +232,30 @@ app.get('/home', async (req, res) => {
 });
 
 //CRON JOB
-//schedule tasks to be run on the server
-//    cron.schedule("* * * * *", async function() {
-//     console.log("---------------------");
-//     console.log("Running Cron Job");
-//     let fileDir = "./tmp";
-//     let nb_files =  helpers.countDir(fileDir);
-//     console.log("Count Items : "+nb_files);
-//     if(nb_files >0){
-//         fsExtra.emptyDir(fileDir);
-//         console.log(nb_files+" removed from the directory empty...");
-//     }else{
-//         console.log("The directory is already empty...");
-//     }
-//     // let stockCritic = await stockDB.listOfAllExpiredStock();
-//     // console.log(stockCritic);
-//   });
+//schedule tasks to be run on the server "* * * * *"
+cron.schedule("0 17 * * 1-6", async function () {
+    console.log("---------------------");
+    console.log("Running Cron Job");
+    // let fileDir = "./tmp";
+    // let nb_files =  helpers.countDir(fileDir);
+    // console.log("Count Items : "+nb_files);
+    // if(nb_files >0){
+    //     fsExtra.emptyDir(fileDir);
+    //     console.log(nb_files+" removed from the directory empty...");
+    // }else{
+    //     console.log("The directory is already empty...");
+    // }
+        let settings = await stats.getSettings();
+        let path_back_up = settings.back_db_path;
+        let rep = helpers.DatatbaseBackup(path_back_up);
+        if (rep) {
+            msg = { success: true, msg: "<font color='green'>Sauvegarde effectuée avec succès.</font> Chemin : " + path_back_up };
+            console.log(msg);
+        } else {
+            msg = { success: false, msg: "<font color='red'>Une erreur s'est produite. Veuillez réessayer.</font>" };
+            console.log(msg);
+        }
+});
 
 //GET NOTIFICATIONS
 app.get('/notifications', async (req, res) => {

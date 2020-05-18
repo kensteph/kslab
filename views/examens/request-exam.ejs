@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+
+
+<!-- add-schedule24:07-->
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
+    <link rel="shortcut icon" type="image/x-icon" href="assets/img/favicon.ico">
+    <title><%=appName%>| <%=pageTitle%></title>
+    <link rel="stylesheet" type="text/css" href="assets/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/select2.min.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/bootstrap-datetimepicker.min.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/style.css">
+    <!--[if lt IE 9]>
+		<script src="assets/js/html5shiv.min.js"></script>
+		<script src="assets/js/respond.min.js"></script>
+	<![endif]-->
+</head>
+
+<body>
+    <div class="main-wrapper">
+        <!-- HEADER -->
+        <%- include("../parts/header") -%>
+        <!-- SIDEBAR -->
+        <%- include("../parts/sidebar") -%>
+        <div class="page-wrapper">
+            <div class="content">
+                <div class="row">
+                    <div class="col-lg-8 offset-lg-2">
+                        <h4 class="page-title"><%=pageTitle%></h4>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-8 offset-lg-2">
+                        <form id="saveParamForm">
+                            <div class="row">
+                                <div class="col-md-9">
+                                    <div class="form-inline">
+                                        <label>Sélectionnez le patient
+                                            <% if(UserData.user_sub_menu_access.includes("Ajouter Patient") || UserData.user_sub_menu_access[0]=="All"){%>
+                                            OU ajoutez un nouveau &nbsp;<a href="/add-patient"><i
+                                                    class="fa fa-user-plus fa-2x"></i></a>
+                                            <% } %>
+                                        </label>
+                                        <select class="select" multiple name="patient" id="patient">
+                                            <% data.forEach((patient) => { 
+                                                let item = patient.fullname+" | "+patient.numero_patient+" | "+patient.telephone;
+                                             %>
+                                            <option <% if( patientSelected == patient.id ){ %> <%= "selected" %> <% } %>
+                                                value="<%= patient.id %>"><%= item %></option>
+                                            <% }) %>
+                                        </select>
+                                    </div>
+                                    <input type="text" class="form-control m-t-10 m-b-10" name="docteur" required
+                                        placeholder="Docteur/Institution">
+                                </div>
+                                <div class="col-md-9">
+                                    <div class="form-group">
+                                        <label>Sélectionnez le (les) test (s)</label>
+                                        <select class="select" multiple name="testSelected[]"
+                                            onchange="verifyMateriauAvailability()">
+                                            <% dataExam.forEach((exam) => { %>
+                                            <option value="<%= exam.id %>"><%= exam.nom_examen %></option>
+                                            <% }) %>
+                                        </select>
+
+                                    </div>
+                                </div>
+                                <div id="msg" class="col-md-9 m-l-20"></div>
+                            </div>
+                        </form>
+                        <div class="row col-md-9">
+                            <div class="m-t-20 text-center">
+                                <button class="btn btn-primary submit-btn" id="btnSave"
+                                    onclick="saveTestParameters()">Enregistrer</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div class="sidebar-overlay" data-reff=""></div>
+    <script src="assets/js/jquery-3.2.1.min.js"></script>
+    <script src="assets/js/popper.min.js"></script>
+    <script src="assets/js/bootstrap.min.js"></script>
+    <script src="assets/js/jquery.slimscroll.js"></script>
+    <script src="assets/js/select2.min.js"></script>
+    <script src="assets/js/moment.min.js"></script>
+    <script src="assets/js/bootstrap-datetimepicker.min.js"></script>
+    <script src="assets/js/app.js"></script>
+    <script>
+        $("#btnSave").prop("disabled", false);
+        saveTestParameters = function () {
+            $("#msg").show().html();
+            let patient = $("#patient").val();
+            // alert(patient);
+            if (patient != "") {
+                let formData = $("#saveParamForm").serialize();
+                $.post("/save-test-request", formData, function (data) {
+                    console.log(data);
+                    if (data.success) { //Success 
+                        $("#msg").html(data.msg);//.fadeOut( 5000 );
+                        $("#btnSave").prop("disabled", true);
+                    } else {
+                        $("#msg").html(data.msg);
+                    }
+                });
+            } else {
+                $("#msg").show().html("<font color='red'><strong>Vous devez choisir un patient.</strong></font>").fadeIn(5000);
+            }
+        }
+        verifyMateriauAvailability = function () {
+            $("#msg").html("");
+            let formData = $("#saveParamForm").serialize();
+            $.post("/verify-materiaux-availability", formData, function (data) {
+                //console.log(data);
+                let message = "";
+                if (data.length > 1) {
+                    data.push("<br>Voulez-vous quand meme enregistrer la demande ?");
+                }
+                $("#msg").html(data.join("<br>"));
+                //   for(msg of data){
+                //     me
+                //   }
+                // $("#msg").html(msg);
+                //   if(data.success){ //Success 
+                //     $("#msg").html(data.msg);//.fadeOut( 5000 );
+                //     $("#btnSave").prop("disabled",true);
+                //   }else{
+                //     $("#msg").html(data.msg);
+                //   } 
+            });
+        }
+    </script>
+    <!-- FOOTER -->
+    <%- include("../parts/footer") -%>
+</body>
+
+
+<!-- add-schedule24:07-->
+
+</html>

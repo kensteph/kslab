@@ -150,9 +150,10 @@ router.post('/add-remove-stock', async (req, res) => {
     let materiauId =req.body.materiauId;
     let materiauName=req.body.materiauName;
     let transactionType=req.body.type;
-    let qte=req.body.qte;;
+    let qte=req.body.qte;
+    let user = req.session.username;
     let commentaire=req.body.commentaire;;
-    let notifications = await stockDB.RemoveItemFromStock(con,numero_lot,materiauId,materiauName,transactionType,qte,commentaire);
+    let notifications = await stockDB.RemoveItemFromStock(con,numero_lot,materiauId,materiauName,transactionType,qte,commentaire,user);
     console.log("ADD/REMOVE "+notifications.success);
     res.json(notifications);
 });

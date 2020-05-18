@@ -110,13 +110,14 @@ var self = module.exports = {
             let qteRecue = parseInt(req.body.qteRecue);
             let qteEndomage = req.body.qteEndomage;
             let qteRestante = qteRecue - qteEndomage;
+            let user = req.session.username;
             if (qteEndomage == "") { qteEndomage = 0; } else { qteEndomage = parseInt(qteEndomage); }
             let msg="";
             //   /* Begin transaction */
             con.beginTransaction((err) => {
                 if (err) { throw err; }
                 let sql =
-                    'INSERT INTO tb_stocks (numero_lot,materiau,date_recue,date_expiration,qte_recue,qte_endomage,qte_restante,acteur) VALUES ("' + numero_lot + '","' + materiauId + '","' + dateRecue + '","' + dateExpiration + '",' + qteRecue + ',' + qteEndomage + ',' + qteRestante + ',"' + USER_NAME + '")';
+                    'INSERT INTO tb_stocks (numero_lot,materiau,date_recue,date_expiration,qte_recue,qte_endomage,qte_restante,acteur) VALUES ("' + numero_lot + '","' + materiauId + '","' + dateRecue + '","' + dateExpiration + '",' + qteRecue + ',' + qteEndomage + ',' + qteRestante + ',"' + user + '")';
                 con.query(sql, function (err, result) {
                     if (err) {
                         msg = {
@@ -130,7 +131,7 @@ var self = module.exports = {
                         let commentaire =qteRecue+" "+materiauName+" ont été ajoutés au stock. QTE endomagée : "+qteEndomage;
                         let transactionType ="Add";
                         //Insert info into tb_evolution_stock table
-                        let sql = 'INSERT INTO tb_evolution_stock (lot,materiau,qte,transaction,commentaire,acteur) VALUES ("' + numero_lot + '","' + materiauId + '","' + qteRecue + '","' + transactionType + '","' + commentaire + '","' + USER_NAME + '")';
+                        let sql = 'INSERT INTO tb_evolution_stock (lot,materiau,qte,transaction,commentaire,acteur) VALUES ("' + numero_lot + '","' + materiauId + '","' + qteRecue + '","' + transactionType + '","' + commentaire + '","' + user + '")';
 
                         con.query(sql, function (err, result) {
                             if (err) {
@@ -185,12 +186,13 @@ var self = module.exports = {
         let transactionType = req.body.type;
         let qte = req.body.qte;
         let commentaire = req.body.commentaire;
+        let user = req.session.username;
         let promise = new Promise((resolve, reject) => {
             //   /* Begin transaction */
             con.beginTransaction(function (err) {
                 if (err) { throw err; }
                 //Insert info into tb_evolution_stock table
-                let sql = 'INSERT INTO tb_evolution_stock (lot,materiau,qte,transaction,commentaire,acteur) VALUES ("' + numero_lot + '","' + materiauId + '","' + qte + '","' + transactionType + '","' + commentaire + '","' + USER_NAME + '")';
+                let sql = 'INSERT INTO tb_evolution_stock (lot,materiau,qte,transaction,commentaire,acteur) VALUES ("' + numero_lot + '","' + materiauId + '","' + qte + '","' + transactionType + '","' + commentaire + '","' + user + '")';
 
                 con.query(sql, function (err, result) {
                     if (err) {
@@ -257,13 +259,13 @@ var self = module.exports = {
         return data;
     },
     //Add or REMOVE ITEMS STOCK Materiau
-    async RemoveItemFromStock(con, numero_lot, materiauId, materiauName, transactionType, qte, commentaire) {
+    async RemoveItemFromStock(con, numero_lot, materiauId, materiauName, transactionType, qte, commentaire,user) {
         let promise = new Promise((resolve, reject) => {
             //   /* Begin transaction */
             con.beginTransaction(function (err) {
                 if (err) { throw err; }
                 //Insert info into tb_evolution_stock table
-                let sql = 'INSERT INTO tb_evolution_stock (lot,materiau,qte,transaction,commentaire,acteur) VALUES ("' + numero_lot + '","' + materiauId + '","' + qte + '","' + transactionType + '","' + commentaire + '","' + USER_NAME + '")';
+                let sql = 'INSERT INTO tb_evolution_stock (lot,materiau,qte,transaction,commentaire,acteur) VALUES ("' + numero_lot + '","' + materiauId + '","' + qte + '","' + transactionType + '","' + commentaire + '","' + user + '")';
 
                 con.query(sql, function (err, result) {
                     if (err) {

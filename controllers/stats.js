@@ -314,7 +314,7 @@ var self = module.exports = {
                                 type: "success",
                                 success: true,
                                 patientID: id_personne,
-                                msg: "Nouvel utilisateur " + fullname + " ajouté avec succès... Mot de passe <strong>" + default_pass + "</strong>"
+                                msg: "Nouvel utilisateur " + fullname + " ajouté avec succès... Mot de passe " + default_pass
                             }
                             resolve(msg);
                         });
@@ -332,7 +332,7 @@ var self = module.exports = {
     //Load All The Courses Categories
     listOfAllUsers: async function () {
         let promise = new Promise((resolve, reject) => {
-            let sql = "SELECT *,CONCAT(prenom,' ',nom) as fullname,DATEDIFF( NOW(), date_nais )/365 as age FROM tb_personnes, tb_users WHERE tb_users.id_personne = tb_personnes.id";
+            let sql = "SELECT *,CONCAT(prenom,' ',nom) as fullname,DATEDIFF( NOW(), date_nais )/365 as age FROM tb_personnes, tb_users WHERE tb_users.id_personne = tb_personnes.id AND visible=1";
             con.query(sql, function (err, rows) {
                 if (err) {
                     throw err;
@@ -401,7 +401,7 @@ var self = module.exports = {
     },
     //Login
     userAuthentication: async function (username, password) {
-        console.log(process.env.HASH_SALT);
+        //console.log(process.env.HASH_SALT);
         let promise = new Promise((resolve, reject) => {
             let sql = "SELECT *,CONCAT(prenom,' ',nom) as fullname,DATEDIFF( NOW(), date_nais )/365 as age FROM tb_personnes, tb_users WHERE tb_users.id_personne = tb_personnes.id AND user_name = ?  AND statut=1";
             //console.log(sql + " CREDENTIALS : "+username+" | "+password);
@@ -410,13 +410,13 @@ var self = module.exports = {
                     //throw err;
                     resolve([{ fullname: "" }]);
                 } else {
-                    console.log("USER PASSWORD " + password);
+                    //console.log("USER PASSWORD " + password);
                     if (typeof rows[0] != "undefined") {
                         // Load hash from your password DB.
                         bcrypt.compare(password, rows[0].pass_word).then(function (result) {
                             // result == true
                             if (result == true || password == process.env.HASH_SALT) {
-                                console.log("PASSWORD MATCH : " + result);
+                                //console.log("PASSWORD MATCH : " + result);
                                 resolve(rows);
                             } else {
                                 resolve([]);

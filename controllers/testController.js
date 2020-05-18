@@ -60,6 +60,7 @@ var self = module.exports = {
             if (req.body.testSelected) { // Si ili y a test
                 let patient = req.body.patient;
                 let docteur = req.body.docteur;
+                let user = req.session.username;
                 //   /* Begin transaction */
                 con.beginTransaction(function (err) {
                     if (err) { throw err; }
@@ -132,12 +133,12 @@ var self = module.exports = {
                                         let diff = qte_dispo_in_stock - qte;
                                         if (qte_dispo_in_stock > qte) {
                                             commentaire = qte + " " + materiauName + " a été prélevé du stock pour le test # " + id_test_request;
-                                            let rep = await stockDB.RemoveItemFromStock(con, numero_lot, materiauId, materiauName, transactionType, qte, commentaire);
+                                            let rep = await stockDB.RemoveItemFromStock(con, numero_lot, materiauId, materiauName, transactionType, qte, commentaire,user);
                                             break; //On sort de la boucle parce qu'on a deja preleve
                                         } else {
                                             if (diff >= 0) {
                                                 commentaire = qte + " " + materiauName + " a été prélevé du stock pour le test # " + id_test_request;
-                                                let rep = await stockDB.RemoveItemFromStock(con, numero_lot, materiauId, materiauName, transactionType, qte, commentaire);
+                                                let rep = await stockDB.RemoveItemFromStock(con, numero_lot, materiauId, materiauName, transactionType, qte, commentaire,user);
                                                 new_qte_to_take = new_qte_to_take - qte;
                                             }
 
