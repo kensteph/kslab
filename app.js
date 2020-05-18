@@ -1,4 +1,5 @@
 //jshint esversion:6
+require('dotenv').config()
 const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
@@ -69,8 +70,8 @@ app.post('/change-pwd', async (req, res) => {
 app.post('/login', async (req, res) => {
     let user_name = req.body.username;
     let pass_word = req.body.password;
-    const hashPass = await bcrypt.hash(pass_word, 10);
-    console.log(hashPass);
+    // const hashPass = await bcrypt.hash(pass_word, 10);
+    // console.log(hashPass);
     let auth = await stats.userAuthentication(user_name, pass_word);
     let found = auth.length;
     console.log("LOGIN : " + found);

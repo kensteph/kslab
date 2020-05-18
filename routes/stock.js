@@ -15,6 +15,7 @@ router.get('/add-materiau', async (req, res) => {
     let pageTitle = "Nouveau Matériau";
     params = {
         pageTitle: pageTitle,
+        UserData : req.session.UserData,
         page: 'AddMateriau'
     };
     res.render('stock/add-materiau', params);
@@ -27,6 +28,7 @@ router.post('/add-materiau', async (req, res) => {
     params = {
         pageTitle: pageTitle,
         notifications: notifications,
+        UserData : req.session.UserData,
         page: 'AddMateriau'
     };
     res.render('stock/add-materiau', params);
@@ -49,6 +51,7 @@ router.get('/materiaux', async (req, res) => {
     params = {
         pageTitle: pageTitle,
         data: data,
+        UserData : req.session.UserData,
         page: 'ListMateriau'
     };
     res.render('stock/materiaux-list', params);
@@ -80,6 +83,7 @@ router.get('/inventaire', async (req, res) => {
         statut : statut,
         materiauxList : materiauxList,
         materiauSelected : materiauSelected,
+        UserData : req.session.UserData,
         page: 'Inventaire'
     };
     res.render('stock/inventaire', params);
@@ -111,6 +115,7 @@ router.post('/inventaire', async (req, res) => {
         statut : statut,
         materiauxList : materiauxList,
         materiauSelected : materiauSelected,
+        UserData : req.session.UserData,
         page: 'Inventaire'
     };
     res.render('stock/inventaire', params);
@@ -123,6 +128,7 @@ router.get('/mv-stock', async (req, res) => {
     params = {
         pageTitle: pageTitle,
         data: data,
+        UserData : req.session.UserData,
         page: 'StockMoving'
     };
     res.render('stock/mouvement-stock', params);

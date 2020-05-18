@@ -47,6 +47,7 @@
 								<thead>
 									<tr>
 										<th>Employé</th>
+										<th>Nom utilisateur</th>
 										<th>Numéro Dossier</th>
 										<th>Sexe</th>
 										<th>Age</th>
@@ -58,9 +59,17 @@
 									</tr>
 								</thead>
 								<tbody id="table">
-									<% data.forEach((patient) => { %>
+									<% data.forEach((patient) => {
+										let active_desact = "Désactiver";
+										let action = 0;
+										if(patient.statut == 0){
+											active_desact = "Activer";
+											action = 1;
+										}
+									%>
 									<tr id="row<%= patient.id %>">
 										<td><%= patient.fullname %></td>
+										<td><%= patient.user_name %></td>
 										<td><%= patient.id_employe %></td>
 										<td><%= patient.sexe %></td>
 										<td title="<%= patient.date_nais %>"><%= patient.age.toFixed(1) %></td>
@@ -74,8 +83,8 @@
 												<div class="dropdown-menu dropdown-menu-right">
 													<a class="dropdown-item" href="/user-permissions?user=<%= patient.id %>"><i class="fa fa-pencil m-r-5"></i> Permissions</a>
 													<a class="dropdown-item" href="/edit-user?user=<%= patient.id %>"><i class="fa fa-pencil m-r-5"></i> Modifier</a>
-													<a class="dropdown-item" href="#" onclick="setId('<%= patient.id %>')" ><i class="fa fa-trash-o m-r-5"></i> Désactiver</a>
-
+													<a class="dropdown-item" href="#" onclick="setId('<%= patient.id %>','<%= patient.fullname %>','<%= action %>')" ><i class="fa fa-user-secret m-r-5"></i> <%=active_desact%> </a>
+													<a class="dropdown-item" href="#" onclick="changeUserPassword('<%= patient.id %>','<%= patient.fullname %>')" ><i class="fa fa-lock m-r-5"></i> Changer mot de passe</a>
 												</div>
 											</div>
 										</td>
@@ -97,17 +106,42 @@
 						<img src="assets/img/sent.png" alt="" width="50" height="46">
 						<form id="deleteForm">
 							<input type="hidden" name="patientID" id="patientID">
+							<input type="hidden" name="action" id="action">
 						</form>
-						<h3>Are you sure want to delete this Patient?</h3>
+						<h3 id="userDesactTitle"></h3>
 						<div id="msg"></div>
-						<div class="m-t-20"> <a href="#" class="btn btn-white" data-dismiss="modal">Close</a>
-							<button type="submit" class="btn btn-danger" onclick="deletePatient()">Delete</button>
+						<div class="m-t-20"> <a href="#" class="btn btn-white" data-dismiss="modal">NON</a>
+							<button type="submit" class="btn btn-danger" onclick="deactivateUser()">OUI</button>
 						</div>
 					</div>
 				</div>
 			</div>
 			
 		</div>
+
+		<div id="ChangeUserPassword" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
+			<div class="modal-dialog modal-md">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="changePasswordTitle"></h5>
+						<button type="button" class="close" data-dismiss="modal">&times;</button>
+					</div>
+					<div class="modal-body text-center">
+						<form id="ChangePassUserForm">
+							<input name="password" required id="NewPassUser"  type="password"  autocomplete="off"
+								placeholder="Nouveau mot de passe" class="form-control">
+								<input type="hidden" name="userID" id="userID">
+							<div id="ChangePassNotify" class="m-t-20 text-center"></div>
+						</form>
+						<div class="m-t-20 text-center">
+							<button onclick="SaveUserPassword()" class="btn btn-primary submit-btn">Changer</button>
+						</div>
+		
+					</div>
+				</div>
+			</div>
+		</div>
+		
     </div>
     <div class="sidebar-overlay" data-reff=""></div>
     <script src="assets/js/jquery-3.2.1.min.js"></script>
@@ -123,35 +157,49 @@
 	<script src="assets/js/my_js.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
 	<script>
-		function setId(value){
+		function setId(value,user,action){
+			$("#msg").show().html("");
+			let title = "Voulez-vous désactiver <i> "+user+"</i> ?";
+			if(action == 1){ title = "Voulez-vous activer <i> "+user+"</i> ?";}
+			$("#userDesactTitle").html(title);
 			$("#patientID").val(value);
+			$("#action").val(action);
 			$("#delete_patient").modal();
 		}
-		deletePatient = function(){
-             $("#msg").show().html();
+		
+		deactivateUser = function(){
+             $("#msg").show().html("");
 			 let patientID = $("#patientID").val();
               let   formData = $("#deleteForm").serialize();
-                $.post("/delete-patient" ,formData, function(data){
-                      $("#loader").hide();
-                      console.log(data);
+                $.post("/desactivate-user" ,formData, function(data){
                       if(data.success){ //Success 
-						$("#msg").html(data.success).fadeOut( 5000 );
+						$("#msg").html(data.msg)
 						//remove line
 						$("#row"+patientID).fadeOut( 5000 );
                       }else{
-                        $("#msg").html(data.error);
+                        $("#msg").html(data.msg);
+                      } 
+                });
+		}
+		
+		function changeUserPassword(value,user){
+			$("#ChangePassNotify").show().html("");
+			$("#changePasswordTitle").html("Voulez-vous changer le mot de passe de : <i>"+user+"</i>");
+			$("#userID").val(value);
+			$("#NewPassUser").val("");
+			$("#ChangeUserPassword").modal();
+		}
+		SaveUserPassword = function(){
+              let   formData = $("#ChangePassUserForm").serialize();
+                $.post("/change-user-password" ,formData, function(data){
+                      if(data.success){ //Success 
+						$("#ChangePassNotify").html(data.msg);
+                      }else{
+                        $("#ChangePassNotify").html(data.msg);
                       } 
                 });
         }
 	</script>
 </body>
-
-<script>
-	var socket = io();
-	function sendNotif(){
-		socket.emit("messageSent",{name : "Stephanie"});
-	}
-</script>
-
 <!-- patients23:19-->
 </html>

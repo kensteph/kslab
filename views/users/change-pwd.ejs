@@ -34,7 +34,7 @@
                                     <div class="form-group">
                                         <label>Ancien mot de passe</label>
                                         <input name="Opass" type="password" class="form-control">
-                                        <input type="hidden" name="user_id" value="<%=USER_ID%>">
+                                        <input type="hidden" name="user_id" value="<%=UserData.user_id%>">
                                     </div>
                                 </div>
                             </div>
@@ -52,7 +52,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div id="notify"></div>
+                            <div id="notifyPass"></div>
                             <div class="row">
                                 <div class="col-sm-12 text-center m-t-20">
                                     <button type="button" onclick="changePassword()" class="btn btn-primary submit-btn">Changer</button>
@@ -73,11 +73,11 @@
     <script src="assets/js/app.js"></script>
     <script>
        changePassword = function () {
-            $("#notify").show().html("");
+            $("#notifyPass").show().html("");
             let formData = $("#changePassForm").serialize();
             $.post("/change-pwd", formData, function (data) {
                 console.log(data); 
-                    $("#notify").html(data.msg).fadeOut(5000);
+                    $("#notifyPass").html(data.msg);//.fadeOut(5000);
             });
         }
     </script>

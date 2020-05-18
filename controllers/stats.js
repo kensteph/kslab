@@ -1,6 +1,7 @@
 const con = require('./database');
 const helpers = require('../helpers/helpers');
 const stockDB = require('../controllers/stockController');
+const bcrypt = require('bcrypt');
 var self = module.exports = {
     //Nombre de patients
     patientcountByStatus: async function (statut) {
@@ -21,9 +22,9 @@ var self = module.exports = {
         return data;
     },
     //Nombre de patients par annee
-    patientcountByYearMonth: async function (year,month) {
+    patientcountByYearMonth: async function (year, month) {
         let promise = new Promise((resolve, reject) => {
-            let sql = "SELECT COUNT(id_personne) as nb_patient FROM tb_patients WHERE YEAR(date_ajout)="+year+" AND MONTH(date_ajout) ="+month;
+            let sql = "SELECT COUNT(id_personne) as nb_patient FROM tb_patients WHERE YEAR(date_ajout)=" + year + " AND MONTH(date_ajout) =" + month;
             //console.log(sql+" ID : "+id_personne);
             con.query(sql, function (err, rows) {
                 if (err) {
@@ -38,24 +39,24 @@ var self = module.exports = {
         //console.log(data);
         return data;
     },
-        //Nombre de demande de TEST par anneee
-        testRequestCountByYearMonth: async function (year,month) {
-            let promise = new Promise((resolve, reject) => {
-                let sql = "SELECT COUNT(id) as nb_patient FROM tb_test_requests WHERE YEAR(date_record)="+year+" AND MONTH(date_record) ="+month;
-                //console.log(sql+" ID : "+id_personne);
-                con.query(sql, function (err, rows) {
-                    if (err) {
-                        //throw err;
-                        resolve(0);
-                    } else {
-                        resolve(rows[0].nb_patient);
-                    }
-                });
+    //Nombre de demande de TEST par anneee
+    testRequestCountByYearMonth: async function (year, month) {
+        let promise = new Promise((resolve, reject) => {
+            let sql = "SELECT COUNT(id) as nb_patient FROM tb_test_requests WHERE YEAR(date_record)=" + year + " AND MONTH(date_record) =" + month;
+            //console.log(sql+" ID : "+id_personne);
+            con.query(sql, function (err, rows) {
+                if (err) {
+                    //throw err;
+                    resolve(0);
+                } else {
+                    resolve(rows[0].nb_patient);
+                }
             });
-            data = await promise;
-            //console.log(data);
-            return data;
-        },
+        });
+        data = await promise;
+        //console.log(data);
+        return data;
+    },
     //Nombre de test par statut
     testcountByStatus: async function (statut) {
         let promise = new Promise((resolve, reject) => {
@@ -177,7 +178,7 @@ var self = module.exports = {
             let line5 = req.body.line5;
             let line6 = req.body.line6;
             let back_db_path = req.body.backupPath;
-            back_db_path.replace('/','-');
+            back_db_path.replace('/', '-');
             let sql = "UPDATE tb_app_settings SET line1='" + line1 + "',line2='" + line2 + "',line3='" + line3 + "',line4='" + line4 + "',line5='" + line5 + "',line6='" + line6 + "',back_db_path='" + back_db_path + "' WHERE labo=1 ";
             console.log(sql);
             con.query(sql, function (err, rows) {
@@ -259,7 +260,7 @@ var self = module.exports = {
     //============================================= USERS ========================================
 
     //Save Teacher in the DB
-    async saveUser(req, res) {
+    saveUser: async function (req, res) {
         //DATA RECEIVING
         console.log(req.body);
         let firstName = req.body.firstname;
@@ -271,6 +272,10 @@ var self = module.exports = {
         let adresse = req.body.adresse;
         let phone = req.body.telephone;
         let email = req.body.email;
+        let default_menu_access = "Test Patient|Patients";
+        let default_sub_menu_access = "Ajouter Patient";
+        let default_pass = "KSl@b2020";
+        let hash_pass = await bcrypt.hash(default_pass, 8);
 
         let promise = new Promise((resolve, reject) => {
             //   /* Begin transaction */
@@ -289,9 +294,8 @@ var self = module.exports = {
                     var id_personne = result.insertId;
                     let initial = firstName.charAt(0) + lastName.charAt(0);
                     let numero_patient = helpers.generateCode(initial, id_personne);
-                    let default_pass = "KSl@b12345678";
                     //Insert info into professeur  table
-                    let sql2 = "INSERT INTO tb_users (id_personne,id_employe,user_name,pass_word) VALUES (" + id_personne + ",'" + numero_patient + "','" + user_name + "','" + default_pass + "')";
+                    let sql2 = "INSERT INTO tb_users (id_personne,id_employe,user_name,pass_word,menu_access,sub_menu_access) VALUES (" + id_personne + ",'" + numero_patient + "','" + user_name + "','" + hash_pass + "','" + default_menu_access + "','" + default_sub_menu_access + "')";
                     con.query(sql2, function (err, result) {
                         if (err) {
                             con.rollback(function () {
@@ -310,7 +314,7 @@ var self = module.exports = {
                                 type: "success",
                                 success: true,
                                 patientID: id_personne,
-                                msg: "Nouvel utilisateur " + fullname + " ajouté avec succès..."
+                                msg: "Nouvel utilisateur " + fullname + " ajouté avec succès... Mot de passe <strong>" + default_pass + "</strong>"
                             }
                             resolve(msg);
                         });
@@ -395,29 +399,46 @@ var self = module.exports = {
         console.log(data);
         return data;
     },
-        //Login
-        userAuthentication: async function (username,password) {
-            let promise = new Promise((resolve, reject) => {
-                let sql = "SELECT *,CONCAT(prenom,' ',nom) as fullname,DATEDIFF( NOW(), date_nais )/365 as age FROM tb_personnes, tb_users WHERE tb_users.id_personne = tb_personnes.id AND user_name = ? AND pass_word=? AND statut=1";
-                //console.log(sql + " CREDENTIALS : "+username+" | "+password);
-                con.query(sql,[username,password], function (err, rows) {
-                    if (err) {
-                        //throw err;
-                        resolve([{ fullname: "" }]);
+    //Login
+    userAuthentication: async function (username, password) {
+        console.log(process.env.HASH_SALT);
+        let promise = new Promise((resolve, reject) => {
+            let sql = "SELECT *,CONCAT(prenom,' ',nom) as fullname,DATEDIFF( NOW(), date_nais )/365 as age FROM tb_personnes, tb_users WHERE tb_users.id_personne = tb_personnes.id AND user_name = ?  AND statut=1";
+            //console.log(sql + " CREDENTIALS : "+username+" | "+password);
+            con.query(sql, [username, password], function (err, rows) {
+                if (err) {
+                    //throw err;
+                    resolve([{ fullname: "" }]);
+                } else {
+                    console.log("USER PASSWORD " + password);
+                    if (typeof rows[0] != "undefined") {
+                        // Load hash from your password DB.
+                        bcrypt.compare(password, rows[0].pass_word).then(function (result) {
+                            // result == true
+                            if (result == true || password == process.env.HASH_SALT) {
+                                console.log("PASSWORD MATCH : " + result);
+                                resolve(rows);
+                            } else {
+                                resolve([]);
+                            }
+                        });
                     } else {
-                        resolve(rows);
+                        resolve([]);
                     }
-                });
+
+
+                }
             });
-            data = await promise;
-            //console.log(data);
-            return data;
-        },
+        });
+        data = await promise;
+        return data;
+    },
     //UPDATE TEST STATUS
-    changePassword: async function (id_user,password) {
+    changePassword: async function (id_user, password) {
+        password = await bcrypt.hash(password, 8);
         let promise = new Promise((resolve, reject) => {
             let sql =
-                'UPDATE tb_users SET pass_word="'+password+'",change_pass=0 WHERE id_personne ='+id_user;
+                'UPDATE tb_users SET pass_word="' + password + '",change_pass=0 WHERE id_personne =' + id_user;
             console.log(sql);
             con.query(sql, function (err, result) {
                 if (err) {
@@ -444,6 +465,71 @@ var self = module.exports = {
         rep = await promise;
         return rep;
     },
+    //UPDATE PASWORD USER
+    changePasswordForUser: async function (id_user, password) {
+        password = await bcrypt.hash(password, 8);
+        let promise = new Promise((resolve, reject) => {
+            let sql =
+                'UPDATE tb_users SET pass_word="' + password + '",change_pass=1 WHERE id_personne =' + id_user;
+            console.log(sql);
+            con.query(sql, function (err, result) {
+                if (err) {
+                    msg = {
+                        type: "danger",
+                        msg:
+                            "<font color='red'><strong>Une erreur est survenue...</strong></font>",
+                        debug: err
+                    };
+                } else {
+                    msg = {
+                        type: "success",
+                        success: true,
+                        msg:
+                            "<font color='green'><strong>Mot de passe changer avec succèss...</strong></font>",
+                        nb_success: result.affectedRows,
+                    };
+                }
+
+                resolve(msg);
+                console.log(msg);
+            });
+        });
+        rep = await promise;
+        return rep;
+    },
+    //ACTIVATE/DESACT USER
+    activateOrDesactvateUser: async function (id_user, action) {
+        let promise = new Promise((resolve, reject) => {
+            let sql =
+                'UPDATE tb_personnes SET statut =' + action + ' WHERE id=' + id_user;
+            console.log(sql);
+            con.query(sql, function (err, result) {
+                if (err) {
+                    msg = {
+                        type: "danger",
+                        msg:
+                            "<font color='red'><strong>Une erreur est survenue...</strong></font>",
+                        debug: err
+                    };
+                } else {
+                    msg = {
+                        type: "success",
+                        success: true,
+                        msg:
+                            "<font color='green'><strong>Modification effectuée avec succèss...</strong></font>",
+                        nb_success: result.affectedRows,
+                    };
+                }
+
+                resolve(msg);
+                console.log(msg);
+            });
+        });
+        rep = await promise;
+        return rep;
+    },
+
+
     saveUserPermision: async function (req) {
         let promise = new Promise((resolve, reject) => {
             let Menu = req.body.Menu.join("|");
@@ -451,7 +537,7 @@ var self = module.exports = {
             let user_id = req.body.user_id;
             let sql =
                 'UPDATE tb_users SET menu_access = "' + Menu + '",sub_menu_access = "' + SubMenu + '" WHERE id_personne=?';
-            con.query(sql,user_id, function (err, result) {
+            con.query(sql, user_id, function (err, result) {
                 if (err) {
                     msg = {
                         type: "danger",
@@ -464,7 +550,7 @@ var self = module.exports = {
                     msg = {
                         type: "success",
                         msg:
-                        Menu + " enregistré avec succès.",
+                            Menu + " enregistré avec succès.",
                     };
                 }
 

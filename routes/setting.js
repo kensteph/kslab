@@ -41,7 +41,7 @@ router.post('/settings', async (req, res) => {
     console.log(response_insert);
     let response = await settingsDB.getSettings();
     let pageTitle = "Paramètres ";
-    res.render('setting/app-settings', { page: 'GeneralSettings', pageTitle: pageTitle, data: response });
+    res.render('setting/app-settings', { page: 'GeneralSettings', pageTitle: pageTitle, data: response,UserData : req.session.UserData, });
 });
 
 //======================================== USERS MANAGEMENT ============================================================
@@ -51,6 +51,7 @@ router.get('/add-user', async (req, res) => {
     let pageTitle = "Nouvel utilisateur";
     params = {
         pageTitle: pageTitle,
+        UserData : req.session.UserData,
         page: 'User'
     };
     res.render('users/add-user', params);
@@ -64,6 +65,7 @@ router.post('/add-user', async (req, res) => {
     params = {
         pageTitle: pageTitle,
         notifications: notifications,
+        UserData : req.session.UserData,
         page: 'User'
     };
     res.render('users/add-user', params);
@@ -76,6 +78,7 @@ router.get('/users', async (req, res) => {
     params = {
         pageTitle: pageTitle,
         data: data,
+        UserData : req.session.UserData,
         page: 'User'
     };
     res.render('users/users-list', params);
@@ -97,6 +100,7 @@ router.get('/user-permissions', async (req, res) => {
         data: userInfo,
         menu_access : menu_access,
         sub_menu_access : sub_menu_access,
+        UserData : req.session.UserData,
         page: 'User'
     };
     res.render('users/user-permissions', params);
@@ -118,6 +122,7 @@ router.post('/user-permissions', async (req, res) => {
         data: userInfo,
         menu_access : menu_access,
         sub_menu_access : sub_menu_access,
+        UserData : req.session.UserData,
         page: 'User'
     };
     res.render('users/user-permissions', params);
@@ -133,6 +138,7 @@ router.get('/edit-user', async (req, res) => {
         pageTitle: pageTitle,
         data: data,
         patienID: patienID,
+        UserData : req.session.UserData,
         page: 'User'
     };
     res.render('users/add-user', params);
@@ -148,11 +154,28 @@ router.post('/edit-user', async (req, res) => {
         pageTitle: pageTitle,
         data: data,
         notifications: notifications,
+        UserData : req.session.UserData,
         page: 'User'
     };
     res.render('users/add-user', params);
 });
 
+//CHANGE PASS FOR A USER
+router.post('/change-user-password', async (req, res) => {
+    let user = req.body.userID;
+    let Npass = req.body.password;
+    let notifications = await settingsDB.changePasswordForUser(user, Npass);
+    res.json(notifications);
+});
+
+//DESACTIVATE A USER
+router.post('/desactivate-user', async (req, res) => {
+    console.log(req.body);
+    let user = req.body.patientID;
+    let action = req.body.action;
+    let notifications = await settingsDB.activateOrDesactvateUser(user, action);
+    res.json(notifications);
+});
 
 //================================================= NOTIFICATIONS ======================================================
 //INSERT NOTIFICATIONS
