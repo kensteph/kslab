@@ -2,7 +2,7 @@
     <div class="header-left">
         <% let home="/test-laboratoire"; if(UserData.user_menu_access.includes("Tableau de bord") || UserData.user_menu_access[0]=="All"){ home="/home";}%>
         <a href="<%=home%>" class="logo">
-            <img src="data:image/jpeg;base64,<%=LOGO%>" width="40" height="40" alt=""> <span><%=appName%></span>
+            <img src="data:image/jpeg;base64,<%=LOGO_MENU%>" width="70" height="70" alt=""> <span><%=appName%></span>
         </a>
     </div>
     <a id="toggle_btn" href="javascript:void(0);"><i class="fa fa-bars"></i></a>

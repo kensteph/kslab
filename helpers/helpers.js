@@ -162,24 +162,32 @@ var self = module.exports = {
         });
         return totalFiles;
     },
-    simpleUpload(req, res, full_path_directory) {
+    simpleUpload(req, filename, full_path_directory,field_name) {
         try {
             if (!req.files) {
                 msg = {
                     status: false,
                     message: 'No file uploaded'
                 };
+                console.log(msg);
                 return msg;
             } else {
                 //Use the name of the input field (i.e. "avatar") to retrieve the uploaded file
-                let avatar = req.files.avatar;
+                let avatar = req.files[field_name];
+                let split_img_name = avatar.name.split(".");
+                let img_extension = split_img_name[1];
+                if(filename == ""){
+                    filename = avatar.name;
+                }else{
+                    filename = filename+"."+img_extension;
+                }
                 //Use the mv() method to place the file in upload directory (i.e. "uploads")
-                avatar.mv(full_path_directory + avatar.name);
+                avatar.mv(full_path_directory + filename);
                 msg = {
                     status: true,
                     message: 'File is uploaded',
                     data: {
-                        name: avatar.name,
+                        name: filename,
                         mimetype: avatar.mimetype,
                         size: avatar.size
                     }
@@ -204,8 +212,13 @@ var self = module.exports = {
     //Convert image to base64
     base64(pathFile) {
         const fs = require('fs');
-        let buff = fs.readFileSync(pathFile);
-        let base64data = buff.toString('base64');
+        let base64data =null;
+        try {
+            let buff = fs.readFileSync(pathFile);
+             base64data = buff.toString('base64');
+        } catch (error) {
+            console.log('Image not converted to base 64 :\n\n' + error);
+        }
         //console.log('Image converted to base 64 is:\n\n' + base64data);
         return base64data;
     },

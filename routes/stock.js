@@ -170,7 +170,7 @@ router.post('/change-stock-status', async (req, res) => {
 //LINK TEST TO MATERIAU
 router.post('/link-test-materiau', async (req, res) => {
     let data = req.body;
-    console.log(data.qte);
+    console.log(data);
     let notifications = { msg: "<font color='red'>Le nombre de matériau doit etre égal au nombre de quantité.</fon>" };
     if (data.qte) {
         if (data.qte.length == data.materiau.length) {

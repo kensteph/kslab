@@ -14,34 +14,45 @@ router.get('/settings', async (req, res) => {
     let pageTitle = "Paramètres ";
     let response = await settingsDB.getSettings();
     console.log(response);
-    res.render('setting/app-settings', { page: 'GeneralSettings', pageTitle: pageTitle, data: response , UserData : req.session.UserData,});
+    res.render('setting/app-settings', { page: 'GeneralSettings', pageTitle: pageTitle, data: response, UserData: req.session.UserData, });
 });
 
 //SAVE SETTINGS
 router.post('/settings', async (req, res) => {
+    let path = "public/logo/";
+    console.log(req.files);
     if (req.files) {
         let image = req.files.logo;
-        console.log(image);
-        let split_img_name = image.name.split(".");
-        let img_extension = split_img_name[1];
-        let logo = "logo." + img_extension;
-        settingsDB.updateLogo(logo);//logo name
-        //console.log("Extension : "+img_extension);
-        let path = "public/logo/" + logo;
-        image.mv(path, function (err) {
-            if (err) {
-                console.log(err);
-            } else {
-                console.log("Image uploaded...");
-            }
-        });
+        let image_menu = req.files.logo_menu;
+        if (image) {
+            console.log("LOGO : "+image);
+            let info = helpers.simpleUpload(req,"logo",path,"logo");
+            console.log(info);
+            let logo = info.data.name; //logo name
+            settingsDB.updateLogo(logo);
+        } else {
+            console.log("Aucune Image");
+        }
+        //MENU LOGO
+        if(image_menu){
+            let info = helpers.simpleUpload(req,"logo_menu",path,"logo_menu");
+            console.log(info);
+            let logo = info.data.name; //logo name
+            settingsDB.updateLogoMenu(logo);
+            console.log("MENU : "+image_menu);
+        }else {
+            console.log("Aucune Image MENU");
+        }
+
     }
+    
+    // helpers.simpleUpload(req,"logo_menu",path);
     //console.log(req.body); // the uploaded file object
     let response_insert = await settingsDB.updateSettings(req);
     console.log(response_insert);
     let response = await settingsDB.getSettings();
     let pageTitle = "Paramètres ";
-    res.render('setting/app-settings', { page: 'GeneralSettings', pageTitle: pageTitle, data: response,UserData : req.session.UserData,update : response_insert });
+    res.render('setting/app-settings', { page: 'GeneralSettings', pageTitle: pageTitle, data: response, UserData: req.session.UserData, update: response_insert });
 });
 
 //======================================== USERS MANAGEMENT ============================================================
@@ -51,7 +62,7 @@ router.get('/add-user', async (req, res) => {
     let pageTitle = "Nouvel utilisateur";
     params = {
         pageTitle: pageTitle,
-        UserData : req.session.UserData,
+        UserData: req.session.UserData,
         page: 'User'
     };
     res.render('users/add-user', params);
@@ -65,7 +76,7 @@ router.post('/add-user', async (req, res) => {
     params = {
         pageTitle: pageTitle,
         notifications: notifications,
-        UserData : req.session.UserData,
+        UserData: req.session.UserData,
         page: 'User'
     };
     res.render('users/add-user', params);
@@ -78,7 +89,7 @@ router.get('/users', async (req, res) => {
     params = {
         pageTitle: pageTitle,
         data: data,
-        UserData : req.session.UserData,
+        UserData: req.session.UserData,
         page: 'User'
     };
     res.render('users/users-list', params);
@@ -89,18 +100,18 @@ router.get('/user-permissions', async (req, res) => {
     //console.log(req.query);
     let user = req.query.user;
     let userInfo = await settingsDB.getUserById(user);
-    let menu_access =[];
+    let menu_access = [];
     let sub_menu_access = [];
-    if(userInfo.menu_access !=null){menu_access = userInfo.menu_access.split("|");}
-    if(userInfo.sub_menu_access !=null){sub_menu_access = userInfo.sub_menu_access.split("|");}
-    let pageTitle = "Liste d'accès de "+userInfo.fullname;
+    if (userInfo.menu_access != null) { menu_access = userInfo.menu_access.split("|"); }
+    if (userInfo.sub_menu_access != null) { sub_menu_access = userInfo.sub_menu_access.split("|"); }
+    let pageTitle = "Liste d'accès de " + userInfo.fullname;
     //console.log(menu_access);
     params = {
         pageTitle: pageTitle,
         data: userInfo,
-        menu_access : menu_access,
-        sub_menu_access : sub_menu_access,
-        UserData : req.session.UserData,
+        menu_access: menu_access,
+        sub_menu_access: sub_menu_access,
+        UserData: req.session.UserData,
         page: 'User'
     };
     res.render('users/user-permissions', params);
@@ -111,18 +122,18 @@ router.post('/user-permissions', async (req, res) => {
     let user = req.body.user_id;
     await settingsDB.saveUserPermision(req);
     let userInfo = await settingsDB.getUserById(user);
-    let menu_access =[];
+    let menu_access = [];
     let sub_menu_access = [];
-    if(userInfo.menu_access !=null){menu_access = userInfo.menu_access.split("|");}
-    if(userInfo.sub_menu_access !=null){sub_menu_access = userInfo.sub_menu_access.split("|");}
-    let pageTitle = "Liste d'accès de "+userInfo.fullname;
+    if (userInfo.menu_access != null) { menu_access = userInfo.menu_access.split("|"); }
+    if (userInfo.sub_menu_access != null) { sub_menu_access = userInfo.sub_menu_access.split("|"); }
+    let pageTitle = "Liste d'accès de " + userInfo.fullname;
     //console.log(userInfo);
     params = {
         pageTitle: pageTitle,
         data: userInfo,
-        menu_access : menu_access,
-        sub_menu_access : sub_menu_access,
-        UserData : req.session.UserData,
+        menu_access: menu_access,
+        sub_menu_access: sub_menu_access,
+        UserData: req.session.UserData,
         page: 'User'
     };
     res.render('users/user-permissions', params);
@@ -138,7 +149,7 @@ router.get('/edit-user', async (req, res) => {
         pageTitle: pageTitle,
         data: data,
         patienID: patienID,
-        UserData : req.session.UserData,
+        UserData: req.session.UserData,
         page: 'User'
     };
     res.render('users/add-user', params);
@@ -154,7 +165,7 @@ router.post('/edit-user', async (req, res) => {
         pageTitle: pageTitle,
         data: data,
         notifications: notifications,
-        UserData : req.session.UserData,
+        UserData: req.session.UserData,
         page: 'User'
     };
     res.render('users/add-user', params);
@@ -190,17 +201,17 @@ router.get('/notifications-list', async (req, res) => {
 //GET DB HISTORIQUE BACKUP
 router.post('/backup-db', async (req, res) => {
     //let pageTitle = "Historique des sauvegardes ";
-    let path_back_up =req.body.backupPath;
+    let path_back_up = req.body.backupPath;
     let msg = {};
-    if(path_back_up.trim() == ""){
-       path_back_up = global.backupPath;
+    if (path_back_up.trim() == "") {
+        path_back_up = global.backupPath;
     }
     let rep = helpers.DatatbaseBackup(path_back_up);
-    if(rep){
-        msg = {success:true , msg : "<font color='green'>Sauvegarde effectuée avec succès.</font> Chemin : "+path_back_up};
+    if (rep) {
+        msg = { success: true, msg: "<font color='green'>Sauvegarde effectuée avec succès.</font> Chemin : " + path_back_up };
         console.log(msg);
-    }else{
-        msg = {success: false , msg : "<font color='red'>Une erreur s'est produite. Veuillez réessayer.</font>"};
+    } else {
+        msg = { success: false, msg: "<font color='red'>Une erreur s'est produite. Veuillez réessayer.</font>" };
         console.log(msg);
     }
     res.json(msg);

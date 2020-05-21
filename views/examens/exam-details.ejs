@@ -76,12 +76,12 @@
                                 </thead>
                                 <tbody>
                                     <% valeurNormal.forEach((valeur) => { %>
-                                    <tr>
+                                        <tr id="VN<%= valeur.exam_id %>">
                                         <td><%= valeur.vn %></td>
                                         <td class="text-right">
                                             <a href="#" style="color: red;"
                                                 title="Enlever <%= exam.nom_examen %> de la liste "
-                                                onclick="launchDeleteParam('<%= exam.id %>','<%= exam.nom_examen %>','VN')">
+                                                onclick="launchDeleteParam('<%= valeur.exam_id %>','<%= valeur.vn %>','VN')">
                                                 <i class="fa fa-trash-o m-r-5"></i>
                                             </a>
                                         </td>
@@ -106,7 +106,7 @@
                                 </thead>
                                 <tbody>
                                     <% materiauxAssosc.forEach((mat) => { %>
-                                    <tr>
+                                        <tr id="M<%= mat.materiau %>">
                                         <td><%= mat.nom_materiau %></td>
                                         <td><%= mat.qte %></td>
                                         <td class="text-right">

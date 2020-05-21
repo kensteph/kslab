@@ -181,7 +181,7 @@ var self = module.exports = {
             let back_db_path = req.body.backupPath;
             back_db_path.replace('/', '-');
             let sql = "UPDATE tb_app_settings SET line1='" + line1 + "',line2='" + line2 + "',line3='" + line3 + "',line4='" + line4 + "',line5='" + line5 + "',line6='" + line6 + "',back_db_path='" + back_db_path + "',entreprise_name='" + entreprise_name + "' WHERE labo=1 ";
-            console.log(sql);
+            //console.log(sql);
             con.query(sql, function (err, rows) {
                 if (err) {
                     throw err;
@@ -211,6 +211,22 @@ var self = module.exports = {
         //console.log(data); 
         return data;
     },
+        //update settings
+        updateLogoMenu: async function (logo) {
+            let promise = new Promise((resolve, reject) => {
+                let sql = "UPDATE tb_app_settings SET logo_menu='" + logo + "' WHERE labo=1 ";
+                con.query(sql, function (err, rows) {
+                    if (err) {
+                        throw err;
+                    } else {
+                        resolve(rows[0]);
+                    }
+                });
+            });
+            data = await promise;
+            //console.log(data); 
+            return data;
+        },
     //Get settings
     getSettings: async function () {
         let promise = new Promise((resolve, reject) => {

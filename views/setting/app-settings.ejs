@@ -84,6 +84,15 @@
                                 </div>
                             </div>
                             <div class="form-group row">
+                                <label class="col-lg-3 col-form-label">Logo menu</label>
+                                <div class="col-lg-7">
+                                    <input class="form-control" type="file" name="logo_menu">
+                                </div>
+                                <div class="col-lg-2">
+                                    <div class="img-thumbnail float-right bg-dark"><img src="data:image/jpeg;base64,<%=LOGO_MENU%>" alt="" width="40" height="40"></div>
+                                </div>
+                            </div>
+                            <div class="form-group row">
                                 <label class="col-lg-3 col-form-label">Lieu de sauvegarde de la base de données</label>
                                 <div class="col-lg-9">
                                     <input name="backupPath" class="form-control" value="<%=data.back_db_path%>" type="text">

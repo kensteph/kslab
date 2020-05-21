@@ -375,7 +375,8 @@ router.post('/display-test-result', async (req, res) => {
     let patientNumber = req.body.patientNumber;
     let docteur = req.body.docteur;
     let title = helpers.titleByAge(patientAge, patientSexe);
-    console.log("YOU ARE A : " + title);
+    let signature = await examenDB.getTestSignature(test_request_id);
+    console.log("SIGNATURE : " + signature);
     let data = await examenDB.testRequestContent(test_request_id);
     let date_resultat = helpers.formatDate(helpers.getCurrentDate(), "FR");
     let resultaFinal = [];
@@ -440,6 +441,7 @@ router.post('/display-test-result', async (req, res) => {
         docteur: docteur,
         date: date_resultat,
         UserData : req.session.UserData,
+        signature : signature,
         page: 'NewTest'
     };
     let filename = patient + ".pdf";

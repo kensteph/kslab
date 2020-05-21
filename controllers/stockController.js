@@ -529,12 +529,12 @@ var self = module.exports = {
     //LINK TEST TO MATERIAU
     linkTestToMateriau: async function (req) {
         let promise = new Promise((resolve, reject) => {
-            let testId = req.body.testId;
+            let testId = req.body.examID;
 
-            if (req.body.materiaux) {
+            if (req.body.materiau) {
                 //BULK INSERTION
-                let materiaux = req.body.materiaux;
-                let qtes = req.body.qtes;
+                let materiaux = req.body.materiau;
+                let qtes = req.body.qte;
                 var values = [];
                 for (var i = 0; i < materiaux.length; i++) {
                     let materiau = materiaux[i]; //materiau

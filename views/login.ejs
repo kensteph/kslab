@@ -24,7 +24,9 @@
 				<div class="account-box">
                     <form action="/login" method="POST" class="form-signin">
 						<div class="account-logo">
-                            <a href="index-2.html"><img src="assets/img/logo-dark.png" alt=""></a>
+                            <% if(typeof LOGO !="undefined"){ %>
+                            <img src="data:image/jpeg;base64,<%=LOGO%>" alt="" width="150" height="150">
+                            <% } %>
                             <% if(typeof ERROR !="undefined"){ %>
                                 <h5 style="color: tomato;margin-top: 10px;"><%=ERROR %></h5>
                             <% } %>

@@ -212,7 +212,7 @@ var self = module.exports = {
     //TEST REQUEST CONTENTS
     getExamNormalValues: async function (id) {
         let promise = new Promise((resolve, reject) => {
-            let sql = "SELECT CONCAT('BEBE : ',bebe,' ENFANT : ',enfant,' ADO :',adolescent,' FEMME : ',femme,' HOMME : ',homme,' ',unite) as  vn FROM tb_valeurs_normales WHERE  exam_id = ? ";
+            let sql = "SELECT exam_id,CONCAT('BEBE : ',bebe,' ENFANT : ',enfant,' ADO :',adolescent,' FEMME : ',femme,' HOMME : ',homme,' ',unite) as  vn FROM tb_valeurs_normales WHERE  exam_id = ? ";
             //console.log(sql+" ID : "+id);
             con.query(sql, id, function (err, rows) {
                 if (err) {
@@ -367,6 +367,23 @@ var self = module.exports = {
         return rep;
     },
 
-
+    //TEST SIGNATURE
+    getTestSignature: async function (id) {
+        let promise = new Promise((resolve, reject) => {
+            let sql = "SELECT realiser_par,poste FROM tb_test_requests WHERE id=? ";
+            //console.log(sql+" ID : "+id);
+            con.query(sql, id, function (err, rows) {
+                if (err) {
+                    //throw err;
+                    resolve([{ realiser_par : "" }]);
+                } else {
+                    resolve(rows[0]);
+                }
+            });
+        });
+        data = await promise;
+        //console.log(data);
+        return data;
+    },
 
 }

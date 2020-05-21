@@ -35,6 +35,30 @@ app.use(require('./routes/print'));
 
 //Entry Point
 app.get('/', async (req, res) => {
+    // Global variables
+    let settings = await stats.getSettings();
+    //console.log(settings);
+    global.appName = 'KSlab ';
+    global.line1 = settings.line1;
+    global.line2 = settings.line2;
+    global.line3 = settings.line3;
+    global.line4 = settings.line4;
+    global.line5 = settings.line5;
+    global.line6 = settings.line6;
+    global.backupPath = settings.back_db_path;
+    global.LOGO = helpers.base64("public/logo/" + settings.logo);
+    global.LOGO_MENU = helpers.base64("public/logo/" + settings.logo_menu);
+    global.EMAIL_ENT = settings.email_ent;
+    global.ENT_NAME = settings.entreprise_name;
+    global.TEST_STATUS = ['En attente', 'Enregistré', 'Validé', 'Livré'];
+    global.STOCK_STATUS = ['Invalide', 'Valide'];
+    global.PERISSABLE = ['Non', 'Oui'];
+    global.TYPE_RESULTAT = ['', 'Valeurs normales', 'Positif/Négatif', 'Commentaires'];
+    global.NBJOUR_STOCK_ALERT = 90;
+    global.USER_HOME_PAGE = '/test-laboratoire';//Default for sample User
+    //MENU ACCESS
+    global.MENU_ITEM = ['Tableau de bord', 'Test Patient', 'Test Laboratoire', 'Patients', 'Examens', 'Gestion de stock', 'Paramètres', 'Administration'];
+    global.SUBMENU_ITEM = ['Ajouter Patient', 'Liste des Patients', 'Modifier Patients', 'Rechercher Patient', 'Liste des demandes de Tests', 'Ajouter examens', 'Voir la liste des examens', 'Modifier examens'];
     res.render('login');
 });
 //Exit Point
@@ -77,29 +101,6 @@ app.post('/login', async (req, res) => {
     console.log("LOGIN : " + found);
     if (found > 0) { //Auth successfull
         let InfoUser = auth[0];
-        // Global variables
-        let settings = await stats.getSettings();
-        //console.log(settings);
-        global.appName = 'KSlab ';
-        global.line1 = settings.line1;
-        global.line2 = settings.line2;
-        global.line3 = settings.line3;
-        global.line4 = settings.line4;
-        global.line5 = settings.line5;
-        global.line6 = settings.line6;
-        global.backupPath = settings.back_db_path;
-        global.LOGO = helpers.base64("public/logo/" + settings.logo);
-        global.EMAIL_ENT = settings.email_ent;
-        global.ENT_NAME = settings.entreprise_name;
-        global.TEST_STATUS = ['En attente', 'Enregistré', 'Validé', 'Livré'];
-        global.STOCK_STATUS = ['Invalide', 'Valide'];
-        global.PERISSABLE = ['Non', 'Oui'];
-        global.TYPE_RESULTAT = ['', 'Valeurs normales', 'Positif/Négatif', 'Commentaires'];
-        global.NBJOUR_STOCK_ALERT = 90;
-        global.USER_HOME_PAGE = '/test-laboratoire';//Default for sample User
-        //MENU ACCESS
-        global.MENU_ITEM = ['Tableau de bord', 'Test Patient', 'Test Laboratoire', 'Patients', 'Examens', 'Gestion de stock', 'Paramètres', 'Administration'];
-        global.SUBMENU_ITEM = ['Ajouter Patient', 'Liste des Patients', 'Modifier Patients', 'Rechercher Patient', 'Liste des demandes de Tests', 'Ajouter examens', 'Voir la liste des examens', 'Modifier examens'];
         //TEST EMAIL
         // helpers.sendEmail(EMAIL_ENT, pass = "Kender1988",
         //     recipient_email="saudeez2019@gmail.com",
