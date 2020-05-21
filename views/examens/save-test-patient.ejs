@@ -97,7 +97,7 @@
                                 <div class="form-inline" id="Resultat">
 
                                 </div>
-                                <div id="notify" class="m-t-20 text-center"></div>
+                                <div id="notifySaveExam" class="m-t-20 text-center"></div>
                                 <div class="m-t-20 text-center">
                                     <button class="btn btn-primary submit-btn">Enregistrer</button>
                                 </div>
@@ -144,7 +144,7 @@
             saveTestResultDB();
         });
         function launchSaveTestModal(testId, testName) {
-            $("#notify").show().html("");
+            $("#notifySaveExam").show().html("");
             $("#materiauName").html(testName);
             $("#testId").val(testId);
             let fields = "";
@@ -172,19 +172,19 @@
         }
 
        saveTestResultDB = function () {
-            $("#notify").show().html("");
+            $("#notifySaveExam").show().html("");
             let formData = $("#addRemoveStockForm").serialize();
             $.post("/save-test-result", formData, function (data) {
                 console.log(data);
                 if (data.success) { //Success 
-                    $("#notify").html(data.msg).fadeOut(5000);
+                    $("#notifySaveExam").html(data.msg).fadeOut(5000);
                 } else { // already saved get the result
                     $.post("/get-test-result", formData, function (data1) {
                         for(rs of data1){
                             console.log(rs);
                             $("#"+rs.examen_id).val(rs.resultat);
                         }
-                        $("#notify").html(data.msg);
+                        $("#notifySaveExam").html(data.msg);
                         //show the modify button and hide the save button
                     });   
                 }

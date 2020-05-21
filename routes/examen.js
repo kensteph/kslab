@@ -55,11 +55,13 @@ router.get('/examens', async (req, res) => {
         if (req.session.UserData.user_sub_menu_access.includes("Voir la liste des examens") || req.session.UserData.user_sub_menu_access[0] == "All") {
             /// FULL ACCESS
             let data = await examenDB.listOfExams();
+            let examsParameters = await examenDB.listOfExamsParameters();
             let pageTitle = "Liste des examens";
             params = {
                 pageTitle: pageTitle,
                 data: data,
                 UserData: req.session.UserData,
+                examsParameters : examsParameters,
                 page: 'ExamsList'
             };
             res.render('examens/examens-list', params);
@@ -78,7 +80,10 @@ router.get('/exam-details', async (req, res) => {
     let examID = req.query.examId;
     let data = await examenDB.getExamById(examID);
     let paramInfo = await examenDB.getExamParameters(examID);
-    console.log(paramInfo);
+    let valeurNormal = await examenDB.getExamNormalValues(examID);
+    let materiauxAssosc = await stockDB.getTestMateriaux(examID);
+    let materiaux = await stockDB.listOfMateriaux("All");
+    console.log(materiauxAssosc);
     let exam = data[0].nom_examen;
     let examsParameters = await examenDB.listOfExamsParameters();
     let pageTitle = "Détails du test '" + exam + "'";
@@ -88,6 +93,9 @@ router.get('/exam-details', async (req, res) => {
         examID: examID,
         exam: exam,
         paramInfo : paramInfo,
+        valeurNormal : valeurNormal,
+        materiauxAssosc : materiauxAssosc,
+        materiaux : materiaux,
         UserData : req.session.UserData,
         page: 'NewExam'
     };
@@ -111,10 +119,16 @@ router.get('/add-test-parameters', async (req, res) => {
     };
     res.render('examens/add-test-parameters', params);
 });
-
+//SAVE TEST PARAMETERS
 router.post('/add-test-parameters', async (req, res) => {
     console.log(req.body);
     let notifications = await examenDB.saveTestParameters(req);
+    res.json(notifications);
+});
+//REMOVE TEST PARAMETERS
+router.post('/remove-item', async (req, res) => {
+    console.log(req.body);
+    let notifications = await examenDB.removeItem(req);
     res.json(notifications);
 });
 //SAVE TEST VALEURS NORMALES
@@ -144,11 +158,11 @@ router.get('/add-test-materiaux', async (req, res) => {
     res.render('examens/add-test-materiaux', params);
 });
 
-router.post('/add-test-materiaux', async (req, res) => {
-    console.log(req.body);
-    let notifications = await examenDB.saveTestParameters(req);
-    res.json(notifications);
-});
+// router.post('/add-test-materiaux', async (req, res) => {
+//     console.log(req.body);
+//     let notifications = await st.saveTestParameters(req);
+//     res.json(notifications);
+// });
 // ============================================== TEST LABORATOIRE PATIENTS ====================================
 
 router.get('/test-laboratoire', async (req, res) => {
@@ -195,6 +209,7 @@ router.post('/test-laboratoire', async (req, res) => {
 router.post('/save-test-request', async (req, res) => {
     console.log(req.body);
     let notifications = await testDB.saveTestRequest(req);
+    console.log(notifications);
     res.json(notifications);
 });
 

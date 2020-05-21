@@ -90,6 +90,7 @@ app.post('/login', async (req, res) => {
         global.backupPath = settings.back_db_path;
         global.LOGO = helpers.base64("public/logo/" + settings.logo);
         global.EMAIL_ENT = settings.email_ent;
+        global.ENT_NAME = settings.entreprise_name;
         global.TEST_STATUS = ['En attente', 'Enregistré', 'Validé', 'Livré'];
         global.STOCK_STATUS = ['Invalide', 'Valide'];
         global.PERISSABLE = ['Non', 'Oui'];
@@ -255,6 +256,7 @@ cron.schedule("0 17 * * 1-6", async function () {
             msg = { success: false, msg: "<font color='red'>Une erreur s'est produite. Veuillez réessayer.</font>" };
             console.log(msg);
         }
+    console.log("---------------------");
 });
 
 //GET NOTIFICATIONS

@@ -28,6 +28,14 @@
             <div class="content">
                 <div class="row">
                     <div class="col-lg-8 offset-lg-2">
+                        <% if(typeof update !="undefined"){ %>
+                            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                <%= update.success %> 
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">×</span>
+                                </button>
+                            </div>
+                        <% } %>
                         <form method="POST" action="/settings" id="settingsForm" enctype="multipart/form-data">
                             <h4 class="page-title">Paramètres</h4>
                             <div class="form-group row">
@@ -79,6 +87,13 @@
                                 <label class="col-lg-3 col-form-label">Lieu de sauvegarde de la base de données</label>
                                 <div class="col-lg-9">
                                     <input name="backupPath" class="form-control" value="<%=data.back_db_path%>" type="text">
+                                </div>
+                            </div>
+                            <h5>Affichage du nom de l'entreprise dans la barre de menu</h5>
+                            <div class="form-group row">
+                                <label class="col-lg-3 col-form-label">Nom de l'entreprise</label>
+                                <div class="col-lg-9">
+                                    <input name="entreprise_name" class="form-control" value="<%=data.entreprise_name%>" type="text">
                                 </div>
                             </div>
                             <div id="notify"></div>

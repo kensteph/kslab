@@ -573,7 +573,7 @@ var self = module.exports = {
                 msg = {
                     type: "danger",
                     msg:
-                        "<font color='red'><strong>Vous devez choisir des paramètres.</strong></font>",
+                        "<font color='red'><strong>Vous devez choisir des matériaux et précisez leurs valeurs.</strong></font>",
                 };
                 resolve(msg);
             }

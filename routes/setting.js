@@ -41,7 +41,7 @@ router.post('/settings', async (req, res) => {
     console.log(response_insert);
     let response = await settingsDB.getSettings();
     let pageTitle = "Paramètres ";
-    res.render('setting/app-settings', { page: 'GeneralSettings', pageTitle: pageTitle, data: response,UserData : req.session.UserData, });
+    res.render('setting/app-settings', { page: 'GeneralSettings', pageTitle: pageTitle, data: response,UserData : req.session.UserData,update : response_insert });
 });
 
 //======================================== USERS MANAGEMENT ============================================================

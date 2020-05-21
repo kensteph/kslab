@@ -15,7 +15,7 @@ router.get('/add-materiau', async (req, res) => {
     let pageTitle = "Nouveau Matériau";
     params = {
         pageTitle: pageTitle,
-        UserData : req.session.UserData,
+        UserData: req.session.UserData,
         page: 'AddMateriau'
     };
     res.render('stock/add-materiau', params);
@@ -28,7 +28,7 @@ router.post('/add-materiau', async (req, res) => {
     params = {
         pageTitle: pageTitle,
         notifications: notifications,
-        UserData : req.session.UserData,
+        UserData: req.session.UserData,
         page: 'AddMateriau'
     };
     res.render('stock/add-materiau', params);
@@ -43,7 +43,7 @@ router.post('/edit-materiau', async (req, res) => {
 //MATERIAUX LIST
 router.get('/materiaux', async (req, res) => {
     let materiauID = "All";
-    if(req.query.mat){
+    if (req.query.mat) {
         materiauID = req.query.mat;
     }
     let data = await stockDB.listOfMateriaux(materiauID);
@@ -51,7 +51,7 @@ router.get('/materiaux', async (req, res) => {
     params = {
         pageTitle: pageTitle,
         data: data,
-        UserData : req.session.UserData,
+        UserData: req.session.UserData,
         page: 'ListMateriau'
     };
     res.render('stock/materiaux-list', params);
@@ -61,29 +61,29 @@ router.get('/materiaux', async (req, res) => {
 router.get('/inventaire', async (req, res) => {
     let statut = 'All';
     let materiauSelected = 'All';
-    if(req.query.statut){ statut = req.query.statut; }
-    if(req.query.materiauSelected){ statut = req.query.materiauSelected; }
-    let data ="";
-    if(statut == "Critique"){
-        data = await stockDB.listOfAllAlertStock(materiauSelected,global.NBJOUR_STOCK_ALERT);
-    }else if(statut == "Expiré"){
+    if (req.query.statut) { statut = req.query.statut; }
+    if (req.query.materiauSelected) { statut = req.query.materiauSelected; }
+    let data = "";
+    if (statut == "Critique") {
+        data = await stockDB.listOfAllAlertStock(materiauSelected, global.NBJOUR_STOCK_ALERT);
+    } else if (statut == "Expiré") {
         data = await stockDB.listOfAllExpiredStock(materiauSelected);
-    }else if(statut == "Valide"){
+    } else if (statut == "Valide") {
         data = await stockDB.listOfAllValidStock(materiauSelected);
-    }else{
+    } else {
         data = await stockDB.listOfAllStock(materiauSelected);
     }
     await stockDB.stockToNotify(global.NBJOUR_STOCK_ALERT);
-    statut_text = statut !="All" ? statut+"s" : "";
-    let pageTitle = "Inventaire des stocks "+ statut_text;
+    statut_text = statut != "All" ? statut + "s" : "";
+    let pageTitle = "Inventaire des stocks " + statut_text;
     let materiauxList = await stockDB.listOfMateriaux("All");
     params = {
         pageTitle: pageTitle,
         data: data,
-        statut : statut,
-        materiauxList : materiauxList,
-        materiauSelected : materiauSelected,
-        UserData : req.session.UserData,
+        statut: statut,
+        materiauxList: materiauxList,
+        materiauSelected: materiauSelected,
+        UserData: req.session.UserData,
         page: 'Inventaire'
     };
     res.render('stock/inventaire', params);
@@ -94,28 +94,28 @@ router.post('/inventaire', async (req, res) => {
     console.log(req.body);
     let statut = 'All';
     let materiauSelected = 'All';
-    if(req.body.statut){ statut = req.body.statut; }
-    if(req.body.materiauSelected){ materiauSelected = req.body.materiauSelected; }
-    let data ="";
-    if(statut == "Critique"){
-        data = await stockDB.listOfAllAlertStock(materiauSelected,global.NBJOUR_STOCK_ALERT);
-    }else if(statut == "Expiré"){
+    if (req.body.statut) { statut = req.body.statut; }
+    if (req.body.materiauSelected) { materiauSelected = req.body.materiauSelected; }
+    let data = "";
+    if (statut == "Critique") {
+        data = await stockDB.listOfAllAlertStock(materiauSelected, global.NBJOUR_STOCK_ALERT);
+    } else if (statut == "Expiré") {
         data = await stockDB.listOfAllExpiredStock(materiauSelected);
-    }else if(statut == "Valide"){
+    } else if (statut == "Valide") {
         data = await stockDB.listOfAllValidStock(materiauSelected);
-    }else{
+    } else {
         data = await stockDB.listOfAllStock(materiauSelected);
     }
-    statut_text = statut !="All" ? statut+"s" : "";
-    let pageTitle = "Inventaire des stocks "+ statut_text;
+    statut_text = statut != "All" ? statut + "s" : "";
+    let pageTitle = "Inventaire des stocks " + statut_text;
     let materiauxList = await stockDB.listOfMateriaux("All");
     params = {
         pageTitle: pageTitle,
         data: data,
-        statut : statut,
-        materiauxList : materiauxList,
-        materiauSelected : materiauSelected,
-        UserData : req.session.UserData,
+        statut: statut,
+        materiauxList: materiauxList,
+        materiauSelected: materiauSelected,
+        UserData: req.session.UserData,
         page: 'Inventaire'
     };
     res.render('stock/inventaire', params);
@@ -128,7 +128,7 @@ router.get('/mv-stock', async (req, res) => {
     params = {
         pageTitle: pageTitle,
         data: data,
-        UserData : req.session.UserData,
+        UserData: req.session.UserData,
         page: 'StockMoving'
     };
     res.render('stock/mouvement-stock', params);
@@ -137,24 +137,24 @@ router.get('/mv-stock', async (req, res) => {
 //ADD STOCK
 router.post('/add-stock', async (req, res) => {
     console.log(req.body);
-    console.log("USER : "+USER_NAME);
+    console.log("USER : " + USER_NAME);
     let notifications = await stockDB.addStock(req);
-    console.log("NOTIF : "+notifications);
+    console.log("NOTIF : " + notifications);
     res.json(notifications);
 });
 
 //ADD OR REMOVE ITEMS STOCK
 router.post('/add-remove-stock', async (req, res) => {
     console.log(req.body);
-    let numero_lot =req.body.lot;
-    let materiauId =req.body.materiauId;
-    let materiauName=req.body.materiauName;
-    let transactionType=req.body.type;
-    let qte=req.body.qte;
+    let numero_lot = req.body.lot;
+    let materiauId = req.body.materiauId;
+    let materiauName = req.body.materiauName;
+    let transactionType = req.body.type;
+    let qte = req.body.qte;
     let user = req.session.username;
-    let commentaire=req.body.commentaire;;
-    let notifications = await stockDB.RemoveItemFromStock(con,numero_lot,materiauId,materiauName,transactionType,qte,commentaire,user);
-    console.log("ADD/REMOVE "+notifications.success);
+    let commentaire = req.body.commentaire;;
+    let notifications = await stockDB.RemoveItemFromStock(con, numero_lot, materiauId, materiauName, transactionType, qte, commentaire, user);
+    console.log("ADD/REMOVE " + notifications.success);
     res.json(notifications);
 });
 
@@ -163,19 +163,23 @@ router.post('/change-stock-status', async (req, res) => {
     console.log(req.body);
     let statut = req.body.statut
     let lot = req.body.lod_id;
-    let notifications = await stockDB.setStockStatus(lot,statut);
+    let notifications = await stockDB.setStockStatus(lot, statut);
     res.json(notifications);
 });
 
 //LINK TEST TO MATERIAU
 router.post('/link-test-materiau', async (req, res) => {
     let data = req.body;
-    if (data.qtes) {
-        console.log(data);
+    console.log(data.qte);
+    let notifications = { msg: "<font color='red'>Le nombre de matériau doit etre égal au nombre de quantité.</fon>" };
+    if (data.qte) {
+        if (data.qte.length == data.materiau.length) {
+            console.log("QTE : " + data.qte.length);
+            notifications = await stockDB.linkTestToMateriau(req);
+        }
     } else {
         console.log("NO DATA");
     }
-    let notifications = await stockDB.linkTestToMateriau(req);
     res.json(notifications);
 });
 
@@ -199,19 +203,19 @@ router.post('/verify-materiaux-availability', async (req, res) => {
             let materiauName = materiau.nom_materiau;
             let qte_to_use = materiau.qte;
             let qte_dispo = await stockDB.countAvailableMateriaux(materiauID);
-            if(qte_dispo == null){ qte_dispo = 0;}
+            if (qte_dispo == null) { qte_dispo = 0; }
             let diference = qte_dispo - qte_to_use;
-            if(diference<0){
-                let sms = pos+"- <font color='red'>Pas assez de <strong>"+materiauName+"</strong> en stock. QTE DISPO : "+qte_dispo+"</font>";
+            if (diference < 0) {
+                let sms = pos + "- <font color='red'>Pas assez de <strong>" + materiauName + "</strong> en stock. QTE DISPO : " + qte_dispo + "</font>";
                 alert.push(sms);
-            }else{
-                console.log("GOOD TO GO "); 
+            } else {
+                console.log("GOOD TO GO ");
             }
-            
+
             // console.log("QUANTITE DISPO : " + qte_dispo + " " +materiauName );
             // console.log("QUANTITE A UTILISER : " + qte_to_use + " " +materiauName );
             // console.log(alert);
-            pos++; 
+            pos++;
         }
     }
     res.json(alert);
@@ -230,29 +234,29 @@ router.post('/verify-materiaux-availability', async (req, res) => {
 router.post('/print-inventory-report', async (req, res) => {
     console.log(req.body);
     let statut = 'All';
-    let materiauSelected ="All";
-    if(req.body.statut){ statut = req.body.statut; }
-    if(req.body.materiauSelected){ materiauSelected = req.body.materiauSelected; }
-    let data ="";
-    if(statut == "Critique"){
-        data = await stockDB.listOfAllAlertStock(materiauSelected,global.NBJOUR_STOCK_ALERT);
-    }else if(statut == "Expiré"){
+    let materiauSelected = "All";
+    if (req.body.statut) { statut = req.body.statut; }
+    if (req.body.materiauSelected) { materiauSelected = req.body.materiauSelected; }
+    let data = "";
+    if (statut == "Critique") {
+        data = await stockDB.listOfAllAlertStock(materiauSelected, global.NBJOUR_STOCK_ALERT);
+    } else if (statut == "Expiré") {
         data = await stockDB.listOfAllExpiredStock(materiauSelected);
-    }else if(statut == "Valide"){
+    } else if (statut == "Valide") {
         data = await stockDB.listOfAllValidStock(materiauSelected);
-    }else{
+    } else {
         data = await stockDB.listOfAllStock(materiauSelected);
     }
-    let dateN =helpers.getCurrentDate();
-    statut_text = statut !="All" ? statut+"s" : "";
-    let pageTitle = "Inventaire des stocks "+ statut_text+" pour le "+helpers.formatDate(dateN,"FR");
+    let dateN = helpers.getCurrentDate();
+    statut_text = statut != "All" ? statut + "s" : "";
+    let pageTitle = "Inventaire des stocks " + statut_text + " pour le " + helpers.formatDate(dateN, "FR");
     let report = dateN;
     let filename = report + ".pdf";
     let pathfile = "./tmp/" + filename;
-    let template_name ="inventory";
+    let template_name = "inventory";
     params = {
         data: data,
-        pageTitle : pageTitle
+        pageTitle: pageTitle
     };
     await printer.print(template_name, params, pathfile);
     //Display the file in the browser

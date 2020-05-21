@@ -2,7 +2,7 @@
 <html lang="en">
 
 
-<!-- add-schedule24:07-->
+<!-- schedule23:20-->
 
 <head>
     <meta charset="utf-8">
@@ -29,36 +29,199 @@
         <div class="page-wrapper">
             <div class="content">
                 <div class="row">
-                    <div class="col-lg-8 offset-lg-2">
+                    <div class="col-sm-6 col-6">
                         <h4 class="page-title"><%=pageTitle%></h4>
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-lg-8 offset-lg-2">
-                        <form>
+                    <div class="col-md-6">
+                        <h4>Paramètres</h4>
+                        <div class="table-responsive">
+                            <table class="table table-border table-striped custom-table mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>Examen</th>
+                                        <th class="text-right">
+                                            <a href="#" onclick="launchAddParam()" title="Ajouter paramètres"><i
+                                                    class="fa fa-plus m-r-5"></i></a>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% paramInfo.forEach((exam) => { %>
+                                    <tr id="P<%= exam.id %>">
+                                        <td><%= exam.nom_examen %></td>
+                                        <td class="text-right">
+                                            <a href="#" style="color: red;"
+                                                title="Enlever <%= exam.nom_examen %> de la liste "
+                                                onclick="launchDeleteParam('<%= exam.id %>','<%= exam.nom_examen %>','P')">
+                                                <i class="fa fa-trash-o m-r-5"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    <% }) %>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <h4>Valeurs Normales</h4>
+                        <div class="table-responsive">
+                            <table class="table table-border table-striped custom-table mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>Valeurs Normales</th>
+                                        <th class="text-right">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% valeurNormal.forEach((valeur) => { %>
+                                    <tr>
+                                        <td><%= valeur.vn %></td>
+                                        <td class="text-right">
+                                            <a href="#" style="color: red;"
+                                                title="Enlever <%= exam.nom_examen %> de la liste "
+                                                onclick="launchDeleteParam('<%= exam.id %>','<%= exam.nom_examen %>','VN')">
+                                                <i class="fa fa-trash-o m-r-5"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    <% }) %>
+                                </tbody>
+                            </table>
+                        </div>
+                        <br>
+                        <h4 class="m-t-10">Materiaux associés</h4>
+                        <div class="table-responsive">
+                            <table class="table table-border table-striped custom-table mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>Matériau</th>
+                                        <th>Quantité</th>
+                                        <th class="text-right">
+                                            <a href="#" onclick="launchAddMateriau()" title="Ajouter matériaux"><i
+                                                    class="fa fa-plus m-r-5"></i></a>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% materiauxAssosc.forEach((mat) => { %>
+                                    <tr>
+                                        <td><%= mat.nom_materiau %></td>
+                                        <td><%= mat.qte %></td>
+                                        <td class="text-right">
+                                            <a href="#" style="color: red;"
+                                                title="Enlever <%= mat.nom_materiau %> de la liste "
+                                                onclick="launchDeleteParam('<%= mat.materiau %>','<%= mat.nom_materiau %>','M')">
+                                                <i class="fa fa-trash-o m-r-5"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    <% }) %>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+        <div id="DeleteItem" class="modal fade delete-modal" role="dialog">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-body text-center">
+                        <img src="assets/img/sent.png" alt="" width="50" height="46">
+                        <h3>Voulez-vous supprimer <i id="itemToDelete"></i> ?</h3>
+                        <form id="removeItemForm">
+                            <input type="hidden" name="examID" value="<%=examID%>">
+                            <input type="hidden" name="itemName" id="itemName">
+                            <input type="hidden" name="itemID" id="itemID">
+                            <input type="hidden" name="action" id="actionID">
+                        </form>
+                        <div id="msgRemoveItem" class="m-t-20 text-center"></div>
+                        <div class="m-t-20"> <a href="#" class="btn btn-white" data-dismiss="modal">NON</a>
+                            <button type="submit" onclick="removeItem()" class="btn btn-danger">OUI</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="addParameters" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content modal-md">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Ajouter Paramètres <strong id="paramName"></strong> </h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="addParametersForm">
+                            <div class="form-group">
+                                <label>Sélectionnez les paramètres</label>
+                                <select class="select" multiple name="testParameters[]">
+                                    <% data.forEach((examen) => { %>
+                                    <option value="<%= examen.id %>"><%= examen.nom_examen %></option>
+                                    <% }) %>
+                                </select>
+                                <input type="hidden" name="examID" value="<%=examID%>">
+                                <input type="hidden" name="exam" value="<%=exam%>">
+                            </div>
+                            <div id="msgSaveParam" class="m-t-20 text-center"></div>
+                        </form>
+                        <div class="m-t-20 text-center">
+                            <button class="btn btn-primary submit-btn"
+                                onclick="saveTestParameters()">Enregistrer</button>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="addMateriau" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content modal">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Ajouter Matériaux</strong> </h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="addMateriauForm">
+                            <input type="hidden" name="examID" value="<%=examID%>">
                             <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label>Paramètres de test</label>
-                                        <select class="select" multiple>
-                                            <% examsParameters.forEach((exam) => { %>
-                                                <option value="<%= exam.id %>"
-                                                    <% if(paramInfo.includes(exam.id)){  %> <%= "selected" %><% } %>
-                                                ><%= exam.nom_examen %></option>
+                                <div class="col-md-12">
+                                    <div class="form-inline">
+                                        <label>Sélectionnez les matériaux</label>
+                                        <select onchange="addMateriau()" class="select" multiple name="materiau[]" id="MateriauSelected">
+                                            <% materiaux.forEach((mat) => { %>
+                                            <option value="<%= mat.id %>"><%= mat.nom_materiau %></option>
                                             <% }) %>
                                         </select>
                                     </div>
                                 </div>
                             </div>
-                            <div class="m-t-20 text-center">
-                                <button class="btn btn-primary submit-btn">Modifier</button>
+                            <div class="row">
+                                <div class="col-md-12 m-t-10">
+                                    <label>Quantité</label>
+                                    <div class="form-inline" id="QteFiedls">
+                                    </div>
+                                </div>
                             </div>
+                            <div id="msgSaveMat" class="m-t-20 text-center"></div>
                         </form>
+                        <div class="m-t-20 text-center">
+                            <button class="btn btn-primary submit-btn" onclick="saveTestMateriau()">Enregistrer</button>
+                        </div>
+
                     </div>
                 </div>
             </div>
-           
         </div>
+
+
+
     </div>
     <div class="sidebar-overlay" data-reff=""></div>
     <script src="assets/js/jquery-3.2.1.min.js"></script>
@@ -70,18 +233,79 @@
     <script src="assets/js/bootstrap-datetimepicker.min.js"></script>
     <script src="assets/js/app.js"></script>
     <script>
-        $(function () {
-            $('#datetimepicker3').datetimepicker({
-                format: 'LT'
+        //ADD PARAMETER
+        function launchAddParam(id_exam, pname) {
+            $("#msgSaveParam").show().html("");
+            $("#paramName").val(pname);
+            $("#addParameters").modal();
+        }
+        saveTestParameters = function () {
+            let formData = $("#addParametersForm").serialize();
+            $.post("/add-test-parameters", formData, function (data) {
+                console.log(data);
+                if (data.success) { //Success 
+                    $("#msgSaveParam").html(data.msg);//.fadeOut( 5000 );
+                } else {
+                    $("#msgSaveParam").html(data.msg);
+                }
             });
-            $('#datetimepicker4').datetimepicker({
-                format: 'LT'
+        }
+        //ADD MATERIAU
+        function launchAddMateriau(id_exam, pname) {
+            $("#msgSaveMat").show().html("");
+            $("#matName").val(pname);
+            $("#addMateriau").modal();
+        }
+        //ADD TO CART
+        function addMateriau() {
+            let materiaux = $("#MateriauSelected").val();
+            let texte = $("#MateriauSelected option:selected");
+            let fields = "";
+            let pos=0;
+            materiaux.forEach(element => {
+                //alert(texte.text());
+                fields += "<input style='width:100px;margin:5px;' class='form-control' type='number' name='qte[]' value='1'>";
+                pos++;
             });
-        });
+            $("#QteFiedls").html(fields);
+        }
+        saveTestMateriau = function () {
+            $("#msgSaveMat").show().html("");
+            let formData = $("#addMateriauForm").serialize();
+            $.post("/link-test-materiau", formData, function (data) {
+                if (data.success) { //Success 
+                    $("#msgSaveMat").html(data.msg);//.fadeOut( 5000 );
+                } else {
+                    $("#msgSaveMat").html(data.msg);
+                }
+            });
+        }
+        //REMOVE ITEM
+        function launchDeleteParam(id_exam, pname, action) {
+            $("#itemToDelete").html(pname);
+            $("#itemName").val(pname);
+            $("#itemID").val(id_exam);
+            $("#actionID").val(action);
+            $("#DeleteItem").modal();
+        }
+        removeItem = function () {
+            $("#msgRemoveItem").show().html("");
+            let formData = $("#removeItemForm").serialize();
+            $.post("/remove-item", formData, function (data) {
+                if (data.success) { //Success 
+                    $("#msgRemoveItem").html(data.msg).fadeOut(2000, function () { $("#DeleteItem").modal("hide"); });
+                    let item = $("#actionID").val() + $("#itemID").val();
+                    $("#" + item).fadeOut(5000);
+                } else {
+                    $("#msgRemoveItem").html(data.msg);
+                }
+            });
+        }
     </script>
+
 </body>
 
 
-<!-- add-schedule24:07-->
+<!-- schedule23:21-->
 
 </html>

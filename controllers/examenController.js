@@ -70,7 +70,7 @@ var self = module.exports = {
     getExamById: async function (id) {
         let promise = new Promise((resolve, reject) => {
             let sql = "SELECT * FROM tb_examens WHERE id = ? ";
-            console.log(sql+" ID : "+id);
+            console.log(sql + " ID : " + id);
             con.query(sql, id, function (err, rows) {
                 if (err) {
                     //throw err;
@@ -137,6 +137,41 @@ var self = module.exports = {
         rep = await promise;
         return rep;
     },
+    //Delete PATIENT
+    removeItem: async function (req) {
+        let examID = req.body.examID;
+        let itemID = req.body.itemID;
+        let itemName = req.body.itemName;
+        let action = req.body.action;
+        let promise = new Promise((resolve, reject) => {
+            let sql ="";
+            if(action == "P"){
+                sql = "DELETE FROM tb_parametres_examens  WHERE id_examen =" + examID + " AND id_param_exam=" + itemID;
+            }else if(action == "VN"){
+                sql = "DELETE FROM tb_valeurs_normales  WHERE exam_id =" + examID ;
+            }else{
+                sql = "DELETE FROM tb_link_materiau_test  WHERE test_id =" + examID + " AND materiau=" + itemID;
+            }
+            console.log(sql);
+            con.query(sql, function (err, rows) {
+                if (err) {
+                    resolve({
+                        msg: "Une erreur est survenue. S'il vous palit réessayez.",
+                        error: "danger",
+                        debug: err
+                    });
+                } else {
+                    resolve({
+                        msg:  itemName + " supprimé avec succès.",
+                        success: "success"
+                    });
+                }
+            });
+        });
+        data = await promise;
+        console.log(data);
+        return data;
+    },
     //TEST REQUEST CONTENTS
     testRequestContent: async function (id) {
         let promise = new Promise((resolve, reject) => {
@@ -159,6 +194,25 @@ var self = module.exports = {
     getExamParameters: async function (id) {
         let promise = new Promise((resolve, reject) => {
             let sql = "SELECT * FROM tb_parametres_examens,tb_examens WHERE tb_parametres_examens.id_param_exam=tb_examens.id AND id_examen = ? ";
+            //console.log(sql+" ID : "+id);
+            con.query(sql, id, function (err, rows) {
+                if (err) {
+                    //throw err;
+                    resolve([{ fullname: "" }]);
+                } else {
+                    resolve(rows);
+                }
+            });
+        });
+        data = await promise;
+        //console.log(data);
+        return data;
+    },
+    //SELECT CONCAT('BEBE : ',bebe,' ENFANT : ',enfant,' ADO :',adolescent,' FEMME : ',femme,' HOMME : ',homme,' ',unite) FROM tb_valeurs_normales WHERE 1
+    //TEST REQUEST CONTENTS
+    getExamNormalValues: async function (id) {
+        let promise = new Promise((resolve, reject) => {
+            let sql = "SELECT CONCAT('BEBE : ',bebe,' ENFANT : ',enfant,' ADO :',adolescent,' FEMME : ',femme,' HOMME : ',homme,' ',unite) as  vn FROM tb_valeurs_normales WHERE  exam_id = ? ";
             //console.log(sql+" ID : "+id);
             con.query(sql, id, function (err, rows) {
                 if (err) {
