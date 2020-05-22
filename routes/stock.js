@@ -123,12 +123,55 @@ router.post('/inventaire', async (req, res) => {
 
 //MOUVEMENT DE STOCK
 router.get('/mv-stock', async (req, res) => {
-    let data = await stockDB.stockMoving();
+    console.log(req.body);
+    let dateFrom = helpers.getCurrentDate();
+    let dateTo = helpers.getCurrentDate();
+    let materiauxList = await stockDB.listOfMateriaux("All");
+    let materiauSelected = 'All';
+    if (req.body.materiauSelected) { materiauSelected = req.body.materiauSelected; }
+    let data = await stockDB.stockMoving(dateFrom,dateTo,materiauSelected);
+    dateFrom = helpers.formatDate(dateFrom, "FR");
+    dateFrom = helpers.changeDateSymbol(dateFrom);
+    dateTo = helpers.formatDate(dateTo, "FR");
+    dateTo = helpers.changeDateSymbol(dateTo);
     let pageTitle = "Mouvement de stock";
     params = {
         pageTitle: pageTitle,
         data: data,
         UserData: req.session.UserData,
+        materiauxList : materiauxList,
+        materiauSelected : materiauSelected,
+        dateFrom : dateFrom,
+        dateTo : dateTo,
+        dateFromDB : dateFrom,
+        dateToDB : dateTo,
+        page: 'StockMoving'
+    };
+    res.render('stock/mouvement-stock', params);
+});
+
+router.post('/mv-stock', async (req, res) => {
+    console.log(req.body);
+    let dateFrom = req.body.DateFrom;
+    let dateTo = req.body.DateTo;
+    let materiauSelected = 'All';
+    if (req.body.materiauSelected) { materiauSelected = req.body.materiauSelected; }
+    let materiauxList = await stockDB.listOfMateriaux("All");
+    //DATES
+    dateFromDB = helpers.formatDate(dateFrom, "EN");
+    dateToDB = helpers.formatDate(dateTo, "EN");
+    let data = await stockDB.stockMoving(dateFromDB,dateToDB,materiauSelected);
+    let pageTitle = "Mouvement de stock";
+    params = {
+        pageTitle: pageTitle,
+        data: data,
+        UserData: req.session.UserData,
+        materiauxList : materiauxList,
+        materiauSelected : materiauSelected,
+        dateFrom : dateFrom,
+        dateTo : dateTo,
+        dateFromDB : dateFromDB,
+        dateToDB : dateToDB,
         page: 'StockMoving'
     };
     res.render('stock/mouvement-stock', params);
@@ -136,11 +179,16 @@ router.get('/mv-stock', async (req, res) => {
 
 //ADD STOCK
 router.post('/add-stock', async (req, res) => {
-    console.log(req.body);
-    console.log("USER : " + USER_NAME);
-    let notifications = await stockDB.addStock(req);
-    console.log("NOTIF : " + notifications);
-    res.json(notifications);
+    if (helpers.is_session(req, res)) {
+        console.log(req.body);
+        console.log("USER ACT: " + req.session.username);
+        let notifications = await stockDB.addStock(req);
+        console.log("NOTIF : " + notifications);
+        res.json(notifications);
+    } else {
+        res.redirect("http://localhost:8788/");
+        console.log("Redirect to LOGIN");
+    }
 });
 
 //ADD OR REMOVE ITEMS STOCK
@@ -268,6 +316,42 @@ router.post('/print-inventory-report', async (req, res) => {
     res.setHeader('Content-type', 'application/pdf');
     stream.pipe(res);
 });
+
+//PRINT STOCK MOVE /print-stock-move-report
+router.post('/print-stock-move-report', async (req, res) => {
+    console.log(req.body);
+    console.log(req.body);
+    let dateFrom = req.body.DateFrom;
+    let dateTo = req.body.DateTo;
+    let materiauSelected = 'All';
+    if (req.body.materiauSelected) { materiauSelected = req.body.materiauSelected; }
+    let materiauxList = await stockDB.listOfMateriaux("All");
+    //DATES
+    dateFromDB = helpers.formatDate(dateFrom, "EN");
+    dateToDB = helpers.formatDate(dateTo, "EN");
+    let data = await stockDB.stockMoving(dateFromDB,dateToDB,materiauSelected);
+    let dateN = helpers.getCurrentDate();
+    materiauSelected = materiauSelected != "All" ? materiauSelected : "";
+    let pageTitle = "Mouvement de stock " + materiauSelected + " pour le " + helpers.formatDate(dateN, "FR");
+    let report = "stock-move-"+dateN;
+    let filename = report + ".pdf";
+    let pathfile = "./tmp/" + filename;
+    let template_name = "stock-move";
+    params = {
+        data: data,
+        pageTitle: pageTitle
+    };
+    await printer.print(template_name, params, pathfile);
+    //Display the file in the browser
+    var stream = fs.ReadStream(pathfile);
+    // Be careful of special characters
+    filename = encodeURIComponent(filename);
+    // Ideally this should strip them
+    res.setHeader('Content-disposition', 'inline; filename="' + filename + '"');
+    res.setHeader('Content-type', 'application/pdf');
+    stream.pipe(res);
+});
+
 
 
 

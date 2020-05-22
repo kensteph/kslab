@@ -34,6 +34,43 @@ var self = module.exports = {
         return rep;
     },
 
+        //Save Modalites paiement
+        editExam: async function (req) {
+            let promise = new Promise((resolve, reject) => {
+                let examen = req.body.examen;
+                let examenID = req.body.examenID;
+                let type_resultat = req.body.typeResultat;
+                let is_bilan = req.body.is_bilan;
+                
+                let sql =
+                    'UPDATE tb_examens SET nom_examen="' + examen + '", type_resultat =' + type_resultat + ', is_bilan=' + is_bilan +' WHERE id=?';
+                console.log(sql);
+                con.query(sql,examenID, function (err, result) {
+                    if (err) {
+                        msg = {
+                            type: "danger",
+                            msg:
+                                "<font color='red'><strong>Vous avez déja attribué ces paramètres.</strong></font>",
+                            debug: err
+                        };
+                    } else {
+                        msg = {
+                            type: "success",
+                            success: true,
+                            msg:
+                                "<font color='green'><strong> "+examen+" modifié avec succès...</strong></font>",
+                            nb_success: result.affectedRows,
+                        };
+                    }
+    
+                    resolve(msg);
+                    console.log(msg);
+                });
+            });
+            rep = await promise;
+            return rep;
+        },
+
     //Load All The Courses Categories
     listOfExams: async function () {
         let promise = new Promise((resolve, reject) => {

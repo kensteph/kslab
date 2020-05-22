@@ -37,8 +37,8 @@ var self = module.exports = {
     },
     getPastMonth() {
         var dt = new Date();
-        dt.setDate(dt.getDate()-30); //Get the current year in 4 digits
-        nextYear = dt.getMonth()+1;
+        dt.setDate(dt.getDate() - 30); //Get the current year in 4 digits
+        nextYear = dt.getMonth() + 1;
         console.log(nextYear);
         return nextYear;
     },
@@ -162,7 +162,7 @@ var self = module.exports = {
         });
         return totalFiles;
     },
-    simpleUpload(req, filename, full_path_directory,field_name) {
+    simpleUpload(req, filename, full_path_directory, field_name) {
         try {
             if (!req.files) {
                 msg = {
@@ -176,10 +176,10 @@ var self = module.exports = {
                 let avatar = req.files[field_name];
                 let split_img_name = avatar.name.split(".");
                 let img_extension = split_img_name[1];
-                if(filename == ""){
+                if (filename == "") {
                     filename = avatar.name;
-                }else{
-                    filename = filename+"."+img_extension;
+                } else {
+                    filename = filename + "." + img_extension;
                 }
                 //Use the mv() method to place the file in upload directory (i.e. "uploads")
                 avatar.mv(full_path_directory + filename);
@@ -212,10 +212,10 @@ var self = module.exports = {
     //Convert image to base64
     base64(pathFile) {
         const fs = require('fs');
-        let base64data =null;
+        let base64data = null;
         try {
             let buff = fs.readFileSync(pathFile);
-             base64data = buff.toString('base64');
+            base64data = buff.toString('base64');
         } catch (error) {
             console.log('Image not converted to base 64 :\n\n' + error);
         }
@@ -307,50 +307,72 @@ var self = module.exports = {
         });
     },
 
-//===================================== DB BACKUP ===================================
-DatatbaseBackup(path){
-const mysqldump = require('mysqldump');
-let path_directory = path;
-let resp = false;
-// dump the result straight to a file
-try {
-    mysqldump({
-        connection: {
-            host: process.env.DB_HOST,
-            user: process.env.DB_USER,
-            password: process.env.DB_PASSWORD,
-            database: process.env.DB_NAME,
-        },
-        dumpToFile: path_directory+'/'+self.getCurrentDate()+'.sql',
-    }); 
-    resp = true;
-} catch (error) {
-    console.log("BACKUP DB MSG : "+error);
-}
+    //===================================== DB BACKUP ===================================
+    DatatbaseBackup(path) {
+        const mysqldump = require('mysqldump');
+        let path_directory = path;
+        let resp = false;
+        // dump the result straight to a file
+        try {
+            mysqldump({
+                connection: {
+                    host: process.env.DB_HOST,
+                    user: process.env.DB_USER,
+                    password: process.env.DB_PASSWORD,
+                    database: process.env.DB_NAME,
+                },
+                dumpToFile: path_directory + '/' + self.getCurrentDate() + '.sql',
+            });
+            resp = true;
+        } catch (error) {
+            console.log("BACKUP DB MSG : " + error);
+        }
 
-return resp;
-// dump the result straight to a compressed file
-// mysqldump({
-//     connection: {
-//         host: 'localhost',
-//         user: 'root',
-//         password: '123456',
-//         database: 'my_database',
-//     },
-//     dumpToFile: './dump.sql.gz',
-//     compressFile: true,
-// });
- 
-// // return the dump from the function and not to a file
-// const result = await mysqldump({
-//     connection: {
-//         host: 'localhost',
-//         user: 'root',
-//         password: '123456',
-//         database: 'my_database',
-//     },
-// });
+        return resp;
+        // dump the result straight to a compressed file
+        // mysqldump({
+        //     connection: {
+        //         host: 'localhost',
+        //         user: 'root',
+        //         password: '123456',
+        //         database: 'my_database',
+        //     },
+        //     dumpToFile: './dump.sql.gz',
+        //     compressFile: true,
+        // });
 
-},
+        // // return the dump from the function and not to a file
+        // const result = await mysqldump({
+        //     connection: {
+        //         host: 'localhost',
+        //         user: 'root',
+        //         password: '123456',
+        //         database: 'my_database',
+        //     },
+        // });
+
+    },
+    //====================================================== SECURITY ================================
+    is_session(req, res) {
+        let response = false;
+        if (req.session.username) {
+            console.log("User still authenticated...");
+            response = true;
+        } else {
+            //res.send('root')
+            // res.statusCode = 404;
+            // res.setHeader('Content-Type', 'text/plain');
+            // res.end('Cannot ' + req.method + ' ' + req.url);
+            // console.log("Redirect to...");
+            // res.status(200).json({
+            //     status: 'succes',
+            //     data: req.body,
+            //   });
+            //   res.send('root');
+            return;
+        }
+        return response;
+    },
+
 
 };

@@ -49,6 +49,13 @@ router.post('/add-examens', async (req, res) => {
     res.render('examens/add-examens', params);
 });
 
+//EDIT EXAM
+router.post('/edit-exam', async (req, res) => {
+    console.log(req.body);
+    let notifications = await examenDB.editExam(req);
+    res.json(notifications);
+});
+
 // //EXAMS LIST
 router.get('/examens', async (req, res) => {
     if (typeof req.session.UserData != "undefined") {

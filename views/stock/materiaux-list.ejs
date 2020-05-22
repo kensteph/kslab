@@ -133,7 +133,7 @@
                                     <input class="form-control" type="number" min="0" name="qteEndomage">
                                 </div>
                             </div>
-                            <div id="notify" class="m-t-20 text-center"></div>
+                            <div id="notifyStockUp" class="m-t-20 text-center"></div>
                             <div class="m-t-20 text-center">
                                 <button class="btn btn-primary submit-btn" >Ajouter</button>
                             </div>
@@ -172,7 +172,7 @@
                                     </select>
                                 </div>
                             </div>
-                            <div id="Enotify" class="m-t-20 text-center"></div>
+                            <div id="EnotifyMat" class="m-t-20 text-center"></div>
                         </form>
                             <div class="m-t-20 text-center">
                                 <button class="btn btn-primary submit-btn" onclick="editMateriau()" >Modifier</button>
@@ -226,6 +226,7 @@
         });
         
         function launchEditMateriau(matName, matId,perissable,stock) {
+            $("#EnotifyMat").show().html("");
             $("#EmateriauName").html(matName);
             $("#Emateriau").val(matName);
             $("#EmateriauId").val(matId);
@@ -234,35 +235,35 @@
             $("#editMatriau").modal();
         }
         editMateriau = function () {
-            $("#Enotify").show().html();
             let formData = $("#editMatForm").serialize();
             $.post("/edit-materiau", formData, function (data) {
                 console.log(data);
                 if (data.success) { //Success 
-                    $("#Enotify").html(data.msg).fadeOut(5000,()=>{
-                        window.location.replace("http://stackoverflow.com");
+                    $("#EnotifyMat").html(data.msg).fadeOut(5000,()=>{
+                        window.location.replace("/materiaux");
                     });
                 } else {
-                    $("#Enotify").html(data.msg);
+                    $("#EnotifyMat").html(data.msg);
                 }
             });
         }
 
         function launchStockUp(matName, matId) {
+            $("#notifyStockUp").show().html("");
             $("#materiauName").html(matName);
             $("#materiauId").val(matId);
             $("#materiau").val(matName);
             $("#add_stock").modal();
         }
         addStock = function () {
-            $("#notify").show().html();
+            $("#notifyStockUp").html("S'il vous plait, patientez....");
             let formData = $("#addStockForm").serialize();
             $.post("/add-stock", formData, function (data) {
                 console.log(data);
                 if (data.success) { //Success 
-                    $("#notify").html(data.msg);//.fadeOut(5000);
+                    $("#notifyStockUp").html(data.msg);//.fadeOut(5000);
                 } else {
-                    $("#notify").html(data.msg);
+                    $("#notifyStockUp").html(data.msg);
                 }
             });
         }

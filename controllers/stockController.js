@@ -51,6 +51,7 @@ var self = module.exports = {
                         });
                     } else {
                         resolve({
+                            success : true,
                             msg: "Les informations concernant " + materiauName + " ont été modifiées avec succès.",
                             type: "success"
                         });
@@ -106,19 +107,21 @@ var self = module.exports = {
             let materiauId = req.body.materiauId;
             let materiauName = req.body.materiauName;
             let dateRecue = helpers.formatDate(req.body.dateRecue, "EN");
-            let dateExpiration = helpers.formatDate(req.body.dateExpiration, "EN");;
+            let dateExpiration = helpers.formatDate(req.body.dateExpiration, "EN");
             let qteRecue = parseInt(req.body.qteRecue);
             let qteEndomage = req.body.qteEndomage;
             let qteRestante = qteRecue - qteEndomage;
             let user = req.session.username;
+            
             if (qteEndomage == "") { qteEndomage = 0; } else { qteEndomage = parseInt(qteEndomage); }
-            let msg="";
+            let msg={msg : "NO ACTION DONE..."};
             //   /* Begin transaction */
             con.beginTransaction((err) => {
                 if (err) { throw err; }
                 let sql =
                     'INSERT INTO tb_stocks (numero_lot,materiau,date_recue,date_expiration,qte_recue,qte_endomage,qte_restante,acteur) VALUES ("' + numero_lot + '","' + materiauId + '","' + dateRecue + '","' + dateExpiration + '",' + qteRecue + ',' + qteEndomage + ',' + qteRestante + ',"' + user + '")';
                 con.query(sql, function (err, result) {
+                    console.log("TEST");
                     if (err) {
                         msg = {
                             type: "danger",
@@ -127,6 +130,7 @@ var self = module.exports = {
                                 "<font color='red'> Vous avez déja ajouté ce lot " + numero_lot + "</font> ",
                             debug: err
                         };
+                        resolve(msg);
                     } else {
                         let commentaire =qteRecue+" "+materiauName+" ont été ajoutés au stock. QTE endomagée : "+qteEndomage;
                         let transactionType ="Add";
@@ -137,7 +141,7 @@ var self = module.exports = {
                             if (err) {
                                 console.log(err);
                                 con.rollback(function () {
-                                    throw err;
+                                    //throw err;
                                     msg = {
                                         type: "danger",
                                         error: true,
@@ -145,13 +149,21 @@ var self = module.exports = {
                                             "<font color='red'> Vous avez déja ajouté ce lot " + numero_lot + "</font> ",
                                         debug: err
                                     };
+                                    resolve(msg);
                                 });
                             }else{
                                 con.commit(function (err) {
                                     if (err) {
                                         console.log(err);
                                         con.rollback(function () {
-                                            throw err;
+                                            //throw err;
+                                            msg = {
+                                                type: "danger",
+                                                error: true,
+                                                msg:
+                                                    "<font color='red'> Vous avez déja ajouté ce lot " + numero_lot + "</font> ",
+                                                debug: err
+                                            };
                                         });
                                     }
                                     msg = {
@@ -175,6 +187,7 @@ var self = module.exports = {
 
         });
         rep = await promise;
+        console.log("RSPONSE : "+rep);
         return rep;
     },
     //Add or REMOVE ITEMS STOCK Materiau
@@ -511,9 +524,15 @@ var self = module.exports = {
         return data;
     },
     //Mouvement de stock IN and OUT
-    stockMoving: async function () {
+    stockMoving: async function (dateFrom,dateTo,materiauSelected) {
         let promise = new Promise((resolve, reject) => {
-            let sql = "SELECT *FROM tb_evolution_stock,tb_materiaux WHERE tb_evolution_stock.materiau=tb_materiaux.id";
+            let sql = "";
+            if(materiauSelected == "All"){
+                sql = "SELECT *FROM tb_evolution_stock,tb_materiaux WHERE tb_evolution_stock.materiau=tb_materiaux.id AND DATE(date_record) BETWEEN '"+dateFrom+"' AND '"+dateTo+"' ";
+            }else{
+                sql = "SELECT *FROM tb_evolution_stock,tb_materiaux WHERE tb_evolution_stock.materiau=tb_materiaux.id AND DATE(date_record) BETWEEN '"+dateFrom+"' AND '"+dateTo+"' AND materiau="+materiauSelected;
+            }
+            console.log(sql);
             con.query(sql, function (err, rows) {
                 if (err) {
                     throw err;

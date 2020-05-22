@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="/assets/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="/assets/css/style.css">
+    <style>
+
+    </style>
+</head>
+
+<body>
+
+    <div class="row-header">
+        <div class="logo">
+            <img style="margin-left: 10px;" src="data:image/jpeg;base64,<%=LOGO%>" alt="img" width="100" height="100">
+        </div>
+        <div class="header-form">
+            <p>
+            <h3> <%=line1%> </h3>
+            <h3><%=line2%></h3>
+            <% if(line3 !=""){ %>
+            <%=line3%><br>
+            <% } %>
+            <% if(line4 !=""){ %>
+            <%=line4%><br>
+            <% } %>
+            <% if(line5 !=""){ %>
+            <%=line5%><br>
+            <% } %>
+            <% if(line6 !=""){ %>
+            <%=line6%><br><br>
+            <% } %>
+            </p>
+        </div>
+    </div>
+    <hr>
+    <div class="row-header">
+        <div class="title-report"><%=pageTitle%></div>
+    </div>
+    <div class="row-report">
+        <div class="col-md-12">
+            <div class="table-responsive">
+                <table class="table table-striped custom-table datatable mb-0">
+                    <thead>
+                        <tr>
+                            <th>Date transaction</th>
+                            <th>Numéro Lot</th>
+                            <th>Matériau</th>
+                            <th>Quantité</th>
+                            <th>Transaction</th>
+                            <th>Commentaire</th>
+                            <th>Acteur</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% data.forEach((stock) => {
+                            let fa = "";
+                            let color = "color : red;";
+                            let title = "";
+                            if(stock.transaction == "add"){
+                                fa = "fa fa-arrow-up";
+                                title = "Augmentation de stock";
+                                color = "color : green;";
+                            }else if(stock.transaction == "substract"){
+                                fa = "fa fa-arrow-down";
+                                title = "Diminution de stock";
+                            }else{
+                                fa = "fa fa-arrow-down ";
+                                title = "Stock endommagé";
+                            }
+                        %>
+                        <tr>
+                            <td class=""><%=stock.date_record%></td>
+                            <td><a href=""><%=stock.lot%></a></td>
+                            <td><%=stock.nom_materiau%></td>
+                            <td><%=stock.qte%></td>
+                            <td><i style="<%= color %>" class="<%= fa%>" title="<%= title%>"></i></td>
+                            <td><%=stock.commentaire%></td>
+                            <td><%=stock.acteur%></td>
+                        </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>

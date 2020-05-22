@@ -40,36 +40,49 @@
                     </div>
                 </div>
                 <div class="row filter-row">
-                    <div class="col-sm-6 col-md-3">
-                        <div class="form-group form-focus">
-                            <label class="focus-label">From</label>
-                            <div class="cal-icon">
-                                <input class="form-control floating datetimepicker" type="text">
+                    <form class="form-inline m-b-10" method="POST" action="" style="width: 80%;">
+                        <div class="col-sm-6 col-md-3">
+                            <div class="form-group form-focus">
+                                <label class="focus-label">From</label>
+                                <div class="cal-icon">
+                                    <input class="form-control floating datetimepicker" name="DateFrom" type="text" value="<%=dateFrom%>">
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-sm-6 col-md-3">
-                        <div class="form-group form-focus">
-                            <label class="focus-label">To</label>
-                            <div class="cal-icon">
-                                <input class="form-control floating datetimepicker" type="text">
+                        <div class="col-sm-6 col-md-3">
+                            <div class="form-group form-focus">
+                                <label class="focus-label">To</label>
+                                <div class="cal-icon">
+                                    <input class="form-control floating datetimepicker" name="DateTo" type="text"  value="<%=dateTo%>">
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-sm-6 col-md-3">
-                        <div class="form-group form-focus select-focus">
-                            <label class="focus-label">Status</label>
-                            <select class="select floating">
-                                <option>Select Status</option>
-                                <option>Pending</option>
-                                <option>Paid</option>
-                                <option>Partially Paid</option>
-                            </select>
+                        <div class="col-sm-4 col-md-4">
+                            <div class="form-group form-focus select-focus">
+                                <label class="focus-label">Matériau</label>
+                                <select class="select floating" name="materiauSelected">
+                                    <option value="All">Tous</option>
+                                    <% materiauxList.forEach((materiau) => { %>
+                                    <option value="<%=materiau.id%>" <% if( materiauSelected == materiau.id ){ %> <%= "selected" %> <% } %> > 
+                                        <%=materiau.nom_materiau%>
+                                    </option>
+                                    <% }) %>
+                                </select>
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-sm-6 col-md-3">
-                        <a href="#" class="btn btn-success btn-block"> Search </a>
-                    </div>
+                        <div class="col-sm-2 col-md-2">
+                            <button class="btn btn-success btn-block"> Search </button>
+                        </div>
+                    </form>
+                    <% if(data.length >0){   %>
+                        <form id="PrintForm" target="_blank" action="/print-stock-move-report" method="POST">
+                            <input type="hidden" name="DateFrom" value="<%=dateFromDB%>">
+                            <input type="hidden" name="DateTo" value="<%=dateToDB%>">
+                            <input type="hidden" name="materiauSelected" value="<%=materiauSelected%>">
+                            <a href="#" class="dropdown-item" onclick="printReport()"><i class="fa fa-print fa-lg"></i>
+                                Imprimer le rapport</a>
+                        </form>
+                    <% }  %>
                 </div>
                 <div class="row">
                     <div class="col-md-12">
@@ -135,7 +148,7 @@
     <script src="assets/js/bootstrap-datetimepicker.min.js"></script>
     <script src="assets/js/app.js"></script>
     <script>
-        $("#addRemoveStockForm").submit(function(e){
+        $("#addRemoveStockForm").submit(function (e) {
             e.preventDefault();
             addorRemoveStock();
         });
@@ -157,6 +170,10 @@
                     $("#notify").html(data.msg);
                 }
             });
+        }
+
+        function printReport() {
+            $("#PrintForm").submit();
         }
     </script>
     <!-- FOOTER -->
