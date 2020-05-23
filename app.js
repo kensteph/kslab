@@ -65,7 +65,7 @@ app.get('/', async (req, res) => {
 //Exit Point
 app.get('/logout', async (req, res) => {
     console.log("Go to Login page");
-    res.render('login');
+    res.redirect('/');
     console.log("Destroy Session");
     req.session.destroy(function (err) {
         // cannot access session here

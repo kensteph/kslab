@@ -285,6 +285,7 @@ var self = module.exports = {
         let lastName = req.body.lastname;
         let fullname = firstName + " " + lastName;
         let user_name = req.body.username;
+        let poste = req.body.poste;
         let gender = req.body.gender;
         let dateOfBirth = helpers.formatDate(req.body.datenais, "EN");
         let adresse = req.body.adresse;
@@ -300,7 +301,7 @@ var self = module.exports = {
             con.beginTransaction(function (err) {
                 if (err) { throw err; }
                 //Insert info into personne table
-                let sql = "INSERT INTO tb_personnes (prenom,nom,sexe,date_nais,adresse,telephone,email) VALUES ('" + firstName + "','" + lastName + "','" + gender + "','" + dateOfBirth + "','" + adresse + "','" + phone + "','" + email + "')";
+                let sql = "INSERT INTO tb_personnes (prenom,nom,sexe,date_nais,adresse,telephone,email) VALUES ('" + firstName + "','" + lastName + "','" + gender + "','" + dateOfBirth + "','" + adresse + "','" + phone + "','" + email + "','" + poste + "')";
                 con.query(sql, function (err, result) {
                     if (err) {
                         console.log(err);
@@ -313,7 +314,7 @@ var self = module.exports = {
                     let initial = firstName.charAt(0) + lastName.charAt(0);
                     let numero_patient = helpers.generateCode(initial, id_personne);
                     //Insert info into professeur  table
-                    let sql2 = "INSERT INTO tb_users (id_personne,id_employe,user_name,pass_word,menu_access,sub_menu_access) VALUES (" + id_personne + ",'" + numero_patient + "','" + user_name + "','" + hash_pass + "','" + default_menu_access + "','" + default_sub_menu_access + "')";
+                    let sql2 = "INSERT INTO tb_users (id_personne,id_employe,user_name,pass_word,menu_access,sub_menu_access,poste) VALUES (" + id_personne + ",'" + numero_patient + "','" + user_name + "','" + hash_pass + "','" + default_menu_access + "','" + default_sub_menu_access + "')";
                     con.query(sql2, function (err, result) {
                         if (err) {
                             con.rollback(function () {

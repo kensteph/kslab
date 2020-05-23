@@ -346,9 +346,9 @@ var self = module.exports = {
     },
 
     //STOCK BY ID
-    getStockById: async function (id) {
+    getMateriau: async function (id) {
         let promise = new Promise((resolve, reject) => {
-            let sql = "SELECT * FROM tb_examens WHERE id = ? ";
+            let sql = "SELECT * FROM tb_materiaux WHERE id = ? ";
             //console.log(sql+" ID : "+id_personne);
             con.query(sql, id, function (err, rows) {
                 if (err) {

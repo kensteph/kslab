@@ -39,19 +39,18 @@
     <div class="row-header">
         <div class="title-report"><%=pageTitle%></div>
     </div>
-    <div class="row-report">
+    <div class="row-report" style="margin-left: 70px;">
         <div class="col-md-12">
             <div class="table-responsive">
                 <table class="table table-striped custom-table datatable mb-0">
                     <thead>
                         <tr>
-                            <th>Date transaction</th>
-                            <th>Numéro Lot</th>
-                            <th>Matériau</th>
-                            <th>Quantité</th>
-                            <th>Transaction</th>
-                            <th>Commentaire</th>
-                            <th>Acteur</th>
+                            <th class="report">Date transaction</th>
+                            <th class="report">Numéro Lot</th>
+                            <th class="report">Matériau</th>
+                            <th class="report">Quantité</th>
+                            <th class="report">Commentaire</th>
+                            <th class="report">Acteur</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -72,13 +71,12 @@
                             }
                         %>
                         <tr>
-                            <td class=""><%=stock.date_record%></td>
-                            <td><a href=""><%=stock.lot%></a></td>
-                            <td><%=stock.nom_materiau%></td>
-                            <td><%=stock.qte%></td>
-                            <td><i style="<%= color %>" class="<%= fa%>" title="<%= title%>"></i></td>
-                            <td><%=stock.commentaire%></td>
-                            <td><%=stock.acteur%></td>
+                            <td class="report"><%=stock.date_record%></td>
+                            <td class="report"><a href=""><%=stock.lot%></a></td>
+                            <td class="report"><%=stock.nom_materiau%></td>
+                            <td class="report"><%=stock.qte%></td>
+                            <td class="report"><%=stock.commentaire%></td>
+                            <td class="report"><%=stock.acteur%></td>
                         </tr>
                         <% }) %>
                     </tbody>

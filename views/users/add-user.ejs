@@ -57,6 +57,7 @@
                                 statut = data.statut;
                                 email = data.email;
                                 username = data.user_name;
+                                poste = data.poste;
                                 read_only = " readonly";
                            %>
 
@@ -70,6 +71,7 @@
                                 statut ="";
                                 email="";
                                 username ="";
+                                poste = "";
                                 buttonText = "Créer Utilisateur";
                                 read_only = "";
                            }
@@ -138,7 +140,14 @@
                                         <div class="form-group">
                                             <label>Nom d'utilisateur </label>
                                             <input class="form-control" type="text" required name="username"
-                                                value="<%=username%>" <%=read_only%>>
+                                                value="<%=username%>" <%=read_only %>>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label>Poste </label>
+                                            <input class="form-control" type="text"  name="poste"
+                                                value="<%=poste%>">
                                         </div>
                                     </div>
                                 </div>

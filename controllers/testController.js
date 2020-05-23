@@ -65,7 +65,7 @@ var self = module.exports = {
                 con.beginTransaction(function (err) {
                     if (err) { throw err; }
                     //Insert info into personne table
-                    let sql = "INSERT INTO tb_test_requests (patient,docteur) VALUES ('" + patient + "','" + docteur + "')";
+                    let sql = "INSERT INTO tb_test_requests (patient,docteur,acteur) VALUES ('" + patient + "','" + docteur + "','" + user + "')";
                     con.query(sql, function (err, result) {
                         if (err) {
                             console.log(err);

@@ -124,15 +124,15 @@ router.post('/inventaire', async (req, res) => {
 //MOUVEMENT DE STOCK
 router.get('/mv-stock', async (req, res) => {
     console.log(req.body);
-    let dateFrom = helpers.getCurrentDate();
-    let dateTo = helpers.getCurrentDate();
+    let dateF = helpers.getCurrentDate();
+    let dateT = helpers.getCurrentDate();
     let materiauxList = await stockDB.listOfMateriaux("All");
     let materiauSelected = 'All';
     if (req.body.materiauSelected) { materiauSelected = req.body.materiauSelected; }
-    let data = await stockDB.stockMoving(dateFrom,dateTo,materiauSelected);
-    dateFrom = helpers.formatDate(dateFrom, "FR");
+    let data = await stockDB.stockMoving(dateF,dateT,materiauSelected);
+    let dateFrom = helpers.formatDate(dateF, "FR");
     dateFrom = helpers.changeDateSymbol(dateFrom);
-    dateTo = helpers.formatDate(dateTo, "FR");
+    let dateTo = helpers.formatDate(dateT, "FR");
     dateTo = helpers.changeDateSymbol(dateTo);
     let pageTitle = "Mouvement de stock";
     params = {
@@ -143,8 +143,8 @@ router.get('/mv-stock', async (req, res) => {
         materiauSelected : materiauSelected,
         dateFrom : dateFrom,
         dateTo : dateTo,
-        dateFromDB : dateFrom,
-        dateToDB : dateTo,
+        dateFromDB : dateF,
+        dateToDB : dateT,
         page: 'StockMoving'
     };
     res.render('stock/mouvement-stock', params);
@@ -158,7 +158,9 @@ router.post('/mv-stock', async (req, res) => {
     if (req.body.materiauSelected) { materiauSelected = req.body.materiauSelected; }
     let materiauxList = await stockDB.listOfMateriaux("All");
     //DATES
+    dateFromDB =  helpers.changeDateSymbol(dateFrom);
     dateFromDB = helpers.formatDate(dateFrom, "EN");
+    dateToDB =  helpers.changeDateSymbol(dateTo);
     dateToDB = helpers.formatDate(dateTo, "EN");
     let data = await stockDB.stockMoving(dateFromDB,dateToDB,materiauSelected);
     let pageTitle = "Mouvement de stock";
@@ -320,19 +322,25 @@ router.post('/print-inventory-report', async (req, res) => {
 //PRINT STOCK MOVE /print-stock-move-report
 router.post('/print-stock-move-report', async (req, res) => {
     console.log(req.body);
-    console.log(req.body);
     let dateFrom = req.body.DateFrom;
     let dateTo = req.body.DateTo;
     let materiauSelected = 'All';
-    if (req.body.materiauSelected) { materiauSelected = req.body.materiauSelected; }
-    let materiauxList = await stockDB.listOfMateriaux("All");
+    let infoMateriau = [];
+    if (req.body.materiauSelected) { 
+        materiauSelected = req.body.materiauSelected;
+        infoMateriau = await stockDB.getMateriau(materiauSelected);
+     }
     //DATES
-    dateFromDB = helpers.formatDate(dateFrom, "EN");
-    dateToDB = helpers.formatDate(dateTo, "EN");
-    let data = await stockDB.stockMoving(dateFromDB,dateToDB,materiauSelected);
+    let data = await stockDB.stockMoving(dateFrom,dateTo,materiauSelected);
+    console.log(infoMateriau);
     let dateN = helpers.getCurrentDate();
-    materiauSelected = materiauSelected != "All" ? materiauSelected : "";
-    let pageTitle = "Mouvement de stock " + materiauSelected + " pour le " + helpers.formatDate(dateN, "FR");
+    let text_date = "";
+    if (dateFrom == dateTo) {
+        text_date = "pour le " + helpers.formatDate(dateFrom, "FR");
+    } else {
+        text_date = "Du " + helpers.formatDate(dateFrom, "FR") + " au " + helpers.formatDate(dateTo, "FR");
+    }
+    let pageTitle = "Mouvement de stock " + infoMateriau.nom_materiau + "  " + text_date;
     let report = "stock-move-"+dateN;
     let filename = report + ".pdf";
     let pathfile = "./tmp/" + filename;

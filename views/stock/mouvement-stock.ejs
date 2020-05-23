@@ -34,10 +34,6 @@
                     <div class="col-sm-5 col-4">
                         <h4 class="page-title"><%=pageTitle%> </h4>
                     </div>
-                    <div class="col-sm-7 col-8 text-right m-b-30">
-                        <a href="create-invoice.html" class="btn btn-primary btn-rounded"><i class="fa fa-arrow-up"></i>
-                            Create New Invoice</a>
-                    </div>
                 </div>
                 <div class="row filter-row">
                     <form class="form-inline m-b-10" method="POST" action="" style="width: 80%;">
@@ -104,7 +100,7 @@
                                         let fa = "";
                                         let color = "color : red;";
                                         let title = "";
-                                        if(stock.transaction == "add"){
+                                        if(stock.transaction == "Add"){
                                             fa = "fa fa-arrow-up";
                                             title = "Augmentation de stock";
                                             color = "color : green;";
