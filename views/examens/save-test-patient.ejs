@@ -31,9 +31,11 @@
                         <h4 class="page-title">
                             <i class="fa fa-folder-open-o"></i> <%=patientSelected.num_patient%> |
                             <%=patientSelected.fullname%> 
+                            <% if(UserData.user_sub_menu_access.includes("Imprimer Résultat") || UserData.user_sub_menu_access[0]=="All"){ %>
                             <a href="#"  rel="noopener noreferrer">
                                 <i style="cursor: pointer;" title="Apperçue du résultat" class="fa fa-file-pdf-o" onclick=" displayResult()"></i> 
                             </a>
+                           <%}%>
                         </h4>
                             <form id="displayResult" target="_blank" action="/display-test-result" method="POST">
                                 <input type="hidden" name="id_test_request" value="<%=id_test_request%>">

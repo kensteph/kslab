@@ -36,7 +36,7 @@
                     </div>
                 </div>
                 <div class="row filter-row">
-                    <form action="" method="POST" class="form-inline m-b-10">
+                    <form action="/Tests" method="POST" class="form-inline m-b-10">
                         <div class="col-sm-6 col-md-3">
                             <div class="form-group form-focus">
                                 <label class="focus-label">Du</label>
@@ -113,6 +113,7 @@
                                                 <a href="#" class="action-icon dropdown-toggle" data-toggle="dropdown"
                                                     aria-expanded="false"><i class="fa fa-ellipsis-v"></i></a>
                                                 <div class="dropdown-menu dropdown-menu-right">
+                                                    <% if(UserData.user_sub_menu_access.includes("Enregistrer Résultat") || UserData.user_sub_menu_access[0]=="All"){ %>
                                                     <form action="/SaveTestResult" method="POST"
                                                         id="displayTestRequest<%=stock.request_id%>">
                                                         <input type="hidden" name="patientName"
@@ -127,6 +128,8 @@
                                                                 class="fa fa-pencil m-r-5"></i>Enregistrer/Modifier
                                                             Résultat</a>
                                                     </form>
+                                                    <% } %>
+                                                    <% if(UserData.user_sub_menu_access.includes("Valider Résultat") || UserData.user_sub_menu_access[0]=="All"){ %>
                                                     <% if(statut == 1){ %>
                                                     <form target="_blank" action="/verify-test-result" method="POST"
                                                         id="Verify<%=stock.request_id%>">
@@ -139,6 +142,7 @@
                                                                 class="fa fa-check"></i> Vérifier les résutats</a>
                                                     </form>
                                                     <% } %>
+                                                    <% } %>
 
                                                     <% if(statut == 2){ %>
                                                     <a href="#" id="btnDelivery<%=stock.request_id%>"
@@ -146,8 +150,11 @@
                                                         class="dropdown-item"><i class="fa fa-check"></i> Livrer les
                                                         résutats</a>
                                                     <% } %>
+                                                    <% if(UserData.user_sub_menu_access.includes("Ajouter Signature") || UserData.user_sub_menu_access[0]=="All"){ %>
                                                     <a href="#" onclick="launchSignature('<%=stock.request_id%>')"
                                                         class="dropdown-item"><i class="fa fa-check"></i> Signature</a>
+                                                    <% } %>
+                                                    <% if(UserData.user_sub_menu_access.includes("Imprimer Résultat") || UserData.user_sub_menu_access[0]=="All"){ %>
                                                     <form id="PrintForm<%=stock.request_id%>" target="_blank"
                                                         action="/display-test-result" method="POST">
                                                         <input type="hidden" name="id_test_request"
@@ -164,6 +171,7 @@
                                                                 class="fa fa-print fa-lg"></i> Imprimer les
                                                             résultats</a>
                                                     </form>
+                                                    <% } %>
                                                 </div>
                                             </div>
                                         </td>
@@ -211,7 +219,8 @@
                         <form id="SignatureForm">
                             <div class="form-inline">
                                 <div class="col-sm-7 col-md-7 col-lg-7">
-                                    <input type="text" placeholder="Réaliser par" name="realiser_par" class="form-control">
+                                    <input type="text" placeholder="Réaliser par" name="realiser_par"
+                                        class="form-control">
                                 </div>
                                 <div class="col-sm-4 col-md-4 col-lg-4" style="margin-left: -15px;">
                                     <input type="text" placeholder="Poste" name="poste" class="form-control">

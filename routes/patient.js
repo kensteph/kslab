@@ -11,7 +11,7 @@ router.use(express.static('public'));
 // ADD PATIENT
 router.get('/add-patient', async (req, res) => {
     if (typeof req.session.UserData != "undefined") {
-        if (req.session.UserData.user_sub_menu_access.includes("Tableau de bord") || req.session.UserData.user_sub_menu_access[0] == "All") {
+        if (req.session.UserData.user_sub_menu_access.includes("Ajouter Patient") || req.session.UserData.user_sub_menu_access[0] == "All") {
           /// FULL ACCESS
           let pageTitle = "Nouveau patient";
             params = {
@@ -53,19 +53,16 @@ router.post('/live-search-patient', async (req, res) => {
 });
 //DISPLAY PATIENT SELECTED
 router.post('/search-patient', async (req, res) => {
+    console.log(req.body);
     let patient = req.body.liveSearch;
     let patientID = req.body.PatientSelected;
     let data = await patientDB.getPatientById(patientID);
-    let examens = await testLabDB.singlePatientTestRequestlist(patientID);
-    // for(var i=0; i<examens.length; i++){
-    //     let line = examens[i];
-    //     console.log(line);
-    // }
+    let dataExams = await testLabDB.testRequestlistPatient(patientID);
     let pageTitle = "Recherche | " + patient;
     params = {
         pageTitle: pageTitle,
-        data: data,
-        examens: examens,
+        data : data,
+        dataExams: dataExams,
         UserData : req.session.UserData,
         page: 'SearchPatient'
     };

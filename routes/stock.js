@@ -335,12 +335,13 @@ router.post('/print-stock-move-report', async (req, res) => {
     console.log(infoMateriau);
     let dateN = helpers.getCurrentDate();
     let text_date = "";
+    materiauSelected = materiauSelected="All" ? "" : infoMateriau.nom_materiau;
     if (dateFrom == dateTo) {
         text_date = "pour le " + helpers.formatDate(dateFrom, "FR");
     } else {
         text_date = "Du " + helpers.formatDate(dateFrom, "FR") + " au " + helpers.formatDate(dateTo, "FR");
     }
-    let pageTitle = "Mouvement de stock " + infoMateriau.nom_materiau + "  " + text_date;
+    let pageTitle = "Mouvement de stock " + materiauSelected + "  " + text_date;
     let report = "stock-move-"+dateN;
     let filename = report + ".pdf";
     let pathfile = "./tmp/" + filename;

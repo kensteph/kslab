@@ -89,27 +89,28 @@
                         </div>
                     </div>
                 </div>
-                <%if(examens.length>0) { %>
+                <%if(dataExams.length>0) { %>
                 <div class="row">
                     <div class="col-md-12">
                         <div class="card-box">
                             <h3 class="card-title">Examens Laboratoire</h3>
                             <div class="experience-box">
                                 <ul class="experience-list">
-                                    <% for(i=0; i<examens.length; i++){ %>
+                                    <% dataExams.forEach((item,index) => { %>
                                     <li>
                                         <div class="experience-user">
                                             <div class="before-circle"></div>
                                         </div>
                                         <div class="experience-content">
                                             <div class="timeline-content">
-                                                <a href="#/" class="name"><%=examens[i].line_exam%></a>
-                                                <div><%=examens[i].docteur%></div>
-                                                <span class="time"><%=examens[i].date_record%></span>
+                                                <a href="#/" class="name"><%=item.examens%></a>
+                                                <div><%=item.docteur%></div>
+                                                <span class="time"><%=item.date_record%></span>
+                                                <span class="time"><%=TEST_STATUS[item.statut]%></span>
                                             </div>
                                         </div>
                                     </li>
-                                    <% } %>
+                                    <% }) %>
                                 </ul>
                             </div>
                         </div>

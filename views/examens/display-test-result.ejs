@@ -28,6 +28,7 @@
                     <div class="col-sm-5 col-4">
                         <h4 class="page-title"></h4>
                     </div>
+                    <% if(UserData.user_sub_menu_access.includes("Imprimer Résultat") || UserData.user_sub_menu_access[0]=="All"){ %>
                     <div class="col-sm-7 col-8 text-right m-b-30">
                         <form id="displayResult" target="_blank" action="/display-test-result" method="POST">
                             <input type="hidden" name="id_test_request" value="<%=testRequestId%>">
@@ -36,8 +37,8 @@
                                 <button class="btn btn-white"><i class="fa fa-print fa-lg"></i> Imprimer</button>
                             </div>
                         </form>
-                        
                     </div>
+                    <%}%>
                 </div>
                 <div class="row">
                     <div class="col-md-12">
@@ -81,6 +82,7 @@
                         </div>
                     </div>
                 </div>
+                <% if(UserData.user_sub_menu_access.includes("Valider Résultat") || UserData.user_sub_menu_access[0]=="All"){ %>
                 <div class="row">
                     <div class="col-sm-5 col-4">
                         <h4 class="page-title"></h4>
@@ -89,6 +91,7 @@
                        <a class="btn btn-white" id="btnValider"  data-toggle="modal" data-target="#valideTest"><i class="fa fa-check-square fa-lg"></i> Valider</a>
                      </div>
                 </div>
+                <% } %>
             </div>
         </div>
         <div id="valideTest" class="modal fade delete-modal" role="dialog" data-keyboard="false">

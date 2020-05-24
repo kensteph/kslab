@@ -287,12 +287,14 @@ var self = module.exports = {
                         let info = await examController.testRequestContent(item.id_request);
                         let ExamID = info[0].examen_id;
                         let infoExam = await examController.getExamById(ExamID);
+                       // console.log("TEST CONTENT"+infoExam[0].nom_examen);
                         test_name.push(infoExam[0].nom_examen);
                         let examens = [];
                         for (var i = 0; i < info.length; i++) {
                             let test = { id: info[i].id, nom_examen: info[i].nom_examen };
                             examens.push(test);
                         }
+                        //console.log(test_name);
                         let exam_line = test_name.join("|");
                         let line_info = { date_record: item.date_record, numero_patient: item.numero_patient, patient: item.fullname, examens: examens, statut: item.test_status, line_exam : exam_line ,docteur: item.docteur};
                         line.push(line_info);
@@ -306,6 +308,36 @@ var self = module.exports = {
         data = await promise;
         return data;
     },
+        //LIST REQUEST TESTS
+        testRequestlistPatient: async function (patientID) {
+            let promise = new Promise((resolve, reject) => {
+                let line = [];
+                let sql = "SELECT *,CONCAT(prenom,' ',nom) as fullname,DATEDIFF( NOW(), date_nais )/365 as age,tb_test_requests.id as id_request,tb_test_requests.statut as test_status FROM tb_test_requests,tb_patients,tb_personnes WHERE tb_test_requests.patient=tb_patients.id_personne AND tb_patients.id_personne=tb_personnes.id  AND tb_patients.id_personne=? ORDER BY tb_test_requests.id DESC "
+                // console.log(sql);
+                con.query(sql,patientID, async function (err, rows) {
+                    if (err) {
+                        throw err;
+                    } else {
+                        for (item of rows) {
+                            let info = await examController.testRequestContent(item.id_request);
+                            let examens = [];
+                            for (var i = 0; i < info.length; i++) {
+                                examens.push(info[i].nom_examen);
+                            }
+                            let patient_exams = examens.join("|");
+                            console.log(patient_exams);
+                            let line_info = { request_id: item.id_request, date_record: item.date_record, numero_patient: item.numero_patient, patient: item.fullname, docteur: item.docteur, age: item.age, sexe: item.sexe, examens: patient_exams, statut: item.test_status };
+                            line.push(line_info);
+                        }
+                        resolve(line);
+                    }
+    
+                });
+    
+            });
+            data = await promise;
+            return data;
+        },
 
     //======================== RAPPORT DES TESTS =================================================
     singleTestReport: async function (dateFrom, dateTo, exma_id) {

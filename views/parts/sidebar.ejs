@@ -84,7 +84,7 @@ if (locals.page) {
                     <a href="#"><i class="fa fa-file-o"></i> <span>Test Laboratoire </span> <span
                             class="menu-arrow"></span></a>
                     <ul style="display: none;">
-                        <% if(UserData.user_sub_menu_access.includes("Liste des Tests") || UserData.user_menu_access[0]=="All"){%>
+                        <% if(UserData.user_sub_menu_access.includes("Liste des demandes de Tests") || UserData.user_menu_access[0]=="All"){%>
                         <li><a class="<%=ListTest%>" href="/Tests">Liste des Tests</a></li>
                         <% } %>
                     </ul>
