@@ -53,6 +53,7 @@ app.get('/', async (req, res) => {
     global.ENT_NAME = settings.entreprise_name;
     global.TEST_STATUS = ['En attente', 'Enregistré', 'Validé', 'Livré'];
     global.STOCK_STATUS = ['Invalide', 'Valide'];
+    global.USER_STATUS = ['Désactivé', 'Activé'];
     global.PERISSABLE = ['Non', 'Oui'];
     global.TYPE_RESULTAT = ['', 'Valeurs normales', 'Positif/Négatif', 'Commentaires'];
     global.NBJOUR_STOCK_ALERT = 90;
