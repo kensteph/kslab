@@ -162,7 +162,7 @@ var self = module.exports = {
                 }
 
                 resolve(msg);
-                console.log(msg);
+                //console.log(msg);
             });
         });
         rep = await promise;
@@ -269,7 +269,7 @@ var self = module.exports = {
                 }
 
                 resolve(msg);
-                console.log(msg);
+               // console.log(msg);
             });
         });
         rep = await promise;
@@ -415,7 +415,7 @@ var self = module.exports = {
             });
         });
         data = await promise;
-        console.log(data);
+        //console.log(data);
         return data;
     },
     //Login
@@ -458,7 +458,7 @@ var self = module.exports = {
         let promise = new Promise((resolve, reject) => {
             let sql =
                 'UPDATE tb_users SET pass_word="' + password + '",change_pass=0 WHERE id_personne =' + id_user;
-            console.log(sql);
+            //console.log(sql);
             con.query(sql, function (err, result) {
                 if (err) {
                     msg = {
@@ -478,7 +478,7 @@ var self = module.exports = {
                 }
 
                 resolve(msg);
-                console.log(msg);
+               // console.log(msg);
             });
         });
         rep = await promise;
@@ -490,7 +490,7 @@ var self = module.exports = {
         let promise = new Promise((resolve, reject) => {
             let sql =
                 'UPDATE tb_users SET pass_word="' + password + '",change_pass=1 WHERE id_personne =' + id_user;
-            console.log(sql);
+            //console.log(sql);
             con.query(sql, function (err, result) {
                 if (err) {
                     msg = {
@@ -510,7 +510,7 @@ var self = module.exports = {
                 }
 
                 resolve(msg);
-                console.log(msg);
+                //console.log(msg);
             });
         });
         rep = await promise;
@@ -521,7 +521,7 @@ var self = module.exports = {
         let promise = new Promise((resolve, reject) => {
             let sql =
                 'UPDATE tb_personnes SET statut =' + action + ' WHERE id=' + id_user;
-            console.log(sql);
+            //console.log(sql);
             con.query(sql, function (err, result) {
                 if (err) {
                     msg = {
@@ -541,7 +541,7 @@ var self = module.exports = {
                 }
 
                 resolve(msg);
-                console.log(msg);
+                //console.log(msg);
             });
         });
         rep = await promise;
@@ -574,7 +574,7 @@ var self = module.exports = {
                 }
 
                 resolve(msg);
-                console.log(msg);
+                //console.log(msg);
             });
         });
         rep = await promise;

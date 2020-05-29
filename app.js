@@ -100,7 +100,7 @@ app.post('/login', async (req, res) => {
     // console.log(hashPass);
     let auth = await stats.userAuthentication(user_name, pass_word);
     let found = auth.length;
-    console.log("LOGIN : " + found);
+    //console.log("LOGIN : " + found);
     if (found > 0) { //Auth successfull
         let InfoUser = auth[0];
         //TEST EMAIL
@@ -271,23 +271,23 @@ app.get('/notifications', async (req, res) => {
 
 //MY APP AS A WINDOWS SERVICE
 // Create a new service object
-var svc = new Service({
-    name:process.env.APP_NAME,
-    description: process.env.APP_DESC,
-    script: process.env.APP_PATH,
-    nodeOptions: [
-      '--harmony',
-      '--max_old_space_size=4096'
-    ]
-  });
+// var svc = new Service({
+//     name:process.env.APP_NAME,
+//     description: process.env.APP_DESC,
+//     script: process.env.APP_PATH,
+//     nodeOptions: [
+//       '--harmony',
+//       '--max_old_space_size=4096'
+//     ]
+//   });
    
   // Listen for the "install" event, which indicates the
   // process is available as a service.
-  svc.on('install',function(){
-    svc.start();
-  });
+//   svc.on('install',function(){
+//     svc.start();
+//   });
    
-  svc.install();
+//   svc.install();
 
 const port = 8788;
 server = app.listen(port, () => {

@@ -108,7 +108,7 @@
                                             nb_jours_restant = "Expiré ("+Math.abs(nb_jours_restant)+")";
                                         }
                                      %>
-                                    <tr>
+                                    <tr title="<%=stock.nom_materiau+' | '+stock.numero_lot%>">
                                         <td><%=stock.numero_lot%></td>
                                         <td><a href="/materiaux?mat=<%=stock.id%>"><%=stock.nom_materiau%></a></td>
                                         <td><%=stock.date_recue%></td>

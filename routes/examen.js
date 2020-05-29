@@ -36,9 +36,9 @@ router.get('/add-examens', async (req, res) => {
 });
 
 router.post('/add-examens', async (req, res) => {
-    console.log(req.body);
+    //console.log(req.body);
     let notifications = await examenDB.saveExam(req, res);
-    console.log(notifications);
+    //console.log(notifications);
     let pageTitle = "Nouvel examen";
     params = {
         pageTitle: pageTitle,
@@ -51,7 +51,7 @@ router.post('/add-examens', async (req, res) => {
 
 //EDIT EXAM
 router.post('/edit-exam', async (req, res) => {
-    console.log(req.body);
+    //console.log(req.body);
     let notifications = await examenDB.editExam(req);
     res.json(notifications);
 });
@@ -128,19 +128,19 @@ router.get('/add-test-parameters', async (req, res) => {
 });
 //SAVE TEST PARAMETERS
 router.post('/add-test-parameters', async (req, res) => {
-    console.log(req.body);
+    //console.log(req.body);
     let notifications = await examenDB.saveTestParameters(req);
     res.json(notifications);
 });
 //REMOVE TEST PARAMETERS
 router.post('/remove-item', async (req, res) => {
-    console.log(req.body);
+    //console.log(req.body);
     let notifications = await examenDB.removeItem(req);
     res.json(notifications);
 });
 //SAVE TEST VALEURS NORMALES
 router.post('/save-test-valeurs-normales', async (req, res) => {
-    console.log(req.body);
+    //console.log(req.body);
     let notifications = await testDB.addValeursNormales(req);
     res.json(notifications);
 });
@@ -152,7 +152,7 @@ router.get('/add-test-materiaux', async (req, res) => {
     let matAssos = await stockDB.listeMateriauxAssocieATest(examID);
     let exam = data[0].nom_examen;
     let materiaux = await stockDB.listOfMateriaux("All");
-    console.log(matAssos);
+    //console.log(matAssos);
     let pageTitle = "Matériaux inventoriés associés au test '" + exam + "'";
     params = {
         pageTitle: pageTitle,
@@ -232,10 +232,10 @@ router.get('/Tests', async (req, res) => {
               dateFrom = "All";
               status = req.query.status;
           }
-          console.log(dateFrom + " | " + status);
+         // console.log(dateFrom + " | " + status);
           let data = await testDB.testRequestlist(dateFrom, dateTo, status);
           let pageTitle = "Tests laboratoire (" + data.length + ")";
-          console.log(data);
+          //console.log(data);
           //DATES
           dateFrom = helpers.formatDate(dateFrom, "FR");
           dateFrom = helpers.changeDateSymbol(dateFrom);
@@ -271,7 +271,7 @@ router.post('/Tests', async (req, res) => {
         dateFrom = "All";
         status = req.query.status;
     }
-    console.log(dateFrom + " | " + status);
+    //console.log(dateFrom + " | " + status);
     let data = await testDB.testRequestlist(dateFromDB, dateToDB, status);
     let text_status = status != "All" ? TEST_STATUS[status] : "";
     let pageTitle = "Tests laboratoire " + text_status + " (" + data.length + ")";

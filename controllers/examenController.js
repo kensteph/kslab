@@ -27,7 +27,7 @@ var self = module.exports = {
                 }
 
                 resolve(msg);
-                console.log(msg);
+                //console.log(msg);
             });
         });
         rep = await promise;
@@ -44,7 +44,7 @@ var self = module.exports = {
                 
                 let sql =
                     'UPDATE tb_examens SET nom_examen="' + examen + '", type_resultat =' + type_resultat + ', is_bilan=' + is_bilan +' WHERE id=?';
-                console.log(sql);
+               // console.log(sql);
                 con.query(sql,examenID, function (err, result) {
                     if (err) {
                         msg = {
@@ -64,7 +64,7 @@ var self = module.exports = {
                     }
     
                     resolve(msg);
-                    console.log(msg);
+                    //console.log(msg);
                 });
             });
             rep = await promise;
@@ -107,7 +107,7 @@ var self = module.exports = {
     getExamById: async function (id) {
         let promise = new Promise((resolve, reject) => {
             let sql = "SELECT * FROM tb_examens WHERE id = ? ";
-            console.log(sql + " ID : " + id);
+            //console.log(sql + " ID : " + id);
             con.query(sql, id, function (err, rows) {
                 if (err) {
                     //throw err;
@@ -189,7 +189,7 @@ var self = module.exports = {
             }else{
                 sql = "DELETE FROM tb_link_materiau_test  WHERE test_id =" + examID + " AND materiau=" + itemID;
             }
-            console.log(sql);
+            //console.log(sql);
             con.query(sql, function (err, rows) {
                 if (err) {
                     resolve({
@@ -206,7 +206,7 @@ var self = module.exports = {
             });
         });
         data = await promise;
-        console.log(data);
+        //console.log(data);
         return data;
     },
     //TEST REQUEST CONTENTS
@@ -328,7 +328,7 @@ var self = module.exports = {
         let promise = new Promise((resolve, reject) => {
             let sql =
                 'UPDATE tb_test_requests_contents SET resultat="' + resultat + '" WHERE test_request_id =' + test_request_id + ' AND  examen_id=' + examen_id + ' ';
-            console.log(sql);
+            //console.log(sql);
             con.query(sql, function (err, result) {
                 if (err) {
                     msg = {
@@ -348,7 +348,7 @@ var self = module.exports = {
                 }
 
                 resolve(msg);
-                console.log(msg);
+                //console.log(msg);
             });
         });
         rep = await promise;
@@ -377,7 +377,7 @@ var self = module.exports = {
         let promise = new Promise((resolve, reject) => {
             let sql =
                 'UPDATE tb_test_requests SET statut=' + statut + ',date_resultat=NOW() WHERE id =' + test_request_id;
-            console.log(sql);
+            //console.log(sql);
             con.query(sql, function (err, result) {
                 if (err) {
                     msg = {
@@ -397,7 +397,7 @@ var self = module.exports = {
                 }
 
                 resolve(msg);
-                console.log(msg);
+               // console.log(msg);
             });
         });
         rep = await promise;

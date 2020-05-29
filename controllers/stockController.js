@@ -27,7 +27,7 @@ var self = module.exports = {
                 }
 
                 resolve(msg);
-                console.log(msg);
+                //console.log(msg);
             });
         });
         rep = await promise;
@@ -133,7 +133,7 @@ var self = module.exports = {
                         resolve(msg);
                     } else {
                         let commentaire =qteRecue+" "+materiauName+" ont été ajoutés au stock. QTE endomagée : "+qteEndomage;
-                        let transactionType ="Add";
+                        let transactionType ="add";
                         //Insert info into tb_evolution_stock table
                         let sql = 'INSERT INTO tb_evolution_stock (lot,materiau,qte,transaction,commentaire,acteur) VALUES ("' + numero_lot + '","' + materiauId + '","' + qteRecue + '","' + transactionType + '","' + commentaire + '","' + user + '")';
 
@@ -528,11 +528,11 @@ var self = module.exports = {
         let promise = new Promise((resolve, reject) => {
             let sql = "";
             if(materiauSelected == "All"){
-                sql = "SELECT *FROM tb_evolution_stock,tb_materiaux WHERE tb_evolution_stock.materiau=tb_materiaux.id AND DATE(date_record) BETWEEN '"+dateFrom+"' AND '"+dateTo+"' ";
+                sql = "SELECT *FROM tb_evolution_stock,tb_materiaux WHERE tb_evolution_stock.materiau=tb_materiaux.id AND DATE(date_record) BETWEEN '"+dateFrom+"' AND '"+dateTo+"' ORDER BY date_record ";
             }else{
-                sql = "SELECT *FROM tb_evolution_stock,tb_materiaux WHERE tb_evolution_stock.materiau=tb_materiaux.id AND DATE(date_record) BETWEEN '"+dateFrom+"' AND '"+dateTo+"' AND materiau="+materiauSelected;
+                sql = "SELECT *FROM tb_evolution_stock,tb_materiaux WHERE tb_evolution_stock.materiau=tb_materiaux.id AND DATE(date_record) BETWEEN '"+dateFrom+"' AND '"+dateTo+"' AND materiau="+materiauSelected+" ORDER BY date_record";
             }
-            console.log(sql);
+            //console.log(sql);
             con.query(sql, function (err, rows) {
                 if (err) {
                     throw err;

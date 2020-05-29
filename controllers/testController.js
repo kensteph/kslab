@@ -30,7 +30,7 @@ var self = module.exports = {
                 }
 
                 resolve(msg);
-                console.log(msg);
+                //console.log(msg);
             });
         });
         rep = await promise;
@@ -51,7 +51,7 @@ var self = module.exports = {
             });
         });
         data = await promise;
-        console.log(data);
+        //console.log(data);
         return data;
     },
     //Save Test in the DB
@@ -246,7 +246,7 @@ var self = module.exports = {
             });
         });
         data = await promise;
-        console.log(data);
+        //console.log(data);
         return data;
     },
     //EDIT SIGNATURE AU BAS DE LA PAGE
@@ -269,7 +269,7 @@ var self = module.exports = {
             });
         });
         data = await promise;
-        console.log(data);
+        //console.log(data);
         return data;
     },
     //LIST REQUEST TESTS
@@ -362,12 +362,12 @@ var self = module.exports = {
         let promise = new Promise((resolve, reject) => {
             let line = [];
             let sql = "SELECT DISTINCT(examen_id) as examen_id FROM tb_test_requests_contents WHERE DATE(date_record) BETWEEN '" + dateFrom + "' AND '" + dateTo + "'";
-            console.log(sql);
+            //console.log(sql);
             con.query(sql, async function (err, rows) {
                 if (err) {
                     throw err;
                 } else {
-                    console.log("RESULT " + rows);
+                   // console.log("RESULT " + rows);
                     for (item of rows) {
                         //console.log("ITEM"+item.examen_id);
                         //Info about the exam

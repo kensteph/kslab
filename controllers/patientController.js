@@ -22,7 +22,7 @@ module.exports = {
                 let sql = "INSERT INTO tb_personnes (prenom,nom,sexe,date_nais,adresse,telephone,email) VALUES ('" + firstName + "','" + lastName + "','" + gender + "','" + dateOfBirth + "','" + adresse + "','" + phone + "','" + email + "')";
                 con.query(sql, function (err, result) {
                     if (err) {
-                        console.log(err);
+                        //console.log(err);
                         con.rollback(function () {
                             throw err;
                         });
@@ -158,7 +158,7 @@ module.exports = {
         let params = [firstName, lastName, gender, dateOfBirth, adresse, phone, status,email, id_personne];
         let promise = new Promise((resolve, reject) => {
             let sql = "UPDATE tb_personnes SET prenom = ?,nom =? ,sexe =? ,date_nais =? ,adresse =? ,telephone =?,statut =?,email=? WHERE id =?";
-            console.log(sql + " ID : " + id_personne);
+            //console.log(sql + " ID : " + id_personne);
             con.query(sql, params, function (err, rows) {
                 if (err) {
                     resolve({
@@ -175,7 +175,7 @@ module.exports = {
             });
         });
         data = await promise;
-        console.log(data);
+        //console.log(data);
         return data;
     },
 
@@ -183,7 +183,7 @@ module.exports = {
     deletePatient: async function (id_personne) {
         let promise = new Promise((resolve, reject) => {
             let sql = "UPDATE tb_personnes SET visible =? WHERE id =?";
-            console.log(sql + " ID : " + id_personne);
+            //console.log(sql + " ID : " + id_personne);
             con.query(sql, id_personne, function (err, rows) {
                 if (err) {
                     resolve({
@@ -200,7 +200,7 @@ module.exports = {
             });
         });
         data = await promise;
-        console.log(data);
+        //console.log(data);
         return data;
     },
 
