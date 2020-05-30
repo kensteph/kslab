@@ -323,12 +323,45 @@ var self = module.exports = {
         rep = await promise;
         return rep;
     },
-    //Save Modalites paiement
-    updateTestResult: async function (test_request_id, examen_id, resultat) {
+
+      //Save Test Result
+      editTestResult: async function (req) {
+          let msg = {msg : "NO ACTION"};
+            if (req.body.test) {
+                //BULK INSERT
+                let test_request_id = req.body.testRequestId;
+                let tests_id = req.body.test;
+                let testResults = req.body.resultat;
+                let pos = 0;
+                for (item of testResults) {
+                    let resultat = testResults[pos];
+                    let examen_id = tests_id[pos];
+                    await self.editSingleTestResult(test_request_id,examen_id,resultat);
+                    pos++;
+                }
+                msg = {
+                    type: "success",
+                    success: true,
+                    msg:
+                        "<font color='green'><strong>Résultat(s) modifié(s) avec succès...</strong></font>",
+                };
+                
+            } else {
+                msg = {
+                    type: "danger",
+                    msg:
+                        "<font color='red'><strong>Vous devez choisir des paramètres.</strong></font>",
+                };
+            }
+        return msg;
+    },
+
+    //UPDATE SINGLE TEST RESULTS
+    editSingleTestResult: async function (test_request_id, examen_id, resultat) {
         let promise = new Promise((resolve, reject) => {
             let sql =
-                'UPDATE tb_test_requests_contents SET resultat="' + resultat + '" WHERE test_request_id =' + test_request_id + ' AND  examen_id=' + examen_id + ' ';
-            //console.log(sql);
+                'UPDATE tb_resultats SET resultat="' + resultat + '" WHERE test_request_id =' + test_request_id + ' AND  examen_id=' + examen_id + ' ';
+         console.log(sql);
             con.query(sql, function (err, result) {
                 if (err) {
                     msg = {

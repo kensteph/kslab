@@ -297,8 +297,9 @@ router.post('/SaveTestResult', async (req, res) => {
     let fullname = req.body.patientName;
     let num_patient = req.body.patientNumber;
     let docteur = req.body.docteur;
+    let sexe_patient = req.body.patientSexe;
     let dossier_patient = fullname + " [" + num_patient + "]";
-    let patientSelected = { fullname: fullname, num_patient: num_patient, dossier: dossier_patient, docteur: docteur };
+    let patientSelected = { fullname: fullname,sexe : sexe_patient, num_patient: num_patient, dossier: dossier_patient, docteur: docteur };
     let id_test_request = req.body.testRequestId;
     let data = await examenDB.testRequestContent(id_test_request);
     //console.log(data);
@@ -330,6 +331,14 @@ router.post('/get-test-parameters', async (req, res) => {
 router.post('/save-test-result', async (req, res) => {
     console.log(req.body);
     let notifications = await examenDB.saveTestResult(req);
+    res.json(notifications);
+});
+
+//EDIT TEST RESULT TO DB
+router.post('/edit-test-result', async (req, res) => {
+    console.log(req.body);
+    let notifications = await examenDB.editTestResult(req);
+    console.log("EDIT RESULTAT : "+notifications);
     res.json(notifications);
 });
 

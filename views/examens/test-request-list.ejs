@@ -123,6 +123,7 @@
                                                         <input type="hidden" name="testRequestId"
                                                             value="<%=stock.request_id%>">
                                                         <input type="hidden" name="docteur" value="<%=stock.docteur%>">
+                                                        <input type="hidden" name="patientSexe" value="<%=stock.sexe%>">
                                                         <a href="#" class="dropdown-item"
                                                             onclick="submitForm('<%=stock.request_id%>')"><i
                                                                 class="fa fa-pencil m-r-5"></i>Enregistrer/Modifier
@@ -137,6 +138,7 @@
                                                             value="<%=stock.request_id%>">
                                                         <input type="hidden" name="patient"
                                                             value="<%=patientSelected%>">
+                                                            <input type="hidden" name="patientSexe" value="<%=stock.sexe%>">
                                                         <a href="#" onclick="submitFormVerifiy('<%=stock.request_id%>')"
                                                             class="dropdown-item" title="Vérifier les résutats"><i
                                                                 class="fa fa-check"></i> Vérifier les résutats</a>

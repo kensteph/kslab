@@ -40,6 +40,7 @@
                             <form id="displayResult" target="_blank" action="/display-test-result" method="POST">
                                 <input type="hidden" name="id_test_request" value="<%=id_test_request%>">
                                 <input type="hidden" name="patient" value="<%=patientSelected.dossier%>">
+                                <input type="hidden" name="patientSexe" value="<%=patientSelected.sexe%>">
                                 <input type="hidden" name="docteur" value="<%=patientSelected.docteur%>">
                             </form>
                             
@@ -101,10 +102,11 @@
                                 </div>
                                 <div id="notifySaveExam" class="m-t-20 text-center"></div>
                                 <div class="m-t-20 text-center">
-                                    <button class="btn btn-primary submit-btn">Enregistrer</button>
+                                    <button class="btn btn-primary submit-btn" id="btnSaveResult">Enregistrer</button>
+                                    
                                 </div>
                             </form>
-
+                            <button onclick="editTestResultDB()" class="btn btn-primary submit-btn" id="btnEditResult">Modifier les résultats</button>
 
                         </div>
                     </div>
@@ -137,6 +139,7 @@
     <script src="assets/js/select2.min.js"></script>
     <script src="assets/js/app.js"></script>
     <script>
+        $("#btnEditResult").hide();
         //Display the test result
         function displayResult(){
             $("#displayResult").submit();
@@ -146,6 +149,8 @@
             saveTestResultDB();
         });
         function launchSaveTestModal(testId, testName) {
+            $("#btnSaveResult").show();
+            $("#btnEditResult").hide();
             $("#notifySaveExam").show().html("");
             $("#materiauName").html(testName);
             $("#testId").val(testId);
@@ -188,12 +193,24 @@
                         }
                         $("#notifySaveExam").html(data.msg);
                         //show the modify button and hide the save button
+                        $("#btnSaveResult").hide();
+                        $("#btnEditResult").show();
                     });   
                 }
             });
         }
 
-        editDoctorInfo =function(){
+       editTestResultDB = function () {
+            $("#notifySaveExam").show().html("");
+            let formData = $("#addRemoveStockForm").serialize();
+            $.post("/edit-test-result", formData, function (data) {
+                if (data.success) { //Success 
+                    $("#notifySaveExam").html(data.msg).fadeOut(5000);
+                }
+            });
+        }
+
+       editDoctorInfo =function(){
             let formData = $("#editDocteurForm").serialize();
             $.post("/edit-doctor-info", formData, function (data) {
                 console.log(data);
