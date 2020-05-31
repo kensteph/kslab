@@ -59,11 +59,11 @@
 									<tr id="row<%= examen.id %>">
 										<td>
 											<%= examen.nom_examen %>
-											<% if(examen.is_bilan){ %>
+											<!-- <% if(examen.is_bilan){ %>
 											<a href="/add-test-parameters?exam=<%= examen.id %>"
 												title="Ajouter les paramètres"><i class="fa fa-plus-circle"></i>
 											</a>
-											<% } %>
+											<% } %> -->
 											<% if(examen.is_bilan == 0 && examen.type_resultat==1){ %>
 											<a href="#" title="Ajouter les valeurs normales"
 												onclick="addVN('<%= examen.id %>')"> | Valeurs Normales</i></a>
