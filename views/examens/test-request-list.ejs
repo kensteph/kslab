@@ -75,7 +75,7 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div class="table-responsive">
-                            <table class="table table-striped custom-table datatable mb-0">
+                            <table id="example" class="table table-striped custom-table datatable mb-0">
                                 <thead>
                                     <tr>
                                         <th>Test</th>
@@ -138,7 +138,7 @@
                                                             value="<%=stock.request_id%>">
                                                         <input type="hidden" name="patient"
                                                             value="<%=patientSelected%>">
-                                                            <input type="hidden" name="patientSexe" value="<%=stock.sexe%>">
+                                                        <input type="hidden" name="patientSexe" value="<%=stock.sexe%>">
                                                         <a href="#" onclick="submitFormVerifiy('<%=stock.request_id%>')"
                                                             class="dropdown-item" title="Vérifier les résutats"><i
                                                                 class="fa fa-check"></i> Vérifier les résutats</a>
@@ -255,6 +255,9 @@
     <script src="assets/js/bootstrap-datetimepicker.min.js"></script>
     <script src="assets/js/app.js"></script>
     <script>
+        $(document).ready(function () {
+            $('#example').DataTable();
+        });
         function submitForm(id) {
             $("#displayTestRequest" + id).submit();
         }

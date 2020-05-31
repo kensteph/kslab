@@ -339,7 +339,7 @@ router.post('/print-stock-move-report', async (req, res) => {
     if (dateFrom == dateTo) {
         text_date = "pour le " + helpers.formatDate(dateFrom, "FR");
     } else {
-        text_date = "Du " + helpers.formatDate(dateFrom, "FR") + " au " + helpers.formatDate(dateTo, "FR");
+        text_date = "du " + helpers.formatDate(dateFrom, "FR") + " au " + helpers.formatDate(dateTo, "FR");
     }
     let pageTitle = "Mouvement de stock " + materiauSelected + "  " + text_date;
     let report = "stock-move-"+dateN;

@@ -548,9 +548,9 @@ router.get('/lab-tests-report', async (req, res) => {
     console.log(data);
     let text_date = "";
     if (dateFrom == dateTo) {
-        text_date = "Du " + helpers.formatDate(dateFrom, "FR");
+        text_date = "du " + helpers.formatDate(dateFrom, "FR");
     } else {
-        text_date = "Du " + helpers.formatDate(dateFrom, "FR") + " au " + helpers.formatDate(dateTo, "FR");
+        text_date = "du " + helpers.formatDate(dateFrom, "FR") + " au " + helpers.formatDate(dateTo, "FR");
     }
 
     let pageTitle = "Rapport des tests laboratoire " + text_date + " (" + data.length + ")";
@@ -592,13 +592,13 @@ router.post('/lab-tests-report', async (req, res) => {
     console.log(data);
     let text_date = "";
     if (dateFromDB == dateToDB) {
-        text_date = "Du " + helpers.formatDate(dateFromDB, "FR");
+        text_date = "du " + helpers.formatDate(dateFromDB, "FR");
     } else {
-        text_date = "Du " + helpers.formatDate(dateFromDB, "FR") + " au " + helpers.formatDate(dateToDB, "FR");
+        text_date = "du " + helpers.formatDate(dateFromDB, "FR") + " au " + helpers.formatDate(dateToDB, "FR");
     }
 
     let text_status = status != "All" ? TEST_STATUS[status] : "";
-    let pageTitle = "Rapport des tests laboratoire " + text_status + text_date + " (" + data.length + ")";
+    let pageTitle = "Rapport des tests laboratoire " + text_date + " (" + data.length + ")";
     //DATES
     // dateFrom = helpers.formatDate(dateFrom,"FR");
     // dateFrom = helpers.changeDateSymbol(dateFrom);
