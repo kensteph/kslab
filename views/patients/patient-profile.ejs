@@ -97,13 +97,27 @@
                             <div class="experience-box">
                                 <ul class="experience-list">
                                     <% dataExams.forEach((item,index) => { %>
+                                        <!-- FORM TO PRINT-->
+                                        <form id="PrintForm<%=item.request_id%>" target="_blank"
+                                            action="/display-test-result" method="POST">
+                                            <input type="hidden" name="id_test_request"
+                                                value="<%=item.request_id%>">
+                                            <input type="hidden" name="patient"
+                                                value="<%=data.fullname%>">
+                                            <input type="hidden" name="patientAge" value="<%=data.age%>">
+                                            <input type="hidden" name="patientSexe" value="<%=data.sexe%>">
+                                            <input type="hidden" name="patientNumber"
+                                                value="<%=data.numero_patient%>">
+                                            <input type="hidden" name="docteur" value="<%=item.docteur%>">
+                                        </form>
                                     <li>
                                         <div class="experience-user">
                                             <div class="before-circle"></div>
                                         </div>
                                         <div class="experience-content">
                                             <div class="timeline-content">
-                                                <a href="#/" class="name"><%=item.examens%></a>
+                                                <a href="#" class="name"><%=item.examens%></a>
+                                                <a href="#" title="Imprimer les résultats" onclick="printResult('<%=item.request_id%>')" class="name"><i class="fa fa-print"></i></a>
                                                 <div><%=item.docteur%></div>
                                                 <span class="time"><%=item.date_record%></span>
                                                 <span class="time"><%=TEST_STATUS[item.statut]%></span>
@@ -117,6 +131,8 @@
                     </div>
                 </div>
                 <% } %>
+
+                
 
             </div>
 
@@ -132,6 +148,12 @@
     <%- include("../parts/footer") -%>
 </body>
 
+<script>
+    //Display the test result
+    function printResult(id){
+            $("#PrintForm"+id).submit();
+        }
+</script>
 
 <!-- profile23:03-->
 

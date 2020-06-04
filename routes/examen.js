@@ -443,7 +443,7 @@ router.post('/display-test-result', async (req, res) => {
         let info = { TestName: name_exam, TestTypeResult: type_exam_resultat, Parameters: infoParams, Resultats: Resultats, VN: ValeurNormal };
         resultaFinal.push(info);
     }
-    console.log("VN : " + resultaFinal[0].VN[3].vn);
+    //console.log("VN : " + resultaFinal[0].VN[3].vn);
     //console.log("FINAL : " + resultaFinal[0].Parameters[0].nom_examen + " : " + resultaFinal[0].Resultats[0].resultat);
 
     let pageTitle = "Résultat Tests Laboratoire";

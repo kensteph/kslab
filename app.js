@@ -7,12 +7,10 @@ const helpers = require('./helpers/helpers');
 const stats = require('./controllers/stats');
 const path = require('path');
 const cron = require("node-cron");
-const fsExtra = require('fs-extra');
 const stockDB = require('./controllers/stockController');
 const fileupload = require('express-fileupload');
 const session = require('express-session');
 const passport = require('passport');
-const bcrypt = require('bcrypt');
 const flash = require('express-flash');
 const Service = require('node-windows').Service;
 //Uses
@@ -24,9 +22,9 @@ app.use(bodyParser.urlencoded({ extended: true })); // Allow to submit forms
 app.use(fileupload({ createParentPath: true }));
 //Use Session
 app.use(session({ secret: 'St&phani&1987', resave: false, saveUninitialized: false }));
-app.use(flash());
-app.use(passport.initialize());
-app.use(passport.session());
+// app.use(flash());
+// app.use(passport.initialize());
+// app.use(passport.session());
 // External routes
 app.use(require('./routes/patient'));
 app.use(require('./routes/examen'));
