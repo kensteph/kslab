@@ -460,7 +460,7 @@ router.post('/display-test-result', async (req, res) => {
         signature : signature,
         page: 'NewTest'
     };
-    let filename = patient + ".pdf";
+    let filename = "Resultat-"+test_request_id+"-"+patient+"-"+patientNumber+".pdf";
     let pathfile = "./tmp/" + filename;
     await printer.print('resultat', params, pathfile);
     //console.log(data);
