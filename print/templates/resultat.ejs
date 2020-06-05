@@ -64,22 +64,29 @@
 <% data.forEach((info) => { %>
 <div class="row">    
         <div class="col-sm-6">
-                <h4><%=info.TestName %></h4>
-                <table class="table">
+                <!-- <h4><%=info.TestName %></h4> -->
+                <table class="table m-t-10">
                     <tbody>
                         <% if(info.TestTypeResult==1){ %>
                             <tr class="exam">
-                                <td></td>
+                                <td><%=info.TestName %></td>
                                 <td>Résultat</td>
                                 <td>Valeurs Normales</td>
                             </tr>
+                        <% }else{ %>
+                            <tr class="exam">
+                                <td><%=info.TestName %></td>
+                                <td cellspan="2">Résultat</td>
+                            </tr>
                         <% } %>
+
+
                         <% 
                         let pos = 0;
                         info.Parameters.forEach((testParameters) => { 
                         %>
                         <tr>
-                            <td class="exam">
+                            <td class="resultat">
                                <%=testParameters.nom_examen%>
                             </td>
                             <td class="resultat">
