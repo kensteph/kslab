@@ -140,8 +140,9 @@ router.post('/remove-item', async (req, res) => {
 });
 //SAVE TEST VALEURS NORMALES
 router.post('/save-test-valeurs-normales', async (req, res) => {
-    //console.log(req.body);
+    console.log(req.body);
     let notifications = await testDB.addValeursNormales(req);
+    console.log(notifications);
     res.json(notifications);
 });
 

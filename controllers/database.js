@@ -7,7 +7,8 @@ var con = mysql.createConnection({
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
-    dateStrings: 'date'
+    dateStrings: 'date',
+    charset : 'latin1_swedish_ci' //PRISE EN COMPTE DES CARACTERES SPECIAUX
 });
 
 con.connect(function(err) {

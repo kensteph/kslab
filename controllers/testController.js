@@ -14,14 +14,17 @@ var self = module.exports = {
             let femme = req.body.femme;
             let homme = req.body.homme;
             let unite = req.body.unite;
+            unite.replace("/","//");
             let sql =
                 'INSERT INTO tb_valeurs_normales (exam_id,bebe,enfant,adolescent,femme,homme,unite) VALUES (' + examId + ',"' + bebe + '","' + enfant + '","' + ado + '","' + femme + '","' + homme + '","' + unite + '")';
             con.query(sql, function (err, result) {
                 if (err) {
-                    msg = {
-                        error: " Vous avez déja enregistré ces valeurs ",
-                        debug: err
-                    };
+                    console.log(err);
+                    // msg = {
+                    //     error: " Vous avez déja enregistré ces valeurs ",
+                    //     debug: err
+                    // };
+                    msg = self.editValeursNormales(req);
                 } else {
                     msg = {
                         success:
@@ -36,6 +39,40 @@ var self = module.exports = {
         rep = await promise;
         return rep;
     },
+        //UPDATE TEST STATUS
+        editValeursNormales: async function (req) {
+            let promise = new Promise((resolve, reject) => {
+                let examId = req.body.examId;
+                let bebe = req.body.bebe;
+                let enfant = req.body.enfant;
+                let ado = req.body.ado;
+                let femme = req.body.femme;
+                let homme = req.body.homme;
+                let unite = req.body.unite;
+                let sql =
+                    'UPDATE tb_valeurs_normales SET bebe="' + bebe + '",enfant="' + enfant + '",adolescent="' + ado + '",femme="' + femme + '",homme="' + homme + '",unite="' + unite + '" WHERE exam_id =' + examId;
+                //console.log(sql);
+                con.query(sql, function (err, result) {
+                    if (err) {
+                        msg = {error:
+                                "<font color='red'><strong>Une erreur est survenue...</strong></font>",
+                            debug: err
+                        };
+                    } else {
+                        msg = {
+                            success: "<font color='green'><strong>Les informations ont été mise à jour</strong></font>",
+                            nb_success: result.affectedRows,
+                        };
+                    }
+    
+                    resolve(msg);
+                   // console.log(msg);
+                });
+            });
+            rep = await promise;
+            return rep;
+        },
+    
     //Valeur Normale d'un test
     valeurNormalExam: async function (field_p, exam_id) {
         let promise = new Promise((resolve, reject) => {

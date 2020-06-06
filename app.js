@@ -38,6 +38,7 @@ app.get('/', async (req, res) => {
     let settings = await stats.getSettings();
     //console.log(settings);
     global.appName = 'KSlab ';
+    global.dataBaseCollation = 'KSlab ';
     global.line1 = settings.line1;
     global.line2 = settings.line2;
     global.line3 = settings.line3;

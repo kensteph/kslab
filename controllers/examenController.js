@@ -74,7 +74,7 @@ var self = module.exports = {
     //Load All The Courses Categories
     listOfExams: async function () {
         let promise = new Promise((resolve, reject) => {
-            let sql = "SELECT * FROM tb_examens ";
+            let sql = "SELECT * FROM tb_examens ORDER BY nom_examen ";
             con.query(sql, function (err, rows) {
                 if (err) {
                     throw err;
