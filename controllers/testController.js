@@ -170,12 +170,12 @@ var self = module.exports = {
                                         let diff = qte_dispo_in_stock - qte;
                                         if (qte_dispo_in_stock > qte) {
                                             commentaire = qte + " " + materiauName + " a été prélevé du stock pour le test # " + id_test_request;
-                                            let rep = await stockDB.RemoveItemFromStock(con, numero_lot, materiauId, materiauName, transactionType, qte, commentaire,user);
+                                            let rep = await stockDB.RemoveItemFromStock(con, numero_lot, materiauId, materiauName, transactionType, qte, commentaire,user,id_test_request);
                                             break; //On sort de la boucle parce qu'on a deja preleve
                                         } else {
                                             if (diff >= 0) {
                                                 commentaire = qte + " " + materiauName + " a été prélevé du stock pour le test # " + id_test_request;
-                                                let rep = await stockDB.RemoveItemFromStock(con, numero_lot, materiauId, materiauName, transactionType, qte, commentaire,user);
+                                                let rep = await stockDB.RemoveItemFromStock(con, numero_lot, materiauId, materiauName, transactionType, qte, commentaire,user,id_test_request);
                                                 new_qte_to_take = new_qte_to_take - qte;
                                             }
 
@@ -309,6 +309,40 @@ var self = module.exports = {
         //console.log(data);
         return data;
     },
+        //DELETE TEST REQUEST
+        deleteTestRequest: async function (id_test) {
+            let promise = new Promise((resolve, reject) => {
+                let sql = "DELETE FROM tb_test_requests WHERE id =?";
+                con.query(sql, id_test, function (err, rows) {
+                    if (err) {
+                        resolve({
+                            msg: "Une erreur est survenue. S'il vous palit réessayez.",
+                            error: "danger",
+                            debug: err
+                        });
+                    } else {
+                        let sql1 = "DELETE FROM tb_test_requests_contents WHERE test_request_id =?";
+                        con.query(sql1, id_test, function (err, rows) {
+                            if (err) {
+                                resolve({
+                                    msg: "Une erreur est survenue. S'il vous palit réessayez.",
+                                    error: "danger",
+                                    debug: err
+                                });
+                            } else {
+                                resolve({
+                                    msg: "Demande supprimée avec succès...",
+                                    success: "success"
+                                });
+                            }
+                        });
+                    }
+                });
+            });
+            data = await promise;
+            //console.log(data);
+            return data;
+        },
     //LIST REQUEST TESTS
     singlePatientTestRequestlist: async function (patient) {
         let promise = new Promise((resolve, reject) => {

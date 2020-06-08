@@ -14,35 +14,35 @@ $(document).ready(function () {
         });
         //});
     });
-    var notifArrayId = [];
-    function notifList(data) {
-        let sms = '<li class="notification-message">';
-        sms += '<a href="activities.html">';
-        sms += '<div class="media">';
-        sms += '<span class="avatar">';
-        sms += '<img alt="John Doe" src="assets/img/user.jpg" class="img-fluid"></span>';
-        sms += '<div class="media-body">';
-        sms += '<p class="noti-details"><span class="noti-title">' + data.nom_materiau + '</span> added';
-        sms += 'new task <span class="noti-title">Patient appointment booking</span></p>';
-        sms += '<p class="noti-time"><span class="notification-time">4 mins ago</span></p>'
-        sms += '</div> </div></a></li>';
-        $("#notifications").append(sms);
-    };
-    var myVar = setInterval(myTimer, 5000);
-    function myTimer() {
-        var d = new Date();
-        var t = d.toLocaleTimeString();
-        $("#notifications").html("");
-        $.get("/notifications", function (data, status) {
-            //alert("Data: " + data + "\nStatus: " + status);
-            $("#countNotifs").html(data.length);
-            for (notif of data) {
-                notifList(notif);
-            }
+    // var notifArrayId = [];
+    // function notifList(data) {
+    //     let sms = '<li class="notification-message">';
+    //     sms += '<a href="activities.html">';
+    //     sms += '<div class="media">';
+    //     sms += '<span class="avatar">';
+    //     sms += '<img alt="John Doe" src="assets/img/user.jpg" class="img-fluid"></span>';
+    //     sms += '<div class="media-body">';
+    //     sms += '<p class="noti-details"><span class="noti-title">' + data.nom_materiau + '</span> added';
+    //     sms += 'new task <span class="noti-title">Patient appointment booking</span></p>';
+    //     sms += '<p class="noti-time"><span class="notification-time">4 mins ago</span></p>'
+    //     sms += '</div> </div></a></li>';
+    //     $("#notifications").append(sms);
+    // };
+    // var myVar = setInterval(myTimer, 5000);
+    // function myTimer() {
+    //     var d = new Date();
+    //     var t = d.toLocaleTimeString();
+    //     $("#notifications").html("");
+    //     $.get("/notifications", function (data, status) {
+    //         //alert("Data: " + data + "\nStatus: " + status);
+    //         $("#countNotifs").html(data.length);
+    //         for (notif of data) {
+    //             notifList(notif);
+    //         }
 
-        });
+    //     });
 
-    }
+    // }
 
     //SEARCH FOR A PATIENT
     $('#searchPatientInput').keyup(function (e) {

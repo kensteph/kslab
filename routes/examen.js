@@ -376,6 +376,29 @@ router.post('/update-test-status', async (req, res) => {
     let notifications = await examenDB.updateTestResultStatus(test_request_id, statut);
     res.json(notifications);
 });
+
+//DELETE TEST REQUEST
+router.post('/delete-test-request', async (req, res) => {
+    console.log(req.body);
+    let test_request_id = req.body.testRequestId;
+    let data = await stockDB.listeMateriauxForTestRequest(test_request_id);
+    let user = req.session.username;
+    let msg=[];
+    let notifications;
+    for( item of  data){ 
+        let notifications = await examenDB.deleteTestRequest(item,test_request_id,user);
+        msg.push(notifications.msg);
+    }
+    //DELETE THE REQUEST
+    let ifDelete = await testDB.deleteTestRequest(test_request_id);
+    if(ifDelete.success){
+        notifications = {
+            msg: "Demande supprimée avec succès..."+msg.join('<br>'),
+            success: "success"
+        }
+    }
+    res.json(notifications);
+});
 //
 //GET THES TEST'S RESULT
 router.post('/get-test-result', async (req, res) => {

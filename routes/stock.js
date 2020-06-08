@@ -208,7 +208,7 @@ router.post('/add-remove-stock', async (req, res) => {
     let notifications ={};
     if(UserData.user_sub_menu_access.includes("Autoriser Ajouter/Retirer article du Stock") || UserData.user_sub_menu_access[0]=="All"){
         //Si l'utiisateur a le droit de retirer ou ajouter du stock sans demande d'autorisation
-        notifications = await stockDB.RemoveItemFromStock(con, numero_lot, materiauId, materiauName, transactionType, qte, commentaire, user);
+        notifications = await stockDB.RemoveItemFromStock(con, numero_lot, materiauId, materiauName, transactionType, qte, commentaire, user,id_test_request=-1);
     }else{
         //Dans le cas contraire demande de retrait/ajout
         console.log("Demande en attente d'approbation...");

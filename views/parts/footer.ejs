@@ -1,4 +1,6 @@
 <script src="assets/js/my_js.js"></script>
+<script src="assets/js/socket.io.js"></script>
+
 <script>
     function selectPatient(patientID,patient){
         $("#PatientSelected").val(patientID);
@@ -16,4 +18,14 @@
                 }
             });
     }
+
+    //make connection
+    var socket = io.connect("http://localhost:8788");
+    //UI
+    //var notify = $("#notifications");
+    socket.on("messageSent", function (message) {
+        //notify.append("<li>Message</li>");
+        Console.log("sms......");
+    });
+
 </script>

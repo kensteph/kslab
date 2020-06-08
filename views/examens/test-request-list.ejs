@@ -100,7 +100,7 @@
                                         }
                                         let patientSelected = stock.patient;
                                      %>
-                                    <tr>
+                                    <tr id="rowTest<%=stock.request_id%>">
                                         <td><%=stock.request_id%></td>
                                         <td><span
                                                 class="custom-badge status-<%= type %>"><%= TEST_STATUS[statut] %></span>
@@ -113,6 +113,14 @@
                                                 <a href="#" class="action-icon dropdown-toggle" data-toggle="dropdown"
                                                     aria-expanded="false"><i class="fa fa-ellipsis-v"></i></a>
                                                 <div class="dropdown-menu dropdown-menu-right">
+
+                                                    <% if(statut == 0){ %>
+                                                        <a href="#" id="btnDelivery<%=stock.request_id%>"
+                                                            onclick="launchDeleteRequest('<%=stock.request_id%>','<%=patientSelected%>')"
+                                                            class="dropdown-item"><i class="fa fa-trash"></i> 
+                                                            Supprimer la demande</a>
+                                                        <% } %>
+
                                                     <% if(UserData.user_sub_menu_access.includes("Enregistrer Résultat") || UserData.user_sub_menu_access[0]=="All"){ %>
                                                     <form action="/SaveTestResult" method="POST"
                                                         id="displayTestRequest<%=stock.request_id%>">
@@ -208,6 +216,26 @@
 
         </div>
 
+        <div id="DeleteRequest" class="modal fade delete-modal" role="dialog" data-keyboard="false">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-body text-center">
+                        <img src="assets/img/sent.png" alt="" width="50" height="46">
+                        <form id="DeleteForm">
+                            <input type="hidden" name="testRequestId" id="TestD">
+                            <input type="hidden" name="statut" value="3" id="Statut">
+                        </form>
+                        Voulez-vous supprimer la demande de <strong id="patientD"></strong> ?
+                        <div id="msg"></div>
+                        <div class="m-t-20"> <a href="#" class="btn btn-danger" data-dismiss="modal">Non</a>
+                            <button type="submit" class="btn btn-success" onclick="supprimerTest()">Oui</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
 
 
         <div id="TestSignature" class="modal fade" role="dialog">
@@ -269,9 +297,12 @@
             $("#Test").val(test_id);
             $("#TestDelivery").modal();
         }
+
+        
         function printTest(test) {
             $("#PrintForm" + test).submit()
         }
+
         livrerTest = function () {
             let formData = $("#DeliveryForm").serialize();
             $.post("/update-test-status", formData, function (data) {
@@ -280,6 +311,26 @@
                     let id = formData.testRequestId;
                     $("#btnDelivery" + id).hide();
                     $('#TestDelivery').modal('hide')
+                } else {
+                    $("#msg").html(data.error);
+                }
+            });
+        }
+
+        function launchDeleteRequest(test_id, patient) {
+            $("#patientD").html("" + patient+" | ID "+test_id);
+            $("#TestD").val(test_id);
+            $("#DeleteRequest").modal();
+        }
+        
+        supprimerTest = function () {
+            let formData = $("#DeleteForm").serialize();
+            $.post("/delete-test-request", formData, function (data) {
+                console.log(data);
+                if (data.success) { //Success 
+                    let id =  $("#TestD").val();
+                    $("#rowTest" + id).fadeOut(5000);
+                    $('#DeleteRequest').modal('hide')
                 } else {
                     $("#msg").html(data.error);
                 }

@@ -10,9 +10,10 @@ const cron = require("node-cron");
 const stockDB = require('./controllers/stockController');
 const fileupload = require('express-fileupload');
 const session = require('express-session');
-const passport = require('passport');
-const flash = require('express-flash');
 const Service = require('node-windows').Service;
+//LIVE COMMUNICATION
+const http = require('http').Server(app);
+const io = require('socket.io')(http);
 //Uses
 app.use(express.static('public')); // All our static files
 app.use(express.static(path.join(__dirname, '/public')));
@@ -267,26 +268,22 @@ app.get('/notifications', async (req, res) => {
     res.json(stockCritic);
 });
 
+io.sockets.on('connection', function(socket) {
+    console.log("SOCKET : "+socket);
+    // socket.on('username', function(username) {
+    //     socket.username = username;
+    //     io.emit('is_online', '🔵 <i>' + socket.username + ' join the chat..</i>');
+    // });
 
-//MY APP AS A WINDOWS SERVICE
-// Create a new service object
-// var svc = new Service({
-//     name:process.env.APP_NAME,
-//     description: process.env.APP_DESC,
-//     script: process.env.APP_PATH,
-//     nodeOptions: [
-//       '--harmony',
-//       '--max_old_space_size=4096'
-//     ]
-//   });
-   
-  // Listen for the "install" event, which indicates the
-  // process is available as a service.
-//   svc.on('install',function(){
-//     svc.start();
-//   });
-   
-//   svc.install();
+    // socket.on('disconnect', function(username) {
+    //     io.emit('is_online', '🔴 <i>' + socket.username + ' left the chat..</i>');
+    // })
+
+    // socket.on('chat_message', function(message) {
+    //     io.emit('chat_message', '<strong>' + socket.username + '</strong>: ' + message);
+    // });
+
+});
 
 const port = 8788;
 server = app.listen(port, () => {

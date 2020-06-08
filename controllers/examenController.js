@@ -507,5 +507,71 @@ var self = module.exports = {
         //console.log(data);
         return data;
     },
+  //DELETE TEST REQUEST 
+  async deleteTestRequest(item,test_request_id,user) {
+    let promise = new Promise((resolve, reject) => {
+        //   /* Begin transaction */
+        con.beginTransaction(function (err) {
+            if (err) { throw err; }
+           let numero_lot = item.lot;
+           let materiauId  = item.materiau;
+           let materiauName = item.nom_materiau;
+           let transactionType= "add";
+           let qte = item.qte;
+           let commentaire=qte+" "+materiauName+" ajouté(s) au lot " + numero_lot+" | Suppression Test numéro "+test_request_id;
+           console.log(commentaire);
+            //Insert info into tb_evolution_stock table
+            let sql = 'INSERT INTO tb_evolution_stock (lot,materiau,qte,transaction,commentaire,acteur,test) VALUES ("' + numero_lot + '","' + materiauId + '","' + qte + '","' + transactionType + '","' + commentaire + '","' + user + '",' + test_request_id + ')';
 
+            con.query(sql, function (err, result) {
+                if (err) {
+                    console.log(err);
+                    con.rollback(function () {
+                        throw err;
+                    });
+                }
+                sql2 = "UPDATE  tb_stocks SET qte_restante = qte_restante + " + qte + " WHERE numero_lot= ? AND materiau =?";
+                let param = [numero_lot, materiauId];
+                con.query(sql2, param, function (err, result) {
+                    if (err) {
+                        console.log(err);
+                        con.rollback(function () {
+                            throw err;
+                        });
+                    }
+                    //COMMIT IF ALL DONE COMPLETELY
+                    con.commit(function (err) {
+                        if (err) {
+                            con.rollback(function () {
+                                msg = {
+                                    type: "danger",
+                                    error: true,
+                                    msg: "<font color='red'>Une erreur est survenue</font>",
+                                    debug: err
+                                }
+                                resolve(msg);
+                                throw err;
+
+                            });
+                        }
+                        msg = {
+                            type: "success",
+                            success: true,
+                            msg: "<font color='green'>" + commentaire +" avec succès...</font>"
+                        }
+                        resolve(msg);
+                    });
+
+                });
+            });
+
+        
+                                
+        });
+        /* End transaction */
+    });
+    data = await promise;
+    //console.log(data); 
+    return data;
+},
 }

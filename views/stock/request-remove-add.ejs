@@ -108,10 +108,14 @@
                                     %>
                                     <tr id="row<%= stock.request_id %>">
                                         <td>
+                                            <% if(stock.approved == 0){ %>
                                             <a class="btn btn-info" href="#" 
                                                onclick="setId('<%= stock.request_id %>','<%=stock.materiau%>','<%=stock.nom_materiau%>','<%=stock.lot%>','<%=stock.qte%>','<%=stock.transaction%>')" > 
                                                Accepter/Rejeter
                                             </a>
+                                            <% }else{ %>
+                                                <strong> Approuvé par <%=stock.approved_by %></strong>
+                                            <% } %>
                                         </td>
                                         <td><%=stock.acteur%></td>
                                         <td><%=stock.date_record%></td>
