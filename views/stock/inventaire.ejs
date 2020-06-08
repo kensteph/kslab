@@ -55,7 +55,8 @@
                                 <select class="select floating" name="materiauSelected">
                                     <option value="All">Tous</option>
                                     <% materiauxList.forEach((materiau) => { %>
-                                    <option value="<%=materiau.id%>" <% if( materiauSelected == materiau.id ){ %> <%= "selected" %> <% } %> > 
+                                    <option value="<%=materiau.id%>" <% if( materiauSelected == materiau.id ){ %>
+                                        <%= "selected" %> <% } %>>
                                         <%=materiau.nom_materiau%>
                                     </option>
                                     <% }) %>
@@ -66,6 +67,7 @@
                             <button class="btn btn-success">Rechercher</button>
                         </div>
                     </form>
+                    <% if(UserData.user_sub_menu_access.includes("Imprimer Inventaire") || UserData.user_sub_menu_access[0]=="All"){ %>
                     <% if(data.length >0){   %>
                     <form id="PrintForm" target="_blank" action="/print-inventory-report" method="POST">
                         <input type="hidden" name="dateFrom" value="">
@@ -74,6 +76,7 @@
                         <a href="#" class="dropdown-item" onclick="printReport()"><i class="fa fa-print fa-lg"></i>
                             Imprimer le rapport</a>
                     </form>
+                    <% }  %>
                     <% }  %>
                 </div>
                 <div class="row">
@@ -110,7 +113,13 @@
                                      %>
                                     <tr title="<%=stock.nom_materiau+' | '+stock.numero_lot%>">
                                         <td><%=stock.numero_lot%></td>
-                                        <td><a href="/materiaux?mat=<%=stock.id%>"><%=stock.nom_materiau%></a></td>
+                                        <td>
+                                            <% if(UserData.user_sub_menu_access.includes("Ajouter Stock") || UserData.user_sub_menu_access[0]=="All"){%>
+                                                <a href="/materiaux?mat=<%=stock.id%>"><%=stock.nom_materiau%></a>
+                                                <% }else{ %>
+                                                    <%= stock.nom_materiau %>
+                                                <% } %>
+                                            </td>
                                         <td><%=stock.date_recue%></td>
                                         <td><%=stock.date_expiration%></td>
                                         <td><%=stock.qte_recue%></td>
@@ -126,12 +135,18 @@
                                                 <a href="#" class="action-icon dropdown-toggle" data-toggle="dropdown"
                                                     aria-expanded="false"><i class="fa fa-ellipsis-v"></i></a>
                                                 <div class="dropdown-menu dropdown-menu-right">
-                                                    <a class="dropdown-item" href="#" title="Mouvement de Stock"
+                                                    <% if(UserData.user_sub_menu_access.includes("Requete Ajouter/Retirer article du Stock") || UserData.user_sub_menu_access[0]=="All"){%>
+                                                    <a class="dropdown-item" href="#" title="Mouvement de Stock" id="btnStock<%=stock.id%>"
                                                         onclick="launchStockManagement('<%=stock.nom_materiau%>','<%=stock.id%>','<%=stock.numero_lot%>')"><i
                                                             class="fa fa-plus-square m-r-5"></i> <i
                                                             class="fa fa-minus-square m-r-5"></i> Ajout/retrait</a>
-                                                    <a class="dropdown-item" href="#" onclick="launchStocValide('<%=stock.nom_materiau%>','<%=stock.id%>','<%=stock.numero_lot%>','<%=stock.statut%>')"><i
+                                                    <% } %>
+
+                                                    <% if(UserData.user_sub_menu_access.includes("Valider/Invalider Stock") || UserData.user_sub_menu_access[0]=="All"){%>
+                                                    <a class="dropdown-item" href="#"
+                                                        onclick="launchStocValide('<%=stock.nom_materiau%>','<%=stock.id%>','<%=stock.numero_lot%>','<%=stock.statut%>')"><i
                                                             class="fa fa-trash-o m-r-5"></i> Valide/Invalide</a>
+                                                    <% } %>
                                                 </div>
                                             </div>
                                         </td>
@@ -195,13 +210,14 @@
                         <img src="assets/img/sent.png" alt="" width="50" height="46">
                         <h2 id="stockId"></h2>
                         <h3>Voulez-vous modifier la validité de ce lot?</h3>
-                        <div class="m-t-20"> 
+                        <div class="m-t-20">
                             <form id="validForm">
                                 <input type="hidden" name="lod_id" id="lot_id">
                                 <input type="hidden" name="statut" id="statut">
                             </form>
-                        <div id="Notif" class="m-b-10"></div>
-                            <button type="submit" onclick="changeStockStatus()" class="btn btn-danger" id="btnValider"></button>
+                            <div id="Notif" class="m-b-10"></div>
+                            <button type="submit" onclick="changeStockStatus()" class="btn btn-danger"
+                                id="btnValider"></button>
                             <a href="#" class="btn btn-white" data-dismiss="modal">Fermer</a>
                         </div>
                     </div>
@@ -238,16 +254,16 @@
             $("#lot").val(lot);
             $("#addRemoveUnit").modal();
         }
-        function launchStocValide(matName, matId, lot,statut) {
+        function launchStocValide(matName, matId, lot, statut) {
             $("#stockId").html(matName + "-" + lot);
             $("#materiauId").val(matId);
             $("#materiau").val(matName);
             $("#lot_id").val(lot);
             let text = "Valide";
-            if(statut == 1){ 
+            if (statut == 1) {
                 text = "Invalide"
                 $("#statut").val(0);
-            }else{
+            } else {
                 $("#btnValider").addClass("btn btn-success");
                 $("#statut").val(1);
             }

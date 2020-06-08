@@ -245,6 +245,24 @@ var self = module.exports = {
         //console.log(data);
         return data;
     },
+    //TEST REQUEST COUNT SAVED RESULT
+    countSavedResultsForATestRequest: async function (test_request_id) {
+        let promise = new Promise((resolve, reject) => {
+            let sql = "SELECT COUNT(examen_id) as nb_resultat_saved FROM tb_resultats WHERE test_request_id = ? ";
+            console.log(sql+" ID : "+test_request_id);
+            con.query(sql, test_request_id, function (err, rows) {
+                if (err) {
+                    //throw err;
+                    resolve([{ fullname: "" }]);
+                } else {
+                    resolve(rows[0].nb_resultat_saved);
+                }
+            });
+        });
+        data = await promise;
+        //console.log(data);
+        return data;
+    },
     //SELECT CONCAT('BEBE : ',bebe,' ENFANT : ',enfant,' ADO :',adolescent,' FEMME : ',femme,' HOMME : ',homme,' ',unite) FROM tb_valeurs_normales WHERE 1
     //TEST REQUEST CONTENTS
     getExamNormalValues: async function (id) {
@@ -323,6 +341,35 @@ var self = module.exports = {
         rep = await promise;
         return rep;
     },
+    //Save Single Test Result
+    saveSingleTestResult: async function (test_request_id, examen_id, resultat) {
+        let promise = new Promise((resolve, reject) => {
+                let sql =
+                    'INSERT INTO tb_resultats (test_request_id,examen_id,resultat) VALUES ('+test_request_id+','+examen_id+',"'+resultat+'")';
+                con.query(sql,async function (err, result) {
+                    if (err) {
+                        msg = {
+                            type: "danger",
+                            msg:
+                                "<font color='red'><strong>Vous avez déja  enregistré ces résultats.</strong></font>",
+                            debug: err
+                        };
+                    }else{
+                        msg = {
+                            type: "success",
+                            success: true,
+                            msg:
+                                "<font color='green'><strong>Résultat enregistré avec succès...</strong></font>",
+                        };
+                    }
+
+                    resolve(msg);
+                    //console.log("SINGLE SAVE : "+err);
+                });
+        });
+        rep = await promise;
+        return rep;
+    },
 
       //Save Test Result
       editTestResult: async function (req) {
@@ -361,8 +408,8 @@ var self = module.exports = {
         let promise = new Promise((resolve, reject) => {
             let sql =
                 'UPDATE tb_resultats SET resultat="' + resultat + '" WHERE test_request_id =' + test_request_id + ' AND  examen_id=' + examen_id + ' ';
-         console.log(sql);
-            con.query(sql, function (err, result) {
+         //console.log(sql);
+            con.query(sql, async function (err, result) {
                 if (err) {
                     msg = {
                         type: "danger",
@@ -371,6 +418,11 @@ var self = module.exports = {
                         debug: err
                     };
                 } else {
+                    let nb_success = result.affectedRows;
+                    if(nb_success == 0){ //Enregistrer le nouveau test
+                        console.log("SAve the test...");
+                        await self.saveSingleTestResult(test_request_id, examen_id, resultat);
+                    }
                     msg = {
                         type: "success",
                         success: true,

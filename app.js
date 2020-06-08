@@ -59,7 +59,7 @@ app.get('/', async (req, res) => {
     global.USER_HOME_PAGE = '/test-laboratoire';//Default for sample User
     //MENU ACCESS
     global.MENU_ITEM = ['Tableau de bord', 'Test Patient', 'Test Laboratoire', 'Patients', 'Examens', 'Gestion de stock', 'Paramètres', 'Administration'];
-    global.SUBMENU_ITEM = ['Ajouter Patient', 'Liste des Patients', 'Modifier Patients', 'Rechercher Patient', 'Liste des demandes de Tests','Enregistrer Résultat','Modifier Résultat','Valider Résultat','Ajouter Signature','Imprimer Résultat', 'Ajouter examens', 'Voir la liste des examens', 'Modifier examens'];
+    global.SUBMENU_ITEM = ['Ajouter Patient', 'Liste des Patients', 'Modifier Patients', 'Rechercher Patient', 'Liste des demandes de Tests','Enregistrer Résultat','Modifier Résultat','Valider Résultat','Ajouter Signature','Imprimer Résultat', 'Ajouter examens', 'Voir la liste des examens', 'Modifier examens','Ajouter valeurs normales','Détails Examens','Ajouter Matériau','Modifier Matériau','Lister les matériaux','Ajouter Stock','Inventaire','Imprimer Inventaire','Requete Ajouter/Retirer article du Stock','Autoriser Ajouter/Retirer article du Stock','Valider/Invalider Stock','Mouvement de stock','Imprimer Mouvement de Stock'];
     res.render('login');
 });
 //Exit Point

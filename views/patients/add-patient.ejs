@@ -35,23 +35,25 @@
                 </div>
             </div>
             <div class="row">
-                
+
                 <div class="col-lg-8 offset-lg-2">
                     <% if( locals.notifications){ %>
-                        <div class="alert alert-<%= locals.notifications.type %> alert-dismissible fade show" role="alert">
-                            <%= locals.notifications.msg %> 
-                            <form method="POST" action="/test-laboratoire">
-                                <input type="hidden" value="<%= locals.notifications.patientID%>" name="patientSelected">
-                                <button class="btn btn-primary ">Examen laboratoire</button>
-                            </form>
-                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                <span aria-hidden="true">×</span>
-                            </button>
-                        </div>
+                    <div class="alert alert-<%= locals.notifications.type %> alert-dismissible fade show" role="alert">
+                        <%= locals.notifications.msg %>
+                        <form method="POST" action="/test-laboratoire">
+                            <input type="hidden" value="<%= locals.notifications.patientID%>" name="patientSelected">
+                            <button class="btn btn-primary ">Examen laboratoire</button>
+                        </form>
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                    </div>
                     <% } %>
 
                     <% if( locals.data ){
                         buttonText = "Modifier";
+                        required = "required";
+                        numero_patient = data.numero_patient;
                                 prenomVal = data.prenom;
                                 nomVal = data.nom;
                                 datenaisVal = data.date_nais;
@@ -62,7 +64,9 @@
                                 email = data.email;
                            %>
 
-                    <% }else{   
+                    <% }else{ 
+                        required = ""  ;
+                        numero_patient = "";
                                 prenomVal = "";
                                 nomVal = "";
                                 datenaisVal = "";
@@ -75,6 +79,15 @@
                            }
                             %>
                     <form method="POST" action="">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label>Numéro patient <span class="text-danger">*</span></label>
+                                    <input  class="form-control" onfocus="select()" type="text" name="numero_patient" value="<%=numero_patient%>" <%=required%>
+                                        >
+                                </div>
+                            </div>
+                        </div>
                         <div class="row">
                             <div class="col-sm-6">
                                 <div class="form-group">
@@ -131,8 +144,7 @@
                                     <div class="col-sm-6">
                                         <div class="form-group">
                                             <label>Email </label>
-                                            <input class="form-control" type="email" name="email"
-                                                value="<%=email%>">
+                                            <input class="form-control" type="email" name="email" value="<%=email%>">
                                         </div>
                                     </div>
                                 </div>

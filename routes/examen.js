@@ -302,22 +302,30 @@ router.post('/SaveTestResult', async (req, res) => {
     let dossier_patient = fullname + " [" + num_patient + "]";
     let patientSelected = { fullname: fullname,sexe : sexe_patient, num_patient: num_patient, dossier: dossier_patient, docteur: docteur };
     let id_test_request = req.body.testRequestId;
+    let ifCompleted = false;
     let data = await examenDB.testRequestContent(id_test_request);
-    //console.log(data);
+    let countSavedResultsForATestRequest = await examenDB.countSavedResultsForATestRequest(id_test_request);
+    //console.log("TEST RESULT ALREADY SAVED : "+countSavedResultsForATestRequest+" TEST TO SAVE : "+data.length);
     let pageTitle = "Enregistrement résultat pour :";
+    if(countSavedResultsForATestRequest>= data.length ){
+        ifCompleted = true;
+        pageTitle = "Modification résultat pour :";
+    }
+   
     params = {
         pageTitle: pageTitle,
         data: data,
         patientSelected: patientSelected,
         id_test_request: id_test_request,
         UserData : req.session.UserData,
+        ifCompleted : ifCompleted,
         page: 'ListTest'
     };
     res.render('examens/save-test-patient', params);
 });
 //GET THES TEST'S PARAMETERS
 router.post('/get-test-parameters', async (req, res) => {
-    console.log(req.body);
+    //console.log(req.body);
     let id_exam = req.body.examID;
     let info = await examenDB.getExamParameters(id_exam);
     if (info.length == 0) {
@@ -330,16 +338,16 @@ router.post('/get-test-parameters', async (req, res) => {
 
 //SAVE TEST RESULT TO DB
 router.post('/save-test-result', async (req, res) => {
-    console.log(req.body);
+    //console.log(req.body);
     let notifications = await examenDB.saveTestResult(req);
     res.json(notifications);
 });
 
 //EDIT TEST RESULT TO DB
 router.post('/edit-test-result', async (req, res) => {
-    console.log(req.body);
+    //console.log(req.body);
     let notifications = await examenDB.editTestResult(req);
-    console.log("EDIT RESULTAT : "+notifications);
+    //console.log("EDIT RESULTAT : "+notifications.msg);
     res.json(notifications);
 });
 

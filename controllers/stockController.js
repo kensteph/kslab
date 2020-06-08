@@ -344,6 +344,114 @@ var self = module.exports = {
         //console.log(data); 
         return data;
     },
+        //REQUEST ADD OR REMOVE STOCK
+        requestAddOrRemoveStock: async function (req) {
+            let promise = new Promise((resolve, reject) => {
+                let numero_lot = req.body.lot;
+                let materiauId = req.body.materiauId;
+                let materiauName = req.body.materiauName;
+                let transactionType = req.body.type;
+                let qte = req.body.qte;
+                let commentaire = req.body.commentaire;
+                let user = req.session.username;
+                let sql = 'INSERT INTO tb_evolution_stock (lot,materiau,qte,transaction,commentaire,acteur,approved) VALUES ("' + numero_lot + '","' + materiauId + '","' + qte + '","' + transactionType + '","' + commentaire + '","' + user + '",0)';
+                con.query(sql, function (err, result) {
+                    if (err) {
+                        msg = {
+                            type: "danger",
+                            error: true,
+                            msg:
+                                " Vous avez déja ajouté " + materiauName + " ",
+                            debug: err
+                        };
+                    } else {
+                        msg = {
+                            type: "success",
+                            msg: "<font color='green'>Demande en attente d'approbation...</font>",
+                        };
+                    }
+    
+                    resolve(msg);
+                    //console.log(msg);
+                });
+            });
+            rep = await promise;
+            return rep;
+        },
+
+            //Add or REMOVE ITEMS STOCK Materiau
+    async approvedRemoveItemStock(requestId,numero_lot, materiauId, materiauName, transactionType, qte,user,statut) {
+        let promise = new Promise((resolve, reject) => {
+            //   /* Begin transaction */
+            con.beginTransaction(function (err) {
+
+                if (err) { throw err; }
+                //Insert info into tb_evolution_stock table
+                let sql = "UPDATE tb_evolution_stock SET approved =" + statut + ",approved_by='"+user+"' WHERE id =?";
+                con.query(sql,requestId, function (err, result) {
+                    if (err) {
+                        console.log(err);
+                        con.rollback(function () {
+                            throw err;
+                        });
+                    }
+
+                    //Update the table tb_stocks
+                    let sql2 = "";
+                    let action = " enlevé(s) du lot " + numero_lot;
+                    if (transactionType == "endommagee") {
+                        // qte endomage
+                        sql2 = "UPDATE  tb_stocks SET qte_restante = qte_restante - " + qte + ",qte_endomage = qte_endomage + " + qte + "  WHERE numero_lot= ? AND materiau =?";
+                    } else {
+
+                        if (transactionType == "substract") {
+                            sql2 = "UPDATE  tb_stocks SET qte_restante = qte_restante - " + qte + ",qte_utilisee = qte_utilisee + " + qte + "  WHERE numero_lot= ? AND materiau =?";
+                        } else {
+                            sql2 = "UPDATE  tb_stocks SET qte_restante = qte_restante + " + qte + " WHERE numero_lot= ? AND materiau =?";
+                            action = " ajouté(s) au lot " + numero_lot;
+                        }
+                    }
+
+                    let param = [numero_lot, materiauId];
+                    con.query(sql2, param, function (err, result) {
+                        if (err) {
+                            con.rollback(function () {
+                                throw err;
+                            });
+                        }
+
+                        //COMMIT IF ALL DONE COMPLETELY
+                        con.commit(function (err) {
+                            if (err) {
+                                con.rollback(function () {
+                                    msg = {
+                                        type: "danger",
+                                        error: true,
+                                        msg: "<font color='red'>Une erreur est survenue</font>",
+                                        debug: err
+                                    }
+                                    resolve(msg);
+                                    throw err;
+
+                                });
+                            }
+                            msg = {
+                                type: "success",
+                                success: true,
+                                msg: "<font color='green'>" + qte + " " + materiauName + " " + action + " avec succès...</font>"
+                            }
+                            resolve(msg);
+                        });
+
+                    });
+                });
+            });
+            /* End transaction */
+        });
+        data = await promise;
+        //console.log(data); 
+        return data;
+    },
 
     //STOCK BY ID
     getMateriau: async function (id) {
@@ -528,9 +636,9 @@ var self = module.exports = {
         let promise = new Promise((resolve, reject) => {
             let sql = "";
             if(materiauSelected == "All"){
-                sql = "SELECT *FROM tb_evolution_stock,tb_materiaux WHERE tb_evolution_stock.materiau=tb_materiaux.id AND DATE(date_record) BETWEEN '"+dateFrom+"' AND '"+dateTo+"' ORDER BY date_record ";
+                sql = "SELECT *FROM tb_evolution_stock,tb_materiaux WHERE tb_evolution_stock.materiau=tb_materiaux.id AND DATE(date_record) BETWEEN '"+dateFrom+"' AND '"+dateTo+"' AND approved=1 ORDER BY date_record ";
             }else{
-                sql = "SELECT *FROM tb_evolution_stock,tb_materiaux WHERE tb_evolution_stock.materiau=tb_materiaux.id AND DATE(date_record) BETWEEN '"+dateFrom+"' AND '"+dateTo+"' AND materiau="+materiauSelected+" ORDER BY date_record";
+                sql = "SELECT *FROM tb_evolution_stock,tb_materiaux WHERE tb_evolution_stock.materiau=tb_materiaux.id AND DATE(date_record) BETWEEN '"+dateFrom+"' AND '"+dateTo+"' AND materiau="+materiauSelected+" AND approved=1 ORDER BY date_record";
             }
             //console.log(sql);
             con.query(sql, function (err, rows) {
@@ -545,6 +653,33 @@ var self = module.exports = {
         //console.log(data);
         return data;
     },
+        //Mouvement de stock IN and OUT
+        stockRequestByUsers: async function (dateFrom,dateTo,statut) {
+            let promise = new Promise((resolve, reject) => {
+                let sql = "";
+                if(dateFrom == "All"){
+                    sql = "SELECT *,tb_evolution_stock.id as request_id FROM tb_evolution_stock,tb_materiaux WHERE tb_evolution_stock.materiau=tb_materiaux.id AND approved=0 ORDER BY date_record ";
+                }else{
+
+                        if(statut == "All"){
+                            sql = "SELECT *,tb_evolution_stock.id as request_id FROM tb_evolution_stock,tb_materiaux WHERE tb_evolution_stock.materiau=tb_materiaux.id AND DATE(date_record) BETWEEN '"+dateFrom+"' AND '"+dateTo+"' ORDER BY date_record ";
+                        }else{
+                            sql = "SELECT *,tb_evolution_stock.id as request_id FROM tb_evolution_stock,tb_materiaux WHERE tb_evolution_stock.materiau=tb_materiaux.id AND DATE(date_record) BETWEEN '"+dateFrom+"' AND '"+dateTo+"' AND approved="+statut+" ORDER BY date_record";
+                        }
+                }
+                console.log(sql);
+                con.query(sql, function (err, rows) {
+                    if (err) {
+                        throw err;
+                    } else {
+                        resolve(rows);
+                    }
+                });
+            });
+            data = await promise;
+            console.log(data);
+            return data;
+        },
     //LINK TEST TO MATERIAU
     linkTestToMateriau: async function (req) {
         let promise = new Promise((resolve, reject) => {
@@ -659,5 +794,29 @@ var self = module.exports = {
         //console.log(data);
         return data;
     },
+
+        //SET STOCK STATUS
+        deleteRequestUserForStock: async function (request_id) {
+            let promise = new Promise((resolve, reject) => {
+                let sql = "DELETE FROM tb_evolution_stock WHERE id =?";
+                con.query(sql, request_id, function (err, rows) {
+                    if (err) {
+                        resolve({
+                            msg: "Une erreur est survenue. S'il vous plait réessayez.",
+                            type: "danger",
+                            debug: err
+                        });
+                    } else {
+                        resolve({
+                            msg: "La requete a été supprimée avec succès...",
+                            type: "success"
+                        });
+                    }
+                });
+            });
+            data = await promise;
+            //console.log(data);
+            return data;
+        },
 
 }

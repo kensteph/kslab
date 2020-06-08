@@ -65,17 +65,23 @@
 											</a>
 											<% } %> -->
 											<% if(examen.is_bilan == 0 && examen.type_resultat==1){ %>
-											<a href="#" title="Ajouter les valeurs normales"
-												onclick="addVN('<%= examen.id %>','<%= examen.nom_examen %>')"> | Valeurs Normales</i></a>
+												<% if(UserData.user_sub_menu_access.includes("Ajouter valeurs normales") || UserData.user_sub_menu_access[0]=="All"){%>
+													<a href="#" title="Ajouter les valeurs normales"
+														onclick="addVN('<%= examen.id %>','<%= examen.nom_examen %>')"> | Valeurs Normales</i></a>
+												<% } %>
 											<% } %>
 										</td>
 										<td><%=TYPE_RESULTAT[examen.type_resultat] %></td>
 										<td class="text-right">
+											<% if(UserData.user_sub_menu_access.includes("Détails Examens") || UserData.user_sub_menu_access[0]=="All"){%>
 											<a href="/exam-details?examId=<%= examen.id %>"><i
 													class="fa fa-file-archive-o m-r-5"></i> Détails</a>
+											<% } %>
+											<% if(UserData.user_sub_menu_access.includes("Modifier examens") || UserData.user_sub_menu_access[0]=="All"){%>
 											| <a href="#"
 												onclick="launchEditExamen('<%= examen.nom_examen %>','<%= examen.id %>','<%= examen.type_resultat %>','<%= examen.is_bilan %>')"><i
 													class="fa fa-pencil m-r-5"></i> Modifier</a>
+											<% } %>
 										</td>
 									</tr>
 									<% }) %>

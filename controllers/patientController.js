@@ -5,6 +5,7 @@ module.exports = {
     async savePatient(req, res) {
         //DATA RECEIVING
         console.log(req.body);
+        let numero_patient =req.body.numero_patient;
         firstName = req.body.firstname;
         lastName = req.body.lastname;
         fullname = firstName + " " + lastName;
@@ -27,10 +28,13 @@ module.exports = {
                             throw err;
                         });
                     }
-                    console.log(result);
+                    //console.log(result);
                     var id_personne = result.insertId;
                     let initial = firstName.charAt(0) + lastName.charAt(0);
-                    let numero_patient = helpers.generateCode(initial, id_personne);
+                    if(numero_patient.trim().length==0){
+                        numero_patient = helpers.generateCode(initial, id_personne);
+                    }
+                    
                     //Insert info into professeur  table
                     let sql2 = "INSERT INTO tb_patients (id_personne,numero_patient) VALUES ('" + id_personne + "','" + numero_patient + "')";
                     con.query(sql2, function (err, result) {

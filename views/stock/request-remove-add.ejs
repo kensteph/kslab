@@ -55,14 +55,9 @@
                         </div>
                         <div class="col-sm-4 col-md-4">
                             <div class="form-group form-focus select-focus">
-                                <label class="focus-label">Matériau</label>
-                                <select class="select floating" name="materiauSelected">
+                                <label class="focus-label">Statut</label>
+                                <select class="select floating" name="Statut">
                                     <option value="All">Tous</option>
-                                    <% materiauxList.forEach((materiau) => { %>
-                                    <option value="<%=materiau.id%>" <% if( materiauSelected == materiau.id ){ %> <%= "selected" %> <% } %> > 
-                                        <%=materiau.nom_materiau%>
-                                    </option>
-                                    <% }) %>
                                 </select>
                             </div>
                         </div>
@@ -70,17 +65,7 @@
                             <button class="btn btn-success btn-block"> Recherher </button>
                         </div>
                     </form>
-                    <% if(data.length >0){   %>
-                        <% if(UserData.user_sub_menu_access.includes("Imprimer Mouvement de Stock") || UserData.user_sub_menu_access[0]=="All"){%>
-                        <form id="PrintForm" target="_blank" action="/print-stock-move-report" method="POST">
-                            <input type="hidden" name="DateFrom" value="<%=dateFromDB%>">
-                            <input type="hidden" name="DateTo" value="<%=dateToDB%>">
-                            <input type="hidden" name="materiauSelected" value="<%=materiauSelected%>">
-                            <a href="#" class="dropdown-item" onclick="printReport()"><i class="fa fa-print fa-lg"></i>
-                                Imprimer le rapport</a>
-                        </form>
-                        <% }  %>
-                    <% }  %>
+                    
                 </div>
                 <div class="row">
                     <div class="col-md-12">
@@ -88,13 +73,14 @@
                             <table class="table table-striped custom-table datatable mb-0">
                                 <thead>
                                     <tr>
+                                        <th>Statut</th>
+                                        <th>Demandeur</th>
                                         <th>Date transaction</th>
                                         <th>Numéro Lot</th>
                                         <th>Matériau</th>
                                         <th>Quantité</th>
                                         <th>Transaction</th>
                                         <th>Commentaire</th>
-                                        <th>Acteur</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -113,15 +99,28 @@
                                             fa = "fa fa-arrow-down ";
                                             title = "Stock endommagé";
                                         }
+                                        let active_desact = "Approuver";
+                                        let action = 0;
+										if(stock.approved == 0){
+                                            active_desact = "Supprimer";
+                                            action = 1;
+										}
                                     %>
-                                    <tr>
+                                    <tr id="row<%= stock.request_id %>">
+                                        <td>
+                                            <a class="btn btn-info" href="#" 
+                                               onclick="setId('<%= stock.request_id %>','<%=stock.materiau%>','<%=stock.nom_materiau%>','<%=stock.lot%>','<%=stock.qte%>','<%=stock.transaction%>')" > 
+                                               Accepter/Rejeter
+                                            </a>
+                                        </td>
+                                        <td><%=stock.acteur%></td>
                                         <td><%=stock.date_record%></td>
                                         <td><strong><%=stock.lot%></strong></td>
                                         <td><%=stock.nom_materiau%></td>
                                         <td><%=stock.qte%></td>
-                                        <td style = "<%= color %>"><i class="<%= fa%>" title="<%= title%>"></i></td>
+                                        <td ><i class="<%= fa%>" title="<%= title%>"></i></td>
                                         <td><%=stock.commentaire%></td>
-                                        <td><%=stock.acteur%></td>
+                                        
                                     </tr>
                                     <% }) %>
                                 </tbody>
@@ -134,6 +133,34 @@
         </div>
 
     </div>
+
+    <div id="delete_patient" class="modal fade delete-modal" role="dialog" data-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-body text-center">
+                    <img src="assets/img/sent.png" alt="" width="50" height="46">
+                    <form id="deleteForm">
+                        <input type="hidden" name="requestId" id="requestId">
+                        <input type="hidden" name="lot" id="lot">
+                        <input type="hidden" name="materiauId" id="materiauId">
+                        <input type="hidden" name="materiauName" id="materiauName">
+                        <input type="hidden" name="type" id="type">
+                        <input type="hidden" name="qte" id="qte">
+                        <input type="hidden" name="action" id="action">
+                    </form>
+                    <h3 id="userDesactTitle"></h3>
+                    <div id="msg"></div>
+                    <div class="m-t-20"> 
+                        <button type="submit" title="Accepter la demande" class="btn btn-success" onclick="accepterRejeter('1')">Oui</button>
+                        <button type="submit" title="Rejeter la demande" class="btn btn-danger" onclick="accepterRejeter('0')">Non</button>
+                        <a href="#" class="btn btn-white" data-dismiss="modal">Fermer</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+
     <div class="sidebar-overlay" data-reff=""></div>
     <script src="assets/js/jquery-3.2.1.min.js"></script>
     <script src="assets/js/popper.min.js"></script>
@@ -146,33 +173,36 @@
     <script src="assets/js/bootstrap-datetimepicker.min.js"></script>
     <script src="assets/js/app.js"></script>
     <script>
-        $("#addRemoveStockForm").submit(function (e) {
-            e.preventDefault();
-            addorRemoveStock();
-        });
-        function launchStockManagement(matName, matId, lot) {
-            $("#materiauName").html(matName + "-" + lot);
+   		function setId(value,matId,mat,lot,qte,type){
+			$("#msg").show().html("");
+			let title = "Voulez-vous accepter cette demande ?";
+			$("#userDesactTitle").html(title);
+            $("#requestId").val(value);
             $("#materiauId").val(matId);
-            $("#materiau").val(matName);
+            $("#materiauName").val(mat);
             $("#lot").val(lot);
-            $("#addRemoveUnit").modal();
-        }
-        addorRemoveStock = function () {
-            $("#notify").show().html();
-            let formData = $("#addRemoveStockForm").serialize();
-            $.post("/add-remove-stock", formData, function (data) {
-                console.log(data);
-                if (data.success) { //Success 
-                    $("#notify").html(data.msg);//.fadeOut(5000);
-                } else {
-                    $("#notify").html(data.msg);
-                }
-            });
-        }
-
-        function printReport() {
-            $("#PrintForm").submit();
-        }
+            $("#type").val(type);
+            $("#qte").val(qte);
+			$("#delete_patient").modal();
+		}
+		
+		accepterRejeter = function(action){
+            $("#action").val(action);
+             $("#msg").show().html("");
+			 let patientID = $("#requestId").val();
+              let   formData = $("#deleteForm").serialize();
+                $.post("/approved-rejected" ,formData, function(data){
+                      if(data.success){ //Success 
+                        $("#msg").html(data.msg)
+                        $("#delete_patient").modal("hide");
+						//remove line
+                        $("#row"+patientID).fadeOut( 5000 );
+                        
+                      }else{
+                        $("#msg").html(data.msg);
+                      } 
+                });
+		}
     </script>
     <!-- FOOTER -->
     <%- include("../parts/footer") -%>

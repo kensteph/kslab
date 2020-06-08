@@ -8,6 +8,7 @@ const fs = require('fs-extra');
 const con = require('../controllers/database');
 // const helpers = require('../helpers/helpers');
 const stockDB = require('../controllers/stockController.js');
+const testDB = require('../controllers/testController.js');
 router.use(bodyParser.urlencoded({ extended: true }));
 router.use(express.static('public'));
 // ADD Materiau in stock
@@ -202,8 +203,17 @@ router.post('/add-remove-stock', async (req, res) => {
     let transactionType = req.body.type;
     let qte = req.body.qte;
     let user = req.session.username;
-    let commentaire = req.body.commentaire;;
-    let notifications = await stockDB.RemoveItemFromStock(con, numero_lot, materiauId, materiauName, transactionType, qte, commentaire, user);
+    let UserData = req.session.UserData;
+    let commentaire = req.body.commentaire;
+    let notifications ={};
+    if(UserData.user_sub_menu_access.includes("Autoriser Ajouter/Retirer article du Stock") || UserData.user_sub_menu_access[0]=="All"){
+        //Si l'utiisateur a le droit de retirer ou ajouter du stock sans demande d'autorisation
+        notifications = await stockDB.RemoveItemFromStock(con, numero_lot, materiauId, materiauName, transactionType, qte, commentaire, user);
+    }else{
+        //Dans le cas contraire demande de retrait/ajout
+        console.log("Demande en attente d'approbation...");
+        notifications = await stockDB.requestAddOrRemoveStock(req);
+    }
     console.log("ADD/REMOVE " + notifications.success);
     res.json(notifications);
 });
@@ -217,6 +227,81 @@ router.post('/change-stock-status', async (req, res) => {
     res.json(notifications);
 });
 
+//APPROVED OR REJECTED A REQUEST ADD OR REMOVE ITEM FROM STOVK
+router.post('/approved-rejected', async (req, res) => {
+    console.log(req.body);
+    let numero_lot = req.body.lot;
+    let materiauId = req.body.materiauId;
+    let materiauName = req.body.materiauName;
+    let transactionType = req.body.type;
+    let qte = req.body.qte;
+    let action = req.body.action;
+    let requestId = req.body.requestId;
+    let user = req.session.username;
+    let statut = 0;
+    let notifications = {};
+    if(action == 1){  //Accepter
+        statut = 1
+        notifications = await stockDB.approvedRemoveItemStock(requestId,numero_lot,materiauId,materiauName,transactionType,qte,user,statut);
+    }else{ // Supprimer la demande
+        notifications = await stockDB.deleteRequestUserForStock(requestId);
+    }
+    
+    res.json(notifications);
+});
+
+//LIST OF THE REQUEST ELATED TO STOCK
+router.get('/requests', async (req, res) => {
+    console.log(req.body);
+    let dateF = helpers.getCurrentDate();
+    let dateT = helpers.getCurrentDate();
+    let statut = 'All';
+    if (req.query.statut) { statut = req.query.statut; }
+    let dateFrom = helpers.formatDate(dateF, "FR");
+    dateFrom = helpers.changeDateSymbol(dateFrom);
+    let dateTo = helpers.formatDate(dateT, "FR");
+    dateTo = helpers.changeDateSymbol(dateTo);
+    let data = await stockDB.stockRequestByUsers(dateF="All",dateT,statut);
+    let pageTitle = "Demandes";
+    params = {
+        pageTitle: pageTitle,
+        data: data,
+        UserData: req.session.UserData,
+        statut : statut,
+        dateFrom : dateFrom,
+        dateTo : dateTo,
+        dateFromDB : dateF,
+        dateToDB : dateT,
+        page: 'StockMoving'
+    };
+    res.render('stock/request-remove-add', params);
+});
+
+router.post('/requests', async (req, res) => {
+    console.log(req.body);
+    let dateF = req.body.DateFrom;;
+    let dateT = req.body.DateTo;
+    let statut = 'All';
+    if (req.body.statut) { statut = req.body.statut; }
+    let dateFrom = helpers.formatDate(dateF, "EN");
+    dateFrom = helpers.changeDateSymbol(dateFrom);
+    let dateTo = helpers.formatDate(dateT, "EN");
+    dateTo = helpers.changeDateSymbol(dateTo);
+    let data = await stockDB.stockRequestByUsers(dateFrom,dateTo,statut);
+    let pageTitle = "Demandes";
+    params = {
+        pageTitle: pageTitle,
+        data: data,
+        UserData: req.session.UserData,
+        statut : statut,
+        dateFrom : dateFrom,
+        dateTo : dateTo,
+        dateFromDB : dateF,
+        dateToDB : dateT,
+        page: 'StockMoving'
+    };
+    res.render('stock/request-remove-add', params);
+});
 //LINK TEST TO MATERIAU
 router.post('/link-test-materiau', async (req, res) => {
     let data = req.body;

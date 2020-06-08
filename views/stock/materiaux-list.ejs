@@ -34,10 +34,14 @@
                     <div class="col-sm-4 col-3">
                         <h4 class="page-title"> <i class="fa fa-signal fa-2x"></i> <%=pageTitle%> </h4>
                     </div>
+                    
                     <div class="col-sm-8 col-9 text-right m-b-20">
+                        <% if(UserData.user_sub_menu_access.includes("Ajouter Matériau") || UserData.user_sub_menu_access[0]=="All"){%>
                         <a href="/add-materiau" class="btn btn btn-primary btn-rounded float-right"><i
                                 class="fa fa-plus"></i> Ajouter Matériau</a>
+                       <% } %>
                     </div>
+                   
                     <div class="col-3-xxxl col-xl-3 col-lg-3 col-3 form-group">
 						<input autocomplete="off" type="text" id="search" class="form-control" placeholder="Rechercher...">
 				 	</div>
@@ -58,10 +62,14 @@
                                     <% data.forEach((materiau) => { %>
                                     <tr id="row<%= materiau.id %>">
                                         <td>
+                                            <% if(UserData.user_sub_menu_access.includes("Ajouter Stock") || UserData.user_sub_menu_access[0]=="All"){%>
                                             <a href="#"
                                                 onclick="launchStockUp('<%= materiau.nom_materiau %>','<%= materiau.id %>')">
                                                 <%= materiau.nom_materiau %>
                                             </a>
+                                            <% }else{ %>
+                                                <%= materiau.nom_materiau %>
+                                            <% } %>
                                         </td>
                                         <td> <%=materiau.min_stock %></td>
                                         <td> <%=PERISSABLE[materiau.expirable] %></td>
@@ -70,9 +78,11 @@
                                                 <a href="#" class="action-icon dropdown-toggle" data-toggle="dropdown"
                                                     aria-expanded="false"><i class="fa fa-ellipsis-v"></i></a>
                                                 <div class="dropdown-menu dropdown-menu-right">
+                                                    <% if(UserData.user_sub_menu_access.includes("Modifier Matériau") || UserData.user_sub_menu_access[0]=="All"){%>
                                                     <a class="dropdown-item" href="#"
                                                     onclick="launchEditMateriau('<%= materiau.nom_materiau%>','<%= materiau.id %>','<%= materiau.expirable %>','<%= materiau.min_stock %>')"><i
                                                             class="fa fa-pencil m-r-5"></i> Modifier</a>
+                                                    <% } %>
                                                 </div>
                                             </div>
                                         </td>

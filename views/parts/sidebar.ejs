@@ -72,6 +72,10 @@ if (locals.page) {
                     <a href="/home"><i class="fa fa-dashboard"></i> <span>Tableau de bord</span></a>
                 </li>
                 <% } %>
+                <!-- MESSAGERIE -->
+                <li>
+                    <a href="/requests?statut=0"><i class="fa fa-comments"></i> <span>Demandes</span> <span class="badge badge-pill bg-primary float-right">5</span></a>
+                </li>
                 <!-- TEST LABORATOIRE -->
                 <% if(UserData.user_menu_access.includes("Test Patient") || UserData.user_menu_access[0]=="All"){%>
                 <li class="<%=NewTest%>">
@@ -97,7 +101,8 @@ if (locals.page) {
                             class="menu-arrow"></span></a>
                     <ul style="display: none;">
                         <% if(UserData.user_sub_menu_access.includes("Rechercher Patient") || UserData.user_sub_menu_access[0]=="All"){%>
-                        <li><a  class="<%=SearchPatient%>"data-toggle="modal" data-target="#SearchPatient" href="#">Rechercher </a></li>
+                        <li><a class="<%=SearchPatient%>" data-toggle="modal" data-target="#SearchPatient"
+                                href="#">Rechercher </a></li>
                         <% } %>
                         <% if(UserData.user_sub_menu_access.includes("Ajouter Patient") || UserData.user_sub_menu_access[0]=="All"){%>
                         <li><a class="<%=NewPatient%>" href="/add-patient">Nouveau </a></li>
@@ -113,8 +118,12 @@ if (locals.page) {
                 <li class="submenu">
                     <a href="#"><i class="fa fa-flask"></i> <span> Examens </span> <span class="menu-arrow"></span></a>
                     <ul style="display: none;">
+                        <% if(UserData.user_sub_menu_access.includes("Ajouter examens") || UserData.user_sub_menu_access[0]=="All"){%>
                         <li><a class="<%=NewExam%>" href="/add-examens">Nouvel </a></li>
+                        <% } %>
+                        <% if(UserData.user_sub_menu_access.includes("Voir la liste des examens") || UserData.user_sub_menu_access[0]=="All"){%>
                         <li><a class="<%=ExamsList%>" href="/examens">Liste des examens</a></li>
+                        <% } %>
                     </ul>
                 </li>
                 <% } %>
@@ -125,11 +134,18 @@ if (locals.page) {
                     <a href="#"><i class="fa fa-list"></i> <span>Gestion de stock </span> <span
                             class="menu-arrow"></span></a>
                     <ul style="display: none;">
+                        <% if(UserData.user_sub_menu_access.includes("Ajouter Matériau") || UserData.user_sub_menu_access[0]=="All"){%>
                         <li><a class="<%=AddMateriau%>" href="/add-materiau">Nouveau Matériau </a></li>
+                        <% } %>
+                        <% if(UserData.user_sub_menu_access.includes("Lister les matériaux") || UserData.user_sub_menu_access[0]=="All"){%>
                         <li><a class="<%=ListMateriau%>" href="/materiaux">Liste des Matériaux</a></li>
+                        <% } %>
+                        <% if(UserData.user_sub_menu_access.includes("Inventaire") || UserData.user_sub_menu_access[0]=="All"){%>
                         <li><a class="<%=Inventaire%>" href="/inventaire">Inventaire </a></li>
+                        <% } %>
+                        <% if(UserData.user_sub_menu_access.includes("Mouvement de stock") || UserData.user_sub_menu_access[0]=="All"){%>
                         <li><a class="<%=StockMoving%>" href="/mv-stock">Mouvement de stock </a></li>
-
+                        <% } %>
                     </ul>
                 </li>
                 <% } %>
@@ -171,8 +187,8 @@ if (locals.page) {
             </div>
             <div class="modal-body text-center">
                 <form action="/search-patient" method="POST">
-                    <input name="liveSearch"  id="searchPatientInput" required autocomplete="off" spellcheck="false" type="text"
-                        placeholder="Rechercher un patient ..." class="form-control">
+                    <input name="liveSearch" id="searchPatientInput" required autocomplete="off" spellcheck="false"
+                        type="text" placeholder="Rechercher un patient ..." class="form-control">
                     <input type="hidden" name="PatientSelected" id="PatientSelected" value="-1">
                     <div class="m-t-10">
                         <ul id="ResultList"></ul>
@@ -197,7 +213,7 @@ if (locals.page) {
             </div>
             <div class="modal-body text-center">
                 <form id="dbBackupForm">
-                    <input name="backupPath" required  type="text" value="<%=backupPath%>" onfocus="select()"
+                    <input name="backupPath" required type="text" value="<%=backupPath%>" onfocus="select()"
                         placeholder="Lieu de sauvegarde ..." class="form-control">
                     <div id="sauvegardeNotify" class="m-t-20 text-center"></div>
                 </form>
