@@ -190,14 +190,19 @@ router.post('/desactivate-user', async (req, res) => {
 
 //================================================= NOTIFICATIONS ======================================================
 //INSERT NOTIFICATIONS
+router.post('/save-notification', async (req, res) => {
+    console.log(req.body);
+    let notifications = await settingsDB.saveNotification(req);
+    res.json(notifications);
+});
 //GET NOTIFICATIONS LIST
 router.get('/manage-notifications', async (req, res) => {
-    let data = await stockDB.listOfMateriaux("All");
+    let data = await settingsDB.notificationList();
     let UserList = await settingsDB.listOfAllUsers();
     let pageTitle = "Notifications ";
     params = {
         pageTitle: pageTitle,
-        data: data,
+        notifications: data,
         UserList : UserList,
         UserData: req.session.UserData,
         page: 'Notifications'

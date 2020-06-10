@@ -49,37 +49,30 @@
 							<table class="table table-border table-striped custom-table ">
 								<thead>
 									<tr>
-										<th>Examen</th>
-										<th>Type résultat</th>
+										<th>De</th>
+										<th>A</th>
+										<th>Type</th>
+										<th>Titre</th>
+										<th>Contenu</th>
+										<th>Publier</th>
+										<th>Date</th>
 										<th class="text-right">Actions</th>
 									</tr>
 								</thead>
 								<tbody id="table">
-									<% data.forEach((examen) => { %>
-									<tr id="row<%= examen.id %>">
-										<td>
-											<%= examen.nom_examen %>
-											<% if(examen.is_bilan){ %>
-											<a href="/add-test-parameters?exam=<%= examen.id %>"
-												title="Ajouter les paramètres"><i class="fa fa-plus-circle"></i>
-											</a>
-											<% } %>
-											<% if(examen.is_bilan == 0 && examen.type_resultat==1){ %>
-												<% if(UserData.user_sub_menu_access.includes("Ajouter valeurs normales") || UserData.user_sub_menu_access[0]=="All"){%>
-													<a href="#" title="Ajouter les valeurs normales"
-														onclick="addVN('<%= examen.id %>','<%= examen.nom_examen %>')"> | Valeurs Normales</i></a>
-												<% } %>
-											<% } %>
-										</td>
-										<td><%=TYPE_RESULTAT[examen.type_resultat] %></td>
+									<% notifications.forEach((notif) => { %>
+									<tr id="row<%= notif.id %>">
+										<td><%= notif.de %></td>
+										<td><%= notif.a %></td>
+										<td><%= notif.type_notif %></td>
+										<td><%= notif.titre %></td>
+										<td><%= notif.contenu.substring(0,20)+"..." %></td>
+										<td><%= notif.publier %></td>
+										<td><%= notif.date_notif %></td>
 										<td class="text-right">
-											<% if(UserData.user_sub_menu_access.includes("Détails Examens") || UserData.user_sub_menu_access[0]=="All"){%>
-											<a href="/exam-details?examId=<%= examen.id %>"><i
-													class="fa fa-file-archive-o m-r-5"></i> Détails</a>
-											<% } %>
-											<% if(UserData.user_sub_menu_access.includes("Modifier examens") || UserData.user_sub_menu_access[0]=="All"){%>
+											<% if(UserData.user_sub_menu_access.includes("Modifier notifs") || UserData.user_sub_menu_access[0]=="All"){%>
 											| <a href="#"
-												onclick="launchEditExamen('<%= examen.nom_examen %>','<%= examen.id %>','<%= examen.type_resultat %>','<%= examen.is_bilan %>')"><i
+												onclick="launchEditnotif('<%= notif.titre %>','<%= notif.id %>','<%= notif.contenu %>','<%= notif.publier %>')"><i
 													class="fa fa-pencil m-r-5"></i> Modifier</a>
 											<% } %>
 										</td>
@@ -105,7 +98,20 @@
                     </div>
                     <div class="modal-body">
                         <form id="sendNotificationForm">
-                            <input type="hidden" name="examID">
+							<input type="hidden" name="notificationID" id="notificationID">
+							<div class="row">
+                                <div class="col-lg-12">
+                                    <label>Type de notification</label>
+                                    <div class="form-group">
+                                        <select class="form-control m-r-5" name="TypeNotif">
+											<option value="warning" >Avertissement</option>
+											<option value="danger" >Alerte</option>
+											<option value="info" >Information</option>
+											<option value="success" >Succès</option>
+										</select>
+                                    </div>
+                                </div>
+                            </div>
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="form-inline">
@@ -132,13 +138,13 @@
                                 <div class="col-lg-12 m-t-10">
                                     <label>Message</label>
                                     <div class="form-group">
-                                       <textarea required class="form-control" name="Message" id="Message" cols="30" rows="10"></textarea>
+                                       <textarea required class="form-control" name="Message" id="Message" cols="30" rows="5"></textarea>
                                     </div>
                                 </div>
                             </div>
                             <div id="msgSaveNotif" class="m-t-10 text-center"></div>
                             <div class="m-t-20 align-content-center form-inline">
-                                <select class="form-control m-r-5" name="gender">
+                                <select class="form-control m-r-5" name="publier">
                                     <option value="1" >Publier</option>
                                     <option value="0" >Brouillon</option>
                                 </select>
@@ -183,11 +189,13 @@
 	<script src="assets/js/bootstrap-datetimepicker.min.js"></script>
 	<script src="assets/js/app.js"></script>
 	<script src="assets/js/my_js.js"></script>
+	<!-- FOOTER -->
+	<%- include("../parts/footer") -%>
 	<script>
 
 		$("#sendNotificationForm").submit(function (e) {
 			e.preventDefault();
-			//saveNotification();
+			saveNotification();
 		});
 		
 		saveNotification = function () {
@@ -196,9 +204,13 @@
 			$.post("/save-notification", formData, function (data) {
 				console.log(data);
 				if (data.success) { //Success 
-					$("#msgSaveNotif").html(data.success).fadeOut(5000);
+					//NOTIFY THE CHANGE
+					socket.emit('updateNotificationCount', 'New Notif!');
+					$("#msgSaveNotif").html(data.msg).fadeOut(5000,function(){
+						window.location.replace("/manage-notifications?ID="+data.id);
+					});
 				} else {
-					$("#msgSaveNotif").html(data.error);
+					$("#msgSaveNotif").html(data.msg);
 				}
 			});
 		}
@@ -216,19 +228,18 @@
 			$.post("/edit-exam", formData, function (data) {
 				console.log(data);
 				if (data.success) { //Success 
-					let id = $("#ExamenId").val();
-					$("#Editnotify").html(data.msg).fadeOut(5000, () => {
-						window.location.replace("/exam-details?examId="+id);
+					let id = $("#notificationID").val();
+					
+					$("#msgSaveNotif").html(data.msg).fadeOut(5000, () => {
+						//window.location.replace("/manage-notifications?ID="+id);
 					});
 				} else {
-					$("#Editnotify").html(data.msg);
+					$("#msgSaveNotif").html(data.msg);
 				}
 			});
 		}
 
 	</script>
-	<!-- FOOTER -->
-	<%- include("../parts/footer") -%>
 </body>
 
 

@@ -93,7 +93,6 @@ app.post('/change-pwd', async (req, res) => {
     res.json(notifications);
 });
 
-
 app.post('/login', async (req, res) => {
     let user_name = req.body.username;
     let pass_word = req.body.password;
@@ -265,10 +264,11 @@ cron.schedule("0 17 * * 1-6", async function () {
 
 //GET NOTIFICATIONS
 app.get('/notifications', async (req, res) => {
-    let stockCritic = await stockDB.listOfAllExpiredStock("All");
+    let myNotifications = await stats.userNotificationList(req.session.username);
     let pageTitle = "Liste des notifications";
     params={
         UserData: req.session.UserData,
+        notifications : myNotifications,
         page: 'Home',
         pageTitle : pageTitle,
     }
@@ -294,6 +294,19 @@ io.on('connection', async function(socket){
     setTimeout( async() => {
         await stats.updateNbStockRequest(io);
     }, 60000);
+
+    //UPDATE THE NUMBER OF STOCK REQUESTS MADE BY USERS EVERY 60 SECS
+    // setTimeout( async() => {
+    //     await stats.updateNbNotifications(io);
+    // }, 5000);
+
+    //UPDATE THE NUMBER OF STOCK REQUESTS MADE BY USERS WHEN A REQUEST IS MADE
+    socket.on('updateNotificationCount',async function(msg){
+        await stats.updateNbNotifications(io);
+        console.log(msg);
+    });
+
+    
 
   });
 

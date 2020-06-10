@@ -22,14 +22,18 @@
 <script src="/socket.io/socket.io.js"></script>
 <script>
         var socket = io();
-        $('form').submit(function(){
-          socket.emit('updateNbRequestsStock', $('#m').val());
-          $('#m').val('');
-          return false;
-        });
+        
         socket.on('updateNbRequestsStock', function(data){
           $('#NbRequest').html(data.nb);
           //$.notify(appName);
           //window.scrollTo(0, document.body.scrollHeight);
         });
+
+        socket.on('updateNotificationCount', function(data){
+          $('#NotificationCount').html(data.nb);
+          $.notify("Vous avez une nouvelle notification");
+          //window.scrollTo(0, document.body.scrollHeight);
+        });
+
+        
 </script>

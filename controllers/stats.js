@@ -128,7 +128,7 @@ var self = module.exports = {
         return info.length;
     },
 
-   
+
     //============================================ APP SETTINGS ========================================
     //SAVE OR UPDATE SETTINGS
     saveSettings: async function (req) {
@@ -187,7 +187,7 @@ var self = module.exports = {
                     throw err;
                 } else {
                     global.ENT_NAME = entreprise_name;
-                    resolve({success : "Modification effectuée avec succès.."});
+                    resolve({ success: "Modification effectuée avec succès.." });
                 }
             });
         });
@@ -211,22 +211,22 @@ var self = module.exports = {
         //console.log(data); 
         return data;
     },
-        //update settings
-        updateLogoMenu: async function (logo) {
-            let promise = new Promise((resolve, reject) => {
-                let sql = "UPDATE tb_app_settings SET logo_menu='" + logo + "' WHERE labo=1 ";
-                con.query(sql, function (err, rows) {
-                    if (err) {
-                        throw err;
-                    } else {
-                        resolve(rows[0]);
-                    }
-                });
+    //update settings
+    updateLogoMenu: async function (logo) {
+        let promise = new Promise((resolve, reject) => {
+            let sql = "UPDATE tb_app_settings SET logo_menu='" + logo + "' WHERE labo=1 ";
+            con.query(sql, function (err, rows) {
+                if (err) {
+                    throw err;
+                } else {
+                    resolve(rows[0]);
+                }
             });
-            data = await promise;
-            //console.log(data); 
-            return data;
-        },
+        });
+        data = await promise;
+        //console.log(data); 
+        return data;
+    },
     //Get settings
     getSettings: async function () {
         let promise = new Promise((resolve, reject) => {
@@ -246,37 +246,78 @@ var self = module.exports = {
     //============================================== NOTIFICATIONS =============================================
     saveNotification: async function (req) {
         let promise = new Promise((resolve, reject) => {
-            let nom_examen = req.body.nomExamen;
-            let type_examen = req.body.typeResultat;
-            let ifbilan = req.body.ifbilan;
+            let from = req.session.username;
+            let to = req.body.users;
+            if (to[0] == "All") {
+                to = ['All'];
+            } else {
+                to = to.join("|");
+            }
+            let type_notif = req.body.TypeNotif;
+            let subject = req.body.subject;
+            let message = req.body.Message;
+            message = message.replace('"','\"');
+            let publier = req.body.publier;
             let sql =
-                'INSERT INTO tb_notifications (de,a,type_notif,contenu,) VALUES ("' + nom_examen + '","' + type_examen + '","' + ifbilan + '")';
+                'INSERT INTO tb_notifications (de,a,type_notif,titre,contenu,publier) VALUES ("' + from + '","' + to + '","' + type_notif + '","' + subject + '","' + message + '",' + publier + ')';
             con.query(sql, function (err, result) {
                 if (err) {
                     msg = {
                         type: "danger",
                         error: true,
-                        msg:
-                            " Vous avez déja ajouté " + nom_examen + " ",
+                        msg: " Une erreur est survenue. Réessayez s'il vous plait!",
                         debug: err
                     };
                 } else {
                     msg = {
+                        success: true,
                         type: "success",
-                        msg:
-                            nom_examen + " enregistré avec succès.",
+                        msg: "Notification enregistrée avec succès.",
+                        id : result.insertId,
                     };
                 }
 
                 resolve(msg);
-               // console.log(msg);
+                console.log(msg);
             });
         });
         rep = await promise;
         return rep;
     },
-      //Nombre de materiaux
-      StockRequestCount: async function () {
+    //LISTE DES NOTIFICATIONS
+    notificationList: async function () {
+        let promise = new Promise((resolve, reject) => {
+            let sql = "SELECT * FROM tb_notifications ORDER BY id DESC";
+            con.query(sql, function (err, rows) {
+                if (err) {
+                    throw err;
+                } else {
+                    resolve(rows);
+                }
+            });
+        });
+        data = await promise;
+        //console.log(data); 
+        return data;
+    },
+     //LISTE DES NOTIFICATIONS UTILISATEURS
+     userNotificationList: async function (user) {
+        let promise = new Promise((resolve, reject) => {
+            let sql = "SELECT * FROM `tb_notifications` WHERE a LIKE '%"+user+"%' OR a='All' ORDER BY id DESC";
+            con.query(sql, function (err, rows) {
+                if (err) {
+                    throw err;
+                } else {
+                    resolve(rows);
+                }
+            });
+        });
+        data = await promise;
+        //console.log(data); 
+        return data;
+    },
+    //Nombre de requete relatif au changement du stock
+    StockRequestCount: async function () {
         let promise = new Promise((resolve, reject) => {
             let sql = "";
             sql = "SELECT COUNT(id) as nb_test FROM tb_evolution_stock WHERE approved=0";
@@ -294,14 +335,20 @@ var self = module.exports = {
         //console.log(data);
         return data;
     },
-  async  updateNbStockRequest(io){
-        let nbRequest = await self.StockRequestCount ();
-        let reqtext ='<i class="fa fa-comments"></i>  <span>Demandes</span> ';
-        if(nbRequest > 0 ){
-            reqtext = '<i class="fa fa-comments"></i>  <span>Demandes</span> <span class="badge badge-pill bg-primary float-right">'+nbRequest+'</span>' 
+    async  updateNbStockRequest(io) {
+        let nbRequest = await self.StockRequestCount();
+        let reqtext = '<i class="fa fa-comments"></i>  <span>Demandes</span> ';
+        if (nbRequest > 0) {
+            reqtext = '<i class="fa fa-comments"></i>  <span>Demandes</span> <span class="badge badge-pill bg-primary float-right">' + nbRequest + '</span>'
         }
         //console.log(reqtext);
-        io.emit('updateNbRequestsStock', {nb :reqtext });
+        io.emit('updateNbRequestsStock', { nb: reqtext });
+    },
+    async  updateNbNotifications(io) {
+        let nbRequest = 1; //await self.StockRequestCount();
+        let reqtext = '<i class="fa fa-comment-o"></i> <span class="badge badge-pill bg-danger float-right">'+nbRequest+'</span> ';
+        //console.log(reqtext);
+        io.emit('updateNotificationCount', { nb: reqtext });
     },
     //============================================= USERS ========================================
 
@@ -506,7 +553,7 @@ var self = module.exports = {
                 }
 
                 resolve(msg);
-               // console.log(msg);
+                // console.log(msg);
             });
         });
         rep = await promise;
