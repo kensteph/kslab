@@ -243,6 +243,8 @@
         $("#addRemoveStockForm").submit(function (e) {
             e.preventDefault();
             addorRemoveStock();
+            //NOTIFY THE CHANGE
+            socket.emit('test', 'New Request!');
         });
         function launchStockManagement(matName, matId, lot) {
             $("#btnAddOrRemove").prop("disabled", false);

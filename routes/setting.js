@@ -191,10 +191,18 @@ router.post('/desactivate-user', async (req, res) => {
 //================================================= NOTIFICATIONS ======================================================
 //INSERT NOTIFICATIONS
 //GET NOTIFICATIONS LIST
-router.get('/notifications-list', async (req, res) => {
+router.get('/manage-notifications', async (req, res) => {
+    let data = await stockDB.listOfMateriaux("All");
+    let UserList = await settingsDB.listOfAllUsers();
     let pageTitle = "Notifications ";
-    let stockCritic = await stockDB.listOfAllExpiredStock();
-    res.render('setting/notifications', { page: 'GeneralSettings', pageTitle: pageTitle });
+    params = {
+        pageTitle: pageTitle,
+        data: data,
+        UserList : UserList,
+        UserData: req.session.UserData,
+        page: 'Notifications'
+    };
+    res.render('setting/manage-notifications',params);
 });
 
 //================================================ BACKUP DB =================================================

@@ -34,42 +34,42 @@ var self = module.exports = {
         return rep;
     },
 
-        //Save Modalites paiement
-        editExam: async function (req) {
-            let promise = new Promise((resolve, reject) => {
-                let examen = req.body.examen;
-                let examenID = req.body.examenID;
-                let type_resultat = req.body.typeResultat;
-                let is_bilan = req.body.is_bilan;
-                
-                let sql =
-                    'UPDATE tb_examens SET nom_examen="' + examen + '", type_resultat =' + type_resultat + ', is_bilan=' + is_bilan +' WHERE id=?';
-               // console.log(sql);
-                con.query(sql,examenID, function (err, result) {
-                    if (err) {
-                        msg = {
-                            type: "danger",
-                            msg:
-                                "<font color='red'><strong>Vous avez déja attribué ces paramètres.</strong></font>",
-                            debug: err
-                        };
-                    } else {
-                        msg = {
-                            type: "success",
-                            success: true,
-                            msg:
-                                "<font color='green'><strong> "+examen+" modifié avec succès...</strong></font>",
-                            nb_success: result.affectedRows,
-                        };
-                    }
-    
-                    resolve(msg);
-                    //console.log(msg);
-                });
+    //Save Modalites paiement
+    editExam: async function (req) {
+        let promise = new Promise((resolve, reject) => {
+            let examen = req.body.examen;
+            let examenID = req.body.examenID;
+            let type_resultat = req.body.typeResultat;
+            let is_bilan = req.body.is_bilan;
+
+            let sql =
+                'UPDATE tb_examens SET nom_examen="' + examen + '", type_resultat =' + type_resultat + ', is_bilan=' + is_bilan + ' WHERE id=?';
+            // console.log(sql);
+            con.query(sql, examenID, function (err, result) {
+                if (err) {
+                    msg = {
+                        type: "danger",
+                        msg:
+                            "<font color='red'><strong>Vous avez déja attribué ces paramètres.</strong></font>",
+                        debug: err
+                    };
+                } else {
+                    msg = {
+                        type: "success",
+                        success: true,
+                        msg:
+                            "<font color='green'><strong> " + examen + " modifié avec succès...</strong></font>",
+                        nb_success: result.affectedRows,
+                    };
+                }
+
+                resolve(msg);
+                //console.log(msg);
             });
-            rep = await promise;
-            return rep;
-        },
+        });
+        rep = await promise;
+        return rep;
+    },
 
     //Load All The Courses Categories
     listOfExams: async function () {
@@ -181,12 +181,12 @@ var self = module.exports = {
         let itemName = req.body.itemName;
         let action = req.body.action;
         let promise = new Promise((resolve, reject) => {
-            let sql ="";
-            if(action == "P"){
+            let sql = "";
+            if (action == "P") {
                 sql = "DELETE FROM tb_parametres_examens  WHERE id_examen =" + examID + " AND id_param_exam=" + itemID;
-            }else if(action == "VN"){
-                sql = "DELETE FROM tb_valeurs_normales  WHERE exam_id =" + examID ;
-            }else{
+            } else if (action == "VN") {
+                sql = "DELETE FROM tb_valeurs_normales  WHERE exam_id =" + examID;
+            } else {
                 sql = "DELETE FROM tb_link_materiau_test  WHERE test_id =" + examID + " AND materiau=" + itemID;
             }
             //console.log(sql);
@@ -199,7 +199,7 @@ var self = module.exports = {
                     });
                 } else {
                     resolve({
-                        msg:  itemName + " supprimé avec succès.",
+                        msg: itemName + " supprimé avec succès.",
                         success: "success"
                     });
                 }
@@ -249,7 +249,7 @@ var self = module.exports = {
     countSavedResultsForATestRequest: async function (test_request_id) {
         let promise = new Promise((resolve, reject) => {
             let sql = "SELECT COUNT(examen_id) as nb_resultat_saved FROM tb_resultats WHERE test_request_id = ? ";
-            console.log(sql+" ID : "+test_request_id);
+            console.log(sql + " ID : " + test_request_id);
             con.query(sql, test_request_id, function (err, rows) {
                 if (err) {
                     //throw err;
@@ -344,62 +344,62 @@ var self = module.exports = {
     //Save Single Test Result
     saveSingleTestResult: async function (test_request_id, examen_id, resultat) {
         let promise = new Promise((resolve, reject) => {
-                let sql =
-                    'INSERT INTO tb_resultats (test_request_id,examen_id,resultat) VALUES ('+test_request_id+','+examen_id+',"'+resultat+'")';
-                con.query(sql,async function (err, result) {
-                    if (err) {
-                        msg = {
-                            type: "danger",
-                            msg:
-                                "<font color='red'><strong>Vous avez déja  enregistré ces résultats.</strong></font>",
-                            debug: err
-                        };
-                    }else{
-                        msg = {
-                            type: "success",
-                            success: true,
-                            msg:
-                                "<font color='green'><strong>Résultat enregistré avec succès...</strong></font>",
-                        };
-                    }
+            let sql =
+                'INSERT INTO tb_resultats (test_request_id,examen_id,resultat) VALUES (' + test_request_id + ',' + examen_id + ',"' + resultat + '")';
+            con.query(sql, async function (err, result) {
+                if (err) {
+                    msg = {
+                        type: "danger",
+                        msg:
+                            "<font color='red'><strong>Vous avez déja  enregistré ces résultats.</strong></font>",
+                        debug: err
+                    };
+                } else {
+                    msg = {
+                        type: "success",
+                        success: true,
+                        msg:
+                            "<font color='green'><strong>Résultat enregistré avec succès...</strong></font>",
+                    };
+                }
 
-                    resolve(msg);
-                    //console.log("SINGLE SAVE : "+err);
-                });
+                resolve(msg);
+                //console.log("SINGLE SAVE : "+err);
+            });
         });
         rep = await promise;
         return rep;
     },
 
-      //Save Test Result
-      editTestResult: async function (req) {
-          let msg = {msg : "NO ACTION"};
-            if (req.body.test) {
-                //BULK INSERT
-                let test_request_id = req.body.testRequestId;
-                let tests_id = req.body.test;
-                let testResults = req.body.resultat;
-                let pos = 0;
-                for (item of testResults) {
-                    let resultat = testResults[pos];
-                    let examen_id = tests_id[pos];
-                    await self.editSingleTestResult(test_request_id,examen_id,resultat);
-                    pos++;
-                }
-                msg = {
-                    type: "success",
-                    success: true,
-                    msg:
-                        "<font color='green'><strong>Résultat(s) modifié(s) avec succès...</strong></font>",
-                };
-                
-            } else {
-                msg = {
-                    type: "danger",
-                    msg:
-                        "<font color='red'><strong>Vous devez choisir des paramètres.</strong></font>",
-                };
+    //Save Test Result
+    editTestResult: async function (req) {
+        let msg = { msg: "NO ACTION" };
+        if (req.body.test) {
+            //BULK INSERT
+            let test_request_id = req.body.testRequestId;
+            let tests_id = req.body.test;
+            let testResults = req.body.resultat;
+            let pos = 0;
+            for (item of testResults) {
+                let resultat = testResults[pos];
+                let examen_id = tests_id[pos];
+                await self.editSingleTestResult(test_request_id, examen_id, resultat);
+                pos++;
             }
+            msg = {
+                type: "success",
+                success: true,
+                msg:
+                    "<font color='green'><strong>Résultat(s) modifié(s) avec succès...</strong></font>",
+            };
+
+        } else {
+            msg = {
+                type: "danger",
+                msg:
+                    "<font color='red'><strong>Vous devez choisir des paramètres.</strong></font>",
+            };
+        }
         return msg;
     },
 
@@ -408,7 +408,7 @@ var self = module.exports = {
         let promise = new Promise((resolve, reject) => {
             let sql =
                 'UPDATE tb_resultats SET resultat="' + resultat + '" WHERE test_request_id =' + test_request_id + ' AND  examen_id=' + examen_id + ' ';
-         //console.log(sql);
+            //console.log(sql);
             con.query(sql, async function (err, result) {
                 if (err) {
                     msg = {
@@ -419,7 +419,7 @@ var self = module.exports = {
                     };
                 } else {
                     let nb_success = result.affectedRows;
-                    if(nb_success == 0){ //Enregistrer le nouveau test
+                    if (nb_success == 0) { //Enregistrer le nouveau test
                         console.log("SAve the test...");
                         await self.saveSingleTestResult(test_request_id, examen_id, resultat);
                     }
@@ -482,7 +482,7 @@ var self = module.exports = {
                 }
 
                 resolve(msg);
-               // console.log(msg);
+                // console.log(msg);
             });
         });
         rep = await promise;
@@ -497,7 +497,7 @@ var self = module.exports = {
             con.query(sql, id, function (err, rows) {
                 if (err) {
                     //throw err;
-                    resolve([{ realiser_par : "" }]);
+                    resolve([{ realiser_par: "" }]);
                 } else {
                     resolve(rows[0]);
                 }
@@ -507,71 +507,71 @@ var self = module.exports = {
         //console.log(data);
         return data;
     },
-  //DELETE TEST REQUEST 
-  async deleteTestRequest(item,test_request_id,user) {
-    let promise = new Promise((resolve, reject) => {
-        //   /* Begin transaction */
-        con.beginTransaction(function (err) {
-            if (err) { throw err; }
-           let numero_lot = item.lot;
-           let materiauId  = item.materiau;
-           let materiauName = item.nom_materiau;
-           let transactionType= "add";
-           let qte = item.qte;
-           let commentaire=qte+" "+materiauName+" ajouté(s) au lot " + numero_lot+" | Suppression Test numéro "+test_request_id;
-           console.log(commentaire);
-            //Insert info into tb_evolution_stock table
-            let sql = 'INSERT INTO tb_evolution_stock (lot,materiau,qte,transaction,commentaire,acteur,test) VALUES ("' + numero_lot + '","' + materiauId + '","' + qte + '","' + transactionType + '","' + commentaire + '","' + user + '",' + test_request_id + ')';
+    //DELETE TEST REQUEST 
+    async deleteTestRequest(item, test_request_id, user) {
+        let promise = new Promise((resolve, reject) => {
+            //   /* Begin transaction */
+            con.beginTransaction(function (err) {
+                if (err) { throw err; }
+                let numero_lot = item.lot;
+                let materiauId = item.materiau;
+                let materiauName = item.nom_materiau;
+                let transactionType = "add";
+                let qte = item.qte;
+                let commentaire = qte + " " + materiauName + " ajouté(s) au lot " + numero_lot + " | Suppression Test numéro " + test_request_id;
+                console.log(commentaire);
+                //Insert info into tb_evolution_stock table
+                let sql = 'INSERT INTO tb_evolution_stock (lot,materiau,qte,transaction,commentaire,acteur,test) VALUES ("' + numero_lot + '","' + materiauId + '","' + qte + '","' + transactionType + '","' + commentaire + '","' + user + '",' + test_request_id + ')';
 
-            con.query(sql, function (err, result) {
-                if (err) {
-                    console.log(err);
-                    con.rollback(function () {
-                        throw err;
-                    });
-                }
-                sql2 = "UPDATE  tb_stocks SET qte_restante = qte_restante + " + qte + " WHERE numero_lot= ? AND materiau =?";
-                let param = [numero_lot, materiauId];
-                con.query(sql2, param, function (err, result) {
+                con.query(sql, function (err, result) {
                     if (err) {
                         console.log(err);
                         con.rollback(function () {
                             throw err;
                         });
                     }
-                    //COMMIT IF ALL DONE COMPLETELY
-                    con.commit(function (err) {
+                    sql2 = "UPDATE  tb_stocks SET qte_restante = qte_restante + " + qte + " WHERE numero_lot= ? AND materiau =?";
+                    let param = [numero_lot, materiauId];
+                    con.query(sql2, param, function (err, result) {
                         if (err) {
+                            console.log(err);
                             con.rollback(function () {
-                                msg = {
-                                    type: "danger",
-                                    error: true,
-                                    msg: "<font color='red'>Une erreur est survenue</font>",
-                                    debug: err
-                                }
-                                resolve(msg);
                                 throw err;
-
                             });
                         }
-                        msg = {
-                            type: "success",
-                            success: true,
-                            msg: "<font color='green'>" + commentaire +" avec succès...</font>"
-                        }
-                        resolve(msg);
+                        //COMMIT IF ALL DONE COMPLETELY
+                        con.commit(function (err) {
+                            if (err) {
+                                con.rollback(function () {
+                                    msg = {
+                                        type: "danger",
+                                        error: true,
+                                        msg: "<font color='red'>Une erreur est survenue</font>",
+                                        debug: err
+                                    }
+                                    resolve(msg);
+                                    throw err;
+
+                                });
+                            }
+                            msg = {
+                                type: "success",
+                                success: true,
+                                msg: "<font color='green'>" + commentaire + " avec succès...</font>"
+                            }
+                            resolve(msg);
+                        });
+
                     });
-
                 });
-            });
 
-        
-                                
+
+
+            });
+            /* End transaction */
         });
-        /* End transaction */
-    });
-    data = await promise;
-    //console.log(data); 
-    return data;
-},
+        data = await promise;
+        //console.log(data); 
+        return data;
+    },
 }

@@ -22,7 +22,10 @@ if (locals.page) {
 
     Administration = "";
     User = "";
+    Notifications = "";
     backUpDB = "";
+
+
     switch (page) {
        case 'Home' :         Home = "active";
                              break;
@@ -53,7 +56,9 @@ if (locals.page) {
        case 'GeneralSettings' : GeneralSettings = "active";
                              break;  
        case 'Administration' : Administration = "active";
-                             break;                       
+                             break;
+       case 'Notifications' : Notifications = "active";
+                             break;               
        case 'User'           : User = "active"  ;
                              break;  
        case 'backUpDB'           : backUpDB = "active"  ;
@@ -74,7 +79,7 @@ if (locals.page) {
                 <% } %>
                 <!-- MESSAGERIE -->
                 <li>
-                    <a href="/requests?statut=0"><i class="fa fa-comments"></i> <span>Demandes</span> <span class="badge badge-pill bg-primary float-right">5</span></a>
+                    <a id="NbRequest" href="/requests?statut=0"><i class="fa fa-comments"></i> <span>Demandes</span>  <span class="badge badge-pill bg-primary float-right">0</span> </a>
                 </li>
                 <!-- TEST LABORATOIRE -->
                 <% if(UserData.user_menu_access.includes("Test Patient") || UserData.user_menu_access[0]=="All"){%>
@@ -166,6 +171,7 @@ if (locals.page) {
                     <a href="#"><i class="fa fa-folder-open"></i> <span>Administration </span> <span
                             class="menu-arrow"></span></a>
                     <ul style="display: none;">
+                        <li><a class="<%=Notifications%>" href="/manage-notifications">Notifications</a></li>
                         <li><a class="<%=Administration%>" href="/lab-tests-report">Rapport des Tests</a></li>
                         <li><a class="<%=User%>" href="/users">Utilisateurs</a></li>
                         <li><a class="<%=backUpDB%>" href="#" data-toggle="modal" data-target="#BackupDB"

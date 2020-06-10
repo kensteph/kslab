@@ -128,7 +128,7 @@ var self = module.exports = {
         return info.length;
     },
 
-
+   
     //============================================ APP SETTINGS ========================================
     //SAVE OR UPDATE SETTINGS
     saveSettings: async function (req) {
@@ -274,6 +274,34 @@ var self = module.exports = {
         });
         rep = await promise;
         return rep;
+    },
+      //Nombre de materiaux
+      StockRequestCount: async function () {
+        let promise = new Promise((resolve, reject) => {
+            let sql = "";
+            sql = "SELECT COUNT(id) as nb_test FROM tb_evolution_stock WHERE approved=0";
+            //console.log(sql+" ID : "+id_personne);
+            con.query(sql, function (err, rows) {
+                if (err) {
+                    //throw err;
+                    resolve(0);
+                } else {
+                    resolve(rows[0].nb_test);
+                }
+            });
+        });
+        data = await promise;
+        //console.log(data);
+        return data;
+    },
+  async  updateNbStockRequest(io){
+        let nbRequest = await self.StockRequestCount ();
+        let reqtext ='<i class="fa fa-comments"></i>  <span>Demandes</span> ';
+        if(nbRequest > 0 ){
+            reqtext = '<i class="fa fa-comments"></i>  <span>Demandes</span> <span class="badge badge-pill bg-primary float-right">'+nbRequest+'</span>' 
+        }
+        //console.log(reqtext);
+        io.emit('updateNbRequestsStock', {nb :reqtext });
     },
     //============================================= USERS ========================================
 

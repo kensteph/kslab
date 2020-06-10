@@ -27,44 +27,61 @@
         <div class="page-wrapper">
             <div class="content">
                 <div class="row">
-                    <div class="col-sm-12">
-                        <h4 class="page-title">Notifications</h4>
+                    <div class="col-sm-4 col-3">
+                        <h4 class="page-title"> <i class="fa fa-bell fa-2x"></i> <%=pageTitle%> </h4>
+                    </div>
+                    
+                    <div class="col-sm-8 col-9 text-right m-b-20">
+                        <% if(UserData.user_sub_menu_access.includes("Ajouter Matériau") || UserData.user_sub_menu_access[0]=="All"){%>
+                        <a href="/add-materiau" class="btn btn btn-primary btn-rounded float-right"><i
+                                class="fa fa-plus"></i> Ajouter Matériau</a>
+                       <% } %>
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-md-12">
-                        <div class="activity">
-                            <div class="activity-box">
-                                <ul class="activity-list">
-                                    <li>
-                                        <div class="activity-user">
-                                            <a href="profile.html" title="Lesley Grauer" data-toggle="tooltip" class="avatar">
-                                                <img alt="Lesley Grauer" src="assets/img/user.jpg" class="img-fluid rounded-circle">
-                                            </a>
-                                        </div>
-                                        <div class="activity-content">
-                                            <div class="timeline-content">
-                                                <a href="profile.html" class="name">Lesley Grauer</a> added new task <a href="#">Hospital Administration</a>
-                                                <span class="time">4 mins ago</span>
-                                            </div>
-                                        </div>
-										<a class="activity-delete" href="#" title="Delete">&times;</a>
-                                    </li>
-
-                                </ul>
-                            </div>
+                    <div class="col-lg-12">
+                        <div class="card-box">
+                            <h4 class="card-title">Tableau d'affichage</h4>
+							<div class="alert alert-warning alert-dismissible fade show" role="alert">
+                                <strong>Warning!</strong><br> There was a problem with your <a href="#" class="alert-link">network connection</a>.
+                                Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum
+								<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+									<span aria-hidden="true">×</span>
+								</button>
+							</div>
+							<div class="alert alert-danger alert-dismissible fade show" role="alert">
+								<strong>Error!</strong> A <a href="#" class="alert-link">problem</a> has been occurred while submitting your data.
+								<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+									<span aria-hidden="true">×</span>
+								</button>
+							</div>
+							<div class="alert alert-success alert-dismissible fade show" role="alert">
+								<strong>Success!</strong> Your <a href="#" class="alert-link">message</a> has been sent successfully.
+								<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+									<span aria-hidden="true">×</span>
+								</button>
+							</div>
+							<div class="alert alert-info alert-dismissible fade show" role="alert">
+								<strong>Note!</strong> Please read the <a href="#" class="alert-link">comments</a> carefully.
+								<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+									<span aria-hidden="true">×</span>
+								</button>
+							</div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+    
     <div class="sidebar-overlay" data-reff=""></div>
     <script src="assets/js/jquery-3.2.1.min.js"></script>
 	<script src="assets/js/popper.min.js"></script>
     <script src="assets/js/bootstrap.min.js"></script>
     <script src="assets/js/jquery.slimscroll.js"></script>
     <script src="assets/js/app.js"></script>
+    <!-- FOOTER -->
+    <%- include("../parts/footer") -%>
 </body>
 
 

@@ -196,7 +196,7 @@ router.post('/add-stock', async (req, res) => {
 
 //ADD OR REMOVE ITEMS STOCK
 router.post('/add-remove-stock', async (req, res) => {
-    console.log(req.body);
+    //console.log(req.body);
     let numero_lot = req.body.lot;
     let materiauId = req.body.materiauId;
     let materiauName = req.body.materiauName;

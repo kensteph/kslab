@@ -1,31 +1,35 @@
 <script src="assets/js/my_js.js"></script>
-<script src="assets/js/socket.io.js"></script>
 
 <script>
-    function selectPatient(patientID,patient){
+    function selectPatient(patientID, patient) {
         $("#PatientSelected").val(patientID);
         $("#searchPatientInput").val(patient);
         $("#ResultList").html("");
     }
 
-    function dbBackUp(){
+    function dbBackUp() {
         let formData = $("#dbBackupForm").serialize();
-            $.post("/backup-db", formData, function (data) {
-                if (data.success) { //Success 
-                    $("#sauvegardeNotify").html(data.msg)
-                } else { 
-                    $("#sauvegardeNotify").html(data.msg)
-                }
-            });
+        $.post("/backup-db", formData, function (data) {
+            if (data.success) { //Success 
+                $("#sauvegardeNotify").html(data.msg)
+            } else {
+                $("#sauvegardeNotify").html(data.msg)
+            }
+        });
     }
-
-    //make connection
-    var socket = io.connect("http://localhost:8788");
-    //UI
-    //var notify = $("#notifications");
-    socket.on("messageSent", function (message) {
-        //notify.append("<li>Message</li>");
-        Console.log("sms......");
-    });
-
+</script>
+<script src="assets/js/notify.min.js"></script>
+<script src="/socket.io/socket.io.js"></script>
+<script>
+        var socket = io();
+        $('form').submit(function(){
+          socket.emit('updateNbRequestsStock', $('#m').val());
+          $('#m').val('');
+          return false;
+        });
+        socket.on('updateNbRequestsStock', function(data){
+          $('#NbRequest').html(data.nb);
+          //$.notify(appName);
+          //window.scrollTo(0, document.body.scrollHeight);
+        });
 </script>

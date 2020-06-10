@@ -653,7 +653,7 @@ var self = module.exports = {
         //console.log(data);
         return data;
     },
-    //Mouvement de stock IN and OUT
+    //Requests to remove item from stock
     stockRequestByUsers: async function (dateFrom, dateTo, statut) {
         let promise = new Promise((resolve, reject) => {
             let sql = "";
@@ -667,7 +667,7 @@ var self = module.exports = {
                     sql = "SELECT *,tb_evolution_stock.id as request_id FROM tb_evolution_stock,tb_materiaux WHERE tb_evolution_stock.materiau=tb_materiaux.id AND DATE(date_record) BETWEEN '" + dateFrom + "' AND '" + dateTo + "' AND approved=" + statut + " ORDER BY date_record";
                 }
             }
-            console.log(sql);
+            //console.log(sql);
             con.query(sql, function (err, rows) {
                 if (err) {
                     throw err;
@@ -677,7 +677,7 @@ var self = module.exports = {
             });
         });
         data = await promise;
-        console.log(data);
+        //console.log(data);
         return data;
     },
     //LINK TEST TO MATERIAU
@@ -822,7 +822,7 @@ var self = module.exports = {
     listeMateriauxForTestRequest: async function (request_id) {
         let promise = new Promise((resolve, reject) => {
             let sql ="SELECT *FROM tb_evolution_stock,tb_materiaux WHERE tb_evolution_stock.materiau=tb_materiaux.id AND transaction='substract' AND test=" + request_id;
-            console.log(sql);
+            //console.log(sql);
             con.query(sql, function (err, rows) {
                 if (err) {
                     throw err;

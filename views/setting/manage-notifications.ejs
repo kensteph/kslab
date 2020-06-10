@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+
+
+<!-- patients23:17-->
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
+	<link rel="shortcut icon" type="image/x-icon" href="assets/img/favicon.ico">
+	<title><%=appName%>| <%=pageTitle%></title>
+	<link rel="stylesheet" type="text/css" href="assets/css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="assets/css/font-awesome.min.css">
+	<link rel="stylesheet" type="text/css" href="assets/css/select2.min.css">
+	<link rel="stylesheet" type="text/css" href="assets/css/dataTables.bootstrap4.min.css">
+	<link rel="stylesheet" type="text/css" href="assets/css/bootstrap-datetimepicker.min.css">
+	<link rel="stylesheet" type="text/css" href="assets/css/style.css">
+	<!--[if lt IE 9]>
+		<script src="assets/js/html5shiv.min.js"></script>
+		<script src="assets/js/respond.min.js"></script>
+	<![endif]-->
+</head>
+
+<body>
+	<div class="main-wrapper">
+		<!-- HEADER -->
+		<%- include("../parts/header") -%>
+		<!-- SIDEBAR -->
+		<%- include("../parts/sidebar") -%>
+
+		<div class="page-wrapper">
+			<div class="content">
+				<div class="row">
+					<div class="col-sm-4 col-3">
+						<h4 class="page-title"> <i class="fa fa-bell-o fa-2x"></i> <%=pageTitle%> </h4>
+					</div>
+					<div class="col-sm-8 col-9 text-right m-b-20">
+						<a href="#" data-toggle="modal" data-target="#NewNotification" class="btn btn btn-primary btn-rounded float-right"><i
+								class="fa fa-plus"></i> Nouvelle notification</a>
+					</div>
+					<div class="col-3-xxxl col-xl-3 col-lg-3 col-3 form-group">
+						<input autocomplete="off" type="text" id="search" class="form-control"
+							placeholder="Rechercher...">
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-12">
+						<div class="table-responsive">
+							<table class="table table-border table-striped custom-table ">
+								<thead>
+									<tr>
+										<th>Examen</th>
+										<th>Type résultat</th>
+										<th class="text-right">Actions</th>
+									</tr>
+								</thead>
+								<tbody id="table">
+									<% data.forEach((examen) => { %>
+									<tr id="row<%= examen.id %>">
+										<td>
+											<%= examen.nom_examen %>
+											<% if(examen.is_bilan){ %>
+											<a href="/add-test-parameters?exam=<%= examen.id %>"
+												title="Ajouter les paramètres"><i class="fa fa-plus-circle"></i>
+											</a>
+											<% } %>
+											<% if(examen.is_bilan == 0 && examen.type_resultat==1){ %>
+												<% if(UserData.user_sub_menu_access.includes("Ajouter valeurs normales") || UserData.user_sub_menu_access[0]=="All"){%>
+													<a href="#" title="Ajouter les valeurs normales"
+														onclick="addVN('<%= examen.id %>','<%= examen.nom_examen %>')"> | Valeurs Normales</i></a>
+												<% } %>
+											<% } %>
+										</td>
+										<td><%=TYPE_RESULTAT[examen.type_resultat] %></td>
+										<td class="text-right">
+											<% if(UserData.user_sub_menu_access.includes("Détails Examens") || UserData.user_sub_menu_access[0]=="All"){%>
+											<a href="/exam-details?examId=<%= examen.id %>"><i
+													class="fa fa-file-archive-o m-r-5"></i> Détails</a>
+											<% } %>
+											<% if(UserData.user_sub_menu_access.includes("Modifier examens") || UserData.user_sub_menu_access[0]=="All"){%>
+											| <a href="#"
+												onclick="launchEditExamen('<%= examen.nom_examen %>','<%= examen.id %>','<%= examen.type_resultat %>','<%= examen.is_bilan %>')"><i
+													class="fa fa-pencil m-r-5"></i> Modifier</a>
+											<% } %>
+										</td>
+									</tr>
+									<% }) %>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+
+		</div>
+
+
+        
+        <div id="NewNotification" class="modal fade" role="dialog" data-backdrop="static">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content modal">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Nouvelle notification</strong> </h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="sendNotificationForm">
+                            <input type="hidden" name="examID">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-inline">
+                                        <label>Destinataires</label>
+                                        <select class="select" multiple name="users[]" id="UsersSelected">
+                                            <option value="All" selected>Tout le monde</option>
+                                            <% UserList.forEach((user) => { %>
+                                            <option value="<%= user.user_name %>"><%= user.user_name+" | "+user.fullname %></option>
+                                            <% }) %>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-12 m-t-10">
+                                    <label>Titre</label>
+                                    <div class="form-group">
+                                        <input type="text" required name="subject" id="subject" class="form-control">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-lg-12 m-t-10">
+                                    <label>Message</label>
+                                    <div class="form-group">
+                                       <textarea required class="form-control" name="Message" id="Message" cols="30" rows="10"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="msgSaveNotif" class="m-t-10 text-center"></div>
+                            <div class="m-t-20 align-content-center form-inline">
+                                <select class="form-control m-r-5" name="gender">
+                                    <option value="1" >Publier</option>
+                                    <option value="0" >Brouillon</option>
+                                </select>
+                                <button class="btn btn-primary submit-btn">Enregistrer</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+		<div id="delete_patient" class="modal fade delete-modal" role="dialog" data-keyboard="false">
+			<div class="modal-dialog modal-dialog-centered">
+				<div class="modal-content">
+					<div class="modal-body text-center">
+						<img src="assets/img/sent.png" alt="" width="50" height="46">
+						<form id="deleteForm">
+							<input type="hidden" name="patientID" id="patientID">
+						</form>
+						<h3>Are you sure want to delete this Patient?</h3>
+						<div id="msg"></div>
+						<div class="m-t-20"> <a href="#" class="btn btn-white" data-dismiss="modal">Close</a>
+							<button type="submit" class="btn btn-danger" onclick="deletePatient()">Delete</button>
+						</div>
+					</div>
+				</div>
+			</div>
+
+		</div>
+
+
+	</div>
+	<div class="sidebar-overlay" data-reff=""></div>
+	<script src="assets/js/jquery-3.2.1.min.js"></script>
+	<script src="assets/js/popper.min.js"></script>
+	<script src="assets/js/bootstrap.min.js"></script>
+	<script src="assets/js/jquery.slimscroll.js"></script>
+	<script src="assets/js/select2.min.js"></script>
+	<script src="assets/js/jquery.dataTables.min.js"></script>
+	<script src="assets/js/dataTables.bootstrap4.min.js"></script>
+	<script src="assets/js/moment.min.js"></script>
+	<script src="assets/js/bootstrap-datetimepicker.min.js"></script>
+	<script src="assets/js/app.js"></script>
+	<script src="assets/js/my_js.js"></script>
+	<script>
+
+		$("#sendNotificationForm").submit(function (e) {
+			e.preventDefault();
+			//saveNotification();
+		});
+		
+		saveNotification = function () {
+			$("#msgSaveNotif").show().html("");
+			let formData = $("#sendNotificationForm").serialize();
+			$.post("/save-notification", formData, function (data) {
+				console.log(data);
+				if (data.success) { //Success 
+					$("#msgSaveNotif").html(data.success).fadeOut(5000);
+				} else {
+					$("#msgSaveNotif").html(data.error);
+				}
+			});
+		}
+		function launchEditExamen(exam, examId,type_resultat,is_bilan) {
+			$("#Editnotify").show().html("");
+			$("#ExamenName").html(exam);
+			$("#Examen").val(exam);
+			$("#ExamenId").val(examId);
+			$("#type_resultat").val(type_resultat).change();
+			$("#ifbilan").val(is_bilan).change();
+			$("#editExamen").modal();
+		}
+		editExamen = function () {
+			let formData = $("#editExamForm").serialize();
+			$.post("/edit-exam", formData, function (data) {
+				console.log(data);
+				if (data.success) { //Success 
+					let id = $("#ExamenId").val();
+					$("#Editnotify").html(data.msg).fadeOut(5000, () => {
+						window.location.replace("/exam-details?examId="+id);
+					});
+				} else {
+					$("#Editnotify").html(data.msg);
+				}
+			});
+		}
+
+	</script>
+	<!-- FOOTER -->
+	<%- include("../parts/footer") -%>
+</body>
+
+
+<!-- patients23:19-->
+
+</html>

@@ -108,16 +108,21 @@
                                     %>
                                     <tr id="row<%= stock.request_id %>">
                                         <td>
+                                        
                                             <% if(stock.approved == 0){ %>
-                                            <a class="btn btn-info" href="#" 
-                                               onclick="setId('<%= stock.request_id %>','<%=stock.materiau%>','<%=stock.nom_materiau%>','<%=stock.lot%>','<%=stock.qte%>','<%=stock.transaction%>')" > 
-                                               Accepter/Rejeter
-                                            </a>
+                                                <% if(UserData.user_menu_access.includes("Approuver requete relative au stock") || UserData.user_menu_access[0]=="All"){%>
+                                                    <a class="btn btn-info" href="#" 
+                                                    onclick="setId('<%= stock.request_id %>','<%=stock.materiau%>','<%=stock.nom_materiau%>','<%=stock.lot%>','<%=stock.qte%>','<%=stock.transaction%>')" > 
+                                                    Accepter/Rejeter
+                                                    </a>
+                                                <% }else{ %>
+                                                    En attente...
+                                                <% } %>
                                             <% }else{ %>
                                                 <strong> Approuvé par <%=stock.approved_by %></strong>
                                             <% } %>
                                         </td>
-                                        <td><%=stock.acteur%></td>
+                                         <td><%=stock.acteur%></td>
                                         <td><%=stock.date_record%></td>
                                         <td><strong><%=stock.lot%></strong></td>
                                         <td><%=stock.nom_materiau%></td>
@@ -164,7 +169,6 @@
         </div>
         
     </div>
-
     <div class="sidebar-overlay" data-reff=""></div>
     <script src="assets/js/jquery-3.2.1.min.js"></script>
     <script src="assets/js/popper.min.js"></script>
@@ -176,6 +180,8 @@
     <script src="assets/js/moment.min.js"></script>
     <script src="assets/js/bootstrap-datetimepicker.min.js"></script>
     <script src="assets/js/app.js"></script>
+    <!-- FOOTER -->
+    <%- include("../parts/footer") -%>
     <script>
    		function setId(value,matId,mat,lot,qte,type){
 			$("#msg").show().html("");
@@ -201,15 +207,15 @@
                         $("#delete_patient").modal("hide");
 						//remove line
                         $("#row"+patientID).fadeOut( 5000 );
-                        
+                        //NOTIFY THE CHANGE
+                        socket.emit('updateNbRequestsStock', 'New Request!');
                       }else{
                         $("#msg").html(data.msg);
                       } 
                 });
 		}
     </script>
-    <!-- FOOTER -->
-    <%- include("../parts/footer") -%>
+    
 </body>
 
 

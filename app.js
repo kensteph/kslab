@@ -39,6 +39,7 @@ app.get('/', async (req, res) => {
     let settings = await stats.getSettings();
     //console.log(settings);
     global.appName = 'KSlab ';
+    global.nbRequestStock = 0;
     global.dataBaseCollation = 'KSlab ';
     global.line1 = settings.line1;
     global.line2 = settings.line2;
@@ -57,10 +58,10 @@ app.get('/', async (req, res) => {
     global.PERISSABLE = ['Non', 'Oui'];
     global.TYPE_RESULTAT = ['', 'Valeurs normales', 'Positif/Négatif', 'Commentaires'];
     global.NBJOUR_STOCK_ALERT = 90;
-    global.USER_HOME_PAGE = '/test-laboratoire';//Default for sample User
+    global.USER_HOME_PAGE = '/notifications';//Default for sample User
     //MENU ACCESS
     global.MENU_ITEM = ['Tableau de bord', 'Test Patient', 'Test Laboratoire', 'Patients', 'Examens', 'Gestion de stock', 'Paramètres', 'Administration'];
-    global.SUBMENU_ITEM = ['Ajouter Patient', 'Liste des Patients', 'Modifier Patients', 'Rechercher Patient', 'Liste des demandes de Tests','Enregistrer Résultat','Modifier Résultat','Valider Résultat','Ajouter Signature','Imprimer Résultat', 'Ajouter examens', 'Voir la liste des examens', 'Modifier examens','Ajouter valeurs normales','Détails Examens','Ajouter Matériau','Modifier Matériau','Lister les matériaux','Ajouter Stock','Inventaire','Imprimer Inventaire','Requete Ajouter/Retirer article du Stock','Autoriser Ajouter/Retirer article du Stock','Valider/Invalider Stock','Mouvement de stock','Imprimer Mouvement de Stock'];
+    global.SUBMENU_ITEM = ['Ajouter Patient', 'Liste des Patients', 'Modifier Patients', 'Rechercher Patient', 'Liste des demandes de Tests','Enregistrer Résultat','Modifier Résultat','Valider Résultat','Ajouter Signature','Imprimer Résultat', 'Ajouter examens', 'Voir la liste des examens', 'Modifier examens','Ajouter valeurs normales','Détails Examens','Ajouter Matériau','Modifier Matériau','Lister les matériaux','Ajouter Stock','Inventaire','Imprimer Inventaire','Requete Ajouter/Retirer article du Stock','Autoriser Ajouter/Retirer article du Stock','Approuver requete relative au stock','Valider/Invalider Stock','Mouvement de stock','Imprimer Mouvement de Stock'];
     res.render('login');
 });
 //Exit Point
@@ -138,7 +139,7 @@ app.post('/login', async (req, res) => {
         if (InfoUser.change_pass) {  // Force the User to change his password
             res.render("users/change-pwd", { page: "Home", UserData: req.session.UserData, }); // Change Password
         } else {
-            let page = "/test-laboratoire";
+            let page = USER_HOME_PAGE;
             if (UserData.user_menu_access.includes("Tableau de bord") || UserData.user_menu_access[0] == "All") { page = "/home" }
             res.redirect(page); // Panel Admin
         }
@@ -265,28 +266,61 @@ cron.schedule("0 17 * * 1-6", async function () {
 //GET NOTIFICATIONS
 app.get('/notifications', async (req, res) => {
     let stockCritic = await stockDB.listOfAllExpiredStock("All");
-    res.json(stockCritic);
-});
-
-io.sockets.on('connection', function(socket) {
-    console.log("SOCKET : "+socket);
-    // socket.on('username', function(username) {
-    //     socket.username = username;
-    //     io.emit('is_online', '🔵 <i>' + socket.username + ' join the chat..</i>');
-    // });
-
-    // socket.on('disconnect', function(username) {
-    //     io.emit('is_online', '🔴 <i>' + socket.username + ' left the chat..</i>');
-    // })
-
-    // socket.on('chat_message', function(message) {
-    //     io.emit('chat_message', '<strong>' + socket.username + '</strong>: ' + message);
-    // });
-
+    let pageTitle = "Liste des notifications";
+    params={
+        UserData: req.session.UserData,
+        page: 'Home',
+        pageTitle : pageTitle,
+    }
+    res.render('setting/notifications', params);
+    //res.json(stockCritic);
 });
 
 const port = 8788;
-server = app.listen(port, () => {
+http.listen(port, () => {
     console.log('KSlab server is started at port: ' + port);
 });
+
+//REAL TIME INFORMATIONS
+io.on('connection', async function(socket){
+    console.log("User " + socket.id);
+    await stats.updateNbStockRequest(io);
+    //UPDATE THE NUMBER OF STOCK REQUESTS MADE BY USERS WHEN A REQUEST IS MADE
+    socket.on('updateNbRequestsStock',async function(msg){
+        await stats.updateNbStockRequest(io);
+        console.log("User " + msg);
+    });
+    //UPDATE THE NUMBER OF STOCK REQUESTS MADE BY USERS EVERY 60 SECS
+    setTimeout( async() => {
+        await stats.updateNbStockRequest(io);
+    }, 60000);
+
+  });
+
+
+// io.sockets.on('connection', function(socket) {
+//     console.log("SOCKET : "+socket.id);
+
+//     socket.on('test', async function(data) {
+//         await stats.updateNbStockRequest(socket);
+//         console.log(data);
+//      });
+
+//     // setTimeout( async() => {
+//     //     await stats.updateNbStockRequest(socket);
+//     // }, 5000);
+//     // socket.on('username', function(username) {
+//     //     socket.username = username;
+//     //     io.emit('is_online', '🔵 <i>' + socket.username + ' join the chat..</i>');
+//     // });
+
+//     // socket.on('disconnect', function(username) {
+//     //     io.emit('is_online', '🔴 <i>' + socket.username + ' left the chat..</i>');
+//     // })
+
+//     // socket.on('chat_message', function(message) {
+//     //     io.emit('chat_message', '<strong>' + socket.username + '</strong>: ' + message);
+//     // });
+
+// });
 

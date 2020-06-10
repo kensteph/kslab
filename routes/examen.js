@@ -34,7 +34,6 @@ router.get('/add-examens', async (req, res) => {
         res.redirect("/");
     }
 });
-
 router.post('/add-examens', async (req, res) => {
     //console.log(req.body);
     let notifications = await examenDB.saveExam(req, res);
@@ -48,14 +47,12 @@ router.post('/add-examens', async (req, res) => {
     };
     res.render('examens/add-examens', params);
 });
-
 //EDIT EXAM
 router.post('/edit-exam', async (req, res) => {
     //console.log(req.body);
     let notifications = await examenDB.editExam(req);
     res.json(notifications);
 });
-
 // //EXAMS LIST
 router.get('/examens', async (req, res) => {
     if (typeof req.session.UserData != "undefined") {
@@ -81,7 +78,6 @@ router.get('/examens', async (req, res) => {
         res.redirect("/");
     }
 });
-
 //DISPLAY EXAM DETAILS 
 router.get('/exam-details', async (req, res) => {
     let examID = req.query.examId;
@@ -108,7 +104,6 @@ router.get('/exam-details', async (req, res) => {
     };
     res.render('examens/exam-details', params);
 });
-
 //ADD TEST PARAMETERS
 router.get('/add-test-parameters', async (req, res) => {
     let examID = req.query.exam;
@@ -211,16 +206,13 @@ router.post('/test-laboratoire', async (req, res) => {
     };
     res.render('examens/add-test-patient', params);
 });
-
 //SAVE TEST REQUEST
-
 router.post('/save-test-request', async (req, res) => {
     console.log(req.body);
     let notifications = await testDB.saveTestRequest(req);
     console.log(notifications);
     res.json(notifications);
 });
-
 //LIST DES TESTS
 router.get('/Tests', async (req, res) => {
  if (typeof req.session.UserData != "undefined") {
@@ -335,14 +327,12 @@ router.post('/get-test-parameters', async (req, res) => {
     // console.log(testResult);
     res.json(info);
 });
-
 //SAVE TEST RESULT TO DB
 router.post('/save-test-result', async (req, res) => {
     //console.log(req.body);
     let notifications = await examenDB.saveTestResult(req);
     res.json(notifications);
 });
-
 //EDIT TEST RESULT TO DB
 router.post('/edit-test-result', async (req, res) => {
     //console.log(req.body);
@@ -379,7 +369,7 @@ router.post('/update-test-status', async (req, res) => {
 
 //DELETE TEST REQUEST
 router.post('/delete-test-request', async (req, res) => {
-    console.log(req.body);
+    //console.log(req.body);
     let test_request_id = req.body.testRequestId;
     let data = await stockDB.listeMateriauxForTestRequest(test_request_id);
     let user = req.session.username;
@@ -649,7 +639,6 @@ router.post('/lab-tests-report', async (req, res) => {
     };
     res.render('examens/test-report', params);
 });
-
 //PRINT TEST REPORT
 router.post('/print-test-report', async (req, res) => {
     console.log(req.body);
