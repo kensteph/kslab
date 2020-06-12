@@ -49,6 +49,7 @@
 							<table class="table table-border table-striped custom-table ">
 								<thead>
 									<tr>
+										<th>ID</th>
 										<th>De</th>
 										<th>A</th>
 										<th>Type</th>
@@ -62,6 +63,7 @@
 								<tbody id="table">
 									<% notifications.forEach((notif) => { %>
 									<tr id="row<%= notif.id %>">
+										<td><%= notif.id %></td>
 										<td><%= notif.de %></td>
 										<td><%= notif.a %></td>
 										<td><%= notif.type_notif %></td>
@@ -71,9 +73,9 @@
 										<td><%= notif.date_notif %></td>
 										<td class="text-right">
 											<% if(UserData.user_sub_menu_access.includes("Modifier notifs") || UserData.user_sub_menu_access[0]=="All"){%>
-											| <a href="#"
+										    <a href="#"
 												onclick="launchEditnotif('<%= notif.titre %>','<%= notif.id %>','<%= notif.contenu %>','<%= notif.publier %>')"><i
-													class="fa fa-pencil m-r-5"></i> Modifier</a>
+													class="fa fa-trash m-r-5"></i> Supprimer</a>
 											<% } %>
 										</td>
 									</tr>
@@ -103,7 +105,7 @@
                                 <div class="col-lg-12">
                                     <label>Type de notification</label>
                                     <div class="form-group">
-                                        <select class="form-control m-r-5" name="TypeNotif">
+                                        <select class="form-control m-r-5" name="TypeNotif" id="type">
 											<option value="warning" >Avertissement</option>
 											<option value="danger" >Alerte</option>
 											<option value="info" >Information</option>
@@ -156,18 +158,20 @@
             </div>
         </div>
 
-		<div id="delete_patient" class="modal fade delete-modal" role="dialog" data-keyboard="false">
+		<div id="delete_notifi" class="modal fade delete-modal" role="dialog" data-keyboard="false">
 			<div class="modal-dialog modal-dialog-centered">
 				<div class="modal-content">
 					<div class="modal-body text-center">
 						<img src="assets/img/sent.png" alt="" width="50" height="46">
 						<form id="deleteForm">
-							<input type="hidden" name="patientID" id="patientID">
+							<input type="hidden" name="NotifID" id="NotifID">
 						</form>
-						<h3>Are you sure want to delete this Patient?</h3>
-						<div id="msg"></div>
-						<div class="m-t-20"> <a href="#" class="btn btn-white" data-dismiss="modal">Close</a>
-							<button type="submit" class="btn btn-danger" onclick="deletePatient()">Delete</button>
+						<br><strong>Voulez-vous supprimer la notification ? </strong>
+						<br><h3 id="NotificationName"></h3> 
+						<div id="msgDeleteNotif"></div>
+						<div class="m-t-20">
+							<a href="#" class="btn btn-white" data-dismiss="modal">NON</a>
+							<button type="submit" class="btn btn-danger" onclick="deleteNotification()">OUI</button>
 						</div>
 					</div>
 				</div>
@@ -201,40 +205,49 @@
 		saveNotification = function () {
 			$("#msgSaveNotif").show().html("");
 			let formData = $("#sendNotificationForm").serialize();
+			let userSelected = [];
+			let titre = $("#subject").val();
+			let type = $("#type").val();
+			let message = $("#Message").val();
+			let notif = {title : titre, type : type, message : message,date : new Date()};
+			$("#UsersSelected option:selected").each(function()
+            {
+                if(this.selected){
+                    userSelected.push($( this ).val());
+                }
+            });
+			
 			$.post("/save-notification", formData, function (data) {
 				console.log(data);
 				if (data.success) { //Success 
 					//NOTIFY THE CHANGE
-					socket.emit('updateNotificationCount', 'New Notif!');
+					socket.emit('updateNotificationCount',{userSelected : userSelected,message : notif});
 					$("#msgSaveNotif").html(data.msg).fadeOut(5000,function(){
-						window.location.replace("/manage-notifications?ID="+data.id);
+						//window.location.replace("/manage-notifications?ID="+data.id);
 					});
 				} else {
 					$("#msgSaveNotif").html(data.msg);
 				}
 			});
 		}
-		function launchEditExamen(exam, examId,type_resultat,is_bilan) {
-			$("#Editnotify").show().html("");
-			$("#ExamenName").html(exam);
-			$("#Examen").val(exam);
-			$("#ExamenId").val(examId);
-			$("#type_resultat").val(type_resultat).change();
-			$("#ifbilan").val(is_bilan).change();
-			$("#editExamen").modal();
+		
+		function launchEditnotif(exam, examId,type_resultat,is_bilan) {
+			$("#msgDeleteNotif").show().html("");
+			$("#NotifID").val(examId);
+			$("#NotificationName").html(exam+" # "+examId);
+			$("#delete_notifi").modal();
 		}
-		editExamen = function () {
-			let formData = $("#editExamForm").serialize();
-			$.post("/edit-exam", formData, function (data) {
+		deleteNotification = function () {
+			let formData = $("#deleteForm").serialize();
+			$.post("/delete-notification", formData, function (data) {
 				console.log(data);
 				if (data.success) { //Success 
 					let id = $("#notificationID").val();
-					
-					$("#msgSaveNotif").html(data.msg).fadeOut(5000, () => {
-						//window.location.replace("/manage-notifications?ID="+id);
+					$("#msgDeleteNotif").html(data.msg).fadeOut(5000, () => {
+						window.location.replace("/manage-notifications");
 					});
 				} else {
-					$("#msgSaveNotif").html(data.msg);
+					$("#msgDeleteNotif").html(data.msg);
 				}
 			});
 		}

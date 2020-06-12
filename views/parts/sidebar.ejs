@@ -76,11 +76,13 @@ if (locals.page) {
                 <li class="<%=Home%>">
                     <a href="/home"><i class="fa fa-dashboard"></i> <span>Tableau de bord</span></a>
                 </li>
-                <% } %>
+                <% } %> 
                 <!-- MESSAGERIE -->
+                <% if(UserData.user_menu_access.includes("Voir la liste des requetes de stock") || UserData.user_menu_access[0]=="All"){%>
                 <li>
                     <a id="NbRequest" href="/requests?statut=0"><i class="fa fa-comments"></i> <span>Demandes</span>  <span class="badge badge-pill bg-primary float-right">0</span> </a>
                 </li>
+                <% } %>
                 <!-- TEST LABORATOIRE -->
                 <% if(UserData.user_menu_access.includes("Test Patient") || UserData.user_menu_access[0]=="All"){%>
                 <li class="<%=NewTest%>">

@@ -10,10 +10,10 @@ const cron = require("node-cron");
 const stockDB = require('./controllers/stockController');
 const fileupload = require('express-fileupload');
 const session = require('express-session');
-const Service = require('node-windows').Service;
+
 //LIVE COMMUNICATION
 const http = require('http').Server(app);
-const io = require('socket.io')(http);
+const  io = require('socket.io')(http);
 //Uses
 app.use(express.static('public')); // All our static files
 app.use(express.static(path.join(__dirname, '/public')));
@@ -40,6 +40,7 @@ app.get('/', async (req, res) => {
     //console.log(settings);
     global.appName = 'KSlab ';
     global.nbRequestStock = 0;
+    global.ifNotify = false;
     global.dataBaseCollation = 'KSlab ';
     global.line1 = settings.line1;
     global.line2 = settings.line2;
@@ -61,7 +62,7 @@ app.get('/', async (req, res) => {
     global.USER_HOME_PAGE = '/notifications';//Default for sample User
     //MENU ACCESS
     global.MENU_ITEM = ['Tableau de bord', 'Test Patient', 'Test Laboratoire', 'Patients', 'Examens', 'Gestion de stock', 'Paramètres', 'Administration'];
-    global.SUBMENU_ITEM = ['Ajouter Patient', 'Liste des Patients', 'Modifier Patients', 'Rechercher Patient', 'Liste des demandes de Tests','Enregistrer Résultat','Modifier Résultat','Valider Résultat','Ajouter Signature','Imprimer Résultat', 'Ajouter examens', 'Voir la liste des examens', 'Modifier examens','Ajouter valeurs normales','Détails Examens','Ajouter Matériau','Modifier Matériau','Lister les matériaux','Ajouter Stock','Inventaire','Imprimer Inventaire','Requete Ajouter/Retirer article du Stock','Autoriser Ajouter/Retirer article du Stock','Approuver requete relative au stock','Valider/Invalider Stock','Mouvement de stock','Imprimer Mouvement de Stock'];
+    global.SUBMENU_ITEM = ['Ajouter Patient', 'Liste des Patients', 'Modifier Patients', 'Rechercher Patient', 'Liste des demandes de Tests','Enregistrer Résultat','Modifier Résultat','Valider Résultat','Ajouter Signature','Imprimer Résultat', 'Ajouter examens', 'Voir la liste des examens', 'Modifier examens','Ajouter valeurs normales','Détails Examens','Ajouter Matériau','Modifier Matériau','Lister les matériaux','Ajouter Stock','Inventaire','Imprimer Inventaire','Requete Ajouter/Retirer article du Stock','Autoriser Ajouter/Retirer article du Stock','Approuver requete relative au stock','Voir la liste des requetes de stock','Valider/Invalider Stock','Mouvement de stock','Imprimer Mouvement de Stock'];
     res.render('login');
 });
 //Exit Point
@@ -134,6 +135,35 @@ app.post('/login', async (req, res) => {
         req.session.UserData = UserData;
         req.session.username = user_name;
         //console.log("SESSION ID " + req.session.UserData.user_sub_menu_access);
+
+        //REAL TIME INFORMATIONS
+io.on('connection', async function(socket){
+    console.log("User " + user_name+" is connected..." );
+    await stats.updateNbStockRequest(io);
+    //UPDATE THE NUMBER OF STOCK REQUESTS MADE BY USERS WHEN A REQUEST IS MADE
+    socket.on('updateNbRequestsStock',async function(msg){
+        await stats.updateNbStockRequest(io);
+        console.log("User " + msg);
+    });
+    //UPDATE THE NUMBER OF STOCK REQUESTS MADE BY USERS EVERY 60 SECS
+    setTimeout( async() => {
+        await stats.updateNbStockRequest(io);
+    }, 60000);
+
+    //UPDATE THE NUMBER OF STOCK REQUESTS MADE BY USERS EVERY 60 SECS
+    // setTimeout( async() => {
+    //     await stats.updateNbNotifications(io);
+    // }, 5000);
+
+    //UPDATE THE NUMBER OF STOCK REQUESTS MADE BY USERS WHEN A REQUEST IS MADE
+    socket.on('updateNotificationCount',async function(data){
+        await stats.updateNbNotifications(io,data,{user : user_name, userId : InfoUser.id_personne});
+        console.log(data);
+    });
+
+    
+
+  });
 
         if (InfoUser.change_pass) {  // Force the User to change his password
             res.render("users/change-pwd", { page: "Home", UserData: req.session.UserData, }); // Change Password
@@ -280,60 +310,3 @@ const port = 8788;
 http.listen(port, () => {
     console.log('KSlab server is started at port: ' + port);
 });
-
-//REAL TIME INFORMATIONS
-io.on('connection', async function(socket){
-    console.log("User " + socket.id);
-    await stats.updateNbStockRequest(io);
-    //UPDATE THE NUMBER OF STOCK REQUESTS MADE BY USERS WHEN A REQUEST IS MADE
-    socket.on('updateNbRequestsStock',async function(msg){
-        await stats.updateNbStockRequest(io);
-        console.log("User " + msg);
-    });
-    //UPDATE THE NUMBER OF STOCK REQUESTS MADE BY USERS EVERY 60 SECS
-    setTimeout( async() => {
-        await stats.updateNbStockRequest(io);
-    }, 60000);
-
-    //UPDATE THE NUMBER OF STOCK REQUESTS MADE BY USERS EVERY 60 SECS
-    // setTimeout( async() => {
-    //     await stats.updateNbNotifications(io);
-    // }, 5000);
-
-    //UPDATE THE NUMBER OF STOCK REQUESTS MADE BY USERS WHEN A REQUEST IS MADE
-    socket.on('updateNotificationCount',async function(msg){
-        await stats.updateNbNotifications(io);
-        console.log(msg);
-    });
-
-    
-
-  });
-
-
-// io.sockets.on('connection', function(socket) {
-//     console.log("SOCKET : "+socket.id);
-
-//     socket.on('test', async function(data) {
-//         await stats.updateNbStockRequest(socket);
-//         console.log(data);
-//      });
-
-//     // setTimeout( async() => {
-//     //     await stats.updateNbStockRequest(socket);
-//     // }, 5000);
-//     // socket.on('username', function(username) {
-//     //     socket.username = username;
-//     //     io.emit('is_online', '🔵 <i>' + socket.username + ' join the chat..</i>');
-//     // });
-
-//     // socket.on('disconnect', function(username) {
-//     //     io.emit('is_online', '🔴 <i>' + socket.username + ' left the chat..</i>');
-//     // })
-
-//     // socket.on('chat_message', function(message) {
-//     //     io.emit('chat_message', '<strong>' + socket.username + '</strong>: ' + message);
-//     // });
-
-// });
-

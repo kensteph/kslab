@@ -256,7 +256,7 @@ var self = module.exports = {
             let type_notif = req.body.TypeNotif;
             let subject = req.body.subject;
             let message = req.body.Message;
-            message = message.replace('"','\"');
+            message = message.replace('"', '\"');
             let publier = req.body.publier;
             let sql =
                 'INSERT INTO tb_notifications (de,a,type_notif,titre,contenu,publier) VALUES ("' + from + '","' + to + '","' + type_notif + '","' + subject + '","' + message + '",' + publier + ')';
@@ -273,12 +273,12 @@ var self = module.exports = {
                         success: true,
                         type: "success",
                         msg: "Notification enregistrée avec succès.",
-                        id : result.insertId,
+                        id: result.insertId,
                     };
                 }
 
                 resolve(msg);
-                console.log(msg);
+                //console.log(msg);
             });
         });
         rep = await promise;
@@ -300,10 +300,10 @@ var self = module.exports = {
         //console.log(data); 
         return data;
     },
-     //LISTE DES NOTIFICATIONS UTILISATEURS
-     userNotificationList: async function (user) {
+    //LISTE DES NOTIFICATIONS UTILISATEURS
+    userNotificationList: async function (user) {
         let promise = new Promise((resolve, reject) => {
-            let sql = "SELECT * FROM `tb_notifications` WHERE a LIKE '%"+user+"%' OR a='All' ORDER BY id DESC";
+            let sql = "SELECT * FROM `tb_notifications` WHERE a LIKE '%" + user + "%' OR a='All' ORDER BY id DESC";
             con.query(sql, function (err, rows) {
                 if (err) {
                     throw err;
@@ -335,7 +335,7 @@ var self = module.exports = {
         //console.log(data);
         return data;
     },
-    async  updateNbStockRequest(io) {
+    async updateNbStockRequest(io) {
         let nbRequest = await self.StockRequestCount();
         let reqtext = '<i class="fa fa-comments"></i>  <span>Demandes</span> ';
         if (nbRequest > 0) {
@@ -344,12 +344,44 @@ var self = module.exports = {
         //console.log(reqtext);
         io.emit('updateNbRequestsStock', { nb: reqtext });
     },
-    async  updateNbNotifications(io) {
-        let nbRequest = 1; //await self.StockRequestCount();
-        let reqtext = '<i class="fa fa-comment-o"></i> <span class="badge badge-pill bg-danger float-right">'+nbRequest+'</span> ';
-        //console.log(reqtext);
-        io.emit('updateNotificationCount', { nb: reqtext });
+    async updateNbNotifications(io, data, user) {
+        console.log(data);
+        let recepients = data.userSelected;
+        if (recepients.includes(user.user) || recepients[0] == "All") {
+            let nbRequest = 1; //await self.StockRequestCount();
+            let reqtext = '<i class="fa fa-comment-o"></i> <span class="badge badge-pill bg-danger float-right">' + nbRequest + '</span> ';
+
+            io.emit('updateNotificationCount', { nb: reqtext, message: data.message, userId: user.userId });
+
+        } else {
+            console.log("THIS MESSAGE IS NOT YOUR CONCERN " + user);
+        }
+
     },
+    deleteNotification: async function (id) {
+        let promise = new Promise((resolve, reject) => {
+            let sql = "DELETE FROM tb_notifications  WHERE id =?";
+            //console.log(sql + " ID : " + id_personne);
+            con.query(sql, id, function (err, rows) {
+                if (err) {
+                    resolve({
+                        msg: "Une erreur est survenue. S'il vous palit réessayez.",
+                        error: "danger",
+                        debug: err
+                    });
+                } else {
+                    resolve({
+                        msg: "Notification " + id + " supprimée avec succès.",
+                        success: true
+                    });
+                }
+            });
+        });
+        data = await promise;
+        //console.log(data);
+        return data;
+    },
+
     //============================================= USERS ========================================
 
     //Save Teacher in the DB
@@ -622,8 +654,6 @@ var self = module.exports = {
         rep = await promise;
         return rep;
     },
-
-
     saveUserPermision: async function (req) {
         let promise = new Promise((resolve, reject) => {
             let Menu = req.body.Menu.join("|");

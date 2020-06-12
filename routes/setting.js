@@ -191,8 +191,15 @@ router.post('/desactivate-user', async (req, res) => {
 //================================================= NOTIFICATIONS ======================================================
 //INSERT NOTIFICATIONS
 router.post('/save-notification', async (req, res) => {
-    console.log(req.body);
+    //console.log(req.body);
     let notifications = await settingsDB.saveNotification(req);
+    res.json(notifications);
+});
+
+//DELETE NOTIFICATIONS
+router.post('/delete-notification', async (req, res) => {
+    console.log(req.body);
+    let notifications = await settingsDB.deleteNotification(req.body.NotifID);
     res.json(notifications);
 });
 //GET NOTIFICATIONS LIST
