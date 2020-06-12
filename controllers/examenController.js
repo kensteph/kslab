@@ -316,7 +316,7 @@ var self = module.exports = {
                         };
                     } else {
                         // UPDATE TEST STATUS
-                        let rep = await self.updateTestResultStatus(test_request_id, 1);
+                        //let rep = await self.updateTestResultStatus(test_request_id, 1);
                         msg = {
                             type: "success",
                             success: true,

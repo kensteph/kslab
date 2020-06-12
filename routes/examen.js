@@ -42,7 +42,7 @@ router.post('/add-examens', async (req, res) => {
     params = {
         pageTitle: pageTitle,
         notifications: notifications,
-        UserData : req.session.UserData,
+        UserData: req.session.UserData,
         page: 'NewExam'
     };
     res.render('examens/add-examens', params);
@@ -65,7 +65,7 @@ router.get('/examens', async (req, res) => {
                 pageTitle: pageTitle,
                 data: data,
                 UserData: req.session.UserData,
-                examsParameters : examsParameters,
+                examsParameters: examsParameters,
                 page: 'ExamsList'
             };
             res.render('examens/examens-list', params);
@@ -95,11 +95,11 @@ router.get('/exam-details', async (req, res) => {
         examsParameters: examsParameters,
         examID: examID,
         exam: exam,
-        paramInfo : paramInfo,
-        valeurNormal : valeurNormal,
-        materiauxAssosc : materiauxAssosc,
-        materiaux : materiaux,
-        UserData : req.session.UserData,
+        paramInfo: paramInfo,
+        valeurNormal: valeurNormal,
+        materiauxAssosc: materiauxAssosc,
+        materiaux: materiaux,
+        UserData: req.session.UserData,
         page: 'NewExam'
     };
     res.render('examens/exam-details', params);
@@ -116,7 +116,7 @@ router.get('/add-test-parameters', async (req, res) => {
         data: examsParameters,
         examID: examID,
         exam: exam,
-        UserData : req.session.UserData,
+        UserData: req.session.UserData,
         page: 'NewExam'
     };
     res.render('examens/add-test-parameters', params);
@@ -155,7 +155,7 @@ router.get('/add-test-materiaux', async (req, res) => {
         data: materiaux,
         examID: examID,
         exam: exam,
-        UserData : req.session.UserData,
+        UserData: req.session.UserData,
         page: 'NewExam'
     };
     res.render('examens/add-test-materiaux', params);
@@ -179,7 +179,7 @@ router.get('/test-laboratoire', async (req, res) => {
         data: data,
         dataExam: dataExam,
         patientSelected: patientSelected,
-        UserData : req.session.UserData,
+        UserData: req.session.UserData,
         page: 'NewTest'
     };
     res.render('examens/request-exam', params);
@@ -201,7 +201,7 @@ router.post('/test-laboratoire', async (req, res) => {
         data: data,
         dataExam: dataExam,
         patientSelected: patientSelected,
-        UserData : req.session.UserData,
+        UserData: req.session.UserData,
         page: 'NewTest'
     };
     res.render('examens/add-test-patient', params);
@@ -215,40 +215,40 @@ router.post('/save-test-request', async (req, res) => {
 });
 //LIST DES TESTS
 router.get('/Tests', async (req, res) => {
- if (typeof req.session.UserData != "undefined") {
+    if (typeof req.session.UserData != "undefined") {
         if (req.session.UserData.user_sub_menu_access.includes("Liste des demandes de Tests") || req.session.UserData.user_sub_menu_access[0] == "All") {
-          /// FULL ACCESS
-          let dateFrom = helpers.getCurrentDate();
-          let dateTo = helpers.getCurrentDate();
-          let status = "All";
-          if (req.query.date && req.query.status) {
-              dateFrom = "All";
-              status = req.query.status;
-          }
-         // console.log(dateFrom + " | " + status);
-          let data = await testDB.testRequestlist(dateFrom, dateTo, status);
-          let pageTitle = "Tests laboratoire (" + data.length + ")";
-          //console.log(data);
-          //DATES
-          dateFrom = helpers.formatDate(dateFrom, "FR");
-          dateFrom = helpers.changeDateSymbol(dateFrom);
-          dateTo = helpers.formatDate(dateTo, "FR");
-          dateTo = helpers.changeDateSymbol(dateTo);
-      
-          params = {
-              pageTitle: pageTitle,
-              data: data,
-              dateFrom: dateFrom,
-              dateTo: dateTo,
-              statut: status,
-              UserData : req.session.UserData,
-              page: 'ListTest'
-          };
-          res.render('examens/test-request-list', params);
+            /// FULL ACCESS
+            let dateFrom = helpers.getCurrentDate();
+            let dateTo = helpers.getCurrentDate();
+            let status = "All";
+            if (req.query.date && req.query.status) {
+                dateFrom = "All";
+                status = req.query.status;
+            }
+            // console.log(dateFrom + " | " + status);
+            let data = await testDB.testRequestlist(dateFrom, dateTo, status);
+            let pageTitle = "Tests laboratoire (" + data.length + ")";
+            //console.log(data);
+            //DATES
+            dateFrom = helpers.formatDate(dateFrom, "FR");
+            dateFrom = helpers.changeDateSymbol(dateFrom);
+            dateTo = helpers.formatDate(dateTo, "FR");
+            dateTo = helpers.changeDateSymbol(dateTo);
+
+            params = {
+                pageTitle: pageTitle,
+                data: data,
+                dateFrom: dateFrom,
+                dateTo: dateTo,
+                statut: status,
+                UserData: req.session.UserData,
+                page: 'ListTest'
+            };
+            res.render('examens/test-request-list', params);
         } else {
             res.redirect(global.USER_HOME_PAGE);
         }
-    
+
     } else {
         res.redirect("/");
     }
@@ -279,7 +279,7 @@ router.post('/Tests', async (req, res) => {
         dateFrom: dateFrom,
         dateTo: dateTo,
         statut: status,
-        UserData : req.session.UserData,
+        UserData: req.session.UserData,
         page: 'ListTest'
     };
     res.render('examens/test-request-list', params);
@@ -292,25 +292,34 @@ router.post('/SaveTestResult', async (req, res) => {
     let docteur = req.body.docteur;
     let sexe_patient = req.body.patientSexe;
     let dossier_patient = fullname + " [" + num_patient + "]";
-    let patientSelected = { fullname: fullname,sexe : sexe_patient, num_patient: num_patient, dossier: dossier_patient, docteur: docteur };
+    let patientSelected = { fullname: fullname, sexe: sexe_patient, num_patient: num_patient, dossier: dossier_patient, docteur: docteur };
     let id_test_request = req.body.testRequestId;
     let ifCompleted = false;
     let data = await examenDB.testRequestContent(id_test_request);
+    //Verifier le nombre de resultat à enregistrer pour ce TEST
+    let countResultsToSave = 0;
+    for(item of data){
+        let testParams = await examenDB.getExamParameters(item.examen_id);
+        let nbEx = testParams.length == 0 ? 1 : testParams.length ;
+        countResultsToSave += nbEx
+        console.log(item.nom_examen+" : "+nbEx);
+    }
     let countSavedResultsForATestRequest = await examenDB.countSavedResultsForATestRequest(id_test_request);
-    //console.log("TEST RESULT ALREADY SAVED : "+countSavedResultsForATestRequest+" TEST TO SAVE : "+data.length);
+    console.log("TEST RESULT ALREADY SAVED : "+countSavedResultsForATestRequest+" TEST TO SAVE : "+countResultsToSave);
     let pageTitle = "Enregistrement résultat pour :";
-    if(countSavedResultsForATestRequest>= data.length ){
+    if (countSavedResultsForATestRequest >= countResultsToSave) {
         ifCompleted = true;
+        await examenDB.updateTestResultStatus(id_test_request, 1);
         pageTitle = "Modification résultat pour :";
     }
-   
+
     params = {
         pageTitle: pageTitle,
         data: data,
         patientSelected: patientSelected,
         id_test_request: id_test_request,
-        UserData : req.session.UserData,
-        ifCompleted : ifCompleted,
+        UserData: req.session.UserData,
+        ifCompleted: ifCompleted,
         page: 'ListTest'
     };
     res.render('examens/save-test-patient', params);
@@ -373,17 +382,17 @@ router.post('/delete-test-request', async (req, res) => {
     let test_request_id = req.body.testRequestId;
     let data = await stockDB.listeMateriauxForTestRequest(test_request_id);
     let user = req.session.username;
-    let msg=[];
+    let msg = [];
     let notifications;
-    for( item of  data){ 
-        let notifications = await examenDB.deleteTestRequest(item,test_request_id,user);
+    for (item of data) {
+        let notifications = await examenDB.deleteTestRequest(item, test_request_id, user);
         msg.push(notifications.msg);
     }
     //DELETE THE REQUEST
     let ifDelete = await testDB.deleteTestRequest(test_request_id);
-    if(ifDelete.success){
+    if (ifDelete.success) {
         notifications = {
-            msg: "Demande supprimée avec succès..."+msg.join('<br>'),
+            msg: "Demande supprimée avec succès..." + msg.join('<br>'),
             success: "success"
         }
     }
@@ -478,11 +487,11 @@ router.post('/display-test-result', async (req, res) => {
         patientSexe: patientSexe,
         docteur: docteur,
         date: date_resultat,
-        UserData : req.session.UserData,
-        signature : signature,
+        UserData: req.session.UserData,
+        signature: signature,
         page: 'NewTest'
     };
-    let filename = "Resultat-"+test_request_id+"-"+patient+"-"+patientNumber+".pdf";
+    let filename = "Resultat-" + test_request_id + "-" + patient + "-" + patientNumber + ".pdf";
     let pathfile = "./tmp/" + filename;
     await printer.print('resultat', params, pathfile);
     //console.log(data);
@@ -548,7 +557,7 @@ router.post('/verify-test-result', async (req, res) => {
         patient: patient,
         date: date_resultat,
         testRequestId: test_request_id,
-        UserData : req.session.UserData,
+        UserData: req.session.UserData,
         page: 'NewTest'
     };
     res.render('examens/display-test-result', params);
@@ -590,7 +599,7 @@ router.get('/lab-tests-report', async (req, res) => {
         dateFromDB: helpers.getCurrentDate(),
         dateToDB: helpers.getCurrentDate(),
         statut: status,
-        UserData : req.session.UserData,
+        UserData: req.session.UserData,
         page: 'Administration'
     };
     res.render('examens/test-report', params);
@@ -634,7 +643,7 @@ router.post('/lab-tests-report', async (req, res) => {
         dateFromDB: dateFromDB,
         dateToDB: dateToDB,
         statut: status,
-        UserData : req.session.UserData,
+        UserData: req.session.UserData,
         page: 'Administration'
     };
     res.render('examens/test-report', params);
@@ -661,7 +670,7 @@ router.post('/print-test-report', async (req, res) => {
         data: data,
         dateFrom: dateFrom,
         dateTo: dateTo,
-        UserData : req.session.UserData,
+        UserData: req.session.UserData,
         pageTitle: pageTitle
     };
     await printer.print(template_name, params, pathfile);

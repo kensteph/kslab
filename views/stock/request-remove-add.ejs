@@ -184,8 +184,10 @@
     <%- include("../parts/footer") -%>
     <script>
    		function setId(value,matId,mat,lot,qte,type){
-			$("#msg").show().html("");
-			let title = "Voulez-vous accepter cette demande ?";
+            $("#msg").show().html("");
+            let stock = mat+" | "+lot;
+            let pOrm = type =="add" ? " augmenter le stock ("+stock+") de "+qte+" unité(s)" : " diminuer le stock ("+stock+") de "+qte+" unité(s)" ;
+			let title = "Voulez-vous accepter cette demande ? L'accepter va "+pOrm;
 			$("#userDesactTitle").html(title);
             $("#requestId").val(value);
             $("#materiauId").val(matId);
