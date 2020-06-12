@@ -294,25 +294,14 @@ router.post('/SaveTestResult', async (req, res) => {
     let dossier_patient = fullname + " [" + num_patient + "]";
     let patientSelected = { fullname: fullname, sexe: sexe_patient, num_patient: num_patient, dossier: dossier_patient, docteur: docteur };
     let id_test_request = req.body.testRequestId;
-    let ifCompleted = false;
-    let data = await examenDB.testRequestContent(id_test_request);
     //Verifier le nombre de resultat à enregistrer pour ce TEST
-    let countResultsToSave = 0;
-    for(item of data){
-        let testParams = await examenDB.getExamParameters(item.examen_id);
-        let nbEx = testParams.length == 0 ? 1 : testParams.length ;
-        countResultsToSave += nbEx
-        console.log(item.nom_examen+" : "+nbEx);
-    }
-    let countSavedResultsForATestRequest = await examenDB.countSavedResultsForATestRequest(id_test_request);
-    console.log("TEST RESULT ALREADY SAVED : "+countSavedResultsForATestRequest+" TEST TO SAVE : "+countResultsToSave);
+    let infoTest = await testDB.testResultSavedVerification(id_test_request);
+    let data = infoTest['TestRequestContent'];
+    let ifCompleted = infoTest['ifCompleted'];
     let pageTitle = "Enregistrement résultat pour :";
-    if (countSavedResultsForATestRequest >= countResultsToSave) {
-        ifCompleted = true;
-        await examenDB.updateTestResultStatus(id_test_request, 1);
+    if (ifCompleted) {
         pageTitle = "Modification résultat pour :";
     }
-
     params = {
         pageTitle: pageTitle,
         data: data,
@@ -339,7 +328,10 @@ router.post('/get-test-parameters', async (req, res) => {
 //SAVE TEST RESULT TO DB
 router.post('/save-test-result', async (req, res) => {
     //console.log(req.body);
+    let id_test_request = req.body.testRequestId;
     let notifications = await examenDB.saveTestResult(req);
+    //VERIFY IF ALL TEST RESULT IS SAVED IN ORDER TO CHANGE THE STATUS
+    let infoTest = await testDB.testResultSavedVerification(id_test_request);
     res.json(notifications);
 });
 //EDIT TEST RESULT TO DB

@@ -17,6 +17,7 @@ if (locals.page) {
     NewTest = "";
     ListTest = "";
     SaveTestResult =""; 
+    Request = "";
 
     GeneralSettings = "";
 
@@ -49,6 +50,9 @@ if (locals.page) {
                              break;
        case 'NewTest' :      NewTest = "active";
                              break;
+       case 'Request' :      Request = "active";
+                             break;
+                             
        case 'ListTest' :     ListTest = "active";
                              break;
        case 'SaveTestResult' : SaveTestResult = "active";
@@ -79,7 +83,7 @@ if (locals.page) {
                 <% } %> 
                 <!-- MESSAGERIE -->
                 <% if(UserData.user_menu_access.includes("Voir la liste des requetes de stock") || UserData.user_menu_access[0]=="All"){%>
-                <li>
+                <li class="<%=Request%>">
                     <a id="NbRequest" href="/requests?statut=0"><i class="fa fa-comments"></i> <span>Demandes</span>  <span class="badge badge-pill bg-primary float-right">0</span> </a>
                 </li>
                 <% } %>

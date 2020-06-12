@@ -410,6 +410,26 @@ var self = module.exports = {
         data = await promise;
         return data;
     },
+    //VERIFY IF ALL RESULT IS SAVED FOR A TEST REQUEST
+    testResultSavedVerification: async function (id_test_request) {
+        let ifCompleted = false;
+        let countResultsToSave = 0;
+        let data = await examController.testRequestContent(id_test_request);
+        for (item of data) {
+            let testParams = await examController.getExamParameters(item.examen_id);
+            let nbEx = testParams.length == 0 ? 1 : testParams.length;
+            countResultsToSave += nbEx
+            console.log(item.nom_examen + " : " + nbEx);
+        }
+        let countSavedResultsForATestRequest = await examController.countSavedResultsForATestRequest(id_test_request);
+        console.log("TEST RESULT ALREADY SAVED : " + countSavedResultsForATestRequest + " TEST TO SAVE : " + countResultsToSave);
+
+        if (countSavedResultsForATestRequest >= countResultsToSave) {
+            ifCompleted = true;
+            await examController.updateTestResultStatus(id_test_request, 1);
+        }
+        return { ifCompleted: ifCompleted, TestRequestContent: data };
+    },
     //======================== RAPPORT DES TESTS =================================================
     singleTestReport: async function (dateFrom, dateTo, exma_id) {
         let promise = new Promise((resolve, reject) => {
@@ -458,6 +478,7 @@ var self = module.exports = {
         //console.log(data); 
         return data;
     },
+
 
 
 }

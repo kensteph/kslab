@@ -130,7 +130,7 @@ router.get('/mv-stock', async (req, res) => {
     let materiauxList = await stockDB.listOfMateriaux("All");
     let materiauSelected = 'All';
     if (req.body.materiauSelected) { materiauSelected = req.body.materiauSelected; }
-    let data = await stockDB.stockMoving(dateF,dateT,materiauSelected);
+    let data = await stockDB.stockMoving(dateF, dateT, materiauSelected);
     let dateFrom = helpers.formatDate(dateF, "FR");
     dateFrom = helpers.changeDateSymbol(dateFrom);
     let dateTo = helpers.formatDate(dateT, "FR");
@@ -140,12 +140,12 @@ router.get('/mv-stock', async (req, res) => {
         pageTitle: pageTitle,
         data: data,
         UserData: req.session.UserData,
-        materiauxList : materiauxList,
-        materiauSelected : materiauSelected,
-        dateFrom : dateFrom,
-        dateTo : dateTo,
-        dateFromDB : dateF,
-        dateToDB : dateT,
+        materiauxList: materiauxList,
+        materiauSelected: materiauSelected,
+        dateFrom: dateFrom,
+        dateTo: dateTo,
+        dateFromDB: dateF,
+        dateToDB: dateT,
         page: 'StockMoving'
     };
     res.render('stock/mouvement-stock', params);
@@ -159,22 +159,22 @@ router.post('/mv-stock', async (req, res) => {
     if (req.body.materiauSelected) { materiauSelected = req.body.materiauSelected; }
     let materiauxList = await stockDB.listOfMateriaux("All");
     //DATES
-    dateFromDB =  helpers.changeDateSymbol(dateFrom);
+    dateFromDB = helpers.changeDateSymbol(dateFrom);
     dateFromDB = helpers.formatDate(dateFrom, "EN");
-    dateToDB =  helpers.changeDateSymbol(dateTo);
+    dateToDB = helpers.changeDateSymbol(dateTo);
     dateToDB = helpers.formatDate(dateTo, "EN");
-    let data = await stockDB.stockMoving(dateFromDB,dateToDB,materiauSelected);
+    let data = await stockDB.stockMoving(dateFromDB, dateToDB, materiauSelected);
     let pageTitle = "Mouvement de stock";
     params = {
         pageTitle: pageTitle,
         data: data,
         UserData: req.session.UserData,
-        materiauxList : materiauxList,
-        materiauSelected : materiauSelected,
-        dateFrom : dateFrom,
-        dateTo : dateTo,
-        dateFromDB : dateFromDB,
-        dateToDB : dateToDB,
+        materiauxList: materiauxList,
+        materiauSelected: materiauSelected,
+        dateFrom: dateFrom,
+        dateTo: dateTo,
+        dateFromDB: dateFromDB,
+        dateToDB: dateToDB,
         page: 'StockMoving'
     };
     res.render('stock/mouvement-stock', params);
@@ -205,11 +205,11 @@ router.post('/add-remove-stock', async (req, res) => {
     let user = req.session.username;
     let UserData = req.session.UserData;
     let commentaire = req.body.commentaire;
-    let notifications ={};
-    if(UserData.user_sub_menu_access.includes("Autoriser Ajouter/Retirer article du Stock") || UserData.user_sub_menu_access[0]=="All"){
+    let notifications = {};
+    if (UserData.user_sub_menu_access.includes("Autoriser Ajouter/Retirer article du Stock") || UserData.user_sub_menu_access[0] == "All") {
         //Si l'utiisateur a le droit de retirer ou ajouter du stock sans demande d'autorisation
-        notifications = await stockDB.RemoveItemFromStock(con, numero_lot, materiauId, materiauName, transactionType, qte, commentaire, user,id_test_request=-1);
-    }else{
+        notifications = await stockDB.RemoveItemFromStock(con, numero_lot, materiauId, materiauName, transactionType, qte, commentaire, user, id_test_request = -1);
+    } else {
         //Dans le cas contraire demande de retrait/ajout
         console.log("Demande en attente d'approbation...");
         notifications = await stockDB.requestAddOrRemoveStock(req);
@@ -240,13 +240,13 @@ router.post('/approved-rejected', async (req, res) => {
     let user = req.session.username;
     let statut = 0;
     let notifications = {};
-    if(action == 1){  //Accepter
+    if (action == 1) {  //Accepter
         statut = 1
-        notifications = await stockDB.approvedRemoveItemStock(requestId,numero_lot,materiauId,materiauName,transactionType,qte,user,statut);
-    }else{ // Supprimer la demande
+        notifications = await stockDB.approvedRemoveItemStock(requestId, numero_lot, materiauId, materiauName, transactionType, qte, user, statut);
+    } else { // Supprimer la demande
         notifications = await stockDB.deleteRequestUserForStock(requestId);
     }
-    
+
     res.json(notifications);
 });
 
@@ -261,18 +261,18 @@ router.get('/requests', async (req, res) => {
     dateFrom = helpers.changeDateSymbol(dateFrom);
     let dateTo = helpers.formatDate(dateT, "FR");
     dateTo = helpers.changeDateSymbol(dateTo);
-    let data = await stockDB.stockRequestByUsers(dateF="All",dateT,statut);
+    let data = await stockDB.stockRequestByUsers(dateF = "All", dateT, statut);
     let pageTitle = "Demandes";
     params = {
         pageTitle: pageTitle,
         data: data,
         UserData: req.session.UserData,
-        statut : statut,
-        dateFrom : dateFrom,
-        dateTo : dateTo,
-        dateFromDB : dateF,
-        dateToDB : dateT,
-        page: 'StockMoving'
+        statut: statut,
+        dateFrom: dateFrom,
+        dateTo: dateTo,
+        dateFromDB: dateF,
+        dateToDB: dateT,
+        page: 'Request'
     };
     res.render('stock/request-remove-add', params);
 });
@@ -287,18 +287,18 @@ router.post('/requests', async (req, res) => {
     dateFrom = helpers.changeDateSymbol(dateFrom);
     let dateTo = helpers.formatDate(dateT, "EN");
     dateTo = helpers.changeDateSymbol(dateTo);
-    let data = await stockDB.stockRequestByUsers(dateFrom,dateTo,statut);
+    let data = await stockDB.stockRequestByUsers(dateFrom, dateTo, statut);
     let pageTitle = "Demandes";
     params = {
         pageTitle: pageTitle,
         data: data,
         UserData: req.session.UserData,
-        statut : statut,
-        dateFrom : dateFrom,
-        dateTo : dateTo,
-        dateFromDB : dateF,
-        dateToDB : dateT,
-        page: 'StockMoving'
+        statut: statut,
+        dateFrom: dateFrom,
+        dateTo: dateTo,
+        dateFromDB: dateF,
+        dateToDB: dateT,
+        page: 'Request'
     };
     res.render('stock/request-remove-add', params);
 });
@@ -411,23 +411,23 @@ router.post('/print-stock-move-report', async (req, res) => {
     let dateTo = req.body.DateTo;
     let materiauSelected = 'All';
     let infoMateriau = [];
-    if (req.body.materiauSelected) { 
+    if (req.body.materiauSelected) {
         materiauSelected = req.body.materiauSelected;
         infoMateriau = await stockDB.getMateriau(materiauSelected);
-     }
+    }
     //DATES
-    let data = await stockDB.stockMoving(dateFrom,dateTo,materiauSelected);
+    let data = await stockDB.stockMoving(dateFrom, dateTo, materiauSelected);
     console.log(infoMateriau);
     let dateN = helpers.getCurrentDate();
     let text_date = "";
-    materiauSelected = materiauSelected="All" ? "" : infoMateriau.nom_materiau;
+    materiauSelected = materiauSelected = "All" ? "" : infoMateriau.nom_materiau;
     if (dateFrom == dateTo) {
         text_date = "pour le " + helpers.formatDate(dateFrom, "FR");
     } else {
         text_date = "du " + helpers.formatDate(dateFrom, "FR") + " au " + helpers.formatDate(dateTo, "FR");
     }
     let pageTitle = "Mouvement de stock " + materiauSelected + "  " + text_date;
-    let report = "stock-move-"+dateN;
+    let report = "stock-move-" + dateN;
     let filename = report + ".pdf";
     let pathfile = "./tmp/" + filename;
     let template_name = "stock-move";

@@ -221,7 +221,9 @@
             $.post("/save-test-result", formData, function (data) {
                 console.log(data);
                 if (data.success) { //Success 
-                    $("#notifySaveExam").html(data.msg).fadeOut(5000);
+                    $("#notifySaveExam").html(data.msg).fadeOut(5000,function(){
+                        //window.location.replace("/manage-notifications");
+                    });
                 } else { // already saved get the result
                     $.post("/get-test-result", formData, function (data1) {
                         for (rs of data1) {
