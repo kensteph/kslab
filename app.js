@@ -42,6 +42,7 @@ app.get('/', async (req, res) => {
     global.nbRequestStock = 0;
     global.ifNotify = false;
     global.dataBaseCollation = 'KSlab ';
+    global.favicon = ""
     global.line1 = settings.line1;
     global.line2 = settings.line2;
     global.line3 = settings.line3;

@@ -15,9 +15,6 @@ tr:nth-child(even) {
     /* background-color: #d4d4d4; */
 }
 
-hr{
-    width: 90%;  
-}
 .logo{
     margin-top: 30px;
     padding-left: 30px;
@@ -36,7 +33,12 @@ hr{
 hr{
     text-align:center;
     width: 50%;
-    margin-top: 15px;
+    margin-top: 0px;
+}
+
+.hr-signature{
+    width: 100%;
+    margin-top: 10px;
 }
 
 .poste{
