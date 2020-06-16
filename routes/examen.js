@@ -311,6 +311,7 @@ router.post('/SaveTestResult', async (req, res) => {
         ifCompleted: ifCompleted,
         page: 'ListTest'
     };
+    //console.log(params);
     res.render('examens/save-test-patient', params);
 });
 //GET THES TEST'S PARAMETERS
