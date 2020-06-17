@@ -134,6 +134,14 @@ router.post('/remove-item', async (req, res) => {
     res.json(notifications);
 });
 
+//DELETE TEST
+router.post('/delete-exam', async (req, res) => {
+    console.log(req.body);
+    let id = req.body.ExamID;
+    let notifications = await examenDB.deleteExam(id);
+    res.json(notifications);
+});
+
 //REORDER TEST PARAMETERS
 router.post('/reorder-exam', async (req, res) => {
     console.log(req.body);

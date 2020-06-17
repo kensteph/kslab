@@ -82,6 +82,11 @@
 												onclick="launchEditExamen('<%= examen.nom_examen %>','<%= examen.id %>','<%= examen.type_resultat %>','<%= examen.is_bilan %>','<%= examen.if_test_or_param_test %>')"><i
 													class="fa fa-pencil m-r-5"></i> Modifier</a>
 											<% } %>
+											| 
+											<a href="#"
+												onclick="launchDeleteExamen('<%= examen.nom_examen %>','<%= examen.id %>')"><i
+													class="fa fa-trash m-r-5"></i> Supprimer</a>
+
 										</td>
 									</tr>
 									<% }) %>
@@ -139,18 +144,18 @@
 			</div>
 		</div>
 
-		<div id="delete_patient" class="modal fade delete-modal" role="dialog" data-keyboard="false">
+		<div id="DeleteExamen" class="modal fade delete-modal" role="dialog" data-keyboard="false">
 			<div class="modal-dialog modal-dialog-centered">
 				<div class="modal-content">
 					<div class="modal-body text-center">
 						<img src="assets/img/sent.png" alt="" width="50" height="46">
 						<form id="deleteForm">
-							<input type="hidden" name="patientID" id="patientID">
+							<input type="hidden" name="ExamID" id="ExamID">
 						</form>
-						<h3>Are you sure want to delete this Patient?</h3>
-						<div id="msg"></div>
-						<div class="m-t-20"> <a href="#" class="btn btn-white" data-dismiss="modal">Close</a>
-							<button type="submit" class="btn btn-danger" onclick="deletePatient()">Delete</button>
+						<h3>Voulez-vou supprimer <i id="ExamenName"></i>?</h3>
+						<div id="DeleteExamNotif"></div>
+						<div class="m-t-20"> <a href="#" class="btn btn-white" data-dismiss="modal">NON</a>
+							<button type="submit" class="btn btn-danger" onclick="deleteExam()">OUI</button>
 						</div>
 					</div>
 				</div>
@@ -285,7 +290,30 @@
 				}
 			});
 		}
-
+		//DELETE
+		function launchDeleteExamen(exam, examId) {
+			$("#DeleteExam").show().html("");
+			$("#ExamenName").html(exam);
+			$("#Examen").val(exam);
+			$("#ExamID").val(examId);
+			$("#DeleteExamen").modal();
+		}
+		deleteExam = function () {
+            $("#DeleteExamNotif").show().html("");
+            let formData = $("#deleteForm").serialize();
+            $.post("/delete-exam", formData, function (data) {
+                if (data.success) { //Success 
+                    $("#DeleteExamNotif").html(data.msg).fadeOut(2000, function () {
+						$("#DeleteExamen").modal('hide');
+						let item = $("#ExamID").val();
+                    	$("#row" + item).fadeOut(2000);
+					});
+                    
+                } else {
+                    $("#DeleteExamNotif").html(data.msg);
+                }
+            });
+        }
 	</script>
 	<!-- FOOTER -->
 	<%- include("../parts/footer") -%>

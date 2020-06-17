@@ -108,7 +108,7 @@ var self = module.exports = {
     //LIST OF ALL TEST 
     listOfTests: async function () {
         let promise = new Promise((resolve, reject) => {
-            let sql = "SELECT * FROM tb_examens WHERE if_test_or_param_test=1 ";
+            let sql = "SELECT * FROM tb_examens WHERE if_test_or_param_test=1 ORDER BY nom_examen";
             con.query(sql, function (err, rows) {
                 if (err) {
                     throw err;
@@ -324,7 +324,32 @@ var self = module.exports = {
         //console.log(data);
         return data;
     },
-
+   //TEST SIGNATURE
+   deleteExam: async function (id) {
+    let promise = new Promise((resolve, reject) => {
+        let sql = "DELETE FROM  tb_examens WHERE id=? ";
+        //console.log(sql+" ID : "+id);
+        con.query(sql, id, function (err, rows) {
+            if (err) {
+                //throw err;
+                resolve({
+                    msg: "Une erreur est survenue. S'il vous plait réessayez.",
+                    type: "danger",
+                    debug: err
+                });
+            } else {
+                resolve({
+                    msg: "Suppression effectuée avec succès....",
+                    success: true,
+                    debug: err
+                });
+            }
+        });
+    });
+    data = await promise;
+    //console.log(data);
+    return data;
+},
     //============================= SAVE TEST RESULT ==================================================
     //Save Test Result
     saveTestResult: async function (req) {
