@@ -471,7 +471,7 @@ var self = module.exports = {
     testRquestListForPeriod: async function (dateFrom, dateTo) {
         let promise = new Promise((resolve, reject) => {
             let line = [];
-            let sql = "SELECT DISTINCT(examen_id) as examen_id FROM tb_test_requests_contents WHERE DATE(date_record) BETWEEN '" + dateFrom + "' AND '" + dateTo + "'";
+            let sql = "SELECT DISTINCT(examen_id) as examen_id FROM tb_test_requests_contents WHERE DATE(date_record) BETWEEN '" + dateFrom + "' AND '" + dateTo + "' ORDER BY id";
             //console.log(sql);
             con.query(sql, async function (err, rows) {
                 if (err) {
@@ -482,12 +482,16 @@ var self = module.exports = {
                         //console.log("ITEM"+item.examen_id);
                         //Info about the exam
                         let infoExam = await examController.getExamById(item.examen_id);
-                        let qteDemande = await self.singleTestReport(dateFrom, dateTo, item.examen_id);
-                        let line_info = {
-                            Examen: infoExam[0].nom_examen,
-                            qty: qteDemande
-                        };
-                        line.push(line_info);
+                        if (typeof infoExam[0] != "undefined") {
+                            //console.log("EXAM " + infoExam[0].nom_examen);
+                            let qteDemande = await self.singleTestReport(dateFrom, dateTo, item.examen_id);
+                            let line_info = {
+                                Examen: infoExam[0].nom_examen,
+                                qty: qteDemande
+                            };
+                            line.push(line_info);
+                        }
+
                     }
                     resolve(line);
                 }
