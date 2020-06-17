@@ -79,7 +79,7 @@
 											<% } %>
 											<% if(UserData.user_sub_menu_access.includes("Modifier examens") || UserData.user_sub_menu_access[0]=="All"){%>
 											| <a href="#"
-												onclick="launchEditExamen('<%= examen.nom_examen %>','<%= examen.id %>','<%= examen.type_resultat %>','<%= examen.is_bilan %>')"><i
+												onclick="launchEditExamen('<%= examen.nom_examen %>','<%= examen.id %>','<%= examen.type_resultat %>','<%= examen.is_bilan %>','<%= examen.if_test_or_param_test %>')"><i
 													class="fa fa-pencil m-r-5"></i> Modifier</a>
 											<% } %>
 										</td>
@@ -185,7 +185,7 @@
 										</select>
 									</div>
 								</div>
-
+								
 								<div class="col-sm-6 col-md-6 col-lg-6">
 									<div class="form-group">
 										<label>Type résultat</label>
@@ -193,6 +193,17 @@
 											<option value="1">Valeurs normales</option>
 											<option value="2">Positif/Négatif</option>
 											<option value="3">Commentaires</option>
+										</select>
+									</div>
+								</div>
+							</div>
+							<div class="form-inline m-t-10">
+								<div class="col-sm-6 col-md-6 col-lg-6">
+									<div class="form-group">
+										<label>Test ou Paramètre</label>
+										<select class="form-control select" name="is_test" id="is_test">
+											<option value="0">Paramètre de test</option>
+											<option value="1">Test</option>
 										</select>
 									</div>
 								</div>
@@ -250,13 +261,14 @@
 				}
 			});
 		}
-		function launchEditExamen(exam, examId,type_resultat,is_bilan) {
+		function launchEditExamen(exam, examId,type_resultat,is_bilan,is_test) {
 			$("#Editnotify").show().html("");
 			$("#ExamenName").html(exam);
 			$("#Examen").val(exam);
 			$("#ExamenId").val(examId);
 			$("#type_resultat").val(type_resultat).change();
 			$("#ifbilan").val(is_bilan).change();
+			$("#is_test").val(is_test).change();
 			$("#editExamen").modal();
 		}
 		editExamen = function () {

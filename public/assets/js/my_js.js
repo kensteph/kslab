@@ -14,6 +14,7 @@ $(document).ready(function () {
         });
         //});
     });
+
     // var notifArrayId = [];
     // function notifList(data) {
     //     let sms = '<li class="notification-message">';
@@ -47,15 +48,15 @@ $(document).ready(function () {
     //SEARCH FOR A PATIENT
     $('#searchPatientInput').keyup(function (e) {
         let wordToSearch = $(this).val().trim();
-        if(wordToSearch.length>=2){
-            $.post("/live-search-patient",{key : wordToSearch}, function (data) {
+        if (wordToSearch.length >= 2) {
+            $.post("/live-search-patient", { key: wordToSearch }, function (data) {
                 console.log(data);
                 if (data) {
                     $("#ResultList").html("");
-                    for(i=0; i<data.length; i++){
+                    for (i = 0; i < data.length; i++) {
                         let item = data[i];
-                        let patient = "'"+item.patient+"'";;
-                        let line = '<li> <a href="#" onclick="selectPatient('+item.id_personne+','+patient+')" >'+item.patient+'</a></li>';
+                        let patient = "'" + item.patient + "'";;
+                        let line = '<li> <a href="#" onclick="selectPatient(' + item.id_personne + ',' + patient + ')" >' + item.patient + '</a></li>';
                         $("#ResultList").append(line);
                     }
                 } else {
@@ -63,26 +64,57 @@ $(document).ready(function () {
                     $("#ResultList").html("Aucun résultat...");
                 }
             });
-        }else{
+        } else {
             $("#ResultList").html("");
+        }
+    });
+
+    //SEARCH FOR A PATIENT
+    $('#searchPatientInput').click(function (e) {
+        let wordToSearch = $(this).val().trim();
+        if (wordToSearch.length >= 2) {
+            $.post("/live-search-patient", { key: wordToSearch }, function (data) {
+                console.log(data);
+                if (data) {
+                    $("#ResultList").html("");
+                    for (i = 0; i < data.length; i++) {
+                        let item = data[i];
+                        let patient = "'" + item.patient + "'";;
+                        let line = '<li> <a href="#" onclick="selectPatient(' + item.id_personne + ',' + patient + ')" >' + item.patient + '</a></li>';
+                        $("#ResultList").append(line);
+                    }
+                } else {
+                    //alert(data.msg);
+                    $("#ResultList").html("Aucun résultat...");
+                }
+            });
+        } else {
+            $("#ResultList").html("");
+        }
+    });
+    //Prevent users from submitting a form by hitting Enter
+    $(window).keydown(function (event) {
+        if (event.keyCode == 13) {
+            event.preventDefault();
+            return false;
         }
     });
 
 });
 
 
-function formToJSONString( form ) {
+function formToJSONString(form) {
     var obj = {};
-    var elements = form.querySelectorAll( "input, select, textarea" );
-    for( var i = 0; i < elements.length; ++i ) {
+    var elements = form.querySelectorAll("input, select, textarea");
+    for (var i = 0; i < elements.length; ++i) {
         var element = elements[i];
         var name = element.name;
         var value = element.value;
 
-        if( name ) {
-            obj[ name ] = value;
+        if (name) {
+            obj[name] = value;
         }
     }
 
-    return JSON.stringify( obj );
+    return JSON.stringify(obj);
 }

@@ -133,6 +133,32 @@ router.post('/remove-item', async (req, res) => {
     let notifications = await examenDB.removeItem(req);
     res.json(notifications);
 });
+
+//REORDER TEST PARAMETERS
+router.post('/reorder-exam', async (req, res) => {
+    console.log(req.body);
+    let id_param_exam = req.body.itemID;
+    let id_exam = req.body.examID;
+    let position = req.body.position;
+    let notifications = await examenDB.reOrderExam(id_exam, id_param_exam, position);
+    res.json(notifications);
+});
+
+//REORDER ALL TEST PARAMETERS
+router.post('/reorder-all-exam', async (req, res) => {
+    console.log(req.body);
+    let id_exam = req.body.examID;
+    let id_param_exam = req.body.parameters;
+    let position = req.body.position;
+    let i = 0;
+    for (idParamExam of id_param_exam) {
+        let rep = await examenDB.reOrderExam(id_exam, idParamExam, position[i]);
+        i++;
+    }
+
+    res.json({ success: true });
+});
+
 //SAVE TEST VALEURS NORMALES
 router.post('/save-test-valeurs-normales', async (req, res) => {
     console.log(req.body);
@@ -171,7 +197,7 @@ router.get('/add-test-materiaux', async (req, res) => {
 router.get('/test-laboratoire', async (req, res) => {
     let pageTitle = "Demande de  test laboratoire";
     let data = await patientDB.listOfAllPatients();
-    let dataExam = await examenDB.listOfExams();
+    let dataExam = await examenDB.listOfTests();
     let patientSelected = -1;
     //console.log("USER : "+req.session.user);
     params = {
@@ -188,7 +214,7 @@ router.get('/test-laboratoire', async (req, res) => {
 router.post('/test-laboratoire', async (req, res) => {
     let pageTitle = "Demande de  test laboratoire";
     let data = await patientDB.listOfAllPatients();
-    let dataExam = await examenDB.listOfExams();
+    let dataExam = await examenDB.listOfTests();
     // let id_exam = data.testId;
     // let info = await stockDB.getTestMateriaux(id_exam);
     // console.log("MATERIAUX : "+info);
@@ -294,10 +320,23 @@ router.post('/SaveTestResult', async (req, res) => {
     let dossier_patient = fullname + " [" + num_patient + "]";
     let patientSelected = { fullname: fullname, sexe: sexe_patient, num_patient: num_patient, dossier: dossier_patient, docteur: docteur };
     let id_test_request = req.body.testRequestId;
-    //Verifier le nombre de resultat à enregistrer pour ce TEST
-    let infoTest = await testDB.testResultSavedVerification(id_test_request);
-    let data = infoTest['TestRequestContent'];
-    let ifCompleted = infoTest['ifCompleted'];
+    let requestStatus = req.body.statut
+    //Info about the test Request
+    //let testRequestInfo = await testDB.testRequestInfo(id_test_request);
+
+    let ifCompleted = false;
+    let data = [];
+    if (requestStatus == 0) { //A pending request
+        console.log("REQUEST STATUS : " + requestStatus);
+        //Verifier le nombre de resultat à enregistrer pour ce TEST
+        let infoTest = await testDB.testResultSavedVerification(id_test_request);
+        data = infoTest['TestRequestContent'];
+        ifCompleted = infoTest['ifCompleted'];
+    } else {
+        data = await examenDB.testRequestContent(id_test_request);
+        ifCompleted = true;
+    }
+
     let pageTitle = "Enregistrement résultat pour :";
     if (ifCompleted) {
         pageTitle = "Modification résultat pour :";

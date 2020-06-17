@@ -35,15 +35,15 @@
                 </div>
             </div>
             <div class="row">
-                
+
                 <div class="col-lg-8 offset-lg-2">
                     <% if( locals.notifications){ %>
-                        <div class="alert alert-<%= locals.notifications.type %> alert-dismissible fade show" role="alert">
-                            <%= locals.notifications.msg %>
-                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                <span aria-hidden="true">×</span>
-                            </button>
-                        </div>
+                    <div class="alert alert-<%= locals.notifications.type %> alert-dismissible fade show" role="alert">
+                        <%= locals.notifications.msg %>
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                    </div>
                     <% } %>
 
                     <% if( locals.data ){
@@ -51,6 +51,7 @@
                                 nomExamen = data.prenom;
                                 ifBilan = data.sexe;
                                 typeResultat = data.statut;
+                                ifTest = data.if_test_or_param_test;
                            %>
 
                     <% }else{   
@@ -58,6 +59,7 @@
                                 nomExamen = "";
                                 ifBilan = "";
                                 typeResultat = "";
+                                ifTest = "";
                            }
                             %>
                     <form method="POST" action="">
@@ -69,7 +71,7 @@
                                         required>
                                 </div>
                             </div>
-                            
+
                             <div class="col-sm-6 col-md-6 col-lg-3">
                                 <div class="form-group">
                                     <label>Bilan</label>
@@ -79,41 +81,37 @@
                                     </select>
                                 </div>
                             </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6 col-md-6 col-lg-3">
+                                <div class="form-group">
+                                    <label>Test ou paramètre</label>
+                                    <select class="form-control select" name="is_test">
+                                        <option value="0" <% if(ifBilan == 0 ){ %> selected <% } %>>Paramètre de test
+                                        </option>
+                                        <option value="1" <% if(ifBilan == 1 ){ %> selected <% } %>>Test</option>
+                                    </select>
+                                </div>
+                            </div>
 
                             <div class="col-sm-6 col-md-6 col-lg-3">
                                 <div class="form-group">
                                     <label>Type résultat</label>
                                     <select class="form-control select" name="typeResultat">
-                                        <option value="1" <% if(typeResultat == 1 ){ %> selected <% } %>>Valeurs normales</option>
-                                        <option value="2" <% if(typeResultat == 2 ){ %> selected <% } %>>Positif/Négatif</option>
-                                        <option value="3" <% if(typeResultat == 3 ){ %> selected <% } %>>Commentaires</option>
+                                        <option value="1" <% if(typeResultat == 1 ){ %> selected <% } %>>Valeurs
+                                            normales</option>
+                                        <option value="2" <% if(typeResultat == 2 ){ %> selected <% } %>>Positif/Négatif
+                                        </option>
+                                        <option value="3" <% if(typeResultat == 3 ){ %> selected <% } %>>Commentaires
+                                        </option>
                                     </select>
                                 </div>
                             </div>
-                            
-                                <% if( locals.data ){ %>
-                                <input type="hidden" name="patientID" value="<%=data.id%>">
-                                <div class="form-group">
-                                    <label class="display-block">Statut</label>
-                                    <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="radio" name="status" id="patient_active"
-                                            value="1" <% if(statut  == 1 ){ %> checked <% } %>>
-                                        <label class="form-check-label" for="patient_active">
-                                            Actif
-                                        </label>
-                                    </div>
-                                    <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="radio" name="status" id="patient_inactive"
-                                            value="0" <% if(statut  == 0 ){ %> checked <% } %>>
-                                        <label class="form-check-label" for="patient_inactive">
-                                            Inactif
-                                        </label>
-                                    </div>
-                                </div>
-                                <% } %>
-                                <div class="m-t-20 text-center">
-                                    <button class="btn btn-primary submit-btn"><%=buttonText%></button>
-                                </div>
+
+                        </div>
+                            <div class="m-t-20">
+                                <button class="btn btn-primary submit-btn"><%=buttonText%></button>
+                            </div>
                     </form>
                 </div>
             </div>

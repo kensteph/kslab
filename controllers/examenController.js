@@ -7,8 +7,9 @@ var self = module.exports = {
             let nom_examen = req.body.nomExamen;
             let type_examen = req.body.typeResultat;
             let ifbilan = req.body.ifbilan;
+            let ifTest = req.body.is_test;
             let sql =
-                'INSERT INTO tb_examens (nom_examen,type_resultat,is_bilan) VALUES ("' + nom_examen + '","' + type_examen + '","' + ifbilan + '")';
+                'INSERT INTO tb_examens (nom_examen,type_resultat,is_bilan,if_test_or_param_test) VALUES ("' + nom_examen + '","' + type_examen + '","' + ifbilan + '","' + ifTest + '")';
             con.query(sql, function (err, result) {
                 if (err) {
                     msg = {
@@ -41,9 +42,9 @@ var self = module.exports = {
             let examenID = req.body.examenID;
             let type_resultat = req.body.typeResultat;
             let is_bilan = req.body.is_bilan;
-
+            let is_test = req.body.is_test;
             let sql =
-                'UPDATE tb_examens SET nom_examen="' + examen + '", type_resultat =' + type_resultat + ', is_bilan=' + is_bilan + ' WHERE id=?';
+                'UPDATE tb_examens SET nom_examen="' + examen + '", type_resultat =' + type_resultat + ', is_bilan=' + is_bilan + ',if_test_or_param_test=' + is_test + ' WHERE id=?';
             // console.log(sql);
             con.query(sql, examenID, function (err, result) {
                 if (err) {
@@ -87,10 +88,27 @@ var self = module.exports = {
         //console.log(data); 
         return data;
     },
-    //
+    //LIST OF ALL TEST PARAMETERS
     listOfExamsParameters: async function () {
         let promise = new Promise((resolve, reject) => {
-            let sql = "SELECT * FROM tb_examens WHERE is_bilan=0 ";
+            let sql = "SELECT * FROM tb_examens WHERE if_test_or_param_test=0 ";
+            con.query(sql, function (err, rows) {
+                if (err) {
+                    throw err;
+                } else {
+                    resolve(rows);
+                }
+            });
+        });
+        data = await promise;
+        //console.log(data); 
+        return data;
+    },
+
+    //LIST OF ALL TEST 
+    listOfTests: async function () {
+        let promise = new Promise((resolve, reject) => {
+            let sql = "SELECT * FROM tb_examens WHERE if_test_or_param_test=1 ";
             con.query(sql, function (err, rows) {
                 if (err) {
                     throw err;
@@ -230,7 +248,7 @@ var self = module.exports = {
     //TEST REQUEST CONTENTS
     getExamParameters: async function (id) {
         let promise = new Promise((resolve, reject) => {
-            let sql = "SELECT * FROM tb_parametres_examens,tb_examens WHERE tb_parametres_examens.id_param_exam=tb_examens.id AND id_examen = ? ";
+            let sql = "SELECT * FROM tb_parametres_examens,tb_examens WHERE tb_parametres_examens.id_param_exam=tb_examens.id AND id_examen = ? ORDER BY position,nom_examen ";
             //console.log(sql+" ID : "+id);
             con.query(sql, id, function (err, rows) {
                 if (err) {
@@ -245,6 +263,30 @@ var self = module.exports = {
         //console.log(data);
         return data;
     },
+    //SET EXAM POSITION
+    reOrderExam: async function (id_examen,id_param_exam,position) {
+        let promise = new Promise((resolve, reject) => {
+            let sql = "UPDATE tb_parametres_examens SET position =" + position + " WHERE id_examen =? AND id_param_exam=?";
+            con.query(sql,[id_examen,id_param_exam], function (err, rows) {
+                if (err) {
+                    resolve({
+                        msg: "Une erreur est survenue. S'il vous plait réessayez.",
+                        type: "danger",
+                        debug: err
+                    });
+                } else {
+                    resolve({
+                        msg: "La position a été modifiée avec succès.",
+                        success: "success"
+                    });
+                }
+            });
+        });
+        data = await promise;
+        //console.log(data);
+        return data;
+    },
+
     //TEST REQUEST COUNT SAVED RESULT
     countSavedResultsForATestRequest: async function (test_request_id) {
         let promise = new Promise((resolve, reject) => {

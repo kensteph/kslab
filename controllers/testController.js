@@ -263,6 +263,25 @@ var self = module.exports = {
         data = await promise;
         return data;
     },
+    //TEST REQUEST CONTENTS
+    testRequestInfo: async function (id) {
+        let promise = new Promise((resolve, reject) => {
+            let sql = "SELECT * FROM tb_test_requests WHERE id = ? ";
+            //console.log(sql+" ID : "+id);
+            con.query(sql, id, function (err, rows) {
+                if (err) {
+                    //throw err;
+                    resolve([{ fullname: "" }]);
+                } else {
+                    resolve(rows[0]);
+                }
+            });
+        });
+        data = await promise;
+        //console.log(data);
+        return data;
+    },
+
     //EDIT DOCTOR OR INSTITUTION
     modifyDoctorInfo: async function (id_test, doctor) {
         let promise = new Promise((resolve, reject) => {
