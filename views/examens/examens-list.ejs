@@ -65,10 +65,11 @@
 											</a>
 											<% } %> -->
 											<% if(examen.is_bilan == 0 && examen.type_resultat==1){ %>
-												<% if(UserData.user_sub_menu_access.includes("Ajouter valeurs normales") || UserData.user_sub_menu_access[0]=="All"){%>
-													<a href="#" title="Ajouter les valeurs normales"
-														onclick="addVN('<%= examen.id %>','<%= examen.nom_examen %>')"> | Valeurs Normales</i></a>
-												<% } %>
+											<% if(UserData.user_sub_menu_access.includes("Ajouter valeurs normales") || UserData.user_sub_menu_access[0]=="All"){%>
+											<a href="#" title="Ajouter les valeurs normales"
+												onclick="addVN('<%= examen.id %>','<%= examen.nom_examen %>')"> |
+												Valeurs Normales</i></a>
+											<% } %>
 											<% } %>
 										</td>
 										<td><%=TYPE_RESULTAT[examen.type_resultat] %></td>
@@ -82,11 +83,12 @@
 												onclick="launchEditExamen('<%= examen.nom_examen %>','<%= examen.id %>','<%= examen.type_resultat %>','<%= examen.is_bilan %>','<%= examen.if_test_or_param_test %>')"><i
 													class="fa fa-pencil m-r-5"></i> Modifier</a>
 											<% } %>
-											| 
+											<% if(UserData.user_sub_menu_access.includes("Supprimer examens") || UserData.user_sub_menu_access[0]=="All"){%>
+											|
 											<a href="#"
 												onclick="launchDeleteExamen('<%= examen.nom_examen %>','<%= examen.id %>')"><i
 													class="fa fa-trash m-r-5"></i> Supprimer</a>
-
+											<% } %>
 										</td>
 									</tr>
 									<% }) %>
@@ -111,24 +113,29 @@
 							<input type="hidden" id="examId" name="examId">
 							<div class="form-inline">
 								<div class="col-sm-3 col-md-3 col-lg-3">
-									<input class="form-control" title="Unité de mesure" placeholder="Unité de mesure" type="text" name="unite">
+									<input class="form-control" title="Unité de mesure" placeholder="Unité de mesure"
+										type="text" name="unite">
 								</div>
 							</div>
 							<div class="form-inline">
 								<div class="col-sm-5 col-md-5 col-lg-5 text-left m-t-10">
-									<input class="form-control" title="Nouveau Né" placeholder="Nouveau Né" type="text" name="bebe">
+									<input class="form-control" title="Nouveau Né" placeholder="Nouveau Né" type="text"
+										name="bebe">
 								</div>
 								<div class="col-sm-5 col-md-5 col-lg-5  m-t-10  m-l-5">
-									<input class="form-control" title="Enfant" placeholder="Enfant" type="text" name="enfant">
+									<input class="form-control" title="Enfant" placeholder="Enfant" type="text"
+										name="enfant">
 								</div>
 								<div class="col-sm-5 col-md-5 col-lg-5  m-t-10">
 									<input class="form-control" placeholder="Adolescent" type="text" name="ado">
 								</div>
 								<div class="col-sm-5 col-md-5 col-lg-5  m-t-10  m-l-5">
-									<input class="form-control" title="Femme" placeholder="Femme" type="text" name="femme">
+									<input class="form-control" title="Femme" placeholder="Femme" type="text"
+										name="femme">
 								</div>
 								<div class="col-sm-5 col-md-5 col-lg-5  m-t-10">
-									<input class="form-control" title="Homme" placeholder="Homme" type="text" name="homme">
+									<input class="form-control" title="Homme" placeholder="Homme" type="text"
+										name="homme">
 								</div>
 							</div>
 
@@ -190,7 +197,7 @@
 										</select>
 									</div>
 								</div>
-								
+
 								<div class="col-sm-6 col-md-6 col-lg-6">
 									<div class="form-group">
 										<label>Type résultat</label>
@@ -247,7 +254,7 @@
 			e.preventDefault();
 			saveVN();
 		});
-		function addVN(id_exam,exam) {
+		function addVN(id_exam, exam) {
 			$("#SaveVNtoDB")[0].reset();
 			$("#msg").show().html("");
 			$("#examId").val(id_exam);
@@ -266,7 +273,7 @@
 				}
 			});
 		}
-		function launchEditExamen(exam, examId,type_resultat,is_bilan,is_test) {
+		function launchEditExamen(exam, examId, type_resultat, is_bilan, is_test) {
 			$("#Editnotify").show().html("");
 			$("#ExamenName").html(exam);
 			$("#Examen").val(exam);
@@ -283,7 +290,7 @@
 				if (data.success) { //Success 
 					let id = $("#ExamenId").val();
 					$("#Editnotify").html(data.msg).fadeOut(5000, () => {
-						window.location.replace("/exam-details?examId="+id);
+						window.location.replace("/exam-details?examId=" + id);
 					});
 				} else {
 					$("#Editnotify").html(data.msg);
@@ -299,21 +306,21 @@
 			$("#DeleteExamen").modal();
 		}
 		deleteExam = function () {
-            $("#DeleteExamNotif").show().html("");
-            let formData = $("#deleteForm").serialize();
-            $.post("/delete-exam", formData, function (data) {
-                if (data.success) { //Success 
-                    $("#DeleteExamNotif").html(data.msg).fadeOut(2000, function () {
+			$("#DeleteExamNotif").show().html("");
+			let formData = $("#deleteForm").serialize();
+			$.post("/delete-exam", formData, function (data) {
+				if (data.success) { //Success 
+					$("#DeleteExamNotif").html(data.msg).fadeOut(2000, function () {
 						$("#DeleteExamen").modal('hide');
 						let item = $("#ExamID").val();
-                    	$("#row" + item).fadeOut(2000);
+						$("#row" + item).fadeOut(2000);
 					});
-                    
-                } else {
-                    $("#DeleteExamNotif").html(data.msg);
-                }
-            });
-        }
+
+				} else {
+					$("#DeleteExamNotif").html(data.msg);
+				}
+			});
+		}
 	</script>
 	<!-- FOOTER -->
 	<%- include("../parts/footer") -%>

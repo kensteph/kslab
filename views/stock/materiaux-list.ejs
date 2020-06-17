@@ -63,7 +63,7 @@
                                     <tr id="row<%= materiau.id %>">
                                         <td>
                                             <% if(UserData.user_sub_menu_access.includes("Ajouter Stock") || UserData.user_sub_menu_access[0]=="All"){%>
-                                            <a href="#"
+                                            <a href="#" title="Ajouter un nouveau stock <%= materiau.nom_materiau %>"
                                                 onclick="launchStockUp('<%= materiau.nom_materiau %>','<%= materiau.id %>')">
                                                 <%= materiau.nom_materiau %>
                                             </a>
