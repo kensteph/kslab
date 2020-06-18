@@ -78,7 +78,7 @@ var self = module.exports = {
         let promise = new Promise((resolve, reject) => {
             let sql = "";
             sql = "SELECT CONCAT(" + field_p + ",' ',unite ) as vn FROM tb_valeurs_normales WHERE exam_id=" + exam_id;
-            console.log(sql);
+            //console.log(sql);
             con.query(sql, function (err, rows) {
                 if (err) {
                     throw err;

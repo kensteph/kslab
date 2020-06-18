@@ -331,11 +331,10 @@ router.post('/SaveTestResult', async (req, res) => {
     let requestStatus = req.body.statut
     //Info about the test Request
     //let testRequestInfo = await testDB.testRequestInfo(id_test_request);
-
+    //console.log("REQUEST STATUS : " + requestStatus);
     let ifCompleted = false;
     let data = [];
     if (requestStatus == 0) { //A pending request
-        console.log("REQUEST STATUS : " + requestStatus);
         //Verifier le nombre de resultat à enregistrer pour ce TEST
         let infoTest = await testDB.testResultSavedVerification(id_test_request);
         data = infoTest['TestRequestContent'];
@@ -363,7 +362,7 @@ router.post('/SaveTestResult', async (req, res) => {
 });
 //GET THES TEST'S PARAMETERS
 router.post('/get-test-parameters', async (req, res) => {
-    //console.log(req.body);
+    console.log(req.body);
     let id_exam = req.body.examID;
     let info = await examenDB.getExamParameters(id_exam);
     if (info.length == 0) {
@@ -375,16 +374,17 @@ router.post('/get-test-parameters', async (req, res) => {
 });
 //SAVE TEST RESULT TO DB
 router.post('/save-test-result', async (req, res) => {
-    //console.log(req.body);
+    //console.log("SAVE TO DB : "+req.body);
     let id_test_request = req.body.testRequestId;
     let notifications = await examenDB.saveTestResult(req);
+    console.log(notifications);
     //VERIFY IF ALL TEST RESULT IS SAVED IN ORDER TO CHANGE THE STATUS
     let infoTest = await testDB.testResultSavedVerification(id_test_request);
     res.json(notifications);
 });
 //EDIT TEST RESULT TO DB
 router.post('/edit-test-result', async (req, res) => {
-    //console.log(req.body);
+    console.log(req.body);
     let notifications = await examenDB.editTestResult(req);
     //console.log("EDIT RESULTAT : "+notifications.msg);
     res.json(notifications);
@@ -441,14 +441,16 @@ router.post('/delete-test-request', async (req, res) => {
 //
 //GET THES TEST'S RESULT
 router.post('/get-test-result', async (req, res) => {
+    console.log(req.body);
     let tests_id = req.body.test;
     let test_request_id = req.body.testRequestId;
+    let ExamParent = req.body.ExamID;
     let data = [];
     for (idTest of tests_id) {
-        let testResult = await examenDB.getTestResult(test_request_id, idTest);
+        let testResult = await examenDB.getTestResult(test_request_id, idTest,ExamParent);
         data.push(testResult);
     }
-    console.log(data);
+    //console.log(data);
     res.json(data);
 });
 
@@ -463,7 +465,7 @@ router.post('/display-test-result', async (req, res) => {
     let docteur = req.body.docteur;
     let title = helpers.titleByAge(patientAge, patientSexe);
     let signature = await examenDB.getTestSignature(test_request_id);
-    console.log("SIGNATURE : " + signature);
+    //console.log("SIGNATURE : " + signature);
     let data = await examenDB.testRequestContent(test_request_id);
     let date_resultat = helpers.formatDate(helpers.getCurrentDate(), "FR");
     let resultaFinal = [];
@@ -481,7 +483,7 @@ router.post('/display-test-result', async (req, res) => {
         let ValeurNormal = [];
         if (infoParams.length == 0) {
             infoParams = await examenDB.getExamById(id_exam);
-            let testResult = await examenDB.getTestResult(test_request_id, id_exam);
+            let testResult = await examenDB.getTestResult(test_request_id, id_exam,id_exam);
             let VN = await testDB.valeurNormalExam(title, id_exam);
             if (typeof testResult == "undefined") {
                 testResult = { resultat: "" };
@@ -496,7 +498,7 @@ router.post('/display-test-result', async (req, res) => {
 
             for (testParam of infoParams) {
                 //console.log(testParam);
-                let testResult = await examenDB.getTestResult(test_request_id, testParam.id_param_exam);
+                let testResult = await examenDB.getTestResult(test_request_id, testParam.id_param_exam,id_exam);
                 let VN = await testDB.valeurNormalExam(title, testParam.id_param_exam);
                 //console.log(VN);
                 if (typeof testResult == "undefined") {
@@ -548,14 +550,14 @@ router.post('/display-test-result', async (req, res) => {
 
 //DISPLAY TEST RESULT
 router.post('/verify-test-result', async (req, res) => {
-    console.log(req.body);
+    //console.log(req.body);
     let test_request_id = req.body.id_test_request;
     let patient = req.body.patient;
     let data = await examenDB.testRequestContent(test_request_id);
     let date_resultat = helpers.formatDate(helpers.getCurrentDate(), "FR");
     let resultaFinal = [];
     for (test of data) {
-        console.log("TESTS LIST : " + test.examen_id);
+       // console.log("TESTS LIST : " + test.examen_id);
         //Pour chaque TEST on va chercher ses parametres
         let id_exam = test.examen_id;
         let name_exam = test.nom_examen;
@@ -565,17 +567,17 @@ router.post('/verify-test-result', async (req, res) => {
         let Resultats = [];
         if (infoParams.length == 0) {
             infoParams = await examenDB.getExamById(id_exam);
-            let testResult = await examenDB.getTestResult(test_request_id, id_exam);
+            let testResult = await examenDB.getTestResult(test_request_id, id_exam,id_exam);
             if (typeof testResult == "undefined") {
                 testResult = { resultat: "" };
             }
             Resultats.push(testResult);
         } else {
-            console.log("PARAMETERS FOR " + name_exam + " : " + infoParams[0]);
+            //console.log("PARAMETERS FOR " + name_exam + " : " + infoParams[0]);
 
             for (testParam of infoParams) {
                 //console.log(testParam);
-                let testResult = await examenDB.getTestResult(test_request_id, testParam.id_param_exam);
+                let testResult = await examenDB.getTestResult(test_request_id, testParam.id_param_exam,id_exam);
                 console.log(testResult);
                 if (typeof testResult == "undefined") {
                     testResult = { resultat: "" };
@@ -588,7 +590,7 @@ router.post('/verify-test-result', async (req, res) => {
         resultaFinal.push(info);
     }
 
-    console.log("FINAL : " + resultaFinal[0].Parameters[0].nom_examen + " : " + resultaFinal[0].Resultats[0].resultat);
+    //console.log("FINAL : " + resultaFinal[0].Parameters[0].nom_examen + " : " + resultaFinal[0].Resultats[0].resultat);
 
     let pageTitle = "Résultats Tests # " + test_request_id + " | " + patient;
     params = {
@@ -614,9 +616,9 @@ router.get('/lab-tests-report', async (req, res) => {
         dateFrom = "All";
         status = req.query.status;
     }
-    console.log(dateFrom + " | " + status);
+    //console.log(dateFrom + " | " + status);
     let data = await testDB.testRquestListForPeriod(dateFrom, dateTo);
-    console.log(data);
+    //console.log(data);
     let text_date = "";
     if (dateFrom == dateTo) {
         text_date = "du " + helpers.formatDate(dateFrom, "FR");

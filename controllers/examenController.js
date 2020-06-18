@@ -258,7 +258,7 @@ var self = module.exports = {
                     resolve(rows);
                 }
             });
-        });
+        });  
         data = await promise;
         //console.log(data);
         return data;
@@ -291,7 +291,7 @@ var self = module.exports = {
     countSavedResultsForATestRequest: async function (test_request_id) {
         let promise = new Promise((resolve, reject) => {
             let sql = "SELECT COUNT(examen_id) as nb_resultat_saved FROM tb_resultats WHERE test_request_id = ? ";
-            console.log(sql + " ID : " + test_request_id);
+            //console.log(sql + " ID : " + test_request_id);
             con.query(sql, test_request_id, function (err, rows) {
                 if (err) {
                     //throw err;
@@ -359,20 +359,25 @@ var self = module.exports = {
                 let test_request_id = req.body.testRequestId;
                 let tests_id = req.body.test;
                 let testResults = req.body.resultat;
+                let ExamParent = req.body.ExamID;
                 let values = [];
                 let pos = 0;
+                
                 for (item of testResults) {
                     let resultat = testResults[pos];
                     let examen_id = tests_id[pos];
+                    let saveID = ExamParent+""+examen_id;
                     let line = [];
                     line[0] = test_request_id;
                     line[1] = examen_id;
-                    line[2] = resultat;
+                    line[2] = ExamParent;
+                    line[3] = resultat;
+                    line[4] = saveID;
                     values.push(line);
                     pos++;
                 }
                 let sql =
-                    'INSERT INTO tb_resultats (test_request_id	,examen_id,resultat) VALUES ?';
+                    'INSERT INTO tb_resultats (test_request_id,examen_id,exam_parent,resultat,id_save) VALUES ?';
                 con.query(sql, [values], async function (err, result) {
                     if (err) {
                         msg = {
@@ -409,10 +414,10 @@ var self = module.exports = {
         return rep;
     },
     //Save Single Test Result
-    saveSingleTestResult: async function (test_request_id, examen_id, resultat) {
+    saveSingleTestResult: async function (test_request_id, examen_id, resultat,save_id,exam_parent) {
         let promise = new Promise((resolve, reject) => {
             let sql =
-                'INSERT INTO tb_resultats (test_request_id,examen_id,resultat) VALUES (' + test_request_id + ',' + examen_id + ',"' + resultat + '")';
+                'INSERT INTO tb_resultats (test_request_id,examen_id,exam_parent,resultat,save_id) VALUES (' + test_request_id + ',' + examen_id + ',' + exam_parent + ',"' + resultat + '","' + save_id + '")';
             con.query(sql, async function (err, result) {
                 if (err) {
                     msg = {
@@ -446,11 +451,14 @@ var self = module.exports = {
             let test_request_id = req.body.testRequestId;
             let tests_id = req.body.test;
             let testResults = req.body.resultat;
+            let SavedIDs = req.body.SavedID;
+            let ExamParent = req.body.ExamID;
             let pos = 0;
             for (item of testResults) {
                 let resultat = testResults[pos];
                 let examen_id = tests_id[pos];
-                await self.editSingleTestResult(test_request_id, examen_id, resultat);
+                let savedId = SavedIDs[pos];
+                await self.editSingleTestResult(test_request_id, examen_id, resultat,savedId,ExamParent);
                 pos++;
             }
             msg = {
@@ -471,10 +479,10 @@ var self = module.exports = {
     },
 
     //UPDATE SINGLE TEST RESULTS
-    editSingleTestResult: async function (test_request_id, examen_id, resultat) {
+    editSingleTestResult: async function (test_request_id, examen_id, resultat,saveId,ExamParent) {
         let promise = new Promise((resolve, reject) => {
             let sql =
-                'UPDATE tb_resultats SET resultat="' + resultat + '" WHERE test_request_id =' + test_request_id + ' AND  examen_id=' + examen_id + ' ';
+                'UPDATE tb_resultats SET resultat="' + resultat + '" WHERE id_save=' + saveId + ' ';
             //console.log(sql);
             con.query(sql, async function (err, result) {
                 if (err) {
@@ -488,7 +496,8 @@ var self = module.exports = {
                     let nb_success = result.affectedRows;
                     if (nb_success == 0) { //Enregistrer le nouveau test
                         console.log("SAve the test...");
-                        await self.saveSingleTestResult(test_request_id, examen_id, resultat);
+                        let save_id = ExamParent+""+examen_id;
+                        await self.saveSingleTestResult(test_request_id, examen_id, resultat,save_id,ExamParent);
                     }
                     msg = {
                         type: "success",
@@ -507,11 +516,11 @@ var self = module.exports = {
         return rep;
     },
     //TEST REQUEST CONTENTS
-    getTestResult: async function (test_request_id, examen_id) {
+    getTestResult: async function (test_request_id, examen_id,ExamParent) {
         let promise = new Promise((resolve, reject) => {
-            let sql = "SELECT * FROM tb_resultats,tb_examens WHERE tb_resultats.examen_id=tb_examens.id AND test_request_id =? AND tb_resultats.examen_id = ?  ";
-            //console.log(sql+" ID : "+id);
-            con.query(sql, [test_request_id, examen_id], function (err, rows) {
+            let sql = "SELECT * FROM tb_resultats,tb_examens WHERE tb_resultats.examen_id=tb_examens.id AND test_request_id =? AND tb_resultats.examen_id = ? AND exam_parent=? ";
+           //console.log(sql+" EXAMEN ID : "+examen_id+" REQUEST ID "+test_request_id);
+            con.query(sql, [test_request_id, examen_id,ExamParent], function (err, rows) {
                 if (err) {
                     throw err;
                     resolve([{ fullname: "" }]);
