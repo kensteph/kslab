@@ -1,40 +1,41 @@
 //jshint esversion:6
-const express = require('express');
-const bodyParser = require('body-parser');
+const express = require("express");
+const bodyParser = require("body-parser");
 const router = express.Router();
 // const helpers = require('../helpers/helpers');
-const examenDB = require('../controllers/examenController.js');
-const testDB = require('../controllers/testController.js');
-const patientDB = require('../controllers/patientController');
-const stockDB = require('../controllers/stockController.js');
-const helpers = require('../helpers/helpers');
-const fs = require('fs-extra');
-const printer = require('../print/print');
+const examenDB = require("../controllers/examenController.js");
+const testDB = require("../controllers/testController.js");
+const patientDB = require("../controllers/patientController");
+const stockDB = require("../controllers/stockController.js");
+const helpers = require("../helpers/helpers");
+const fs = require("fs-extra");
+const printer = require("../print/print");
 
 // router.use(bodyParser.urlencoded({ extended: true }));
 // router.use(express.static('public'));
 // ADD EXAM
-router.get('/add-examens', async (req, res) => {
+router.get("/add-examens", async (req, res) => {
     if (typeof req.session.UserData != "undefined") {
-        if (req.session.UserData.user_sub_menu_access.includes("Ajouter examens") || req.session.UserData.user_sub_menu_access[0] == "All") {
+        if (
+            req.session.UserData.user_sub_menu_access.includes("Ajouter examens") ||
+            req.session.UserData.user_sub_menu_access[0] == "All"
+        ) {
             /// FULL ACCESS
             let pageTitle = "Nouvel examen";
             params = {
                 pageTitle: pageTitle,
                 UserData: req.session.UserData,
-                page: 'NewExam'
+                page: "NewExam",
             };
-            res.render('examens/add-examens', params);
-
+            res.render("examens/add-examens", params);
         } else {
             res.redirect(global.USER_HOME_PAGE);
         }
-
     } else {
         res.redirect("/");
     }
 });
-router.post('/add-examens', async (req, res) => {
+router.post("/add-examens", async (req, res) => {
     //console.log(req.body);
     let notifications = await examenDB.saveExam(req, res);
     //console.log(notifications);
@@ -43,20 +44,25 @@ router.post('/add-examens', async (req, res) => {
         pageTitle: pageTitle,
         notifications: notifications,
         UserData: req.session.UserData,
-        page: 'NewExam'
+        page: "NewExam",
     };
-    res.render('examens/add-examens', params);
+    res.render("examens/add-examens", params);
 });
 //EDIT EXAM
-router.post('/edit-exam', async (req, res) => {
+router.post("/edit-exam", async (req, res) => {
     //console.log(req.body);
     let notifications = await examenDB.editExam(req);
     res.json(notifications);
 });
 // //EXAMS LIST
-router.get('/examens', async (req, res) => {
+router.get("/examens", async (req, res) => {
     if (typeof req.session.UserData != "undefined") {
-        if (req.session.UserData.user_sub_menu_access.includes("Voir la liste des examens") || req.session.UserData.user_sub_menu_access[0] == "All") {
+        if (
+            req.session.UserData.user_sub_menu_access.includes(
+                "Voir la liste des examens"
+            ) ||
+            req.session.UserData.user_sub_menu_access[0] == "All"
+        ) {
             /// FULL ACCESS
             let data = await examenDB.listOfExams();
             let examsParameters = await examenDB.listOfExamsParameters();
@@ -66,20 +72,18 @@ router.get('/examens', async (req, res) => {
                 data: data,
                 UserData: req.session.UserData,
                 examsParameters: examsParameters,
-                page: 'ExamsList'
+                page: "ExamsList",
             };
-            res.render('examens/examens-list', params);
-
+            res.render("examens/examens-list", params);
         } else {
             res.redirect(global.USER_HOME_PAGE);
         }
-
     } else {
         res.redirect("/");
     }
 });
-//DISPLAY EXAM DETAILS 
-router.get('/exam-details', async (req, res) => {
+//DISPLAY EXAM DETAILS
+router.get("/exam-details", async (req, res) => {
     let examID = req.query.examId;
     let data = await examenDB.getExamById(examID);
     let paramInfo = await examenDB.getExamParameters(examID);
@@ -100,12 +104,12 @@ router.get('/exam-details', async (req, res) => {
         materiauxAssosc: materiauxAssosc,
         materiaux: materiaux,
         UserData: req.session.UserData,
-        page: 'NewExam'
+        page: "NewExam",
     };
-    res.render('examens/exam-details', params);
+    res.render("examens/exam-details", params);
 });
 //ADD TEST PARAMETERS
-router.get('/add-test-parameters', async (req, res) => {
+router.get("/add-test-parameters", async (req, res) => {
     let examID = req.query.exam;
     let data = await examenDB.getExamById(examID);
     let exam = data[0].nom_examen;
@@ -117,25 +121,25 @@ router.get('/add-test-parameters', async (req, res) => {
         examID: examID,
         exam: exam,
         UserData: req.session.UserData,
-        page: 'NewExam'
+        page: "NewExam",
     };
-    res.render('examens/add-test-parameters', params);
+    res.render("examens/add-test-parameters", params);
 });
 //SAVE TEST PARAMETERS
-router.post('/add-test-parameters', async (req, res) => {
+router.post("/add-test-parameters", async (req, res) => {
     //console.log(req.body);
     let notifications = await examenDB.saveTestParameters(req);
     res.json(notifications);
 });
 //REMOVE TEST PARAMETERS
-router.post('/remove-item', async (req, res) => {
+router.post("/remove-item", async (req, res) => {
     //console.log(req.body);
     let notifications = await examenDB.removeItem(req);
     res.json(notifications);
 });
 
 //DELETE TEST
-router.post('/delete-exam', async (req, res) => {
+router.post("/delete-exam", async (req, res) => {
     console.log(req.body);
     let id = req.body.ExamID;
     let notifications = await examenDB.deleteExam(id);
@@ -143,17 +147,21 @@ router.post('/delete-exam', async (req, res) => {
 });
 
 //REORDER TEST PARAMETERS
-router.post('/reorder-exam', async (req, res) => {
+router.post("/reorder-exam", async (req, res) => {
     console.log(req.body);
     let id_param_exam = req.body.itemID;
     let id_exam = req.body.examID;
     let position = req.body.position;
-    let notifications = await examenDB.reOrderExam(id_exam, id_param_exam, position);
+    let notifications = await examenDB.reOrderExam(
+        id_exam,
+        id_param_exam,
+        position
+    );
     res.json(notifications);
 });
 
 //REORDER ALL TEST PARAMETERS
-router.post('/reorder-all-exam', async (req, res) => {
+router.post("/reorder-all-exam", async (req, res) => {
     console.log(req.body);
     let id_exam = req.body.examID;
     let id_param_exam = req.body.parameters;
@@ -168,15 +176,15 @@ router.post('/reorder-all-exam', async (req, res) => {
 });
 
 //SAVE TEST VALEURS NORMALES
-router.post('/save-test-valeurs-normales', async (req, res) => {
+router.post("/save-test-valeurs-normales", async (req, res) => {
     console.log(req.body);
     let notifications = await testDB.addValeursNormales(req);
     console.log(notifications);
     res.json(notifications);
 });
 
-//ASSOCIATION TEST-MATERIAUX 
-router.get('/add-test-materiaux', async (req, res) => {
+//ASSOCIATION TEST-MATERIAUX
+router.get("/add-test-materiaux", async (req, res) => {
     let examID = req.query.test;
     let data = await examenDB.getExamById(examID);
     let matAssos = await stockDB.listeMateriauxAssocieATest(examID);
@@ -190,9 +198,9 @@ router.get('/add-test-materiaux', async (req, res) => {
         examID: examID,
         exam: exam,
         UserData: req.session.UserData,
-        page: 'NewExam'
+        page: "NewExam",
     };
-    res.render('examens/add-test-materiaux', params);
+    res.render("examens/add-test-materiaux", params);
 });
 
 // router.post('/add-test-materiaux', async (req, res) => {
@@ -202,7 +210,7 @@ router.get('/add-test-materiaux', async (req, res) => {
 // });
 // ============================================== TEST LABORATOIRE PATIENTS ====================================
 
-router.get('/test-laboratoire', async (req, res) => {
+router.get("/test-laboratoire", async (req, res) => {
     let pageTitle = "Demande de  test laboratoire";
     let data = await patientDB.listOfAllPatients();
     let dataExam = await examenDB.listOfTests();
@@ -214,12 +222,12 @@ router.get('/test-laboratoire', async (req, res) => {
         dataExam: dataExam,
         patientSelected: patientSelected,
         UserData: req.session.UserData,
-        page: 'NewTest'
+        page: "NewTest",
     };
-    res.render('examens/request-exam', params);
+    res.render("examens/request-exam", params);
 });
 
-router.post('/test-laboratoire', async (req, res) => {
+router.post("/test-laboratoire", async (req, res) => {
     let pageTitle = "Demande de  test laboratoire";
     let data = await patientDB.listOfAllPatients();
     let dataExam = await examenDB.listOfTests();
@@ -236,21 +244,26 @@ router.post('/test-laboratoire', async (req, res) => {
         dataExam: dataExam,
         patientSelected: patientSelected,
         UserData: req.session.UserData,
-        page: 'NewTest'
+        page: "NewTest",
     };
-    res.render('examens/add-test-patient', params);
+    res.render("examens/add-test-patient", params);
 });
 //SAVE TEST REQUEST
-router.post('/save-test-request', async (req, res) => {
+router.post("/save-test-request", async (req, res) => {
     console.log(req.body);
     let notifications = await testDB.saveTestRequest(req);
     console.log(notifications);
     res.json(notifications);
 });
 //LIST DES TESTS
-router.get('/Tests', async (req, res) => {
+router.get("/Tests", async (req, res) => {
     if (typeof req.session.UserData != "undefined") {
-        if (req.session.UserData.user_sub_menu_access.includes("Liste des demandes de Tests") || req.session.UserData.user_sub_menu_access[0] == "All") {
+        if (
+            req.session.UserData.user_sub_menu_access.includes(
+                "Liste des demandes de Tests"
+            ) ||
+            req.session.UserData.user_sub_menu_access[0] == "All"
+        ) {
             /// FULL ACCESS
             let dateFrom = helpers.getCurrentDate();
             let dateTo = helpers.getCurrentDate();
@@ -276,18 +289,17 @@ router.get('/Tests', async (req, res) => {
                 dateTo: dateTo,
                 statut: status,
                 UserData: req.session.UserData,
-                page: 'ListTest'
+                page: "ListTest",
             };
-            res.render('examens/test-request-list', params);
+            res.render("examens/test-request-list", params);
         } else {
             res.redirect(global.USER_HOME_PAGE);
         }
-
     } else {
         res.redirect("/");
     }
 });
-router.post('/Tests', async (req, res) => {
+router.post("/Tests", async (req, res) => {
     console.log("DATA :" + req.query);
     let dateFrom = req.body.dateFrom;
     let dateTo = req.body.dateTo;
@@ -314,31 +326,38 @@ router.post('/Tests', async (req, res) => {
         dateTo: dateTo,
         statut: status,
         UserData: req.session.UserData,
-        page: 'ListTest'
+        page: "ListTest",
     };
-    res.render('examens/test-request-list', params);
+    res.render("examens/test-request-list", params);
 });
 //SAVE TEST RESULT
-router.post('/SaveTestResult', async (req, res) => {
+router.post("/SaveTestResult", async (req, res) => {
     console.log(req.body);
     let fullname = req.body.patientName;
     let num_patient = req.body.patientNumber;
     let docteur = req.body.docteur;
     let sexe_patient = req.body.patientSexe;
     let dossier_patient = fullname + " [" + num_patient + "]";
-    let patientSelected = { fullname: fullname, sexe: sexe_patient, num_patient: num_patient, dossier: dossier_patient, docteur: docteur };
+    let patientSelected = {
+        fullname: fullname,
+        sexe: sexe_patient,
+        num_patient: num_patient,
+        dossier: dossier_patient,
+        docteur: docteur,
+    };
     let id_test_request = req.body.testRequestId;
-    let requestStatus = req.body.statut
+    let requestStatus = req.body.statut;
     //Info about the test Request
     //let testRequestInfo = await testDB.testRequestInfo(id_test_request);
     //console.log("REQUEST STATUS : " + requestStatus);
     let ifCompleted = false;
     let data = [];
-    if (requestStatus == 0) { //A pending request
+    if (requestStatus == 0) {
+        //A pending request
         //Verifier le nombre de resultat à enregistrer pour ce TEST
         let infoTest = await testDB.testResultSavedVerification(id_test_request);
-        data = infoTest['TestRequestContent'];
-        ifCompleted = infoTest['ifCompleted'];
+        data = infoTest["TestRequestContent"];
+        ifCompleted = infoTest["ifCompleted"];
     } else {
         data = await examenDB.testRequestContent(id_test_request);
         ifCompleted = true;
@@ -355,13 +374,13 @@ router.post('/SaveTestResult', async (req, res) => {
         id_test_request: id_test_request,
         UserData: req.session.UserData,
         ifCompleted: ifCompleted,
-        page: 'ListTest'
+        page: "ListTest",
     };
     //console.log(params);
-    res.render('examens/save-test-patient', params);
+    res.render("examens/save-test-patient", params);
 });
 //GET THES TEST'S PARAMETERS
-router.post('/get-test-parameters', async (req, res) => {
+router.post("/get-test-parameters", async (req, res) => {
     console.log(req.body);
     let id_exam = req.body.examID;
     let info = await examenDB.getExamParameters(id_exam);
@@ -373,7 +392,7 @@ router.post('/get-test-parameters', async (req, res) => {
     res.json(info);
 });
 //SAVE TEST RESULT TO DB
-router.post('/save-test-result', async (req, res) => {
+router.post("/save-test-result", async (req, res) => {
     //console.log("SAVE TO DB : "+req.body);
     let id_test_request = req.body.testRequestId;
     let notifications = await examenDB.saveTestResult(req);
@@ -383,15 +402,15 @@ router.post('/save-test-result', async (req, res) => {
     res.json(notifications);
 });
 //EDIT TEST RESULT TO DB
-router.post('/edit-test-result', async (req, res) => {
+router.post("/edit-test-result", async (req, res) => {
     console.log(req.body);
     let notifications = await examenDB.editTestResult(req);
     //console.log("EDIT RESULTAT : "+notifications.msg);
     res.json(notifications);
 });
 
-//EDIT DOCTOR OR INSTITUTION 
-router.post('/edit-doctor-info', async (req, res) => {
+//EDIT DOCTOR OR INSTITUTION
+router.post("/edit-doctor-info", async (req, res) => {
     let testRequestId = req.body.id_test_request;
     let doctor = req.body.Docteur;
     let notifications = await testDB.modifyDoctorInfo(testRequestId, doctor);
@@ -399,25 +418,32 @@ router.post('/edit-doctor-info', async (req, res) => {
 });
 
 //EDIT TEST SIGNATURE
-router.post('/update-test-signature', async (req, res) => {
+router.post("/update-test-signature", async (req, res) => {
     let testRequestId = req.body.testRequestId;
     let realisateur = req.body.realiser_par;
     let poste = req.body.poste;
-    let notifications = await testDB.modifySignatureInfo(testRequestId, realisateur, poste);
+    let notifications = await testDB.modifySignatureInfo(
+        testRequestId,
+        realisateur,
+        poste
+    );
     res.json(notifications);
 });
 
 //UPDATE TEST STATUS
-router.post('/update-test-status', async (req, res) => {
+router.post("/update-test-status", async (req, res) => {
     console.log(req.body);
     let test_request_id = req.body.testRequestId;
     let statut = req.body.statut;
-    let notifications = await examenDB.updateTestResultStatus(test_request_id, statut);
+    let notifications = await examenDB.updateTestResultStatus(
+        test_request_id,
+        statut
+    );
     res.json(notifications);
 });
 
 //DELETE TEST REQUEST
-router.post('/delete-test-request', async (req, res) => {
+router.post("/delete-test-request", async (req, res) => {
     //console.log(req.body);
     let test_request_id = req.body.testRequestId;
     let data = await stockDB.listeMateriauxForTestRequest(test_request_id);
@@ -425,29 +451,37 @@ router.post('/delete-test-request', async (req, res) => {
     let msg = [];
     let notifications;
     for (item of data) {
-        let notifications = await examenDB.deleteTestRequest(item, test_request_id, user);
+        let notifications = await examenDB.deleteTestRequest(
+            item,
+            test_request_id,
+            user
+        );
         msg.push(notifications.msg);
     }
     //DELETE THE REQUEST
     let ifDelete = await testDB.deleteTestRequest(test_request_id);
     if (ifDelete.success) {
         notifications = {
-            msg: "Demande supprimée avec succès..." + msg.join('<br>'),
-            success: "success"
-        }
+            msg: "Demande supprimée avec succès..." + msg.join("<br>"),
+            success: "success",
+        };
     }
     res.json(notifications);
 });
 //
 //GET THES TEST'S RESULT
-router.post('/get-test-result', async (req, res) => {
+router.post("/get-test-result", async (req, res) => {
     console.log(req.body);
     let tests_id = req.body.test;
     let test_request_id = req.body.testRequestId;
     let ExamParent = req.body.ExamID;
     let data = [];
     for (idTest of tests_id) {
-        let testResult = await examenDB.getTestResult(test_request_id, idTest,ExamParent);
+        let testResult = await examenDB.getTestResult(
+            test_request_id,
+            idTest,
+            ExamParent
+        );
         data.push(testResult);
     }
     //console.log(data);
@@ -455,7 +489,7 @@ router.post('/get-test-result', async (req, res) => {
 });
 
 //================================= PRINT TEST RESULT ===================================================
-router.post('/display-test-result', async (req, res) => {
+router.post("/display-test-result", async (req, res) => {
     console.log(req.body);
     let test_request_id = req.body.id_test_request;
     let patient = req.body.patient;
@@ -483,7 +517,11 @@ router.post('/display-test-result', async (req, res) => {
         let ValeurNormal = [];
         if (infoParams.length == 0) {
             infoParams = await examenDB.getExamById(id_exam);
-            let testResult = await examenDB.getTestResult(test_request_id, id_exam,id_exam);
+            let testResult = await examenDB.getTestResult(
+                test_request_id,
+                id_exam,
+                id_exam
+            );
             let VN = await testDB.valeurNormalExam(title, id_exam);
             if (typeof testResult == "undefined") {
                 testResult = { resultat: "" };
@@ -498,7 +536,11 @@ router.post('/display-test-result', async (req, res) => {
 
             for (testParam of infoParams) {
                 //console.log(testParam);
-                let testResult = await examenDB.getTestResult(test_request_id, testParam.id_param_exam,id_exam);
+                let testResult = await examenDB.getTestResult(
+                    test_request_id,
+                    testParam.id_param_exam,
+                    id_exam
+                );
                 let VN = await testDB.valeurNormalExam(title, testParam.id_param_exam);
                 //console.log(VN);
                 if (typeof testResult == "undefined") {
@@ -513,7 +555,13 @@ router.post('/display-test-result', async (req, res) => {
             //console.log(ValeurNormal);
         }
 
-        let info = { TestName: name_exam, TestTypeResult: type_exam_resultat, Parameters: infoParams, Resultats: Resultats, VN: ValeurNormal };
+        let info = {
+            TestName: name_exam,
+            TestTypeResult: type_exam_resultat,
+            Parameters: infoParams,
+            Resultats: Resultats,
+            VN: ValeurNormal,
+        };
         resultaFinal.push(info);
     }
     //console.log("VN : " + resultaFinal[0].VN[3].vn);
@@ -531,25 +579,32 @@ router.post('/display-test-result', async (req, res) => {
         date: date_resultat,
         UserData: req.session.UserData,
         signature: signature,
-        page: 'NewTest'
+        page: "NewTest",
     };
-    let filename = "Resultat-" + test_request_id + "-" + patient + "-" + patientNumber + ".pdf";
+    let filename =
+        "Resultat-" +
+        test_request_id +
+        "-" +
+        patient +
+        "-" +
+        patientNumber +
+        ".pdf";
     let pathfile = "./tmp/" + filename;
-    await printer.print('resultat', params, pathfile);
+    await printer.print("resultat", params, pathfile);
     //console.log(data);
     //Display the file in the browser
     var stream = fs.ReadStream(pathfile);
     // Be careful of special characters
     filename = encodeURIComponent(filename);
     // Ideally this should strip them
-    res.setHeader('Content-disposition', 'inline; filename="' + filename + '"');
-    res.setHeader('Content-type', 'application/pdf');
+    res.setHeader("Content-disposition", 'inline; filename="' + filename + '"');
+    res.setHeader("Content-type", "application/pdf");
     stream.pipe(res);
     //res.render('examens/display-test-result', params);
 });
 
 //DISPLAY TEST RESULT
-router.post('/verify-test-result', async (req, res) => {
+router.post("/verify-test-result", async (req, res) => {
     //console.log(req.body);
     let test_request_id = req.body.id_test_request;
     let patient = req.body.patient;
@@ -557,7 +612,7 @@ router.post('/verify-test-result', async (req, res) => {
     let date_resultat = helpers.formatDate(helpers.getCurrentDate(), "FR");
     let resultaFinal = [];
     for (test of data) {
-       // console.log("TESTS LIST : " + test.examen_id);
+        // console.log("TESTS LIST : " + test.examen_id);
         //Pour chaque TEST on va chercher ses parametres
         let id_exam = test.examen_id;
         let name_exam = test.nom_examen;
@@ -567,7 +622,11 @@ router.post('/verify-test-result', async (req, res) => {
         let Resultats = [];
         if (infoParams.length == 0) {
             infoParams = await examenDB.getExamById(id_exam);
-            let testResult = await examenDB.getTestResult(test_request_id, id_exam,id_exam);
+            let testResult = await examenDB.getTestResult(
+                test_request_id,
+                id_exam,
+                id_exam
+            );
             if (typeof testResult == "undefined") {
                 testResult = { resultat: "" };
             }
@@ -577,7 +636,11 @@ router.post('/verify-test-result', async (req, res) => {
 
             for (testParam of infoParams) {
                 //console.log(testParam);
-                let testResult = await examenDB.getTestResult(test_request_id, testParam.id_param_exam,id_exam);
+                let testResult = await examenDB.getTestResult(
+                    test_request_id,
+                    testParam.id_param_exam,
+                    id_exam
+                );
                 console.log(testResult);
                 if (typeof testResult == "undefined") {
                     testResult = { resultat: "" };
@@ -586,7 +649,11 @@ router.post('/verify-test-result', async (req, res) => {
             }
         }
 
-        let info = { TestName: name_exam, Parameters: infoParams, Resultats: Resultats };
+        let info = {
+            TestName: name_exam,
+            Parameters: infoParams,
+            Resultats: Resultats,
+        };
         resultaFinal.push(info);
     }
 
@@ -600,15 +667,15 @@ router.post('/verify-test-result', async (req, res) => {
         date: date_resultat,
         testRequestId: test_request_id,
         UserData: req.session.UserData,
-        page: 'NewTest'
+        page: "NewTest",
     };
-    res.render('examens/display-test-result', params);
+    res.render("examens/display-test-result", params);
 });
 
 // ======================================== REPORTS ==============================================
 
 //LIST DES TESTS
-router.get('/lab-tests-report', async (req, res) => {
+router.get("/lab-tests-report", async (req, res) => {
     let dateFrom = helpers.getCurrentDate();
     let dateTo = helpers.getCurrentDate();
     let status = "All";
@@ -623,10 +690,15 @@ router.get('/lab-tests-report', async (req, res) => {
     if (dateFrom == dateTo) {
         text_date = "du " + helpers.formatDate(dateFrom, "FR");
     } else {
-        text_date = "du " + helpers.formatDate(dateFrom, "FR") + " au " + helpers.formatDate(dateTo, "FR");
+        text_date =
+            "du " +
+            helpers.formatDate(dateFrom, "FR") +
+            " au " +
+            helpers.formatDate(dateTo, "FR");
     }
 
-    let pageTitle = "Rapport des tests laboratoire " + text_date + " (" + data.length + ")";
+    let pageTitle =
+        "Rapport des tests laboratoire " + text_date + " (" + data.length + ")";
     //DATES
     dateFrom = helpers.formatDate(dateFrom, "FR");
     dateFrom = helpers.changeDateSymbol(dateFrom);
@@ -642,11 +714,11 @@ router.get('/lab-tests-report', async (req, res) => {
         dateToDB: helpers.getCurrentDate(),
         statut: status,
         UserData: req.session.UserData,
-        page: 'Administration'
+        page: "Administration",
     };
-    res.render('examens/test-report', params);
+    res.render("examens/test-report", params);
 });
-router.post('/lab-tests-report', async (req, res) => {
+router.post("/lab-tests-report", async (req, res) => {
     console.log("DATA :" + req.query);
     let dateFrom = req.body.dateFrom;
     let dateTo = req.body.dateTo;
@@ -667,11 +739,16 @@ router.post('/lab-tests-report', async (req, res) => {
     if (dateFromDB == dateToDB) {
         text_date = "du " + helpers.formatDate(dateFromDB, "FR");
     } else {
-        text_date = "du " + helpers.formatDate(dateFromDB, "FR") + " au " + helpers.formatDate(dateToDB, "FR");
+        text_date =
+            "du " +
+            helpers.formatDate(dateFromDB, "FR") +
+            " au " +
+            helpers.formatDate(dateToDB, "FR");
     }
 
     let text_status = status != "All" ? TEST_STATUS[status] : "";
-    let pageTitle = "Rapport des tests laboratoire " + text_date + " (" + data.length + ")";
+    let pageTitle =
+        "Rapport des tests laboratoire " + text_date + " (" + data.length + ")";
     //DATES
     // dateFrom = helpers.formatDate(dateFrom,"FR");
     // dateFrom = helpers.changeDateSymbol(dateFrom);
@@ -686,12 +763,12 @@ router.post('/lab-tests-report', async (req, res) => {
         dateToDB: dateToDB,
         statut: status,
         UserData: req.session.UserData,
-        page: 'Administration'
+        page: "Administration",
     };
-    res.render('examens/test-report', params);
+    res.render("examens/test-report", params);
 });
 //PRINT TEST REPORT
-router.post('/print-test-report', async (req, res) => {
+router.post("/print-test-report", async (req, res) => {
     console.log(req.body);
     let report = helpers.getCurrentDate();
     let filename = report + ".pdf";
@@ -705,7 +782,11 @@ router.post('/print-test-report', async (req, res) => {
     if (dateFrom == dateTo) {
         text_date = "du " + helpers.formatDate(dateFrom, "FR");
     } else {
-        text_date = "du " + helpers.formatDate(dateFrom, "FR") + " au " + helpers.formatDate(dateTo, "FR");
+        text_date =
+            "du " +
+            helpers.formatDate(dateFrom, "FR") +
+            " au " +
+            helpers.formatDate(dateTo, "FR");
     }
     let pageTitle = "Rapport des tests laboratoire " + text_date;
     params = {
@@ -713,7 +794,7 @@ router.post('/print-test-report', async (req, res) => {
         dateFrom: dateFrom,
         dateTo: dateTo,
         UserData: req.session.UserData,
-        pageTitle: pageTitle
+        pageTitle: pageTitle,
     };
     await printer.print(template_name, params, pathfile);
     //Display the file in the browser
@@ -721,12 +802,11 @@ router.post('/print-test-report', async (req, res) => {
     // Be careful of special characters
     filename = encodeURIComponent(filename);
     // Ideally this should strip them
-    res.setHeader('Content-disposition', 'inline; filename="' + filename + '"');
-    res.setHeader('Content-type', 'application/pdf');
+    res.setHeader("Content-disposition", 'inline; filename="' + filename + '"');
+    res.setHeader("Content-type", "application/pdf");
     stream.pipe(res);
     //res.render('examens/display-test-result', params);
 });
-
 
 // Exportation of this router
 module.exports = router;

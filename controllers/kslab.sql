@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Jun 11, 2020 at 09:32 PM
+-- Generation Time: Jun 19, 2020 at 09:25 PM
 -- Server version: 5.7.11
 -- PHP Version: 5.6.18
 
@@ -84,60 +84,9 @@ CREATE TABLE `tb_examens` (
   `categorie` int(11) DEFAULT NULL,
   `type_examen` int(11) DEFAULT NULL,
   `type_resultat` int(11) NOT NULL,
-  `is_bilan` tinyint(1) NOT NULL
+  `is_bilan` tinyint(1) NOT NULL,
+  `if_test_or_param_test` int(11) NOT NULL DEFAULT '0' COMMENT '0 Param Test | 1 Test'
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `tb_examens`
---
-
-INSERT INTO `tb_examens` (`id`, `nom_examen`, `description`, `prix_labo`, `prix_client`, `categorie`, `type_examen`, `type_resultat`, `is_bilan`) VALUES
-(1, 'HÃ©mogramme Complet', NULL, NULL, NULL, NULL, NULL, 1, 1),
-(6, 'Globules Rouges', NULL, NULL, NULL, NULL, NULL, 1, 0),
-(7, 'Globules Blancs', NULL, NULL, NULL, NULL, NULL, 1, 0),
-(8, 'HÃ©matocrite', NULL, NULL, NULL, NULL, NULL, 1, 0),
-(9, 'MCV', NULL, NULL, NULL, NULL, NULL, 1, 0),
-(10, 'MCH', NULL, NULL, NULL, NULL, NULL, 1, 0),
-(11, 'MCHC', NULL, NULL, NULL, NULL, NULL, 1, 0),
-(12, 'Bilan hÃ©patique', NULL, NULL, NULL, NULL, NULL, 1, 1),
-(13, 'Bilirubine directe', NULL, NULL, NULL, NULL, NULL, 1, 0),
-(14, 'Bilirubine totale', NULL, NULL, NULL, NULL, NULL, 1, 0),
-(15, 'GAMMA-GT', NULL, NULL, NULL, NULL, NULL, 1, 0),
-(16, 'Phosphatase alcaline', NULL, NULL, NULL, NULL, NULL, 1, 0),
-(17, 'GRAVINDEX', NULL, NULL, NULL, NULL, NULL, 2, 0),
-(18, 'Test de grossesse (HCG)', NULL, NULL, NULL, NULL, NULL, 1, 1),
-(19, 'ßHCG Urine', NULL, NULL, NULL, NULL, NULL, 1, 0),
-(20, 'BHCG Plasmatique', NULL, NULL, NULL, NULL, NULL, 1, 0),
-(21, 'Selles', NULL, NULL, NULL, NULL, NULL, 3, 1),
-(22, 'Apparence', NULL, NULL, NULL, NULL, NULL, 3, 0),
-(23, 'Consistance', NULL, NULL, NULL, NULL, NULL, 3, 0),
-(24, 'Leucocytes', NULL, NULL, NULL, NULL, NULL, 3, 0),
-(25, 'BactÃ©ries', NULL, NULL, NULL, NULL, NULL, 3, 0),
-(26, 'Coloration gram', NULL, NULL, NULL, NULL, NULL, 3, 0),
-(27, 'OEufs et Parasites', NULL, NULL, NULL, NULL, NULL, 3, 0),
-(28, 'Sang Occulte', NULL, NULL, NULL, NULL, NULL, 3, 0),
-(29, 'Levures', NULL, NULL, NULL, NULL, NULL, 3, 0),
-(30, 'HIV', NULL, NULL, NULL, NULL, NULL, 2, 0),
-(31, 'ASO', NULL, NULL, NULL, NULL, NULL, 1, 0),
-(32, 'COVID 19', NULL, NULL, NULL, NULL, NULL, 2, 0),
-(33, 'Formules leucocytaires', NULL, NULL, NULL, NULL, NULL, 1, 1),
-(34, 'Poly-neutrophiles', NULL, NULL, NULL, NULL, NULL, 1, 0),
-(35, 'Eosinophiles', NULL, NULL, NULL, NULL, NULL, 1, 0),
-(36, 'Basophiles', NULL, NULL, NULL, NULL, NULL, 1, 0),
-(37, 'Lymphocytes', NULL, NULL, NULL, NULL, NULL, 1, 0),
-(38, 'Monocytes', NULL, NULL, NULL, NULL, NULL, 1, 0),
-(39, 'RÃ©ticulocytes', NULL, NULL, NULL, NULL, NULL, 1, 0),
-(40, 'Plaquettes sanguines', NULL, NULL, NULL, NULL, NULL, 1, 0),
-(41, 'Vitesse de sédimentation', NULL, NULL, NULL, NULL, NULL, 1, 0),
-(43, 'Temps de saignement', NULL, NULL, NULL, NULL, NULL, 1, 0),
-(44, 'Temps de coagulation', NULL, NULL, NULL, NULL, NULL, 1, 0),
-(45, 'Taux de Prothrombine', NULL, NULL, NULL, NULL, NULL, 1, 0),
-(46, 'T. de témoins', NULL, NULL, NULL, NULL, NULL, 1, 0),
-(47, 'T. de Patient', NULL, NULL, NULL, NULL, NULL, 1, 0),
-(48, 'Sickling test', NULL, NULL, NULL, NULL, NULL, 1, 0),
-(49, 'Groupe sanguin', NULL, NULL, NULL, NULL, NULL, 1, 0),
-(50, 'Sérologie', NULL, NULL, NULL, NULL, NULL, 1, 0),
-(54, 'HÃ©moglobine', NULL, NULL, NULL, NULL, NULL, 1, 0);
 
 -- --------------------------------------------------------
 
@@ -150,16 +99,6 @@ CREATE TABLE `tb_link_materiau_test` (
   `materiau` int(11) NOT NULL,
   `qte` int(11) NOT NULL DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `tb_link_materiau_test`
---
-
-INSERT INTO `tb_link_materiau_test` (`test_id`, `materiau`, `qte`) VALUES
-(1, 25, 1),
-(17, 14, 1),
-(31, 1, 1),
-(32, 25, 1);
 
 -- --------------------------------------------------------
 
@@ -231,52 +170,9 @@ CREATE TABLE `tb_notifications` (
 
 CREATE TABLE `tb_parametres_examens` (
   `id_examen` int(11) NOT NULL,
-  `id_param_exam` int(11) NOT NULL
+  `id_param_exam` int(11) NOT NULL,
+  `position` int(11) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `tb_parametres_examens`
---
-
-INSERT INTO `tb_parametres_examens` (`id_examen`, `id_param_exam`) VALUES
-(1, 5),
-(1, 6),
-(1, 7),
-(1, 8),
-(1, 9),
-(1, 10),
-(1, 11),
-(1, 51),
-(1, 52),
-(1, 54),
-(1, 55),
-(12, 0),
-(12, 6),
-(12, 7),
-(21, 22),
-(21, 23),
-(21, 24),
-(21, 25),
-(21, 26),
-(21, 27),
-(21, 28),
-(21, 29),
-(33, 34),
-(33, 35),
-(33, 36),
-(33, 37),
-(33, 38),
-(33, 39),
-(33, 40),
-(33, 41),
-(33, 42),
-(33, 43),
-(33, 44),
-(33, 45),
-(33, 46),
-(33, 47),
-(33, 48),
-(33, 49);
 
 -- --------------------------------------------------------
 
@@ -326,7 +222,9 @@ CREATE TABLE `tb_resultats` (
   `id_resultat` int(11) NOT NULL,
   `test_request_id` int(11) NOT NULL,
   `examen_id` int(11) NOT NULL,
-  `resultat` text NOT NULL
+  `exam_parent` int(11) NOT NULL,
+  `resultat` text NOT NULL,
+  `id_save` int(11) NOT NULL COMMENT 'Pour les test ayant les memes params test'
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -427,20 +325,6 @@ CREATE TABLE `tb_valeurs_normales` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Dumping data for table `tb_valeurs_normales`
---
-
-INSERT INTO `tb_valeurs_normales` (`exam_id`, `bebe`, `enfant`, `adolescent`, `femme`, `homme`, `unite`) VALUES
-(6, '', '', '', '3.6 – 5', '4.2 – 5.4', 'millions/mm3'),
-(7, '4.500 â€“ 10.000', '4.500 â€“ 10.000', '4.500 â€“ 10.000', '4.500 â€“ 10.000', '4.500 â€“ 10.000', 'millions/mm3'),
-(8, '', '', '', '35 - 47', '40 - 52', '%'),
-(9, '80 -105', '80 -105', '80 -105', '80 -105', '80 -105', 'micr. Cu'),
-(10, '27 â€“ 31', '27 â€“ 31', '27 â€“ 31', '27 â€“ 31', '27 â€“ 31', 'Î¼Î¼/g'),
-(11, '22 – 36', '22 – 36', '22 – 36', '22 – 36', '22 – 36', '%'),
-(31, '<100', '<100', '<200', '<100', '<100', 'UI/L'),
-(54, '', '', '', '11.7 -15.7', '13.3 – 17.7', ' g/dl');
-
---
 -- Indexes for dumped tables
 --
 
@@ -507,7 +391,7 @@ ALTER TABLE `tb_personnes`
 --
 ALTER TABLE `tb_resultats`
   ADD PRIMARY KEY (`id_resultat`),
-  ADD UNIQUE KEY `test_request_id` (`test_request_id`,`examen_id`);
+  ADD UNIQUE KEY `id_save` (`id_save`);
 
 --
 -- Indexes for table `tb_stocks`
@@ -562,7 +446,7 @@ ALTER TABLE `tb_evolution_stock`
 -- AUTO_INCREMENT for table `tb_examens`
 --
 ALTER TABLE `tb_examens`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=55;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `tb_materiaux`
 --
@@ -577,7 +461,7 @@ ALTER TABLE `tb_notifications`
 -- AUTO_INCREMENT for table `tb_personnes`
 --
 ALTER TABLE `tb_personnes`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 --
 -- AUTO_INCREMENT for table `tb_resultats`
 --
@@ -598,6 +482,16 @@ ALTER TABLE `tb_test_requests`
 --
 ALTER TABLE `tb_test_requests_contents`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+--
+-- Constraints for dumped tables
+--
+
+--
+-- Constraints for table `tb_valeurs_normales`
+--
+ALTER TABLE `tb_valeurs_normales`
+  ADD CONSTRAINT `tb_valeurs_normales_ibfk_1` FOREIGN KEY (`exam_id`) REFERENCES `tb_examens` (`id`) ON DELETE CASCADE;
+
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
