@@ -16,9 +16,43 @@ tr:nth-child(even) {
 }
 
 .logo{
-    margin-top: 30px;
-    padding-left: 30px;
+    margin-top: 5px;
+    padding-left: 10px;
 }
+hr{
+    text-align:center;
+    width: 50%;
+    margin-top: 0px;
+}
+
+.header-form {
+    text-align: right;
+    width: 60%;
+    margin-top: 45px;
+    margin-left: 0px;
+}
+.line-header{
+    font-size: 15px;
+}
+.row-header {
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+    margin-bottom: -30px;
+    margin-left: 5%;
+
+}
+
+.row-header-table {
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+    margin-left: 0%;
+
+}
+
 .signature{
     width: 50%;
     margin-top: 50px;
@@ -30,11 +64,7 @@ tr:nth-child(even) {
     font-size: 14px;
     font-weight: bold;
 }
-hr{
-    text-align:center;
-    width: 50%;
-    margin-top: 0px;
-}
+
 
 .hr-signature{
     width: 100%;
@@ -45,11 +75,7 @@ hr{
     text-align: center;
     font-size: 13px;
 }
-.header-form {
-    text-align: right;
-    width: 70%;
-    margin-top: 10px;
-}
+
 
 .title {
     text-align: center;
@@ -107,28 +133,27 @@ h4 {
     margin-left: 7%;
 
 }
-.row-header {
-    display: -ms-flexbox;
-    display: flex;
-    -ms-flex-wrap: wrap;
-    flex-wrap: wrap;
-    /* margin-right: -15px; */
-    margin-left: 5%;
 
-}
 
 .col-sm-6 {
     position: relative;
     width: 90%;
     padding-right: 15px;
-    padding-left: 15px;
+    padding-left: 20px;
 }
 
 .col-sm-3 {
     position: relative;
-    width: 45%;
-    padding-right: 15px;
+    width: 50%;
     padding-left: 15px;
+    margin-left: 20px;
+    font-family: arial, sans-serif;
+    font-size: 12px;
+}
+.col-sm-3-right {
+    position: relative;
+    width: 40%;
+    margin-left: 25px;
     font-family: arial, sans-serif;
     font-size: 12px;
 }

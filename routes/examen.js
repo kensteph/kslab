@@ -499,7 +499,7 @@ router.post("/display-test-result", async (req, res) => {
     let docteur = req.body.docteur;
     let title = helpers.titleByAge(patientAge, patientSexe);
     let signature = await examenDB.getTestSignature(test_request_id);
-    //console.log("SIGNATURE : " + signature);
+    //console.log("SIGNATURE : " + signature.realiser_par);
     let data = await examenDB.testRequestContent(test_request_id);
     let date_resultat = helpers.formatDate(helpers.getCurrentDate(), "FR");
     let resultaFinal = [];

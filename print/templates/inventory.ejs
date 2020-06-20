@@ -14,29 +14,31 @@
 
     <div class="row-header">
         <div class="logo">
-            <img style="margin-left: 10px;" src="data:image/jpeg;base64,<%=LOGO%>" alt="img" width="150" height="150">
+            <img style="margin-left: 10px;" src="data:image/jpeg;base64,<%=LOGO%>" alt="img" width="250" height="250">
         </div>
         <div class="header-form">
             <p>
-            <h3> <%=line1%> </h3>
-            <h3><%=line2%></h3>
-            <% if(line3 !=""){ %>
-            <%=line3%><br>
-            <% } %>
-            <% if(line4 !=""){ %>
-            <%=line4%><br>
-            <% } %>
-            <% if(line5 !=""){ %>
-            <%=line5%><br>
-            <% } %>
-            <% if(line6 !=""){ %>
-            <%=line6%><br><br>
-            <% } %>
+                <strong class="line-header"> <%=line1%> </strong><br>
+                <strong class="line-header"><%=line2%></strong>
+                <br>
+                <% if(line3 !=""){ %>
+                 <%=line3%><br>
+                <% } %>
+                <% if(line4 !=""){ %>
+                    <%=line4%><br>
+                <% } %>
+                <% if(line5 !=""){ %>
+                    <%=line5%><br>
+                <% } %>
+                <% if(line6 !=""){ %>
+                    <%=line6%><br><br>
+                <% } %>
             </p>
         </div>
-        <hr style="width: 80%;">
     </div>
-    <div class="row-header">
+    <hr style="width: 80%; margin-top: -30px;" >
+
+    <div class="row-header-table">
         <div class="title-report"><%=pageTitle%></div>
     </div>
     <div class="row-report">
