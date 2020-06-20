@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Jun 19, 2020 at 09:25 PM
+-- Generation Time: Jun 19, 2020 at 10:59 PM
 -- Server version: 5.7.11
 -- PHP Version: 5.6.18
 
@@ -461,7 +461,7 @@ ALTER TABLE `tb_notifications`
 -- AUTO_INCREMENT for table `tb_personnes`
 --
 ALTER TABLE `tb_personnes`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 --
 -- AUTO_INCREMENT for table `tb_resultats`
 --
@@ -485,6 +485,12 @@ ALTER TABLE `tb_test_requests_contents`
 --
 -- Constraints for dumped tables
 --
+
+--
+-- Constraints for table `tb_patients`
+--
+ALTER TABLE `tb_patients`
+  ADD CONSTRAINT `tb_patients_ibfk_1` FOREIGN KEY (`id_personne`) REFERENCES `tb_personnes` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `tb_valeurs_normales`

@@ -49,7 +49,10 @@
                                                 <!-- <small class="text-muted">Gynecologist</small> -->
                                                 <div class="staff-id">Patient ID : <%=data.numero_patient%></div>
                                                 <div class="staff-msg">
-                                                    <a href="/edit-patient?patient=<%= data.id %>" class="btn btn-primary">Modifier</a>
+                                                    <a href="/edit-patient?patient=<%= data.id %>"
+                                                        class="btn btn-primary">Modifier</a>
+                                                    <a href="#" data-toggle="modal" data-target="#DeleteRequest"
+                                                        class="btn btn-danger">Supprimer</a>
                                                 </div>
                                             </div>
                                         </div>
@@ -97,19 +100,16 @@
                             <div class="experience-box">
                                 <ul class="experience-list">
                                     <% dataExams.forEach((item,index) => { %>
-                                        <!-- FORM TO PRINT-->
-                                        <form id="PrintForm<%=item.request_id%>" target="_blank"
-                                            action="/display-test-result" method="POST">
-                                            <input type="hidden" name="id_test_request"
-                                                value="<%=item.request_id%>">
-                                            <input type="hidden" name="patient"
-                                                value="<%=data.fullname%>">
-                                            <input type="hidden" name="patientAge" value="<%=data.age%>">
-                                            <input type="hidden" name="patientSexe" value="<%=data.sexe%>">
-                                            <input type="hidden" name="patientNumber"
-                                                value="<%=data.numero_patient%>">
-                                            <input type="hidden" name="docteur" value="<%=item.docteur%>">
-                                        </form>
+                                    <!-- FORM TO PRINT-->
+                                    <form id="PrintForm<%=item.request_id%>" target="_blank"
+                                        action="/display-test-result" method="POST">
+                                        <input type="hidden" name="id_test_request" value="<%=item.request_id%>">
+                                        <input type="hidden" name="patient" value="<%=data.fullname%>">
+                                        <input type="hidden" name="patientAge" value="<%=data.age%>">
+                                        <input type="hidden" name="patientSexe" value="<%=data.sexe%>">
+                                        <input type="hidden" name="patientNumber" value="<%=data.numero_patient%>">
+                                        <input type="hidden" name="docteur" value="<%=item.docteur%>">
+                                    </form>
                                     <li>
                                         <div class="experience-user">
                                             <div class="before-circle"></div>
@@ -117,10 +117,13 @@
                                         <div class="experience-content">
                                             <div class="timeline-content">
                                                 <a href="#" class="name"><%=item.examens%></a>
-                                                <a href="#" title="Imprimer les résultats" onclick="printResult('<%=item.request_id%>')" class="name"><i class="fa fa-print"></i></a>
+                                                <a href="#" title="Imprimer les résultats"
+                                                    onclick="printResult('<%=item.request_id%>')" class="name"><i
+                                                        class="fa fa-print"></i></a>
                                                 <div><%=item.docteur%></div>
                                                 <span class="time"><%=item.date_record%></span>
-                                                <span class="time">Numéro : <%=item.request_id%> | <%=TEST_STATUS[item.statut]%></span>
+                                                <span class="time">Numéro : <%=item.request_id%> |
+                                                    <%=TEST_STATUS[item.statut]%></span>
                                             </div>
                                         </div>
                                     </li>
@@ -132,11 +135,30 @@
                 </div>
                 <% } %>
 
-                
+
 
             </div>
 
         </div>
+    </div>
+    <div id="DeleteRequest" class="modal fade delete-modal" role="dialog" data-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-body text-center">
+                    <img src="assets/img/sent.png" alt="" width="50" height="46">
+                    <form id="DeleteForm">
+                        <input type="hidden" name="fullname" value="<%=data.fullname%>">
+                        <input type="hidden" name="PatientID" value="<%=data.id%>" >
+                    </form>
+                    <br>Voulez-vous supprimer  <strong ><%=data.fullname+" | "+data.numero_patient%></strong> ?
+                    <div id="msg"></div>
+                    <div class="m-t-20"> <a href="#" class="btn btn-danger" data-dismiss="modal">Non</a>
+                        <button type="submit" class="btn btn-success" onclick="supprimerPatient()">Oui</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
     <div class="sidebar-overlay" data-reff=""></div>
     <script src="assets/js/jquery-3.2.1.min.js"></script>
@@ -150,9 +172,24 @@
 
 <script>
     //Display the test result
-    function printResult(id){
-            $("#PrintForm"+id).submit();
+    function printResult(id) {
+        $("#PrintForm" + id).submit();
+    }
+    
+        supprimerPatient = function () {
+            let formData = $("#DeleteForm").serialize();
+            $.post("/delete-patient", formData, function (data) {
+                console.log(data);
+                if (data.success) { //Success 
+                    $("#msg").html(data.msg).fadeOut(5000, () => {
+						window.location.replace("/home");
+					});
+                } else {
+                    $("#msg").html(data.error);
+                }
+            });
         }
+
 </script>
 
 <!-- profile23:03-->

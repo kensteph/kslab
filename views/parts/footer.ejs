@@ -2,6 +2,7 @@
 
 <script>
     function selectPatient(patientID, patient) {
+        $("#SearchPatientButton").show();
         $("#PatientSelected").val(patientID);
         $("#searchPatientInput").val(patient);
         $("#ResultList").html("");

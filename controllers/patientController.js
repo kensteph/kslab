@@ -207,5 +207,30 @@ module.exports = {
         //console.log(data);
         return data;
     },
-
+        //Delete PATIENT DEFINITEVELY
+        removePatient: async function (req) {
+            let idPatient = req.body.PatientID;
+            let fullname = req.body.fullname;
+            let promise = new Promise((resolve, reject) => {
+                let sql = "DELETE FROM tb_personnes  WHERE id =?";
+                //console.log(sql + " ID : " + id_personne);
+                con.query(sql, idPatient, function (err, rows) {
+                    if (err) {
+                        resolve({
+                            msg: "Une erreur est survenue. S'il vous palit réessayez.",
+                            type: "danger",
+                            debug: err
+                        });
+                    } else {
+                        resolve({
+                            msg: "Les informations concernant " + fullname + " ont été supprimées avec succès.",
+                            success: "success"
+                        });
+                    }
+                });
+            });
+            data = await promise;
+            //console.log(data);
+            return data;
+        },
 }

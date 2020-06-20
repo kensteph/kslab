@@ -1,4 +1,5 @@
 $(document).ready(function () {
+    $("#SearchPatientButton").hide();
     //$("#loader").hide();
     var $rows = $('#table tr');
     $('#search').keyup(function () {
@@ -71,11 +72,12 @@ $(document).ready(function () {
 
     //SEARCH FOR A PATIENT
     $('#searchPatientInput').click(function (e) {
+        $("#SearchPatientButton").hide();
         let wordToSearch = $(this).val().trim();
         if (wordToSearch.length >= 2) {
             $.post("/live-search-patient", { key: wordToSearch }, function (data) {
                 console.log(data);
-                if (data) {
+                if (data.length>0) {
                     $("#ResultList").html("");
                     for (i = 0; i < data.length; i++) {
                         let item = data[i];
@@ -84,8 +86,9 @@ $(document).ready(function () {
                         $("#ResultList").append(line);
                     }
                 } else {
-                    //alert(data.msg);
-                    $("#ResultList").html("Aucun résultat...");
+                     //Hide search button
+                     $("#SearchPatientButton").hide();
+                     $("#ResultList").html("Aucun résultat...");
                 }
             });
         } else {

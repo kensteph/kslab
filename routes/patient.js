@@ -12,18 +12,18 @@ router.use(express.static('public'));
 router.get('/add-patient', async (req, res) => {
     if (typeof req.session.UserData != "undefined") {
         if (req.session.UserData.user_sub_menu_access.includes("Ajouter Patient") || req.session.UserData.user_sub_menu_access[0] == "All") {
-          /// FULL ACCESS
-          let pageTitle = "Nouveau patient";
+            /// FULL ACCESS
+            let pageTitle = "Nouveau patient";
             params = {
                 pageTitle: pageTitle,
-                UserData : req.session.UserData,
+                UserData: req.session.UserData,
                 page: 'NewPatient'
             };
             res.render('patients/add-patient', params);
         } else {
             res.redirect(global.USER_HOME_PAGE);
         }
-    
+
     } else {
         res.redirect("/");
     }
@@ -37,7 +37,7 @@ router.post('/add-patient', async (req, res) => {
     params = {
         pageTitle: pageTitle,
         notifications: notifications,
-        UserData : req.session.UserData,
+        UserData: req.session.UserData,
         page: 'NewPatient'
     };
     res.render('patients/add-patient', params);
@@ -61,9 +61,9 @@ router.post('/search-patient', async (req, res) => {
     let pageTitle = "Recherche | " + patient;
     params = {
         pageTitle: pageTitle,
-        data : data,
+        data: data,
         dataExams: dataExams,
-        UserData : req.session.UserData,
+        UserData: req.session.UserData,
         page: 'SearchPatient'
     };
     res.render('patients/patient-profile', params);
@@ -76,7 +76,7 @@ router.get('/patients', async (req, res) => {
     params = {
         pageTitle: pageTitle,
         data: data,
-        UserData : req.session.UserData,
+        UserData: req.session.UserData,
         page: 'PatientsList'
     };
     res.render('patients/patient-list', params);
@@ -86,24 +86,24 @@ router.get('/patients', async (req, res) => {
 router.get('/edit-patient', async (req, res) => {
     if (typeof req.session.UserData != "undefined") {
         if (req.session.UserData.user_sub_menu_access.includes("Modifier Patients") || req.session.UserData.user_sub_menu_access[0] == "All") {
-          /// FULL ACCESS
-          let patienID = req.query.patient;
-          //console.log(patienID);
-          let data = await patientDB.getPatientById(patienID);
-          console.log("EDIT : " + data);
-          let pageTitle = "Modification du patient : " + data.fullname;
-          params = {
-              pageTitle: pageTitle,
-              data: data,
-              patienID: patienID,
-              UserData : req.session.UserData,
-              page: 'PatientsList'
-          };
-          res.render('patients/add-patient', params);
+            /// FULL ACCESS
+            let patienID = req.query.patient;
+            //console.log(patienID);
+            let data = await patientDB.getPatientById(patienID);
+            console.log("EDIT : " + data);
+            let pageTitle = "Modification du patient : " + data.fullname;
+            params = {
+                pageTitle: pageTitle,
+                data: data,
+                patienID: patienID,
+                UserData: req.session.UserData,
+                page: 'PatientsList'
+            };
+            res.render('patients/add-patient', params);
         } else {
             res.redirect(global.USER_HOME_PAGE);
         }
-    
+
     } else {
         res.redirect("/");
     }
@@ -118,7 +118,7 @@ router.post('/edit-patient', async (req, res) => {
         pageTitle: pageTitle,
         data: data,
         notifications: notifications,
-        UserData : req.session.UserData,
+        UserData: req.session.UserData,
         page: 'PatientsList'
     };
     res.render('patients/add-patient', params);
@@ -127,17 +127,8 @@ router.post('/edit-patient', async (req, res) => {
 //DELETE PATIENT
 router.post('/delete-patient', async (req, res) => {
     console.log(req.body);
-    res.json({ success: "Test", msg: "Done.." });
-    // let notifications = await patientDB.updatePatient(req);
-    // let data = await patientDB.getPatientById(req.body.patientID);
-    // let pageTitle = "Modification du patient : ";
-    // params = {
-    //     pageTitle: pageTitle,
-    //     data : data,
-    //     notifications : notifications,
-    //     page: 'PatientsList'
-    // };
-    // res.render('patients/add-patient', params);
+    let notifications = await patientDB.removePatient(req);
+    res.json(notifications);
 });
 
 // Exportation of this router
