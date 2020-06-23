@@ -82,12 +82,12 @@
                                             <%if(ifCompleted){%>
                                             <% if(UserData.user_sub_menu_access.includes("Modifier Résultat") || UserData.user_menu_access[0]=="All"){%>
                                             <a href="#" class="btn btn-white"
-                                                onclick="launchSaveTestModal('<%=info.id%>','<%=info.nom_examen%>','Edit')">Modifier
+                                                onclick="launchSaveTestModal('<%=id_test_request%>','<%=info.id%>','<%=info.nom_examen%>','Edit')">Modifier
                                                 Résultat</a>
                                             <% } %>
                                             <% }else{ %>
                                             <a href="#" class="btn btn-white"
-                                                onclick="launchSaveTestModal('<%=info.id%>','<%=info.nom_examen%>','Save')">Enregistrer
+                                                onclick="launchSaveTestModal('<%=id_test_request%>','<%=info.id%>','<%=info.nom_examen%>','Save')">Enregistrer
                                                 Résultat</a>
                                             <% } %>
                                         </td>
@@ -167,7 +167,7 @@
             e.preventDefault();
             saveTestResultDB();
         });
-        function launchSaveTestModal(testId, testName, action) {
+        function launchSaveTestModal(requestID,testId, testName, action) {
             $("#btnSaveResult").show();
             $("#btnEditResult").hide();
             $("#notifySaveExam").show().html("");
@@ -179,10 +179,10 @@
 
             $.post("/get-test-parameters", { examID: testId }, function (data) {
                 for (item of data) {
-                    let saveID = testId+""+item.id;
+                    let saveID = requestID+""+testId+""+item.id;
                     console.log(item.type_resultat); //item.id_param_exam
                     let hidden_field = "<input type = 'hidden' name='test[]' value='" + item.id + "' >"
-                    let pos_neg = "<div class='col-sm-6 col-md-6 col-lg-6'><select class='form-control select' name='resultat[]' id='" + saveID + "'><option value=''>---</option> <option value='Positif'>Positif</option><option value='Négatif'>Négatif</option></select></div>";
+                    let pos_neg = "<div class='col-sm-6 col-md-6 col-lg-6'><select  title='" + item.nom_examen + "' class='form-control select' name='resultat[]' id='" + saveID + "'><option value=''>---</option> <option value='Positif'>Positif</option><option value='Négatif'>Négatif</option></select></div>";
                     let fieldsVN = "<div class='col-sm-6 col-md-6 col-lg-6 m-b-10'><input  title='" + item.nom_examen + "' type='text' name=resultat[] id='" + saveID + "' placeholder='" + item.nom_examen + "' class='form-control'></div>";
                     let comment = "<div class='col-sm-6 col-md-6 col-lg-6 m-b-10'><textarea cols='30' title='" + item.nom_examen + "' rows='4' class='form-control' name='resultat[]' id='" + saveID + "' placeholder='" + item.nom_examen + "'></textarea></div>";
                     let appropriateField = "";
@@ -236,7 +236,7 @@
                             console.log(rs);
                             $("#" + rs.id_save).val(rs.resultat);
                             //$("#" + rs.id_save).val(rs.resultat).change();
-                            $("#Resultat").append("<input type='text' name='SavedID[]' value='"+rs.id_save+"'>");
+                            $("#Resultat").append("<input type='hidden' name='SavedID[]' value='"+rs.id_save+"'>");
                            
                         }
                         $("#notifySaveExam").html(data.msg);

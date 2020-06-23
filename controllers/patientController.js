@@ -5,7 +5,7 @@ module.exports = {
     async savePatient(req, res) {
         //DATA RECEIVING
         console.log(req.body);
-        let numero_patient =req.body.numero_patient;
+        let numero_patient = req.body.numero_patient;
         firstName = req.body.firstname;
         lastName = req.body.lastname;
         fullname = firstName + " " + lastName;
@@ -25,42 +25,58 @@ module.exports = {
                     if (err) {
                         //console.log(err);
                         con.rollback(function () {
-                            throw err;
-                        });
-                    }
-                    //console.log(result);
-                    var id_personne = result.insertId;
-                    let initial = firstName.charAt(0) + lastName.charAt(0);
-                    if(numero_patient.trim().length==0){
-                        numero_patient = helpers.generateCode(initial, id_personne);
-                    }
-                    
-                    //Insert info into professeur  table
-                    let sql2 = "INSERT INTO tb_patients (id_personne,numero_patient) VALUES ('" + id_personne + "','" + numero_patient + "')";
-                    con.query(sql2, function (err, result) {
-                        if (err) {
-                            con.rollback(function () {
-                                throw err;
-                            });
-                        }
-
-                        //COMMIT IF ALL DONE COMPLETELY
-                        con.commit(function (err) {
-                            if (err) {
-                                con.rollback(function () {
-                                    throw err;
-                                });
-                            }
                             msg = {
-                                type: "success",
-                                success: true,
-                                patientID: id_personne,
-                                msg: "Nouveau patient " + fullname + " ajouté avec succès..."
+                                type: "danger",
+                                error: true,
+                                msg: err
                             }
                             resolve(msg);
                         });
+                    } else {
+                        //console.log(result);
+                        var id_personne = result.insertId;
+                        let initial = firstName.charAt(0) + lastName.charAt(0);
+                        if (numero_patient.trim().length == 0) {
+                            numero_patient = helpers.generateCode(initial, id_personne);
+                        }
 
-                    });
+                        //Insert info into professeur  table
+                        let sql2 = "INSERT INTO tb_patients (id_personne,numero_patient) VALUES ('" + id_personne + "','" + numero_patient + "')";
+                        con.query(sql2, function (err, result) {
+                            if (err) {
+                                con.rollback(function () {
+                                    msg = {
+                                        type: "danger",
+                                        error: true,
+                                        msg: err
+                                    }
+                                    resolve(msg);
+                                });
+                            }
+
+                            //COMMIT IF ALL DONE COMPLETELY
+                            con.commit(function (err) {
+                                if (err) {
+                                    con.rollback(function () {
+                                        msg = {
+                                            type: "danger",
+                                            error: true,
+                                            msg: err
+                                        }
+                                        resolve(msg);
+                                    });
+                                }
+                                msg = {
+                                    type: "success",
+                                    success: true,
+                                    patientID: id_personne,
+                                    msg: "Nouveau patient " + fullname + " ajouté avec succès..."
+                                }
+                                resolve(msg);
+                            });
+
+                        });
+                    }
                 });
             });
             /* End transaction */
@@ -76,7 +92,7 @@ module.exports = {
             let sql = "SELECT *,CONCAT(prenom,' ',nom) as fullname,DATEDIFF( NOW(), date_nais )/365 as age FROM tb_personnes, tb_patients WHERE tb_patients.id_personne = tb_personnes.id";
             con.query(sql, function (err, rows) {
                 if (err) {
-                    throw err;
+                    // conso err;
                 } else {
                     resolve(rows);
                 }
@@ -105,15 +121,15 @@ module.exports = {
         return data;
     },
 
-     //Load All The Courses Categories
-     liveSearchPatient: async function (patient) {
+    //Load All The Courses Categories
+    liveSearchPatient: async function (patient) {
         let promise = new Promise((resolve, reject) => {
             let sql =
-            'SELECT id_personne,CONCAT(prenom," ",nom," (ID : ",tb_personnes.id,")"," ",numero_patient) as patient,tb_personnes.id from tb_personnes,tb_patients WHERE tb_personnes.id=tb_patients.id_personne AND CONCAT(prenom," ",nom," (ID : ",tb_personnes.id,")"," ",numero_patient) LIKE "%' +
-            patient +
-            '%"';
+                'SELECT id_personne,CONCAT(prenom," ",nom," (ID : ",tb_personnes.id,")"," ",numero_patient) as patient,tb_personnes.id from tb_personnes,tb_patients WHERE tb_personnes.id=tb_patients.id_personne AND CONCAT(prenom," ",nom," (ID : ",tb_personnes.id,")"," ",numero_patient) LIKE "%' +
+                patient +
+                '%"';
             //console.log(sql+" ID : "+patient);
-            con.query(sql,patient, function (err, rows) {
+            con.query(sql, patient, function (err, rows) {
                 if (err) {
                     //throw err;
                     resolve([{ fullname: "" }]);
@@ -159,7 +175,7 @@ module.exports = {
         status = req.body.status;
         email = req.body.email;
         id_personne = req.body.patientID;
-        let params = [firstName, lastName, gender, dateOfBirth, adresse, phone, status,email, id_personne];
+        let params = [firstName, lastName, gender, dateOfBirth, adresse, phone, status, email, id_personne];
         let promise = new Promise((resolve, reject) => {
             let sql = "UPDATE tb_personnes SET prenom = ?,nom =? ,sexe =? ,date_nais =? ,adresse =? ,telephone =?,statut =?,email=? WHERE id =?";
             //console.log(sql + " ID : " + id_personne);
@@ -207,30 +223,30 @@ module.exports = {
         //console.log(data);
         return data;
     },
-        //Delete PATIENT DEFINITEVELY
-        removePatient: async function (req) {
-            let idPatient = req.body.PatientID;
-            let fullname = req.body.fullname;
-            let promise = new Promise((resolve, reject) => {
-                let sql = "DELETE FROM tb_personnes  WHERE id =?";
-                //console.log(sql + " ID : " + id_personne);
-                con.query(sql, idPatient, function (err, rows) {
-                    if (err) {
-                        resolve({
-                            msg: "Une erreur est survenue. S'il vous palit réessayez.",
-                            type: "danger",
-                            debug: err
-                        });
-                    } else {
-                        resolve({
-                            msg: "Les informations concernant " + fullname + " ont été supprimées avec succès.",
-                            success: "success"
-                        });
-                    }
-                });
+    //Delete PATIENT DEFINITEVELY
+    removePatient: async function (req) {
+        let idPatient = req.body.PatientID;
+        let fullname = req.body.fullname;
+        let promise = new Promise((resolve, reject) => {
+            let sql = "DELETE FROM tb_personnes  WHERE id =?";
+            //console.log(sql + " ID : " + id_personne);
+            con.query(sql, idPatient, function (err, rows) {
+                if (err) {
+                    resolve({
+                        msg: "Une erreur est survenue. S'il vous palit réessayez.",
+                        type: "danger",
+                        debug: err
+                    });
+                } else {
+                    resolve({
+                        msg: "Les informations concernant " + fullname + " ont été supprimées avec succès.",
+                        success: "success"
+                    });
+                }
             });
-            data = await promise;
-            //console.log(data);
-            return data;
-        },
+        });
+        data = await promise;
+        //console.log(data);
+        return data;
+    },
 }

@@ -501,6 +501,7 @@ router.post("/display-test-result", async (req, res) => {
     let signature = await examenDB.getTestSignature(test_request_id);
     //console.log("SIGNATURE : " + signature.realiser_par);
     let data = await examenDB.testRequestContent(test_request_id);
+    data.sort();
     let date_resultat = helpers.formatDate(helpers.getCurrentDate(), "FR");
     let resultaFinal = [];
     let valNorFinal = [];
@@ -561,16 +562,29 @@ router.post("/display-test-result", async (req, res) => {
             Parameters: infoParams,
             Resultats: Resultats,
             VN: ValeurNormal,
+            Count : infoParams.length
         };
         resultaFinal.push(info);
     }
+    //helpers.so
     //console.log("VN : " + resultaFinal[0].VN[3].vn);
     //console.log("FINAL : " + resultaFinal[0].Parameters[0].nom_examen + " : " + resultaFinal[0].Resultats[0].resultat);
-
+    resultaFinal = helpers.sortArrayObj(resultaFinal);
+    let dataSize = resultaFinal.length;
+    let midArray = 0;
+    if(dataSize >=4){
+        midArray = Math.ceil(dataSize/1.4);
+    }else{
+        midArray = Math.ceil(dataSize/2);
+    }
+    
+    let Division = {first : resultaFinal.slice(0,midArray ), second : resultaFinal.slice(midArray)};
+    console.log("TOTAL : " +dataSize+" HALF : "+midArray +"  DIVISION "+Division+" DATA "+resultaFinal);
     let pageTitle = "Résultat Tests Laboratoire";
     params = {
         pageTitle: pageTitle,
         data: resultaFinal,
+        Division : Division,
         patient: patient,
         testNumber: test_request_id,
         patientNumber: patientNumber,

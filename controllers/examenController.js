@@ -366,7 +366,7 @@ var self = module.exports = {
                 for (item of testResults) {
                     let resultat = testResults[pos];
                     let examen_id = tests_id[pos];
-                    let saveID = ExamParent+""+examen_id;
+                    let saveID = test_request_id+""+ExamParent+""+examen_id;
                     let line = [];
                     line[0] = test_request_id;
                     line[1] = examen_id;
@@ -496,7 +496,7 @@ var self = module.exports = {
                     let nb_success = result.affectedRows;
                     if (nb_success == 0) { //Enregistrer le nouveau test
                         console.log("SAve the test...");
-                        let save_id = ExamParent+""+examen_id;
+                        let save_id = test_request_id+""+ExamParent+""+examen_id;
                         await self.saveSingleTestResult(test_request_id, examen_id, resultat,save_id,ExamParent);
                     }
                     msg = {

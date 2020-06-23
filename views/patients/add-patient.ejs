@@ -40,10 +40,12 @@
                     <% if( locals.notifications){ %>
                     <div class="alert alert-<%= locals.notifications.type %> alert-dismissible fade show" role="alert">
                         <%= locals.notifications.msg %>
+                        <% if( locals.notifications.success){ %>
                         <form method="POST" action="/test-laboratoire">
                             <input type="hidden" value="<%= locals.notifications.patientID%>" name="patientSelected">
                             <button class="btn btn-primary ">Examen laboratoire</button>
                         </form>
+                        <% } %>
                         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                             <span aria-hidden="true">×</span>
                         </button>
@@ -83,8 +85,8 @@
                             <div class="col-sm-6">
                                 <div class="form-group">
                                     <label>Numéro patient <span class="text-danger"></span></label>
-                                    <input  class="form-control" onfocus="select()" type="text" name="numero_patient" value="<%=numero_patient%>" <%=required%>
-                                        >
+                                    <input class="form-control" onfocus="select()" type="text" name="numero_patient"
+                                        value="<%=numero_patient%>" <%=required%>>
                                 </div>
                             </div>
                         </div>

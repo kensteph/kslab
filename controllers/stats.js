@@ -352,7 +352,8 @@ var self = module.exports = {
             let reqtext = '<i class="fa fa-comment-o"></i> <span class="badge badge-pill bg-danger float-right">' + nbRequest + '</span> ';
 
             io.emit('updateNotificationCount', { nb: reqtext, message: data.message, userId: user.userId });
-
+            helpers.desktopNotification(data.message.title, data.message.message);
+            //console.log(data);
         } else {
             console.log("THIS MESSAGE IS NOT YOUR CONCERN " + user);
         }

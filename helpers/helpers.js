@@ -1,5 +1,6 @@
 var mkdirp = require('mkdirp');
 var fs = require('fs');
+
 var self = module.exports = {
     //Generate Code for the Student
     generateCode: function (initial, idPersonne) {
@@ -250,6 +251,20 @@ var self = module.exports = {
         return Array.from(new Set(array));
     },
 
+    //Sort an array object
+    compare(a, b) {
+        if (a.Count < b.Count) {
+            return -1;
+        }
+        if (a.Count > b.Count) {
+            return 1;
+        }
+        return 0;
+    },
+    sortArrayObj(arrayObj) {
+        return arrayObj.sort(self.compare);
+    },
+
     titleByAge(age, sexe) {
         age = parseFloat(age);
         console.log("AGE : " + age + " SEXE : " + sexe);
@@ -268,6 +283,36 @@ var self = module.exports = {
             }
         }
         return title;
+    },
+    //===================================== DESTOP NOTIFICATIONS =====================================
+    desktopNotification(title, message) {
+        const notifier = require('node-notifier');
+        const path = require('path');
+        notifier.notify(
+            {
+                title: title,
+                message: message,
+                icon: path.join(__dirname, '../public/logo/logo.png'), // Absolute path (doesn't work on balloons)
+                sound: true, // Only Notification Center or Windows Toasters
+                open: 'http://localhost:8788/notifications',
+                wait: false // Wait with callback, until user action is taken against notification, does not apply to Windows Toasters as they always wait or notify-send as it does not support the wait option
+            },
+            function (err, response) {
+                // Response is response from notification
+                console.log(response);
+            }
+        );
+
+        notifier.on('click', function (notifierObject, options, event) {
+            // Triggers if `wait: true` and user clicks notification
+            console.log("CLIK!!!!!!!!!!!");
+        });
+
+        notifier.on('timeout', function (notifierObject, options) {
+            // Triggers if `wait: true` and notification closes
+        });
+
+
     },
     //============================================ EMAIL ============================================
     sendEmail(ent_email, pass, recipient_email, attach_file, subject, body) {

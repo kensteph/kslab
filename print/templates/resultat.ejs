@@ -10,40 +10,40 @@
     </style>
 </head>
 
-<body>
-    
- <!-- HEADER -->
- <div class="row-header">
-    <div class="logo">
-        <img style="margin-left: 10px;" src="data:image/jpeg;base64,<%=LOGO%>" alt="img" width="250" height="250">
-    </div>
-    <div class="header-form">
-        <p>
-            <strong class="line-header"> <%=line1%> </strong><br>
-            <strong class="line-header"><%=line2%></strong>
-            <br>
-            <% if(line3 !=""){ %>
-             <%=line3%><br>
-            <% } %>
-            <% if(line4 !=""){ %>
+<body id="elem">
+
+    <!-- HEADER -->
+    <div class="row-header">
+        <div class="logo">
+            <img style="margin-left: 10px;" src="data:image/jpeg;base64,<%=LOGO%>" alt="img" width="250" height="250">
+        </div>
+        <div class="header-form">
+            <p>
+                <strong class="line-header"> <%=line1%> </strong><br>
+                <strong class="line-header"><%=line2%></strong>
+                <br>
+                <% if(line3 !=""){ %>
+                <%=line3%><br>
+                <% } %>
+                <% if(line4 !=""){ %>
                 <%=line4%><br>
-            <% } %>
-            <% if(line5 !=""){ %>
+                <% } %>
+                <% if(line5 !=""){ %>
                 <%=line5%><br>
-            <% } %>
-            <% if(line6 !=""){ %>
+                <% } %>
+                <% if(line6 !=""){ %>
                 <%=line6%><br><br>
-            <% } %>
-        </p>
+                <% } %>
+            </p>
+        </div>
     </div>
-</div>
-<hr style="width: 80%; margin-top: -30px;" >
+    <hr style="width: 90%; margin-top: -50px;">
 
 
     <div class="row-header-table">
         <div class="title">LABORATOIRE MEDICAL</div>
     </div>
-    <div class="row-header-table" style="margin-top:30px;" >
+    <div class="row-header-table" style="margin-top:30px;">
         <div class="col-sm-3">
             <ul class="list-unstyled mb-0">
                 <li> <strong> Numéro : </strong> <%=testNumber%></li>
@@ -64,59 +64,100 @@
 
     </div>
 
-    
-<% data.forEach((info) => { %>
-<div class="row">    
+    <div class="row">
         <div class="col-sm-6">
-                <!-- <h4><%=info.TestName %></h4> -->
-                <table class="table m-t-10">
-                    <tbody>
+            <% Division.first.forEach((info) => { %>
+            <table class="table m-t-5">
+                <tbody>
+                    <% if(info.TestTypeResult==1){ %>
+                    <tr class="exam">
+                        <td><%=info.TestName%></td>
+                        <td>Résultat</td>
+                        <td>Valeurs Normales</td>
+                    </tr>
+                    <% }else{ %>
+                    <tr class="exam">
+                        <td><%=info.TestName%></td>
+                        <td cellspan="2">Résultat</td>
+                    </tr>
+                    <% } %>
+
+
+                    <% 
+                            let pos = 0;
+                            info.Parameters.forEach((testParameters) => { 
+                            %>
+                    <tr>
+                        <td class="resultat">
+                            <%=testParameters.nom_examen%>
+                        </td>
+                        <td class="resultat">
+                            <span class="float-right"><%=info.Resultats[pos].resultat%></span>
+                        </td>
                         <% if(info.TestTypeResult==1){ %>
-                            <tr class="exam">
-                                <td><%=info.TestName %></td>
-                                <td>Résultat</td>
-                                <td>Valeurs Normales</td>
-                            </tr>
-                        <% }else{ %>
-                            <tr class="exam">
-                                <td><%=info.TestName %></td>
-                                <td cellspan="2">Résultat</td>
-                            </tr>
+                        <td class="resultat-vn">
+                            <span class="float-right"><%=info.VN[pos].vn%></span>
+                        </td>
                         <% } %>
+                    </tr>
+                    <% pos++; }) %>
 
-
-                        <% 
-                        let pos = 0;
-                        info.Parameters.forEach((testParameters) => { 
-                        %>
-                        <tr>
-                            <td class="resultat">
-                               <%=testParameters.nom_examen%>
-                            </td>
-                            <td class="resultat">
-                                <span class="float-right"><%=info.Resultats[pos].resultat%></span>
-                            </td>
-                            <% if(info.TestTypeResult==1){ %>
-                                <td class="resultat">
-                                    <span class="float-right"><%=info.VN[pos].vn%></span>
-                                </td>
-                            <% } %>
-                        </tr>
-                        <% pos++; }) %>
-
-                    </tbody>
-                </table>
-    </div>
-</div>
-        <% }) %>
-   
-        <% if(signature.realiser_par != null){ %>
-        <div class="signature">
-            <div class="realisateur"><%=signature.realiser_par%></div>
-            <div class="hr-signature"><hr></div>
-            <div class="poste"><%=signature.poste%></div>
+                </tbody>
+            </table>
+            <% pos++; }) %>
         </div>
-        <% } %>
+        <div class="col-sm-6">
+            <% Division.second.forEach((info) => { %>
+            <table class="table m-t-5">
+                <tbody>
+                    <% if(info.TestTypeResult==1){ %>
+                    <tr class="exam">
+                        <td><%=info.TestName %></td>
+                        <td>Résultat</td>
+                        <td>Valeurs Normales</td>
+                    </tr>
+                    <% }else{ %>
+                    <tr class="exam">
+                        <td><%=info.TestName %></td>
+                        <td cellspan="2">Résultat</td>
+                    </tr>
+                    <% } %>
+
+
+                    <% 
+                            let pos = 0;
+                            info.Parameters.forEach((testParameters) => { 
+                            %>
+                    <tr>
+                        <td class="resultat">
+                            <%=testParameters.nom_examen%>
+                        </td>
+                        <td class="resultat">
+                            <span class="float-right"><%=info.Resultats[pos].resultat%></span>
+                        </td>
+                        <% if(info.TestTypeResult==1){ %>
+                        <td >
+                            <span class="resultat-vn"><%=info.VN[pos].vn%></span>
+                        </td>
+                        <% } %>
+                    </tr>
+                    <% pos++; }) %>
+
+                </tbody>
+            </table>
+            <% pos++; }) %>
+        </div>
+    </div>
+
+    <% if(signature.realiser_par != null && signature.realiser_par != ""){ %>
+    <div class="signature">
+        <div class="realisateur"><%=signature.realiser_par%></div>
+        <div class="hr-signature">
+            <hr>
+        </div>
+        <div class="poste"><%=signature.poste%></div>
+    </div>
+    <% } %>
 </body>
 
 </html>
