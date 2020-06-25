@@ -1,0 +1,22 @@
+<div class="sidebar" id="sidebar">
+    <div class="sidebar-inner slimscroll">
+        <div class="sidebar-menu">
+            <ul>
+                <li>
+                    <% let home=USER_HOME_PAGE; if(UserData.user_menu_access.includes("Tableau de bord") || UserData.user_menu_access[0]=="All"){ home="/home";}else{home="/test-laboratoire";}%>
+                    <% if(UserData.user_menu_access.includes("Tableau de bord") || UserData.user_menu_access[0]=="All"){ %>   
+                        <a href="<%=home%>"><i class="fa fa-home back-icon"></i> <span>Tableau de bord</span></a>
+                    <% } else{ %>
+                        <a href="<%=home%>"><i class="fa fa-flask back-icon"></i> <span>Nouveau Test</span></a>
+                    <% }  %>
+
+                </li>
+                <li class="menu-title"><a href="/Compose" class="btn btn-primary btn-block">Nouveau Message</a></li>
+                <li class="active">
+                    <a href="/Inbox">Boite de réception <span id="CountMessage" class="mail-count">(<%= notifications.length%>)</span></a>
+                </li>
+                
+            </ul>
+        </div>
+    </div>
+</div>

@@ -82,7 +82,7 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div class="table-responsive">
-                            <table class="table table-striped custom-table datatable mb-0">
+                            <table id="dtBasicExample" class="table table-striped">
                                 <thead>
                                     <tr>
                                         <th>Numéro Lot</th>
@@ -115,11 +115,11 @@
                                         <td><%=stock.numero_lot%></td>
                                         <td>
                                             <% if(UserData.user_sub_menu_access.includes("Ajouter Stock") || UserData.user_sub_menu_access[0]=="All"){%>
-                                                <a href="/materiaux?mat=<%=stock.id%>"><%=stock.nom_materiau%></a>
-                                                <% }else{ %>
-                                                    <%= stock.nom_materiau %>
-                                                <% } %>
-                                            </td>
+                                            <a href="/materiaux?mat=<%=stock.id%>"><%=stock.nom_materiau%></a>
+                                            <% }else{ %>
+                                            <%= stock.nom_materiau %>
+                                            <% } %>
+                                        </td>
                                         <td><%=stock.date_recue%></td>
                                         <td><%=stock.date_expiration%></td>
                                         <td><%=stock.qte_recue%></td>
@@ -136,7 +136,8 @@
                                                     aria-expanded="false"><i class="fa fa-ellipsis-v"></i></a>
                                                 <div class="dropdown-menu dropdown-menu-right">
                                                     <% if(UserData.user_sub_menu_access.includes("Requete Ajouter/Retirer article du Stock") || UserData.user_sub_menu_access[0]=="All"){%>
-                                                    <a class="dropdown-item" href="#" title="Mouvement de Stock" id="btnStock<%=stock.id%>"
+                                                    <a class="dropdown-item" href="#" title="Mouvement de Stock"
+                                                        id="btnStock<%=stock.id%>"
                                                         onclick="launchStockManagement('<%=stock.nom_materiau%>','<%=stock.id%>','<%=stock.numero_lot%>')"><i
                                                             class="fa fa-plus-square m-r-5"></i> <i
                                                             class="fa fa-minus-square m-r-5"></i> Ajout/retrait</a>

@@ -1,4 +1,10 @@
 $(document).ready(function () {
+    //SEARCH INTO A TABLE
+    $('#dtBasicExample').DataTable({
+        "order": [[ 0, "desc" ]]
+        });
+    $('.dataTables_length').addClass('bs-select');
+
     $("#SearchPatientButton").hide();
     //$("#loader").hide();
     var $rows = $('#table tr');
@@ -16,35 +22,6 @@ $(document).ready(function () {
         //});
     });
 
-    // var notifArrayId = [];
-    // function notifList(data) {
-    //     let sms = '<li class="notification-message">';
-    //     sms += '<a href="activities.html">';
-    //     sms += '<div class="media">';
-    //     sms += '<span class="avatar">';
-    //     sms += '<img alt="John Doe" src="assets/img/user.jpg" class="img-fluid"></span>';
-    //     sms += '<div class="media-body">';
-    //     sms += '<p class="noti-details"><span class="noti-title">' + data.nom_materiau + '</span> added';
-    //     sms += 'new task <span class="noti-title">Patient appointment booking</span></p>';
-    //     sms += '<p class="noti-time"><span class="notification-time">4 mins ago</span></p>'
-    //     sms += '</div> </div></a></li>';
-    //     $("#notifications").append(sms);
-    // };
-    // var myVar = setInterval(myTimer, 5000);
-    // function myTimer() {
-    //     var d = new Date();
-    //     var t = d.toLocaleTimeString();
-    //     $("#notifications").html("");
-    //     $.get("/notifications", function (data, status) {
-    //         //alert("Data: " + data + "\nStatus: " + status);
-    //         $("#countNotifs").html(data.length);
-    //         for (notif of data) {
-    //             notifList(notif);
-    //         }
-
-    //     });
-
-    // }
 
     //SEARCH FOR A PATIENT
     $('#searchPatientInput').keyup(function (e) {
@@ -77,7 +54,7 @@ $(document).ready(function () {
         if (wordToSearch.length >= 2) {
             $.post("/live-search-patient", { key: wordToSearch }, function (data) {
                 console.log(data);
-                if (data.length>0) {
+                if (data.length > 0) {
                     $("#ResultList").html("");
                     for (i = 0; i < data.length; i++) {
                         let item = data[i];
@@ -86,9 +63,9 @@ $(document).ready(function () {
                         $("#ResultList").append(line);
                     }
                 } else {
-                     //Hide search button
-                     $("#SearchPatientButton").hide();
-                     $("#ResultList").html("Aucun résultat...");
+                    //Hide search button
+                    $("#SearchPatientButton").hide();
+                    $("#ResultList").html("Aucun résultat...");
                 }
             });
         } else {
@@ -104,20 +81,3 @@ $(document).ready(function () {
     });
 
 });
-
-
-function formToJSONString(form) {
-    var obj = {};
-    var elements = form.querySelectorAll("input, select, textarea");
-    for (var i = 0; i < elements.length; ++i) {
-        var element = elements[i];
-        var name = element.name;
-        var value = element.value;
-
-        if (name) {
-            obj[name] = value;
-        }
-    }
-
-    return JSON.stringify(obj);
-}

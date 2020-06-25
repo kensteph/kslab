@@ -32,24 +32,20 @@
             <div class="content">
                 <div class="row">
                     <div class="col-sm-4 col-3">
-                        <h4 class="page-title"> <i class="fa fa-signal fa-2x"></i> <%=pageTitle%> </h4>
+                        <h4 class="page-title"> <i class="fa fa-medkit fa-2x"></i> <%=pageTitle%> </h4>
                     </div>
-                    
+
                     <div class="col-sm-8 col-9 text-right m-b-20">
                         <% if(UserData.user_sub_menu_access.includes("Ajouter Matériau") || UserData.user_sub_menu_access[0]=="All"){%>
                         <a href="/add-materiau" class="btn btn btn-primary btn-rounded float-right"><i
                                 class="fa fa-plus"></i> Ajouter Matériau</a>
-                       <% } %>
+                        <% } %>
                     </div>
-                   
-                    <div class="col-3-xxxl col-xl-3 col-lg-3 col-3 form-group">
-						<input autocomplete="off" type="text" id="search" class="form-control" placeholder="Rechercher...">
-				 	</div>
                 </div>
                 <div class="row">
                     <div class="col-md-12">
                         <div class="table-responsive">
-                            <table class="table table-border table-striped custom-table datatable mb-0">
+                            <table id="dtBasicExample" class="table table-border table-striped custom-table">
                                 <thead>
                                     <tr>
                                         <th>Matériau</th>
@@ -68,7 +64,7 @@
                                                 <%= materiau.nom_materiau %>
                                             </a>
                                             <% }else{ %>
-                                                <%= materiau.nom_materiau %>
+                                            <%= materiau.nom_materiau %>
                                             <% } %>
                                         </td>
                                         <td> <%=materiau.min_stock %></td>
@@ -80,7 +76,7 @@
                                                 <div class="dropdown-menu dropdown-menu-right">
                                                     <% if(UserData.user_sub_menu_access.includes("Modifier Matériau") || UserData.user_sub_menu_access[0]=="All"){%>
                                                     <a class="dropdown-item" href="#"
-                                                    onclick="launchEditMateriau('<%= materiau.nom_materiau%>','<%= materiau.id %>','<%= materiau.expirable %>','<%= materiau.min_stock %>')"><i
+                                                        onclick="launchEditMateriau('<%= materiau.nom_materiau%>','<%= materiau.id %>','<%= materiau.expirable %>','<%= materiau.min_stock %>')"><i
                                                             class="fa fa-pencil m-r-5"></i> Modifier</a>
                                                     <% } %>
                                                 </div>
@@ -117,14 +113,16 @@
                                 <div class="col-sm-6 col-md-6 col-lg-6">
                                     <label>Date reçue <span class="text-danger">*</span></label>
                                     <div class="cal-icon">
-                                        <input required class="form-control datetimepicker" type="text" name="dateRecue">
+                                        <input required class="form-control datetimepicker" type="text"
+                                            name="dateRecue">
                                     </div>
                                 </div>
 
                                 <div class="col-sm-6 col-md-6 col-lg-6">
                                     <label>Date d'expiration <span class="text-danger">*</span></label>
                                     <div class="cal-icon">
-                                        <input required class="form-control datetimepicker" type="text" name="dateExpiration">
+                                        <input required class="form-control datetimepicker" type="text"
+                                            name="dateExpiration">
                                     </div>
                                 </div>
                             </div>
@@ -141,7 +139,7 @@
                             </div>
                             <div id="notifyStockUp" class="m-t-20 text-center"></div>
                             <div class="m-t-20 text-center">
-                                <button class="btn btn-primary submit-btn" >Ajouter</button>
+                                <button class="btn btn-primary submit-btn">Ajouter</button>
                             </div>
                         </form>
 
@@ -163,12 +161,14 @@
                             <input type="hidden" id="EmateriauId" name="materiauId">
                             <div class="form-group">
                                 <label>Matériau <span class="text-danger">*</span></label>
-                                <input required class="form-control"  onclick="select()"  type="text" id="Emateriau" name="materiauName">
+                                <input required class="form-control" onclick="select()" type="text" id="Emateriau"
+                                    name="materiauName">
                             </div>
                             <div class="form-inline">
                                 <div class="col-sm-6 col-md-6 col-lg-6">
                                     <label>Stock minimum <span class="text-danger">*</span></label>
-                                    <input required class="form-control" onclick="select()" type="number" min="0" id="Minstock" name="min_stock">
+                                    <input required class="form-control" onclick="select()" type="number" min="0"
+                                        id="Minstock" name="min_stock">
                                 </div>
                                 <div class="col-sm-6 col-md-6 col-lg-6">
                                     <label>Périssable <span class="text-danger">*</span></label>
@@ -180,10 +180,10 @@
                             </div>
                             <div id="EnotifyMat" class="m-t-20 text-center"></div>
                         </form>
-                            <div class="m-t-20 text-center">
-                                <button class="btn btn-primary submit-btn" onclick="editMateriau()" >Modifier</button>
-                            </div>
-                        
+                        <div class="m-t-20 text-center">
+                            <button class="btn btn-primary submit-btn" onclick="editMateriau()">Modifier</button>
+                        </div>
+
 
 
                     </div>
@@ -224,14 +224,13 @@
     <script src="assets/js/moment.min.js"></script>
     <script src="assets/js/bootstrap-datetimepicker.min.js"></script>
     <script src="assets/js/app.js"></script>
-    <script src="assets/js/my_js.js"></script>
     <script>
-        $("#addStockForm").submit(function(e){
+        $("#addStockForm").submit(function (e) {
             e.preventDefault();
             addStock();
         });
-        
-        function launchEditMateriau(matName, matId,perissable,stock) {
+
+        function launchEditMateriau(matName, matId, perissable, stock) {
             $("#EnotifyMat").show().html("");
             $("#EmateriauName").html(matName);
             $("#Emateriau").val(matName);
@@ -245,7 +244,7 @@
             $.post("/edit-materiau", formData, function (data) {
                 console.log(data);
                 if (data.success) { //Success 
-                    $("#EnotifyMat").html(data.msg).fadeOut(5000,()=>{
+                    $("#EnotifyMat").html(data.msg).fadeOut(5000, () => {
                         window.location.replace("/materiaux");
                     });
                 } else {

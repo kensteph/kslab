@@ -75,7 +75,7 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div class="table-responsive">
-                            <table id="example" class="table table-striped custom-table datatable mb-0">
+                            <table id="dtBasicExample" class="table table-striped custom-table">
                                 <thead>
                                     <tr>
                                         <th>Test</th>
@@ -115,15 +115,15 @@
                                                 <a href="#" class="action-icon dropdown-toggle" data-toggle="dropdown"
                                                     aria-expanded="false"><i class="fa fa-ellipsis-v"></i></a>
                                                 <div class="dropdown-menu dropdown-menu-right">
-                                                    
+
                                                     <% if(UserData.user_sub_menu_access.includes("Supprimer une demandes de Test") || UserData.user_sub_menu_access[0]=="All"){ %>
                                                     <% if(statut == 0){ %>
-                                                        <a href="#" id="btnDelivery<%=stock.request_id%>"
-                                                            onclick="launchDeleteRequest('<%=stock.request_id%>','<%=patientSelected%>')"
-                                                            class="dropdown-item"><i class="fa fa-trash"></i> 
-                                                            Supprimer la demande</a>
-                                                        <% } %>
-                                                        <% } %>
+                                                    <a href="#" id="btnDelivery<%=stock.request_id%>"
+                                                        onclick="launchDeleteRequest('<%=stock.request_id%>','<%=patientSelected%>')"
+                                                        class="dropdown-item"><i class="fa fa-trash"></i>
+                                                        Supprimer la demande</a>
+                                                    <% } %>
+                                                    <% } %>
 
                                                     <% if(UserData.user_sub_menu_access.includes("Enregistrer Résultat") || UserData.user_sub_menu_access[0]=="All"){ %>
                                                     <form action="/SaveTestResult" method="POST"
@@ -134,8 +134,7 @@
                                                             value="<%=stock.numero_patient%>">
                                                         <input type="hidden" name="testRequestId"
                                                             value="<%=stock.request_id%>">
-                                                            <input type="hidden" name="statut"
-                                                            value="<%=stock.statut%>">
+                                                        <input type="hidden" name="statut" value="<%=stock.statut%>">
                                                         <input type="hidden" name="docteur" value="<%=stock.docteur%>">
                                                         <input type="hidden" name="patientSexe" value="<%=stock.sexe%>">
                                                         <a href="#" class="dropdown-item"
@@ -289,9 +288,6 @@
     <script src="assets/js/bootstrap-datetimepicker.min.js"></script>
     <script src="assets/js/app.js"></script>
     <script>
-        $(document).ready(function () {
-            $('#example').DataTable();
-        });
         function submitForm(id) {
             $("#displayTestRequest" + id).submit();
         }
@@ -304,7 +300,7 @@
             $("#TestDelivery").modal();
         }
 
-        
+
         function printTest(test) {
             $("#PrintForm" + test).submit()
         }
@@ -324,17 +320,17 @@
         }
 
         function launchDeleteRequest(test_id, patient) {
-            $("#patientD").html("" + patient+" | ID "+test_id);
+            $("#patientD").html("" + patient + " | ID " + test_id);
             $("#TestD").val(test_id);
             $("#DeleteRequest").modal();
         }
-        
+
         supprimerTest = function () {
             let formData = $("#DeleteForm").serialize();
             $.post("/delete-test-request", formData, function (data) {
                 console.log(data);
                 if (data.success) { //Success 
-                    let id =  $("#TestD").val();
+                    let id = $("#TestD").val();
                     $("#rowTest" + id).fadeOut(5000);
                     $('#DeleteRequest').modal('hide')
                 } else {

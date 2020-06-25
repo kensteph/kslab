@@ -6,6 +6,7 @@ const router = express.Router();
 const stockDB = require('../controllers/stockController.js');
 const settingsDB = require('../controllers/stats');
 const helpers = require('../helpers/helpers');
+const stats = require('../controllers/stats');
 router.use(bodyParser.urlencoded({ extended: true }));
 router.use(express.static('public'));
 
@@ -191,7 +192,7 @@ router.post('/desactivate-user', async (req, res) => {
 //================================================= NOTIFICATIONS ======================================================
 //INSERT NOTIFICATIONS
 router.post('/save-notification', async (req, res) => {
-    //console.log(req.body);
+     console.log(req.body);
     let notifications = await settingsDB.saveNotification(req);
     res.json(notifications);
 });
@@ -217,6 +218,52 @@ router.get('/manage-notifications', async (req, res) => {
     res.render('setting/manage-notifications',params);
 });
 
+//========================================= MESSAGERIE ====================================================
+
+//INBOX
+router.get('/Inbox', async (req, res) => {
+    let data = await stats.userNotificationList(req.session.username);
+    let UserList = await settingsDB.listOfAllUsers();
+    let pageTitle = "Notifications ";
+    params = {
+        pageTitle: pageTitle,
+        notifications: data,
+        UserList : UserList,
+        UserData: req.session.UserData,
+        page: 'Inbox'
+    };
+    res.render('setting/inbox',params);
+});
+
+//VIEW MESSAGE
+router.post('/view-mail', async (req, res) => {
+    console.log(req.body);
+    let data = await stats.getSinglenotification(req.body.MessageID);
+    console.log(data);
+    let pageTitle = "Notifications ";
+    params = {
+        pageTitle: pageTitle,
+        notifications: data,
+        UserData: req.session.UserData,
+        Username : req.session.username,
+        page: 'Inbox'
+    };
+    res.render('setting/mail-view',params);
+});
+//COMPOSE NEW MESSAGE
+router.get('/Compose', async (req, res) => {
+    let data = await stats.userNotificationList(req.session.username);
+    let UserList = await settingsDB.listOfAllUsers();
+    let pageTitle = "Notifications ";
+    params = {
+        pageTitle: pageTitle,
+        notifications: data,
+        UserList : UserList,
+        UserData: req.session.UserData,
+        page: 'Compose'
+    };
+    res.render('setting/compose_mail',params);
+});
 //================================================ BACKUP DB =================================================
 //GET DB HISTORIQUE BACKUP
 router.post('/backup-db', async (req, res) => {

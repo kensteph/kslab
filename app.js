@@ -60,7 +60,7 @@ app.get('/', async (req, res) => {
     global.PERISSABLE = ['Non', 'Oui'];
     global.TYPE_RESULTAT = ['', 'Valeurs normales', 'Positif/Négatif', 'Commentaires'];
     global.NBJOUR_STOCK_ALERT = 90;
-    global.USER_HOME_PAGE = '/notifications';//Default for sample User
+    global.USER_HOME_PAGE = '/Inbox';//Default for sample User
     //MENU ACCESS
     global.MENU_ITEM = ['Tableau de bord', 'Test Patient', 'Test Laboratoire', 'Patients', 'Examens', 'Gestion de stock', 'Paramètres', 'Administration'];
     global.SUBMENU_ITEM = ['Ajouter Patient', 'Liste des Patients', 'Modifier Patients', 'Rechercher Patient', 'Liste des demandes de Tests','Supprimer une demandes de Test','Enregistrer Résultat','Modifier Résultat','Valider Résultat','Ajouter Signature','Imprimer Résultat', 'Ajouter examens', 'Voir la liste des examens','Supprimer examens', 'Modifier examens','Ajouter valeurs normales','Détails Examens','Ajouter Matériau','Modifier Matériau','Lister les matériaux','Ajouter Stock','Inventaire','Imprimer Inventaire','Requete Ajouter/Retirer article du Stock','Autoriser Ajouter/Retirer article du Stock','Approuver requete relative au stock','Voir la liste des requetes de stock','Valider/Invalider Stock','Mouvement de stock','Imprimer Mouvement de Stock'];

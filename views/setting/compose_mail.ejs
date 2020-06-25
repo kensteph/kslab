@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+
+
+<!-- compose23:33-->
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
+    <link rel="shortcut icon" type="image/x-icon" href="assets/img/favicon.ico">
+    <title><%=appName%>| <%=pageTitle%></title>
+    <link rel="stylesheet" type="text/css" href="assets/css/select2.min.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="assets/plugins/summernote/dist/summernote-bs4.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/style.css">
+    <!--[if lt IE 9]>
+		<script src="assets/js/html5shiv.min.js"></script>
+		<script src="assets/js/respond.min.js"></script>
+	<![endif]-->
+</head>
+
+<body>
+    <div class="main-wrapper">
+        <!-- HEADER -->
+        <%- include("../parts/header") -%>
+        <!-- SIDEBAR -->
+        <%- include("../parts/mail_sidebar") -%>
+        <div class="page-wrapper">
+            <div class="content">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <h4 class="page-title">Nouveau Message</h4>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="card-box">
+                            <form method="POST" action="/view-mail" id="sendNotificationForm">
+                                <div class="form-group">
+                                    <select class="select" multiple name="users[]" id="UsersSelected">
+                                        <option value="All" selected>Tout le monde</option>
+                                        <% UserList.forEach((user) => { %>
+                                        <option value="<%= user.user_name %>">
+                                            <%= user.user_name+" | "+user.fullname %></option>
+                                        <% }) %>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <input type="text" required placeholder="Sujet" name="subject" class="form-control">
+                                </div>
+                                <div class="form-group">
+                                    <textarea rows="4" cols="5" required name="Message" class="form-control"
+                                        placeholder="Tapez votre message ici"></textarea>
+                                </div>
+
+                                <div id="msgSaveNotif" class="m-t-10 text-center"></div>
+                                <div class="form-group mb-0">
+                                    <div class="text-center compose-btn">
+                                        <button class="btn btn-primary" id="sendBtn" ><span>Send</span>
+                                            <i class="fa fa-send m-l-5"></i></button>
+                                    </div>
+
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div class="sidebar-overlay" data-reff=""></div>
+        <script src="assets/js/jquery-3.2.1.min.js"></script>
+        <script src="assets/js/popper.min.js"></script>
+        <script src="assets/js/bootstrap.min.js"></script>
+        <script src="assets/js/jquery.slimscroll.js"></script>
+        <script src="assets/js/select2.min.js"></script>
+        <script src="assets/plugins/summernote/dist/summernote-bs4.min.js"></script>
+        <script src="assets/js/app.js"></script>
+        <!-- FOOTER -->
+        <%- include("../parts/footer") -%>
+        <script>
+            $("#sendNotificationForm").submit(function (e) {
+                e.preventDefault();
+                saveNotification();
+            });
+            saveNotification = function () {
+                $("#msgSaveNotif").show().html("");
+                let formData = $("#sendNotificationForm").serialize();
+                let userSelected = [];
+                let titre = $("#subject").val();
+                let type = $("#type").val();
+                let message = $("#Message").val();
+                let notif = { title: titre, type: type, message: message, date: new Date() };
+                $("#UsersSelected option:selected").each(function () {
+                    if (this.selected) {
+                        userSelected.push($(this).val());
+                    }
+                });
+
+                $.post("/save-notification", formData, function (data) {
+                    console.log(data);
+                    if (data.success) { //Success 
+                        //HIDE BUTTON
+                        $('#sendBtn').hide();
+                        //NOTIFY THE CHANGE
+                        socket.emit('updateNotificationCount', { userSelected: userSelected, message: notif });
+                        $("#msgSaveNotif").html(data.msg).fadeOut(5000, function () {
+                            window.location.replace("/Inbox");
+                        });
+                    } else {
+                        $("#msgSaveNotif").html(data.msg);
+                    }
+                });
+            }
+
+        </script>
+</body>
+
+
+<!-- compose23:34-->
+
+</html>

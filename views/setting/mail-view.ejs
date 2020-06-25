@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+
+
+<!-- mail-view23:34-->
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
+    <link rel="shortcut icon" type="image/x-icon" href="assets/img/favicon.ico">
+    <title><%=appName%>| <%=notifications.titre%></title>
+    <link rel="stylesheet" type="text/css" href="assets/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/dataTables.bootstrap4.min.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/style.css">
+    <!--[if lt IE 9]>
+		<script src="assets/js/html5shiv.min.js"></script>
+		<script src="assets/js/respond.min.js"></script>
+	<![endif]-->
+</head>
+
+<body>
+    <div class="main-wrapper">
+        <!-- HEADER -->
+        <%- include("../parts/header") -%>
+        <!-- SIDEBAR -->
+        <%- include("../parts/mail_sidebar") -%>
+        <div class="page-wrapper">
+            <div class="content">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <h4 class="page-title">Message</h4>
+                    </div>
+                </div>
+                <form id="MailInfo">
+                    <input type="hidden" name="title" id="title" value="<%=notifications.titre%>">
+                    <input type="hidden" name="recepient" id="recepient" value="<%=notifications.a%>">
+                    <input type="hidden" name="contenu" id="title" value="<%=notifications.contenu%>">
+                </form>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="card-box">
+                            <div class="mailview-content">
+                                <div class="mailview-header">
+                                    <div class="row">
+                                        <div class="col-sm-9">
+                                            <div class="text-ellipsis m-b-10">
+                                                <span class="mail-view-title"><%=notifications.titre%></span>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <div class="mail-view-action">
+                                                <div class="btn-group">
+                                                    <button type="button" class="btn btn-white btn-sm"
+                                                        data-toggle="tooltip" title="Delete"> <i
+                                                            class="fa fa-trash-o"></i></button>
+                                                    <button type="button" class="btn btn-white btn-sm"
+                                                        data-toggle="tooltip" title="Reply"> <i
+                                                            class="fa fa-reply"></i></button>
+                                                    <button type="button" class="btn btn-white btn-sm"
+                                                        data-toggle="tooltip" title="Forward"> <i
+                                                            class="fa fa-share"></i></button>
+                                                </div>
+                                                <button type="button" class="btn btn-white btn-sm" data-toggle="tooltip"
+                                                    title="Print"> <i class="fa fa-print"></i></button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="sender-info">
+                                        <div class="sender-img">
+                                            <img width="40" alt="" src="assets/img/user.jpg" class="rounded-circle">
+                                        </div>
+                                        <div class="receiver-details float-left">
+                                            <span class="sender-name"><%=notifications.de%></span>
+                                            <span class="receiver-name">
+                                                <% 
+                                                    destinataires = notifications.a;
+                                                    if(destinataires == "All"){
+                                                        destinataires = "Tout le monde";
+                                                    }
+                                                    if(Username == destinataires){
+                                                        destinataires = "toi";
+                                                    }
+                                                %>
+                                                Á <span><%=destinataires%></span>
+                                            </span>
+                                        </div>
+                                        <div class="mail-sent-time">
+                                            <span class="mail-time"><%=notifications.date_notif%></span>
+                                        </div>
+                                        <div class="clearfix"></div>
+                                    </div>
+                                </div>
+                                <div class="mailview-inner" style="word-wrap: break-word;">
+                                    <%=notifications.contenu%>
+                                </div>
+                            </div>
+                           
+                            <div class="mailview-footer">
+                                <div class="row">
+                                    <div class="col-sm-6 left-action">
+                                        <button type="button" class="btn btn-white"><i class="fa fa-reply"></i>
+                                            Reply</button>
+                                        <button type="button" class="btn btn-white"><i class="fa fa-share"></i>
+                                            Forward</button>
+                                    </div>
+                                    <div class="col-sm-6 right-action">
+                                        <button type="button" class="btn btn-white"><i class="fa fa-print"></i>
+                                            Print</button>
+                                        <button type="button" class="btn btn-white"><i class="fa fa-trash-o"></i>
+                                            Delete</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+           
+        </div>
+    </div>
+    <div class="sidebar-overlay" data-reff=""></div>
+    <script src="assets/js/jquery-3.2.1.min.js"></script>
+    <script src="assets/js/popper.min.js"></script>
+    <script src="assets/js/bootstrap.min.js"></script>
+    <script src="assets/js/jquery.dataTables.min.js"></script>
+    <script src="assets/js/dataTables.bootstrap4.min.js"></script>
+    <script src="assets/js/jquery.slimscroll.js"></script>
+    <script src="assets/js/app.js"></script>
+</body>
+
+
+<!-- mail-view23:34-->
+
+</html>

@@ -35,18 +35,15 @@
 						<h4 class="page-title"> <i class="fa fa-bell-o fa-2x"></i> <%=pageTitle%> </h4>
 					</div>
 					<div class="col-sm-8 col-9 text-right m-b-20">
-						<a href="#" data-toggle="modal" data-target="#NewNotification" class="btn btn btn-primary btn-rounded float-right"><i
-								class="fa fa-plus"></i> Nouvelle notification</a>
-					</div>
-					<div class="col-3-xxxl col-xl-3 col-lg-3 col-3 form-group">
-						<input autocomplete="off" type="text" id="search" class="form-control"
-							placeholder="Rechercher...">
+						<a href="#" data-toggle="modal" data-target="#NewNotification"
+							class="btn btn btn-primary btn-rounded float-right"><i class="fa fa-plus"></i> Nouvelle
+							notification</a>
 					</div>
 				</div>
 				<div class="row">
 					<div class="col-md-12">
 						<div class="table-responsive">
-							<table class="table table-border table-striped custom-table ">
+							<table id="dtBasicExample" class="table table-border table-striped custom-table ">
 								<thead>
 									<tr>
 										<th>ID</th>
@@ -73,7 +70,7 @@
 										<td><%= notif.date_notif %></td>
 										<td class="text-right">
 											<% if(UserData.user_sub_menu_access.includes("Modifier notifs") || UserData.user_sub_menu_access[0]=="All"){%>
-										    <a href="#"
+											<a href="#"
 												onclick="launchEditnotif('<%= notif.titre %>','<%= notif.id %>','<%= notif.contenu %>','<%= notif.publier %>')"><i
 													class="fa fa-trash m-r-5"></i> Supprimer</a>
 											<% } %>
@@ -90,73 +87,75 @@
 		</div>
 
 
-        
-        <div id="NewNotification" class="modal fade" role="dialog" data-backdrop="static">
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content modal">
-                    <div class="modal-header">
-                        <h4 class="modal-title">Nouvelle notification</strong> </h4>
-                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    </div>
-                    <div class="modal-body">
-                        <form id="sendNotificationForm">
+
+		<div id="NewNotification" class="modal fade" role="dialog" data-backdrop="static">
+			<div class="modal-dialog modal-lg">
+				<div class="modal-content modal">
+					<div class="modal-header">
+						<h4 class="modal-title">Nouvelle notification</strong> </h4>
+						<button type="button" class="close" data-dismiss="modal">&times;</button>
+					</div>
+					<div class="modal-body">
+						<form id="sendNotificationForm">
 							<input type="hidden" name="notificationID" id="notificationID">
 							<div class="row">
-                                <div class="col-lg-12">
-                                    <label>Type de notification</label>
-                                    <div class="form-group">
-                                        <select class="form-control m-r-5" name="TypeNotif" id="type">
-											<option value="warning" >Avertissement</option>
-											<option value="danger" >Alerte</option>
-											<option value="info" >Information</option>
-											<option value="success" >Succès</option>
+								<div class="col-lg-12">
+									<label>Type de notification</label>
+									<div class="form-group">
+										<select class="form-control m-r-5" name="TypeNotif" id="type">
+											<option value="warning">Avertissement</option>
+											<option value="danger">Alerte</option>
+											<option value="info">Information</option>
+											<option value="success">Succès</option>
 										</select>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div class="form-inline">
-                                        <label>Destinataires</label>
-                                        <select class="select" multiple name="users[]" id="UsersSelected">
-                                            <option value="All" selected>Tout le monde</option>
-                                            <% UserList.forEach((user) => { %>
-                                            <option value="<%= user.user_name %>"><%= user.user_name+" | "+user.fullname %></option>
-                                            <% }) %>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-lg-12 m-t-10">
-                                    <label>Titre</label>
-                                    <div class="form-group">
-                                        <input type="text" required name="subject" id="subject" class="form-control">
-                                    </div>
-                                </div>
-                            </div>
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-md-12">
+									<div class="form-inline">
+										<label>Destinataires</label>
+										<select class="select form-control" multiple name="users[]" id="UsersSelected">
+											<option value="All" selected>Tout le monde</option>
+											<% UserList.forEach((user) => { %>
+											<option value="<%= user.user_name %>">
+												<%= user.user_name+" | "+user.fullname %></option>
+											<% }) %>
+										</select>
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-lg-12 m-t-10">
+									<label>Titre</label>
+									<div class="form-group">
+										<input type="text" required name="subject" id="subject" class="form-control">
+									</div>
+								</div>
+							</div>
 
-                            <div class="row">
-                                <div class="col-lg-12 m-t-10">
-                                    <label>Message</label>
-                                    <div class="form-group">
-                                       <textarea required class="form-control" name="Message" id="Message" cols="30" rows="5"></textarea>
-                                    </div>
-                                </div>
-                            </div>
-                            <div id="msgSaveNotif" class="m-t-10 text-center"></div>
-                            <div class="m-t-20 align-content-center form-inline">
-                                <select class="form-control m-r-5" name="publier">
-                                    <option value="1" >Publier</option>
-                                    <option value="0" >Brouillon</option>
-                                </select>
-                                <button class="btn btn-primary submit-btn">Enregistrer</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
+							<div class="row">
+								<div class="col-lg-12 m-t-10">
+									<label>Message</label>
+									<div class="form-group">
+										<textarea required class="form-control" name="Message" id="Message" cols="30"
+											rows="5"></textarea>
+									</div>
+								</div>
+							</div>
+							<div id="msgSaveNotif" class="m-t-10 text-center"></div>
+							<div class="m-t-20 align-content-center form-inline">
+								<select class="form-control m-r-5" name="publier">
+									<option value="1">Publier</option>
+									<option value="0">Brouillon</option>
+								</select>
+								<button class="btn btn-primary submit-btn">Enregistrer</button>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
 
 		<div id="delete_notifi" class="modal fade delete-modal" role="dialog" data-keyboard="false">
 			<div class="modal-dialog modal-dialog-centered">
@@ -167,7 +166,8 @@
 							<input type="hidden" name="NotifID" id="NotifID">
 						</form>
 						<br><strong>Voulez-vous supprimer la notification ? </strong>
-						<br><h3 id="NotificationName"></h3> 
+						<br>
+						<h3 id="NotificationName"></h3>
 						<div id="msgDeleteNotif"></div>
 						<div class="m-t-20">
 							<a href="#" class="btn btn-white" data-dismiss="modal">NON</a>
@@ -192,7 +192,6 @@
 	<script src="assets/js/moment.min.js"></script>
 	<script src="assets/js/bootstrap-datetimepicker.min.js"></script>
 	<script src="assets/js/app.js"></script>
-	<script src="assets/js/my_js.js"></script>
 	<!-- FOOTER -->
 	<%- include("../parts/footer") -%>
 	<script>
@@ -201,7 +200,7 @@
 			e.preventDefault();
 			saveNotification();
 		});
-		
+
 		saveNotification = function () {
 			$("#msgSaveNotif").show().html("");
 			let formData = $("#sendNotificationForm").serialize();
@@ -209,20 +208,19 @@
 			let titre = $("#subject").val();
 			let type = $("#type").val();
 			let message = $("#Message").val();
-			let notif = {title : titre, type : type, message : message,date : new Date()};
-			$("#UsersSelected option:selected").each(function()
-            {
-                if(this.selected){
-                    userSelected.push($( this ).val());
-                }
-            });
-			
+			let notif = { title: titre, type: type, message: message, date: new Date() };
+			$("#UsersSelected option:selected").each(function () {
+				if (this.selected) {
+					userSelected.push($(this).val());
+				}
+			});
+
 			$.post("/save-notification", formData, function (data) {
 				console.log(data);
 				if (data.success) { //Success 
 					//NOTIFY THE CHANGE
-					socket.emit('updateNotificationCount',{userSelected : userSelected,message : notif});
-					$("#msgSaveNotif").html(data.msg).fadeOut(5000,function(){
+					socket.emit('updateNotificationCount', { userSelected: userSelected, message: notif });
+					$("#msgSaveNotif").html(data.msg).fadeOut(5000, function () {
 						//window.location.replace("/manage-notifications?ID="+data.id);
 					});
 				} else {
@@ -230,11 +228,11 @@
 				}
 			});
 		}
-		
-		function launchEditnotif(exam, examId,type_resultat,is_bilan) {
+
+		function launchEditnotif(exam, examId, type_resultat, is_bilan) {
 			$("#msgDeleteNotif").show().html("");
 			$("#NotifID").val(examId);
-			$("#NotificationName").html(exam+" # "+examId);
+			$("#NotificationName").html(exam + " # " + examId);
 			$("#delete_notifi").modal();
 		}
 		deleteNotification = function () {

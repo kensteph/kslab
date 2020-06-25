@@ -253,19 +253,20 @@ var self = module.exports = {
             } else {
                 to = to.join("|");
             }
-            let type_notif = req.body.TypeNotif;
+            let type_notif = "warning";//req.body.TypeNotif;
             let subject = req.body.subject;
             let message = req.body.Message;
             message = message.replace('"', '\"');
-            let publier = req.body.publier;
+            let publier = 1;
             let sql =
                 'INSERT INTO tb_notifications (de,a,type_notif,titre,contenu,publier) VALUES ("' + from + '","' + to + '","' + type_notif + '","' + subject + '","' + message + '",' + publier + ')';
+                //console.log(sql);
             con.query(sql, function (err, result) {
                 if (err) {
                     msg = {
                         type: "danger",
                         error: true,
-                        msg: " Une erreur est survenue. Réessayez s'il vous plait!",
+                        msg: " <font color='red'>Une erreur est survenue. Réessayez s'il vous plait!"+err+"</font>",
                         debug: err
                     };
                 } else {
@@ -278,7 +279,7 @@ var self = module.exports = {
                 }
 
                 resolve(msg);
-                //console.log(msg);
+                console.log(msg);
             });
         });
         rep = await promise;
@@ -309,6 +310,22 @@ var self = module.exports = {
                     throw err;
                 } else {
                     resolve(rows);
+                }
+            });
+        });
+        data = await promise;
+        //console.log(data); 
+        return data;
+    },
+    //LISTE DES NOTIFICATIONS
+    getSinglenotification: async function (id) {
+        let promise = new Promise((resolve, reject) => {
+            let sql = "SELECT * FROM tb_notifications WHERE id=?";
+            con.query(sql,id, function (err, rows) {
+                if (err) {
+                    throw err;
+                } else {
+                    resolve(rows[0]);
                 }
             });
         });
@@ -349,7 +366,7 @@ var self = module.exports = {
         let recepients = data.userSelected;
         if (recepients.includes(user.user) || recepients[0] == "All") {
             let nbRequest = 1; //await self.StockRequestCount();
-            let reqtext = '<i class="fa fa-comment-o"></i> <span class="badge badge-pill bg-danger float-right">' + nbRequest + '</span> ';
+            let reqtext = '<i class="fa fa-envelope"></i> <span class="badge badge-pill bg-danger float-right">' + nbRequest + '</span> ';
 
             io.emit('updateNotificationCount', { nb: reqtext, message: data.message, userId: user.userId });
             helpers.desktopNotification(data.message.title, data.message.message);

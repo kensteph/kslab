@@ -1,6 +1,7 @@
 <%
 if (locals.page) {
     Home = "";
+    Inbox = "";
 
     SearchPatient = "";
     NewPatient = "";
@@ -82,6 +83,9 @@ if (locals.page) {
                 </li>
                 <% } %> 
                 <!-- MESSAGERIE -->
+                <li class="<%=Inbox%>">
+                    <a href="/Inbox"><i class="fa fa-envelope"></i> <span>Messages</span></a>
+                </li>
                 <% if(UserData.user_menu_access.includes("Voir la liste des requetes de stock") || UserData.user_menu_access[0]=="All"){%>
                 <li class="<%=Request%>">
                     <a id="NbRequest" href="/requests?statut=0"><i class="fa fa-comments"></i> <span>Demandes</span>  <span class="badge badge-pill bg-primary float-right">0</span> </a>

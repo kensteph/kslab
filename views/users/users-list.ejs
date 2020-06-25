@@ -3,47 +3,46 @@
 
 
 <!-- patients23:17-->
+
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
-    <link rel="shortcut icon" type="image/x-icon" href="assets/img/favicon.ico">
-    <title><%=appName%>| <%=pageTitle%></title>
-    <link rel="stylesheet" type="text/css" href="assets/css/bootstrap.min.css">
-    <link rel="stylesheet" type="text/css" href="assets/css/font-awesome.min.css">
-    <link rel="stylesheet" type="text/css" href="assets/css/select2.min.css">
-    <link rel="stylesheet" type="text/css" href="assets/css/dataTables.bootstrap4.min.css">
-    <link rel="stylesheet" type="text/css" href="assets/css/bootstrap-datetimepicker.min.css">
-    <link rel="stylesheet" type="text/css" href="assets/css/style.css">
-    <!--[if lt IE 9]>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
+	<link rel="shortcut icon" type="image/x-icon" href="assets/img/favicon.ico">
+	<title><%=appName%>| <%=pageTitle%></title>
+	<link rel="stylesheet" type="text/css" href="assets/css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="assets/css/font-awesome.min.css">
+	<link rel="stylesheet" type="text/css" href="assets/css/select2.min.css">
+	<link rel="stylesheet" type="text/css" href="assets/css/dataTables.bootstrap4.min.css">
+	<link rel="stylesheet" type="text/css" href="assets/css/bootstrap-datetimepicker.min.css">
+	<link rel="stylesheet" type="text/css" href="assets/css/style.css">
+	<!--[if lt IE 9]>
 		<script src="assets/js/html5shiv.min.js"></script>
 		<script src="assets/js/respond.min.js"></script>
 	<![endif]-->
 </head>
 
 <body>
-    <div class="main-wrapper">
-        <!-- HEADER -->
-        <%- include("../parts/header") -%>
-        <!-- SIDEBAR -->
+	<div class="main-wrapper">
+		<!-- HEADER -->
+		<%- include("../parts/header") -%>
+		<!-- SIDEBAR -->
 		<%- include("../parts/sidebar") -%>
-		
-        <div class="page-wrapper">
-            <div class="content">
-                <div class="row">
-                    <div class="col-sm-4 col-3">
-                        <h4 class="page-title"> <%=pageTitle%> </h4>
-                    </div>
-                    <div class="col-sm-8 col-9 text-right m-b-20">
-                        <a href="/add-user" class="btn btn btn-primary btn-rounded float-right"><i class="fa fa-plus"></i> Ajouter Utilisateur</a>
+
+		<div class="page-wrapper">
+			<div class="content">
+				<div class="row">
+					<div class="col-sm-4 col-3">
+						<h4 class="page-title"> <%=pageTitle%> </h4>
 					</div>
-					<div class="col-3-xxxl col-xl-3 col-lg-3 col-3 form-group">
-						<input autocomplete="off" type="text" id="search" class="form-control" placeholder="Rechercher...">
-				 	</div>
-                </div>
+					<div class="col-sm-8 col-9 text-right m-b-20">
+						<a href="/add-user" class="btn btn btn-primary btn-rounded float-right"><i
+								class="fa fa-plus"></i> Ajouter Utilisateur</a>
+					</div>
+				</div>
 				<div class="row">
 					<div class="col-md-12">
 						<div class="table-responsive">
-							<table class="table table-border table-striped custom-table datatable mb-0">
+							<table id="dtBasicExample" class="table table-border table-striped custom-table">
 								<thead>
 									<tr>
 										<th>Employé</th>
@@ -79,26 +78,34 @@
 										<td><%= USER_STATUS[patient.statut] %></td>
 										<td class="text-right">
 											<div class="dropdown dropdown-action">
-												<a href="#" class="action-icon dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fa fa-ellipsis-v"></i></a>
+												<a href="#" class="action-icon dropdown-toggle" data-toggle="dropdown"
+													aria-expanded="false"><i class="fa fa-ellipsis-v"></i></a>
 												<div class="dropdown-menu dropdown-menu-right">
-													<a class="dropdown-item" href="/user-permissions?user=<%= patient.id %>"><i class="fa fa-key m-r-5"></i> Permissions</a>
-													<a class="dropdown-item" href="/edit-user?user=<%= patient.id %>"><i class="fa fa-pencil m-r-5"></i> Modifier</a>
-													<a class="dropdown-item" href="#" onclick="setId('<%= patient.id %>','<%= patient.fullname %>','<%= action %>')" ><i class="fa fa-user-secret m-r-5"></i> <%=active_desact%> </a>
-													<a class="dropdown-item" href="#" onclick="changeUserPassword('<%= patient.id %>','<%= patient.fullname %>')" ><i class="fa fa-lock m-r-5"></i> Changer mot de passe</a>
+													<a class="dropdown-item"
+														href="/user-permissions?user=<%= patient.id %>"><i
+															class="fa fa-key m-r-5"></i> Permissions</a>
+													<a class="dropdown-item" href="/edit-user?user=<%= patient.id %>"><i
+															class="fa fa-pencil m-r-5"></i> Modifier</a>
+													<a class="dropdown-item" href="#"
+														onclick="setId('<%= patient.id %>','<%= patient.fullname %>','<%= action %>')"><i
+															class="fa fa-user-secret m-r-5"></i> <%=active_desact%> </a>
+													<a class="dropdown-item" href="#"
+														onclick="changeUserPassword('<%= patient.id %>','<%= patient.fullname %>')"><i
+															class="fa fa-lock m-r-5"></i> Changer mot de passe</a>
 												</div>
 											</div>
 										</td>
 									</tr>
-									<% }) %> 
+									<% }) %>
 								</tbody>
 							</table>
 						</div>
 					</div>
-                </div>
-            </div>
+				</div>
+			</div>
 
 		</div>
-		
+
 		<div id="delete_patient" class="modal fade delete-modal" role="dialog" data-keyboard="false">
 			<div class="modal-dialog modal-dialog-centered">
 				<div class="modal-content">
@@ -116,7 +123,7 @@
 					</div>
 				</div>
 			</div>
-			
+
 		</div>
 
 		<div id="ChangeUserPassword" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
@@ -128,78 +135,79 @@
 					</div>
 					<div class="modal-body text-center">
 						<form id="ChangePassUserForm">
-							<input name="password" required id="NewPassUser"  type="password"  autocomplete="off"
+							<input name="password" required id="NewPassUser" type="password" autocomplete="off"
 								placeholder="Nouveau mot de passe" class="form-control">
-								<input type="hidden" name="userID" id="userID">
+							<input type="hidden" name="userID" id="userID">
 							<div id="ChangePassNotify" class="m-t-20 text-center"></div>
 						</form>
 						<div class="m-t-20 text-center">
 							<button onclick="SaveUserPassword()" class="btn btn-primary submit-btn">Changer</button>
 						</div>
-		
+
 					</div>
 				</div>
 			</div>
 		</div>
-		
-    </div>
-    <div class="sidebar-overlay" data-reff=""></div>
-    <script src="assets/js/jquery-3.2.1.min.js"></script>
+
+	</div>
+	<div class="sidebar-overlay" data-reff=""></div>
+	<script src="assets/js/jquery-3.2.1.min.js"></script>
 	<script src="assets/js/popper.min.js"></script>
-    <script src="assets/js/bootstrap.min.js"></script>
-    <script src="assets/js/jquery.slimscroll.js"></script>
-    <script src="assets/js/select2.min.js"></script>
-    <script src="assets/js/jquery.dataTables.min.js"></script>
-    <script src="assets/js/dataTables.bootstrap4.min.js"></script>
-    <script src="assets/js/moment.min.js"></script>
-    <script src="assets/js/bootstrap-datetimepicker.min.js"></script>
+	<script src="assets/js/bootstrap.min.js"></script>
+	<script src="assets/js/jquery.slimscroll.js"></script>
+	<script src="assets/js/select2.min.js"></script>
+	<script src="assets/js/jquery.dataTables.min.js"></script>
+	<script src="assets/js/dataTables.bootstrap4.min.js"></script>
+	<script src="assets/js/moment.min.js"></script>
+	<script src="assets/js/bootstrap-datetimepicker.min.js"></script>
 	<script src="assets/js/app.js"></script>
 	<script src="assets/js/my_js.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
 	<script>
-		function setId(value,user,action){
+		function setId(value, user, action) {
 			$("#msg").show().html("");
-			let title = "Voulez-vous désactiver <i> "+user+"</i> ?";
-			if(action == 1){ title = "Voulez-vous activer <i> "+user+"</i> ?";}
+			let title = "Voulez-vous désactiver <i> " + user + "</i> ?";
+			if (action == 1) { title = "Voulez-vous activer <i> " + user + "</i> ?"; }
 			$("#userDesactTitle").html(title);
 			$("#patientID").val(value);
 			$("#action").val(action);
 			$("#delete_patient").modal();
 		}
-		
-		deactivateUser = function(){
-             $("#msg").show().html("");
-			 let patientID = $("#patientID").val();
-              let   formData = $("#deleteForm").serialize();
-                $.post("/desactivate-user" ,formData, function(data){
-                      if(data.success){ //Success 
-						$("#msg").html(data.msg)
-						//remove line
-						$("#row"+patientID).fadeOut( 5000 );
-                      }else{
-                        $("#msg").html(data.msg);
-                      } 
-                });
+
+		deactivateUser = function () {
+			$("#msg").show().html("");
+			let patientID = $("#patientID").val();
+			let formData = $("#deleteForm").serialize();
+			$.post("/desactivate-user", formData, function (data) {
+				if (data.success) { //Success 
+					$("#msg").html(data.msg)
+					//remove line
+					$("#row" + patientID).fadeOut(5000);
+				} else {
+					$("#msg").html(data.msg);
+				}
+			});
 		}
-		
-		function changeUserPassword(value,user){
+
+		function changeUserPassword(value, user) {
 			$("#ChangePassNotify").show().html("");
-			$("#changePasswordTitle").html("Voulez-vous changer le mot de passe de : <i>"+user+"</i>");
+			$("#changePasswordTitle").html("Voulez-vous changer le mot de passe de : <i>" + user + "</i>");
 			$("#userID").val(value);
 			$("#NewPassUser").val("");
 			$("#ChangeUserPassword").modal();
 		}
-		SaveUserPassword = function(){
-              let   formData = $("#ChangePassUserForm").serialize();
-                $.post("/change-user-password" ,formData, function(data){
-                      if(data.success){ //Success 
-						$("#ChangePassNotify").html(data.msg);
-                      }else{
-                        $("#ChangePassNotify").html(data.msg);
-                      } 
-                });
-        }
+		SaveUserPassword = function () {
+			let formData = $("#ChangePassUserForm").serialize();
+			$.post("/change-user-password", formData, function (data) {
+				if (data.success) { //Success 
+					$("#ChangePassNotify").html(data.msg);
+				} else {
+					$("#ChangePassNotify").html(data.msg);
+				}
+			});
+		}
 	</script>
 </body>
 <!-- patients23:19-->
+
 </html>

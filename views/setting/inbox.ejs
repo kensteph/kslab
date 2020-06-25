@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+
+
+<!-- inbox23:34-->
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
+    <link rel="shortcut icon" type="image/x-icon" href="assets/img/favicon.ico">
+    <title><%=appName%>| <%=pageTitle%></title>
+
+    <link rel="stylesheet" type="text/css" href="assets/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/dataTables.bootstrap4.min.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/select2.min.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/bootstrap-datetimepicker.min.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/style.css">
+    <!--[if lt IE 9]>
+		<script src="assets/js/html5shiv.min.js"></script>
+		<script src="assets/js/respond.min.js"></script>
+	<![endif]-->
+</head>
+
+<body>
+    <div class="main-wrapper">
+        <!-- HEADER -->
+        <%- include("../parts/header") -%>
+        <!-- SIDEBAR -->
+        <%- include("../parts/mail_sidebar") -%>
+
+        <div class="page-wrapper">
+            <div class="content">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <h4 class="page-title">Inbox</h4>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <form id="ViewForm" action="/view-mail" method="post">
+                            <input type="hidden" name="MessageID" id="MessageID">
+                        </form>
+                        <div class="table-responsive">
+                            <table id="dtBasicExample" class="table table-border table-striped custom-table ">
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>De</th>
+                                        <th>Titre</th>
+                                        <th>Contenu</th>
+
+                                    </tr>
+                                </thead>
+                                <tbody id="table">
+                                    <% notifications.forEach((notif) => { %>
+                                    <tr id="row<%= notif.id %>" style="cursor: pointer;"
+                                        onclick="viewMessage('<%= notif.id %>')">
+                                        <td><%= notif.date_notif %></td>
+                                        <td class="name"><%= notif.de %></td>
+                                        <td class="subject"><%= notif.titre %></td>
+                                        <td><%= notif.contenu.substring(0,20)+"..." %></td>
+                                    </tr>
+                                    <% }) %>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+    <div class="sidebar-overlay" data-reff=""></div>
+    <script src="assets/js/jquery-3.2.1.min.js"></script>
+    <script src="assets/js/popper.min.js"></script>
+    <script src="assets/js/bootstrap.min.js"></script>
+    <script src="assets/js/jquery.dataTables.min.js"></script>
+    <script src="assets/js/dataTables.bootstrap4.min.js"></script>
+    <script src="assets/js/jquery.slimscroll.js"></script>
+    <script src="assets/js/app.js"></script>
+    <script>
+        function viewMessage(id) {
+            $('#MessageID').val(id);
+            $('#ViewForm').submit();
+        }
+    </script>
+    <!-- FOOTER -->
+    <%- include("../parts/footer") -%>
+</body>
+
+<!-- inbox23:34-->
+
+</html>
