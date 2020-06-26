@@ -30,35 +30,50 @@
             <div class="content">
                 <div class="row">
                     <div class="col-sm-12">
-                        <h4 class="page-title">Nouveau Message</h4>
+                        <h4 class="page-title"><%=pageTitle%></h4>
                     </div>
                 </div>
+                <% 
+                let sujet ="";
+                let to="";
+                let placeHolderMessage ="Tapez votre message ici";
+                if(locals.message){ 
+                    sujet = "RE: "+message.title;
+                    to = message.recepient;
+                    placeHolderMessage = "Tapez votre réponse ici";
+                }
+                %>
                 <div class="row">
                     <div class="col-sm-12">
                         <div class="card-box">
                             <form method="POST" action="/view-mail" id="sendNotificationForm">
                                 <div class="form-group">
-                                    <select class="select" multiple name="users[]" id="UsersSelected">
-                                        <option value="All" selected>Tout le monde</option>
+                                    <% if(!locals.message){ %>
+                                    <select required class="select" multiple name="users[]" id="UsersSelected">
+                                        <option value="All" selected >Tout le monde</option>
+                                        <option value="superadmin">Superadmin</option>
                                         <% UserList.forEach((user) => { %>
                                         <option value="<%= user.user_name %>">
                                             <%= user.user_name+" | "+user.fullname %></option>
                                         <% }) %>
                                     </select>
+                                    <% }else{  %>
+                                        <input type="hidden" name="users[]" value="<%=to%>">
+                                    <% } %>
                                 </div>
 
                                 <div class="form-group">
-                                    <input type="text" required placeholder="Sujet" name="subject" class="form-control">
+                                    <input type="text" required placeholder="Sujet" name="subject" value="<%=sujet%>" class="form-control">
                                 </div>
                                 <div class="form-group">
                                     <textarea rows="4" cols="5" required name="Message" class="form-control"
-                                        placeholder="Tapez votre message ici"></textarea>
+                                        placeholder="<%=placeHolderMessage%>"></textarea>
                                 </div>
 
                                 <div id="msgSaveNotif" class="m-t-10 text-center"></div>
                                 <div class="form-group mb-0">
                                     <div class="text-center compose-btn">
-                                        <button class="btn btn-primary" id="sendBtn" ><span>Send</span>
+                                        <button class="btn btn-primary" id="sendBtn"><span>Send</span>
                                             <i class="fa fa-send m-l-5"></i></button>
                                     </div>
 

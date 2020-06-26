@@ -304,7 +304,7 @@ var self = module.exports = {
     //LISTE DES NOTIFICATIONS UTILISATEURS
     userNotificationList: async function (user) {
         let promise = new Promise((resolve, reject) => {
-            let sql = "SELECT * FROM `tb_notifications` WHERE a LIKE '%" + user + "%' OR a='All' ORDER BY id DESC";
+            let sql = "SELECT * FROM `tb_notifications` WHERE a LIKE '%" + user + "%' OR a='All' OR de LIKE '%" + user + "%'  ORDER BY id DESC";
             con.query(sql, function (err, rows) {
                 if (err) {
                     throw err;

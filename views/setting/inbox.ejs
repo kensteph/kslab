@@ -40,6 +40,7 @@
                     <div class="col-md-12">
                         <form id="ViewForm" action="/view-mail" method="post">
                             <input type="hidden" name="MessageID" id="MessageID">
+                            <input type="hidden" name="CountNotifications" value="<%= CountNotifications%>">
                         </form>
                         <div class="table-responsive">
                             <table id="dtBasicExample" class="table table-border table-striped custom-table ">

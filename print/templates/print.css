@@ -4,6 +4,13 @@ table {
     width: 95%;
 }
 
+.table-report {
+    font-family: arial, sans-serif;
+    border-collapse: collapse;
+    margin: 10px;
+    width: 95%;
+}
+
 th {
     border: 1px solid #dddddd;
     text-align: left;
@@ -12,7 +19,7 @@ th {
 
 td{
     border: 1px solid #dddddd;
-    padding: 1px; 
+    padding: 1px;
 }
 
 .td-vn{
@@ -157,6 +164,11 @@ h4 {
     flex: 0 0 50%;
     max-width: 50%;
 }
+.col-sm-12 {
+    -ms-flex: 0 0 100%;
+    flex: 0 0 100%;
+    max-width: 100%;
+}
 .col-sm-3 {
     position: relative;
     width: 60%;
@@ -193,8 +205,12 @@ h4 {
     height: 2px;
 }
 
+.test-parameter {
+    font-size: 10px;
+}
 .resultat {
     font-size: 10px;
+    text-align: center !important;
 }
 
 .resultat-vn {

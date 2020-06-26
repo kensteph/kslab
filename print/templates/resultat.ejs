@@ -88,15 +88,15 @@
                             info.Parameters.forEach((testParameters) => { 
                             %>
                     <tr>
-                        <td class="resultat">
+                        <td class="test-parameter">
                             <%=testParameters.nom_examen%>
                         </td>
                         <td class="resultat">
-                            <span class="float-right"><%=info.Resultats[pos].resultat%></span>
+                            <%=info.Resultats[pos].resultat%>
                         </td>
                         <% if(info.TestTypeResult==1){ %>
-                        <td class="resultat-vn">
-                            <span class="float-right"><%=info.VN[pos].vn%></span>
+                        <td class="resultat">
+                            <%=info.VN[pos].vn%>
                         </td>
                         <% } %>
                     </tr>
@@ -129,15 +129,15 @@
                             info.Parameters.forEach((testParameters) => { 
                             %>
                     <tr>
-                        <td class="resultat">
+                        <td class="test-parameter">
                             <%=testParameters.nom_examen%>
                         </td>
                         <td class="resultat">
                             <span class="float-right"><%=info.Resultats[pos].resultat%></span>
                         </td>
                         <% if(info.TestTypeResult==1){ %>
-                        <td >
-                            <span class="resultat-vn"><%=info.VN[pos].vn%></span>
+                        <td class="resultat">
+                            <%=info.VN[pos].vn%>
                         </td>
                         <% } %>
                     </tr>

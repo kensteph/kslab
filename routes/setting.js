@@ -223,6 +223,7 @@ router.get('/manage-notifications', async (req, res) => {
 //INBOX
 router.get('/Inbox', async (req, res) => {
     let data = await stats.userNotificationList(req.session.username);
+    let CountNotifications = data.length;
     let UserList = await settingsDB.listOfAllUsers();
     let pageTitle = "Notifications ";
     params = {
@@ -230,6 +231,7 @@ router.get('/Inbox', async (req, res) => {
         notifications: data,
         UserList : UserList,
         UserData: req.session.UserData,
+        CountNotifications : CountNotifications,
         page: 'Inbox'
     };
     res.render('setting/inbox',params);
@@ -238,6 +240,7 @@ router.get('/Inbox', async (req, res) => {
 //VIEW MESSAGE
 router.post('/view-mail', async (req, res) => {
     console.log(req.body);
+    let CountNotifications = req.body.CountNotifications;
     let data = await stats.getSinglenotification(req.body.MessageID);
     console.log(data);
     let pageTitle = "Notifications ";
@@ -246,6 +249,7 @@ router.post('/view-mail', async (req, res) => {
         notifications: data,
         UserData: req.session.UserData,
         Username : req.session.username,
+        CountNotifications : CountNotifications,
         page: 'Inbox'
     };
     res.render('setting/mail-view',params);
@@ -253,13 +257,34 @@ router.post('/view-mail', async (req, res) => {
 //COMPOSE NEW MESSAGE
 router.get('/Compose', async (req, res) => {
     let data = await stats.userNotificationList(req.session.username);
+    let CountNotifications = data.length;
     let UserList = await settingsDB.listOfAllUsers();
-    let pageTitle = "Notifications ";
+    let pageTitle = "Nouveau Message";
     params = {
         pageTitle: pageTitle,
         notifications: data,
         UserList : UserList,
         UserData: req.session.UserData,
+        CountNotifications : CountNotifications,
+        page: 'Compose'
+    };
+    res.render('setting/compose_mail',params);
+});
+//COMPOSE NEW MESSAGE
+router.post('/Compose', async (req, res) => {
+    console.log(req.body);
+    let message = req.body;
+    let data = await stats.userNotificationList(req.session.username);
+    let CountNotifications = data.length;
+    let UserList = await settingsDB.listOfAllUsers();
+    let pageTitle = "Réponse au message : "+message.title+" | "+message.date;
+    params = {
+        pageTitle: pageTitle,
+        notifications: data,
+        UserList : UserList,
+        UserData: req.session.UserData,
+        message : message,
+        CountNotifications : CountNotifications,
         page: 'Compose'
     };
     res.render('setting/compose_mail',params);

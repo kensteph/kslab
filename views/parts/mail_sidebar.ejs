@@ -7,13 +7,13 @@
                     <% if(UserData.user_menu_access.includes("Tableau de bord") || UserData.user_menu_access[0]=="All"){ %>   
                         <a href="<%=home%>"><i class="fa fa-home back-icon"></i> <span>Tableau de bord</span></a>
                     <% } else{ %>
-                        <a href="<%=home%>"><i class="fa fa-flask back-icon"></i> <span>Nouveau Test</span></a>
+                        <a href="<%=home%>"><i class="fa fa-bars back-icon"></i> <span>Menu Principal</span></a>
                     <% }  %>
 
                 </li>
                 <li class="menu-title"><a href="/Compose" class="btn btn-primary btn-block">Nouveau Message</a></li>
                 <li class="active">
-                    <a href="/Inbox">Boite de réception <span id="CountMessage" class="mail-count">(<%= notifications.length%>)</span></a>
+                    <a href="/Inbox">Boite de réception <span id="CountMessage" class="mail-count">(<%= CountNotifications%>)</span></a>
                 </li>
                 
             </ul>

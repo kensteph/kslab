@@ -32,10 +32,11 @@
                         <h4 class="page-title">Message</h4>
                     </div>
                 </div>
-                <form id="MailInfo">
+                <form id="MailInfo" method="POST" action="/Compose">
                     <input type="hidden" name="title" id="title" value="<%=notifications.titre%>">
-                    <input type="hidden" name="recepient" id="recepient" value="<%=notifications.a%>">
+                    <input type="hidden" name="recepient" id="recepient" value="<%=notifications.de+'|'+notifications.a%>">
                     <input type="hidden" name="contenu" id="title" value="<%=notifications.contenu%>">
+                    <input type="hidden" name="date" id="date" value="<%=notifications.date_notif%>">
                 </form>
                 <div class="row">
                     <div class="col-sm-12">
@@ -51,18 +52,18 @@
                                         <div class="col-sm-3">
                                             <div class="mail-view-action">
                                                 <div class="btn-group">
-                                                    <button type="button" class="btn btn-white btn-sm"
+                                                    <!-- <button type="button" class="btn btn-white btn-sm"
                                                         data-toggle="tooltip" title="Delete"> <i
-                                                            class="fa fa-trash-o"></i></button>
-                                                    <button type="button" class="btn btn-white btn-sm"
-                                                        data-toggle="tooltip" title="Reply"> <i
+                                                            class="fa fa-trash-o"></i></button> -->
+                                                    <button type="button" class="btn btn-white btn-sm" onclick="replyMessage()" 
+                                                        data-toggle="tooltip" title="Répondre"> <i
                                                             class="fa fa-reply"></i></button>
-                                                    <button type="button" class="btn btn-white btn-sm"
+                                                    <!-- <button type="button" class="btn btn-white btn-sm"
                                                         data-toggle="tooltip" title="Forward"> <i
-                                                            class="fa fa-share"></i></button>
+                                                            class="fa fa-share"></i></button> -->
                                                 </div>
-                                                <button type="button" class="btn btn-white btn-sm" data-toggle="tooltip"
-                                                    title="Print"> <i class="fa fa-print"></i></button>
+                                                <!-- <button type="button" class="btn btn-white btn-sm" data-toggle="tooltip"
+                                                    title="Print"> <i class="fa fa-print"></i></button> -->
                                             </div>
                                         </div>
                                     </div>
@@ -95,28 +96,28 @@
                                     <%=notifications.contenu%>
                                 </div>
                             </div>
-                           
+
                             <div class="mailview-footer">
                                 <div class="row">
                                     <div class="col-sm-6 left-action">
-                                        <button type="button" class="btn btn-white"><i class="fa fa-reply"></i>
-                                            Reply</button>
-                                        <button type="button" class="btn btn-white"><i class="fa fa-share"></i>
-                                            Forward</button>
+                                        <button type="button" onclick="replyMessage()" class="btn btn-white"><i class="fa fa-reply"></i>
+                                            Répondre</button>
+                                        <!-- <button type="button" class="btn btn-white"><i class="fa fa-share"></i>
+                                            Forward</button> -->
                                     </div>
-                                    <div class="col-sm-6 right-action">
+                                    <!-- <div class="col-sm-6 right-action">
                                         <button type="button" class="btn btn-white"><i class="fa fa-print"></i>
                                             Print</button>
                                         <button type="button" class="btn btn-white"><i class="fa fa-trash-o"></i>
                                             Delete</button>
-                                    </div>
+                                    </div> -->
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-           
+
         </div>
     </div>
     <div class="sidebar-overlay" data-reff=""></div>
@@ -127,6 +128,13 @@
     <script src="assets/js/dataTables.bootstrap4.min.js"></script>
     <script src="assets/js/jquery.slimscroll.js"></script>
     <script src="assets/js/app.js"></script>
+    <script>
+        function replyMessage() {
+            $("#MailInfo").submit();
+        }
+    </script>
+    <!-- FOOTER -->
+    <%- include("../parts/footer") -%>
 </body>
 
 
