@@ -259,14 +259,14 @@ var self = module.exports = {
             message = message.replace('"', '\"');
             let publier = 1;
             let sql =
-                'INSERT INTO tb_notifications (de,a,type_notif,titre,contenu,publier) VALUES ("' + from + '","' + to + '","' + type_notif + '","' + subject + '","' + message + '",' + publier + ')';
-                //console.log(sql);
+                'INSERT INTO tb_notifications (de,a,type_notif,titre,contenu,publier,see_by) VALUES ("' + from + '","' + to + '","' + type_notif + '","' + subject + '","' + message + '",' + publier + ',"' + from + '")';
+            //console.log(sql);
             con.query(sql, function (err, result) {
                 if (err) {
                     msg = {
                         type: "danger",
                         error: true,
-                        msg: " <font color='red'>Une erreur est survenue. Réessayez s'il vous plait!"+err+"</font>",
+                        msg: " <font color='red'>Une erreur est survenue. Réessayez s'il vous plait!" + err + "</font>",
                         debug: err
                     };
                 } else {
@@ -305,12 +305,46 @@ var self = module.exports = {
     userNotificationList: async function (user) {
         let promise = new Promise((resolve, reject) => {
             let sql = "SELECT * FROM `tb_notifications` WHERE a LIKE '%" + user + "%' OR a='All' OR de LIKE '%" + user + "%'  ORDER BY id DESC";
+           // console.log(sql);
             con.query(sql, function (err, rows) {
-                if (err) {
-                    throw err;
-                } else {
-                    resolve(rows);
+                let myNotifications = [];
+                for (notification of rows) {
+                    //Verify if the notif is already read
+                    let read = notification.see_by.split("|");
+                    let if_read = false;
+                    if (read.includes(user)) { if_read = true; }
+                    let notif = { id: notification.id, date_notif: notification.date_notif, titre: notification.titre, contenu: notification.contenu, de: notification.de, a: notification.a, read: if_read, see_by: notification.see_by }
+                    myNotifications.push(notif);
                 }
+                //console.log(myNotifications);
+                resolve(myNotifications);
+            });
+        });
+        data = await promise;
+        //console.log(data); 
+        return data;
+    },
+
+    //NOMBRE MESSAGE DEJA LU
+    userNotificationAlreadyRead: async function (user) {
+        let promise = new Promise((resolve, reject) => {
+            let sql = "SELECT COUNT(*) as nb FROM `tb_notifications` WHERE see_by LIKE '%" + user + "%'";
+            con.query(sql, function (err, rows) {
+                resolve(rows[0].nb);
+            });
+        });
+        data = await promise;
+        //console.log(data); 
+        return data;
+    },
+
+    //NOMBRE MESSAGE NON LU
+    userNotificationUnRead: async function (user) {
+        let promise = new Promise((resolve, reject) => {
+            let sql = "SELECT COUNT(*) as nb FROM `tb_notifications` WHERE a LIKE '%" + user + "%' AND  see_by NOT LIKE '%" + user + "%'  OR a='All' AND  see_by NOT LIKE '%" + user + "%'";
+            //console.log(sql);
+            con.query(sql, function (err, rows) {
+                resolve(rows[0].nb);
             });
         });
         data = await promise;
@@ -318,20 +352,73 @@ var self = module.exports = {
         return data;
     },
     //LISTE DES NOTIFICATIONS
-    getSinglenotification: async function (id) {
+    getSinglenotification: async function (req) {
+        let id = req.body.MessageID;
+        let user = req.session.username;
         let promise = new Promise((resolve, reject) => {
             let sql = "SELECT * FROM tb_notifications WHERE id=?";
-            con.query(sql,id, function (err, rows) {
-                if (err) {
-                    throw err;
-                } else {
-                    resolve(rows[0]);
-                }
+            con.query(sql, id, function (err, rows) {
+                let notification = rows[0];
+                //Verify if the notif is already read
+                let read = notification.see_by.split("|");
+                let if_read = false;
+                if (read.includes(user)) { if_read = true; }
+                let notif = { id: notification.id, date_notif: notification.date_notif, titre: notification.titre, contenu: notification.contenu, de: notification.de, a: notification.a, read: if_read, see_by: notification.see_by }
+                resolve(notif);
             });
         });
         data = await promise;
         //console.log(data); 
         return data;
+    },
+    //WHEN A USER READ A NOTIF
+    setNotifAsReadForAuser: async function (user, notifInfo, action) {
+        //GET THE USERS ALREADY READ IT
+        let read = notifInfo.see_by;
+        let idNotif = notifInfo.id;
+        let usersAlreadyRead = read.split("|");
+        usersAlreadyRead.push(user);
+        let nv = usersAlreadyRead.join("|")
+        // console.log(nv);
+        await self.setNotifAsReadOrDeleteForUser(idNotif, action, nv);
+
+    },
+    //READ/DELETE NOTIF
+    setNotifAsReadOrDeleteForUser: async function (idNotif, action, new_val) {
+        let promise = new Promise((resolve, reject) => {
+            let sql = "";
+            if (action == "read") { //SET AS READ
+                sql =
+                    'UPDATE tb_notifications SET see_by ="' + new_val + '" WHERE id=' + idNotif;
+            } else { //SET AS DELETE
+                sql =
+                    'UPDATE tb_notifications SET delete_for ="' + new_val + '" WHERE id=' + idNotif;
+            }
+            //console.log(sql);
+            con.query(sql, function (err, result) {
+                if (err) {
+                    msg = {
+                        type: "danger",
+                        msg:
+                            "<font color='red'><strong>Une erreur est survenue...</strong></font>",
+                        debug: err
+                    };
+                } else {
+                    msg = {
+                        type: "success",
+                        success: true,
+                        msg:
+                            "<font color='green'><strong>Modification effectuée avec succèss...</strong></font>",
+                        nb_success: result.affectedRows,
+                    };
+                }
+
+                resolve(msg);
+                //console.log(msg);
+            });
+        });
+        rep = await promise;
+        return rep;
     },
     //Nombre de requete relatif au changement du stock
     StockRequestCount: async function () {
@@ -361,11 +448,12 @@ var self = module.exports = {
         //console.log(reqtext);
         io.emit('updateNbRequestsStock', { nb: reqtext });
     },
+    //ON RECEIVE MESSAGE
     async updateNbNotifications(io, data, user) {
-        console.log(data);
+        //console.log(data);
+        let nbRequest = await self.userNotificationUnRead(user.user);
         let recepients = data.userSelected;
         if (recepients.includes(user.user) || recepients[0] == "All") {
-            let nbRequest = 1; //await self.StockRequestCount();
             let reqtext = '<i class="fa fa-envelope"></i> <span class="badge badge-pill bg-danger float-right">' + nbRequest + '</span> ';
 
             io.emit('updateNotificationCount', { nb: reqtext, message: data.message, userId: user.userId });
@@ -375,6 +463,17 @@ var self = module.exports = {
             console.log("THIS MESSAGE IS NOT YOUR CONCERN " + user);
         }
 
+    },
+
+    //UPDATE THE NUMBER UNREAD MESSAGE
+    async unreadUserMessage(user, idUser, io) {
+        //console.log(data);
+        let unRead = await self.userNotificationUnRead(user);
+        let reqtext = '<i class="fa fa-envelope"></i>  <span></span> ';
+        if (unRead > 0) {
+            reqtext = '<i class="fa fa-envelope"></i> <span class="badge badge-pill bg-danger float-right">' + unRead + '</span> ';
+        }
+        io.emit('countUnreadMessage', { nb: reqtext, user: idUser });
     },
     deleteNotification: async function (id) {
         let promise = new Promise((resolve, reject) => {

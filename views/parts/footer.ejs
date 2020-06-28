@@ -39,5 +39,8 @@
         $('#TopNotif'+data.userId).after(notif);//Display the new notification on the top of the old ones
     });
 
+    socket.on('countUnreadMessage', function (data) {
+        $('#NotificationCount'+data.user).html(data.nb);
+    });
         
 </script>

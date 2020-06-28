@@ -149,7 +149,8 @@ io.on('connection', async function(socket){
     //UPDATE THE NUMBER OF STOCK REQUESTS MADE BY USERS EVERY 60 SECS
     setTimeout( async() => {
         await stats.updateNbStockRequest(io);
-    }, 60000);
+        await stats.unreadUserMessage(user_name,InfoUser.id_personne,io);
+    }, 1000);
 
     //UPDATE THE NUMBER OF STOCK REQUESTS MADE BY USERS EVERY 60 SECS
     // setTimeout( async() => {

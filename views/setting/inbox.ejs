@@ -54,13 +54,16 @@
                                     </tr>
                                 </thead>
                                 <tbody id="table">
-                                    <% notifications.forEach((notif) => { %>
-                                    <tr id="row<%= notif.id %>" style="cursor: pointer;"
+                                    <% notifications.forEach((notif) => {
+                                        let clas='unread clickable-row';
+                                        if(notif.read){clas='';}
+                                    %>
+                                    <tr class="<%=clas%>" style="cursor: pointer;"
                                         onclick="viewMessage('<%= notif.id %>')">
-                                        <td><%= notif.date_notif %></td>
+                                        <td class="name"><%= notif.date_notif %></td>
                                         <td class="name"><%= notif.de %></td>
                                         <td class="subject"><%= notif.titre %></td>
-                                        <td><%= notif.contenu.substring(0,20)+"..." %></td>
+                                        <td class="name"><%= notif.contenu.substring(0,20)+"..." %></td>
                                     </tr>
                                     <% }) %>
                                 </tbody>

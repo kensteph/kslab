@@ -26,8 +26,8 @@ router.post('/settings', async (req, res) => {
         let image = req.files.logo;
         let image_menu = req.files.logo_menu;
         if (image) {
-            console.log("LOGO : "+image);
-            let info = helpers.simpleUpload(req,"logo",path,"logo");
+            console.log("LOGO : " + image);
+            let info = helpers.simpleUpload(req, "logo", path, "logo");
             console.log(info);
             let logo = info.data.name; //logo name
             settingsDB.updateLogo(logo);
@@ -35,18 +35,18 @@ router.post('/settings', async (req, res) => {
             console.log("Aucune Image");
         }
         //MENU LOGO
-        if(image_menu){
-            let info = helpers.simpleUpload(req,"logo_menu",path,"logo_menu");
+        if (image_menu) {
+            let info = helpers.simpleUpload(req, "logo_menu", path, "logo_menu");
             console.log(info);
             let logo = info.data.name; //logo name
             settingsDB.updateLogoMenu(logo);
-            console.log("MENU : "+image_menu);
-        }else {
+            console.log("MENU : " + image_menu);
+        } else {
             console.log("Aucune Image MENU");
         }
 
     }
-    
+
     // helpers.simpleUpload(req,"logo_menu",path);
     //console.log(req.body); // the uploaded file object
     let response_insert = await settingsDB.updateSettings(req);
@@ -192,7 +192,7 @@ router.post('/desactivate-user', async (req, res) => {
 //================================================= NOTIFICATIONS ======================================================
 //INSERT NOTIFICATIONS
 router.post('/save-notification', async (req, res) => {
-     console.log(req.body);
+    console.log(req.body);
     let notifications = await settingsDB.saveNotification(req);
     res.json(notifications);
 });
@@ -211,83 +211,101 @@ router.get('/manage-notifications', async (req, res) => {
     params = {
         pageTitle: pageTitle,
         notifications: data,
-        UserList : UserList,
+        UserList: UserList,
         UserData: req.session.UserData,
         page: 'Notifications'
     };
-    res.render('setting/manage-notifications',params);
+    res.render('setting/manage-notifications', params);
 });
 
 //========================================= MESSAGERIE ====================================================
 
 //INBOX
 router.get('/Inbox', async (req, res) => {
-    let data = await stats.userNotificationList(req.session.username);
-    let CountNotifications = data.length;
+    let Username = req.session.username;
+    let data = await stats.userNotificationList(Username);
     let UserList = await settingsDB.listOfAllUsers();
-    let pageTitle = "Notifications ";
+    let unRead = await settingsDB.userNotificationUnRead(Username);
+    let pageTitle = "Notifications "+unRead;
     params = {
         pageTitle: pageTitle,
         notifications: data,
-        UserList : UserList,
+        UserList: UserList,
         UserData: req.session.UserData,
-        CountNotifications : CountNotifications,
+        CountNotifications: unRead,
+        UnreadMessage : unRead,
         page: 'Inbox'
     };
-    res.render('setting/inbox',params);
+    res.render('setting/inbox', params);
 });
 
 //VIEW MESSAGE
 router.post('/view-mail', async (req, res) => {
     console.log(req.body);
-    let CountNotifications = req.body.CountNotifications;
-    let data = await stats.getSinglenotification(req.body.MessageID);
-    console.log(data);
+    let Username = req.session.username;
+    let data = await stats.getSinglenotification(req);
+    let unRead = await settingsDB.userNotificationUnRead(Username);
+    if (!data.read) {
+        //SET THE MESSAGE TO READ
+        await stats.setNotifAsReadForAuser(Username, data, action = "read");
+    }
     let pageTitle = "Notifications ";
     params = {
         pageTitle: pageTitle,
         notifications: data,
         UserData: req.session.UserData,
-        Username : req.session.username,
-        CountNotifications : CountNotifications,
+        Username: Username,
+        CountNotifications: unRead,
         page: 'Inbox'
     };
-    res.render('setting/mail-view',params);
+    res.render('setting/mail-view', params);
 });
 //COMPOSE NEW MESSAGE
 router.get('/Compose', async (req, res) => {
-    let data = await stats.userNotificationList(req.session.username);
-    let CountNotifications = data.length;
+    let Username = req.session.username;
+    let data = await stats.userNotificationList(Username);
+    let unRead = await settingsDB.userNotificationUnRead(Username);
     let UserList = await settingsDB.listOfAllUsers();
     let pageTitle = "Nouveau Message";
     params = {
         pageTitle: pageTitle,
         notifications: data,
-        UserList : UserList,
+        UserList: UserList,
         UserData: req.session.UserData,
-        CountNotifications : CountNotifications,
+        CountNotifications: unRead,
         page: 'Compose'
     };
-    res.render('setting/compose_mail',params);
+    res.render('setting/compose_mail', params);
 });
 //COMPOSE NEW MESSAGE
 router.post('/Compose', async (req, res) => {
     console.log(req.body);
     let message = req.body;
-    let data = await stats.userNotificationList(req.session.username);
-    let CountNotifications = data.length;
+    let Username = req.session.username;
+    let data = await stats.userNotificationList(Username);
+    let unRead = await settingsDB.userNotificationUnRead(Username);
     let UserList = await settingsDB.listOfAllUsers();
-    let pageTitle = "Réponse au message : "+message.title+" | "+message.date;
+    let pageTitle = "Réponse au message : " + message.title + " | " + message.date;
     params = {
         pageTitle: pageTitle,
         notifications: data,
-        UserList : UserList,
+        UserList: UserList,
         UserData: req.session.UserData,
-        message : message,
-        CountNotifications : CountNotifications,
+        message: message,
+        CountNotifications: unRead,
         page: 'Compose'
     };
-    res.render('setting/compose_mail',params);
+    res.render('setting/compose_mail', params);
+});
+
+//DELETE NOTIFICATIONS FOR USER
+router.post('/delete-notification-user', async (req, res) => {
+    console.log(req.body);
+    let Username = req.session.username;
+    let data = await stats.getSinglenotification(req);
+    //SET THE MESSAGE TO READ
+    let notifications = await stats.setNotifAsReadForAuser(Username, data, action = "delete");
+    res.json(notifications);
 });
 //================================================ BACKUP DB =================================================
 //GET DB HISTORIQUE BACKUP

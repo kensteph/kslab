@@ -1,3 +1,2 @@
 ===================================Database==========================
-1- ADD logo_menu in table tb_app_settings
-2- ADD poste to table tb_users
+1- Change on table NOTIFICATIONS
