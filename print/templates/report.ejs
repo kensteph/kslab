@@ -49,15 +49,15 @@
                 <table class="table table-striped custom-table mb-0">
                     <thead>
                         <tr>
-                            <th class="report">Examens</th>
-                            <th class="report">Quantité</th>
+                            <th class="resultat">Examens</th>
+                            <th class="resultat">Quantité</th>
                         </tr>
                     </thead>
                     <tbody>
                         <% data.forEach((report) => {   %>
                         <tr>
                             <td class="report"><%=report.Examen%></td>
-                            <td class="report"> <%=report.qty%></td>
+                            <td class="resultat"> <%=report.qty%></td>
                         </tr>
                         <% }) %>
                     </tbody>

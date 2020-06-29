@@ -1,10 +1,4 @@
 $(document).ready(function () {
-    //SEARCH INTO A TABLE
-    $('#dtBasicExample').DataTable({
-        "order": [[ 0, "desc" ]]
-        });
-    $('.dataTables_length').addClass('bs-select');
-
     $("#SearchPatientButton").hide();
     //$("#loader").hide();
     var $rows = $('#table tr');
@@ -79,5 +73,12 @@ $(document).ready(function () {
             return false;
         }
     });
+
+    //SEARCH INTO A TABLE
+    $('#dtBasicExample').DataTable({
+        "order": [[ 0, "desc" ]]
+        });
+    $('.dataTables_length').addClass('bs-select');
+
 
 });

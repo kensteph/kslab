@@ -305,6 +305,8 @@ var self = module.exports = {
 
         notifier.on('click', function (notifierObject, options, event) {
             // Triggers if `wait: true` and user clicks notification
+            const spawn = require('child_process').spawn;
+            const cmd = spawn('open', ['https://davidwalsh.name']);
             console.log("CLIK!!!!!!!!!!!");
         });
 

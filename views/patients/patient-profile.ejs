@@ -51,8 +51,10 @@
                                                 <div class="staff-msg">
                                                     <a href="/edit-patient?patient=<%= data.id %>"
                                                         class="btn btn-primary">Modifier</a>
+                                                    <%if(dataExams.length==0) { %>
                                                     <a href="#" data-toggle="modal" data-target="#DeleteRequest"
                                                         class="btn btn-danger">Supprimer</a>
+                                                    <% } %>
                                                 </div>
                                             </div>
                                         </div>
@@ -148,9 +150,9 @@
                     <img src="assets/img/sent.png" alt="" width="50" height="46">
                     <form id="DeleteForm">
                         <input type="hidden" name="fullname" value="<%=data.fullname%>">
-                        <input type="hidden" name="PatientID" value="<%=data.id%>" >
+                        <input type="hidden" name="PatientID" value="<%=data.id%>">
                     </form>
-                    <br>Voulez-vous supprimer  <strong ><%=data.fullname+" | "+data.numero_patient%></strong> ?
+                    <br>Voulez-vous supprimer <strong><%=data.fullname+" | "+data.numero_patient%></strong> ?
                     <div id="msg"></div>
                     <div class="m-t-20"> <a href="#" class="btn btn-danger" data-dismiss="modal">Non</a>
                         <button type="submit" class="btn btn-success" onclick="supprimerPatient()">Oui</button>
@@ -175,20 +177,20 @@
     function printResult(id) {
         $("#PrintForm" + id).submit();
     }
-    
-        supprimerPatient = function () {
-            let formData = $("#DeleteForm").serialize();
-            $.post("/delete-patient", formData, function (data) {
-                console.log(data);
-                if (data.success) { //Success 
-                    $("#msg").html(data.msg).fadeOut(5000, () => {
-						window.location.replace("/home");
-					});
-                } else {
-                    $("#msg").html(data.error);
-                }
-            });
-        }
+
+    supprimerPatient = function () {
+        let formData = $("#DeleteForm").serialize();
+        $.post("/delete-patient", formData, function (data) {
+            console.log(data);
+            if (data.success) { //Success 
+                $("#msg").html(data.msg).fadeOut(5000, () => {
+                    window.location.replace("/home");
+                });
+            } else {
+                $("#msg").html(data.error);
+            }
+        });
+    }
 
 </script>
 

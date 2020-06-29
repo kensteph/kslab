@@ -160,6 +160,7 @@ io.on('connection', async function(socket){
     //UPDATE THE NUMBER OF STOCK REQUESTS MADE BY USERS WHEN A REQUEST IS MADE
     socket.on('updateNotificationCount',async function(data){
         await stats.updateNbNotifications(io,data,{user : user_name, userId : InfoUser.id_personne});
+        await stats.unreadUserMessage(user_name,InfoUser.id_personne,io);
         console.log(data);
     });
 

@@ -450,14 +450,14 @@ var self = module.exports = {
     },
     //ON RECEIVE MESSAGE
     async updateNbNotifications(io, data, user) {
-        //console.log(data);
+        console.log(data);
         let nbRequest = await self.userNotificationUnRead(user.user);
         let recepients = data.userSelected;
         if (recepients.includes(user.user) || recepients[0] == "All") {
             let reqtext = '<i class="fa fa-envelope"></i> <span class="badge badge-pill bg-danger float-right">' + nbRequest + '</span> ';
 
             io.emit('updateNotificationCount', { nb: reqtext, message: data.message, userId: user.userId });
-            helpers.desktopNotification(data.message.title, data.message.message);
+            //helpers.desktopNotification("Message Title","Message Content");
             //console.log(data);
         } else {
             console.log("THIS MESSAGE IS NOT YOUR CONCERN " + user);

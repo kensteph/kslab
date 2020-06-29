@@ -23,7 +23,6 @@
 <script src="/socket.io/socket.io.js"></script>
 <script>
     var socket = io();
-
     socket.on('updateNbRequestsStock', function (data) {
         $('#NbRequest').html(data.nb);
         //$.notify(appName);
@@ -31,16 +30,33 @@
     });
 
     socket.on('updateNotificationCount', function (data) {
+        Push.config({
+            serviceWorker: './customServiceWorker.js', // Sets a custom service worker script
+            fallback: function (payload) {
+                // Code that executes on browsers with no notification support
+                // "payload" is an object containing the 
+                // title, body, tag, and icon of the notification 
+            }
+        });
+        Push.create("Hello world!", {
+            body: "Test message", //this should print "hello"
+            icon: '/public/logo/logo.png',
+            link: "http://localhost:8788/Inbox",
+            timeout: 4000,
+            onClick: function () {
+                window.location.replace("/Inbox");
+            }
+        });
         $('#NotificationCount').html(data.nb);
-       // let notifInfo = JSON.parse(data.message);
+        // let notifInfo = JSON.parse(data.message);
         let notifInfo = data.message;
         //$.notify("Vous avez une nouvelle notification");
-        var notif ='<div class="alert alert-'+notifInfo.type+' alert-dismissible fade show" role="alert"> <strong>'+notifInfo.title+'</strong><br><p>'+notifInfo.message+'</p><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button></div>';
-        $('#TopNotif'+data.userId).after(notif);//Display the new notification on the top of the old ones
+        var notif = '<div class="alert alert-' + notifInfo.type + ' alert-dismissible fade show" role="alert"> <strong>' + notifInfo.title + '</strong><br><p>' + notifInfo.message + '</p><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button></div>';
+        $('#TopNotif' + data.userId).after(notif);//Display the new notification on the top of the old ones
     });
 
     socket.on('countUnreadMessage', function (data) {
-        $('#NotificationCount'+data.user).html(data.nb);
+        $('#NotificationCount' + data.user).html(data.nb);
     });
-        
+
 </script>

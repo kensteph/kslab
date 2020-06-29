@@ -50,7 +50,7 @@
                                 <div class="form-group">
                                     <% if(!locals.message){ %>
                                     <select required class="select" multiple name="users[]" id="UsersSelected">
-                                        <option value="All" selected >Tout le monde</option>
+                                        <option value="All" selected>Tout le monde</option>
                                         <option value="superadmin">Superadmin</option>
                                         <% UserList.forEach((user) => { %>
                                         <option value="<%= user.user_name %>">
@@ -58,16 +58,17 @@
                                         <% }) %>
                                     </select>
                                     <% }else{  %>
-                                        <input type="hidden" name="users[]" value="<%=to%>">
+                                    <input type="hidden" name="users[]" id="UsersSelectedReply" value="<%=to%>">
                                     <% } %>
                                 </div>
 
                                 <div class="form-group">
-                                    <input type="text" required placeholder="Sujet" name="subject" value="<%=sujet%>" class="form-control">
+                                    <input type="text" required placeholder="Sujet" name="subject" id="subject"
+                                        value="<%=sujet%>" class="form-control">
                                 </div>
                                 <div class="form-group">
-                                    <textarea rows="4" cols="5" required name="Message" class="form-control"
-                                        placeholder="<%=placeHolderMessage%>"></textarea>
+                                    <textarea rows="4" cols="5" required name="Message" id="Message"
+                                        class="form-control" placeholder="<%=placeHolderMessage%>"></textarea>
                                 </div>
 
                                 <div id="msgSaveNotif" class="m-t-10 text-center"></div>
@@ -105,14 +106,20 @@
                 let formData = $("#sendNotificationForm").serialize();
                 let userSelected = [];
                 let titre = $("#subject").val();
-                let type = $("#type").val();
+                let type = "warning";
                 let message = $("#Message").val();
                 let notif = { title: titre, type: type, message: message, date: new Date() };
-                $("#UsersSelected option:selected").each(function () {
-                    if (this.selected) {
-                        userSelected.push($(this).val());
-                    }
-                });
+                console.log(notif);
+                if (document.getElementById('UsersSelectedReply')) {
+                    userSelected = $("#UsersSelectedReply").val().split("|");
+                } else {
+                    $("#UsersSelected option:selected").each(function () {
+                        if (this.selected) {
+                            userSelected.push($(this).val());
+                        }
+                    });
+                }
+
 
                 $.post("/save-notification", formData, function (data) {
                     console.log(data);
@@ -121,9 +128,9 @@
                         $('#sendBtn').hide();
                         //NOTIFY THE CHANGE
                         socket.emit('updateNotificationCount', { userSelected: userSelected, message: notif });
-                        $("#msgSaveNotif").html(data.msg).fadeOut(5000, function () {
-                            window.location.replace("/Inbox");
-                        });
+                        $("#msgSaveNotif").html(data.msg);//.fadeOut(5000, function () {
+                        //     window.location.replace("/Inbox");
+                        // });
                     } else {
                         $("#msgSaveNotif").html(data.msg);
                     }
