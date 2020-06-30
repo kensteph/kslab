@@ -477,9 +477,9 @@ var self = module.exports = {
         let promise = new Promise((resolve, reject) => {
             let sql = "";
             if (materiauId == "All") {
-                sql = "SELECT *,DATEDIFF( date_expiration , Now() ) as days FROM tb_stocks,tb_materiaux WHERE tb_stocks.materiau=tb_materiaux.id";
+                sql = "SELECT *,DATEDIFF( date_expiration , Now() ) as days,tb_stocks.id as stock_id FROM tb_stocks,tb_materiaux WHERE tb_stocks.materiau=tb_materiaux.id";
             } else {
-                sql = "SELECT *,DATEDIFF( date_expiration , Now() ) as days FROM tb_stocks,tb_materiaux WHERE tb_stocks.materiau=tb_materiaux.id AND tb_materiaux.id=" + materiauId;
+                sql = "SELECT *,DATEDIFF( date_expiration , Now() ) as days,tb_stocks.id as stock_id FROM tb_stocks,tb_materiaux WHERE tb_stocks.materiau=tb_materiaux.id AND tb_materiaux.id=" + materiauId;
             }
 
             con.query(sql, function (err, rows) {
@@ -499,9 +499,9 @@ var self = module.exports = {
         let promise = new Promise((resolve, reject) => {
             let sql = "";
             if (materiauID == "All") {
-                sql = "SELECT *,DATEDIFF( date_expiration , Now() ) as days FROM tb_stocks,tb_materiaux WHERE tb_stocks.materiau=tb_materiaux.id AND DATEDIFF( date_expiration , Now() )<=0";
+                sql = "SELECT *,DATEDIFF( date_expiration , Now() ) as days,tb_stocks.id as stock_id FROM tb_stocks,tb_materiaux WHERE tb_stocks.materiau=tb_materiaux.id AND DATEDIFF( date_expiration , Now() )<=0";
             } else {
-                sql = "SELECT *,DATEDIFF( date_expiration , Now() ) as days FROM tb_stocks,tb_materiaux WHERE tb_stocks.materiau=tb_materiaux.id AND DATEDIFF( date_expiration , Now() )<=0 AND tb_materiaux.id=" + materiauID;
+                sql = "SELECT *,DATEDIFF( date_expiration , Now() ) as days,tb_stocks.id as stock_id FROM tb_stocks,tb_materiaux WHERE tb_stocks.materiau=tb_materiaux.id AND DATEDIFF( date_expiration , Now() )<=0 AND tb_materiaux.id=" + materiauID;
             }
 
             con.query(sql, function (err, rows) {
@@ -520,9 +520,9 @@ var self = module.exports = {
         let promise = new Promise((resolve, reject) => {
             let sql = "";
             if (materiauId == "All") {
-                sql = "SELECT *,DATEDIFF( date_expiration , Now() ) as days FROM tb_stocks,tb_materiaux WHERE tb_stocks.materiau=tb_materiaux.id AND statut=1 ";
+                sql = "SELECT *,DATEDIFF( date_expiration , Now() ) as days,tb_stocks.id as stock_id FROM tb_stocks,tb_materiaux WHERE tb_stocks.materiau=tb_materiaux.id AND statut=1 ";
             } else {
-                sql = "SELECT *,DATEDIFF( date_expiration , Now() ) as days FROM tb_stocks,tb_materiaux WHERE tb_stocks.materiau=tb_materiaux.id AND statut=1 AND tb_materiaux.id=" + materiauId;
+                sql = "SELECT *,DATEDIFF( date_expiration , Now() ) as days,tb_stocks.id as stock_id FROM tb_stocks,tb_materiaux WHERE tb_stocks.materiau=tb_materiaux.id AND statut=1 AND tb_materiaux.id=" + materiauId;
             }
 
             con.query(sql, function (err, rows) {
@@ -545,9 +545,9 @@ var self = module.exports = {
             let promise = new Promise((resolve, reject) => {
                 let sql = "";
                 if (materiauSelected == "All") {
-                    sql = "SELECT *,DATEDIFF( date_expiration , Now() ) as days FROM tb_stocks,tb_materiaux WHERE tb_stocks.materiau=tb_materiaux.id AND numero_lot IN (" + stockAlert.join(",") + ")";
+                    sql = "SELECT *,DATEDIFF( date_expiration , Now() ) as days,tb_stocks.id as stock_id FROM tb_stocks,tb_materiaux WHERE tb_stocks.materiau=tb_materiaux.id AND numero_lot IN (" + stockAlert.join(",") + ")";
                 } else {
-                    sql = "SELECT *,DATEDIFF( date_expiration , Now() ) as days FROM tb_stocks,tb_materiaux WHERE tb_stocks.materiau=tb_materiaux.id AND numero_lot IN (" + stockAlert.join(",") + ") AND tb_materiaux.id=" + materiauSelected;
+                    sql = "SELECT *,DATEDIFF( date_expiration , Now() ) as days,tb_stocks.id as stock_id FROM tb_stocks,tb_materiaux WHERE tb_stocks.materiau=tb_materiaux.id AND numero_lot IN (" + stockAlert.join(",") + ") AND tb_materiaux.id=" + materiauSelected;
                 }
 
                 //console.log(sql);
@@ -799,7 +799,7 @@ var self = module.exports = {
         return data;
     },
 
-    //SET STOCK STATUS
+    //DELETE STOCK REQUEST
     deleteRequestUserForStock: async function (request_id) {
         let promise = new Promise((resolve, reject) => {
             let sql = "DELETE FROM tb_evolution_stock WHERE id =?";
@@ -822,6 +822,31 @@ var self = module.exports = {
         //console.log(data);
         return data;
     },
+        //DELETE STOCK REQUEST
+        deleteStock: async function (req) {
+            let stockID = req.body.stockID;
+            let stocName = req.body.stockID;
+            let promise = new Promise((resolve, reject) => {
+                let sql = "DELETE FROM tb_stocks WHERE id =?";
+                con.query(sql,stockID, function (err, rows) {
+                    if (err) {
+                        resolve({
+                            msg: "Une erreur est survenue. S'il vous plait réessayez.",
+                            error: "danger",
+                            debug: err
+                        });
+                    } else {
+                        resolve({
+                            msg: "Le stock "+stocName+" a été supprimé avec succès...",
+                            success: "success"
+                        });
+                    }
+                });
+            });
+            data = await promise;
+            //console.log(data);
+            return data;
+        },
     //LISTE DES MATERIAUX UTILISES POUR LA DEMANDE
     listeMateriauxForTestRequest: async function (request_id) {
         let promise = new Promise((resolve, reject) => {

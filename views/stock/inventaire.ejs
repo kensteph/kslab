@@ -111,7 +111,7 @@
                                             nb_jours_restant = "Expiré ("+Math.abs(nb_jours_restant)+")";
                                         }
                                      %>
-                                    <tr title="<%=stock.nom_materiau+' | '+stock.numero_lot%>">
+                                    <tr id="rowStock<%=stock.stock_id%>" title="<%=stock.nom_materiau+' | '+stock.numero_lot%>">
                                         <td><%=stock.numero_lot%></td>
                                         <td>
                                             <% if(UserData.user_sub_menu_access.includes("Ajouter Stock") || UserData.user_sub_menu_access[0]=="All"){%>
@@ -146,8 +146,14 @@
                                                     <% if(UserData.user_sub_menu_access.includes("Valider/Invalider Stock") || UserData.user_sub_menu_access[0]=="All"){%>
                                                     <a class="dropdown-item" href="#"
                                                         onclick="launchStocValide('<%=stock.nom_materiau%>','<%=stock.id%>','<%=stock.numero_lot%>','<%=stock.statut%>')"><i
-                                                            class="fa fa-trash-o m-r-5"></i> Valide/Invalide</a>
+                                                            class="fa fa-check m-r-5"></i> Valide/Invalide</a>
                                                     <% } %>
+
+                                                    <% if(UserData.user_sub_menu_access.includes("Supprimer Stock") || UserData.user_sub_menu_access[0]=="All"){%>
+                                                        <a class="dropdown-item" href="#"
+                                                            onclick="launchDeleteStock('<%=stock.stock_id%>','<%=stock.nom_materiau%>','<%=stock.numero_lot%>')"><i
+                                                                class="fa fa-trash-o m-r-5"></i> Supprimer</a>
+                                                        <% } %>
                                                 </div>
                                             </div>
                                         </td>
@@ -209,7 +215,7 @@
                 <div class="modal-content">
                     <div class="modal-body text-center">
                         <img src="assets/img/sent.png" alt="" width="50" height="46">
-                        <h2 id="stockId"></h2>
+                        <h2 id="stockIdName"></h2>
                         <h3>Voulez-vous modifier la validité de ce lot?</h3>
                         <div class="m-t-20">
                             <form id="validForm">
@@ -224,6 +230,26 @@
                     </div>
                 </div>
             </div>
+        </div>
+        <div id="DeleteRequest" class="modal fade delete-modal" role="dialog" data-keyboard="false">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-body text-center">
+                        <img src="assets/img/sent.png" alt="" width="50" height="46"><br>
+                        <form id="DeleteForm">
+                            <input type="hidden" name="stockID" id="stockID">
+                            <input type="hidden" name="stockName" value="3" id="stockName">
+                        </form>
+                        <h2 id="StockNameDelete"></h2>
+                        Voulez-vous supprimer ce stock <strong id="patientD"></strong> ?
+                        <div id="msg"></div>
+                        <div class="m-t-20"> <a href="#" class="btn btn-danger" data-dismiss="modal">Non</a>
+                            <button type="submit" class="btn btn-success" onclick="supprimerStock()">Oui</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
     <div class="sidebar-overlay" data-reff=""></div>
@@ -258,7 +284,7 @@
             $("#addRemoveUnit").modal();
         }
         function launchStocValide(matName, matId, lot, statut) {
-            $("#stockId").html(matName + "-" + lot);
+            $("#stockIdName").html(matName + "-" + lot);
             $("#materiauId").val(matId);
             $("#materiau").val(matName);
             $("#lot_id").val(lot);
@@ -298,6 +324,28 @@
                 }
             });
         }
+    
+        function launchDeleteStock(stockID, stockName,lot) {
+            $("#StockNameDelete").html("" + stockName + " | " + lot);
+            $("#stockName").val("" + stockName + " | " + lot);
+            $("#stockID").val(stockID);
+            $("#DeleteRequest").modal();
+        }
+
+        supprimerStock = function () {
+            let formData = $("#DeleteForm").serialize();
+            $.post("/delete-stock", formData, function (data) {
+                console.log(data);
+                if (data.success) { //Success 
+                    let id = $("#stockID").val();
+                    $("#rowStock" + id).fadeOut(5000);
+                    $('#DeleteRequest').modal('hide')
+                } else {
+                    $("#msg").html(data.error);
+                }
+            });
+        }
+
     </script>
     <!-- FOOTER -->
     <%- include("../parts/footer") -%>

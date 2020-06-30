@@ -227,6 +227,14 @@ router.post('/change-stock-status', async (req, res) => {
     res.json(notifications);
 });
 
+//DELETE STOCK
+router.post('/delete-stock', async (req, res) => {
+    //console.log(req.body);
+    let notifications = await stockDB.deleteStock(req);
+    res.json(notifications);
+});
+
+
 //APPROVED OR REJECTED A REQUEST ADD OR REMOVE ITEM FROM STOVK
 router.post('/approved-rejected', async (req, res) => {
     console.log(req.body);
