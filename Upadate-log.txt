@@ -1,2 +1,6 @@
 ===================================Database==========================
 1- Change on table NOTIFICATIONS
+
+DELETE FROM `tb_notifications`;
+ALTER TABLE `tb_notifications` ADD `see_by` TEXT NULL DEFAULT NULL AFTER `date_notif`;
+ALTER TABLE `tb_notifications` ADD `delete_for` TEXT NULL DEFAULT NULL AFTER `see_by`;

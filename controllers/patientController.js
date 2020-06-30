@@ -112,7 +112,26 @@ module.exports = {
                     //throw err;
                     resolve([{ fullname: "" }]);
                 } else {
-                    resolve(rows[0]);
+                    let info = rows[0];
+                    let patient = {
+                        id : info.id,
+                        fullname : info.fullname,
+                        prenom : info.prenom,
+                        nom : info.nom,
+                        sexe : info.sexe,
+                        date_nais : info.date_nais,
+                        date_nais_fr : helpers.formatDate(info.date_nais,"FR"),
+                        adresse : info.adresse,
+                        telephone : info.telephone,
+                        email : info.email,
+                        statut : info.statut,
+                        visible : info.visible,
+                        id_personne : info.id_personne,
+                        numero_patient : info.numero_patient,
+                        date_ajout : info.date_ajout,
+                        age : info.age,
+                    };
+                    resolve(patient);
                 }
             });
         });

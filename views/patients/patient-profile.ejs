@@ -50,7 +50,7 @@
                                                 <div class="staff-id">Patient ID : <%=data.numero_patient%></div>
                                                 <div class="staff-msg">
                                                     <% if(UserData.user_sub_menu_access.includes("Modifier Patients") || UserData.user_sub_menu_access[0]=="All"){ %>
-                                                    <a href="/edit-patient?patient=<%= data.id %>"
+                                                    <a href="/edit-patient?patient=<%= data.id_personne %>"
                                                         class="btn btn-primary">Modifier</a>
 
                                                     <%if(dataExams.length==0) { %>
@@ -82,7 +82,7 @@
                                                 </li>
                                                 <li>
                                                     <span class="title">Date Naissance:</span>
-                                                    <span class="text"><%=data.date_nais%></span>
+                                                    <span class="text"><%=data.date_nais_fr%></span>
                                                 </li>
                                                 <li>
                                                     <span class="title">Adresse:</span>
@@ -158,7 +158,7 @@
                     <img src="assets/img/sent.png" alt="" width="50" height="46">
                     <form id="DeleteForm">
                         <input type="hidden" name="fullname" value="<%=data.fullname%>">
-                        <input type="hidden" name="PatientID" value="<%=data.id%>">
+                        <input type="hidden" name="PatientID" value="<%=data.id_personne%>">
                     </form>
                     <br>Voulez-vous supprimer <strong><%=data.fullname+" | "+data.numero_patient%></strong> ?
                     <div id="msg"></div>
