@@ -38,7 +38,7 @@
                             <div class="profile-view">
                                 <div class="profile-img-wrap">
                                     <div class="profile-img">
-                                        <a href="#"><img class="avatar" src="assets/img/user.jpg" alt=""></a>
+                                        <a href="#"><img class="avatar"  src="assets/img/user.jpg" alt=""></a>
                                     </div>
                                 </div>
                                 <div class="profile-basic">
@@ -49,11 +49,17 @@
                                                 <!-- <small class="text-muted">Gynecologist</small> -->
                                                 <div class="staff-id">Patient ID : <%=data.numero_patient%></div>
                                                 <div class="staff-msg">
+                                                    <% if(UserData.user_sub_menu_access.includes("Modifier Patients") || UserData.user_sub_menu_access[0]=="All"){ %>
                                                     <a href="/edit-patient?patient=<%= data.id %>"
                                                         class="btn btn-primary">Modifier</a>
+
                                                     <%if(dataExams.length==0) { %>
                                                     <a href="#" data-toggle="modal" data-target="#DeleteRequest"
                                                         class="btn btn-danger">Supprimer</a>
+                                                    <% } %>
+
+                                                    <% }else{ %>
+                                                        <br><br><br><br>
                                                     <% } %>
                                                 </div>
                                             </div>
@@ -95,7 +101,7 @@
                     </div>
                 </div>
                 <%if(dataExams.length>0) { %>
-                <div class="row">
+                <div class="row m-t-10">
                     <div class="col-md-12">
                         <div class="card-box">
                             <h3 class="card-title">Examens Laboratoire</h3>
@@ -119,9 +125,11 @@
                                         <div class="experience-content">
                                             <div class="timeline-content">
                                                 <a href="#" class="name"><%=item.examens%></a>
+                                                <% if(UserData.user_sub_menu_access.includes("Imprimer Résultat") || UserData.user_sub_menu_access[0]=="All"){ %>
                                                 <a href="#" title="Imprimer les résultats"
                                                     onclick="printResult('<%=item.request_id%>')" class="name"><i
                                                         class="fa fa-print"></i></a>
+                                                <% } %>
                                                 <div><%=item.docteur%></div>
                                                 <span class="time"><%=item.date_record%></span>
                                                 <span class="time">Numéro : <%=item.request_id%> |

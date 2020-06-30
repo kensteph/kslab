@@ -125,6 +125,7 @@ var self = module.exports = {
     //Stock Critique
     StockAlertCount: async function (nbJours) {
         let info = await stockDB.stockToNotify(nbJours);
+        //console.log(info);
         return info.length;
     },
 

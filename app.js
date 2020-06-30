@@ -195,7 +195,7 @@ app.get('/home', async (req, res) => {
             //Stock
             let total_materiaux_in_stock = await stats.StockCount();
             let stockExpiredCount = await stats.StockExpiredCount();
-            let stockAlertCount = await stats.StockAlertCount(global.NBJOUR_STOCK_ALERT)+stockExpiredCount;//
+            let stockAlertCount = await stats.StockAlertCount(global.NBJOUR_STOCK_ALERT);//
             //NOMBRE DE PATIENT SUR 1 AN
             let currentYear = helpers.getCurrentYear();
             let pastYear = helpers.getPastYear();

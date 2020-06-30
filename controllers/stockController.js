@@ -615,7 +615,7 @@ var self = module.exports = {
             }
 
         });
-        // console.log("STOCK FINAL : "+stockList);
+        //console.log("STOCK FINAL : "+stockList);
 
         return stockList;
     },
