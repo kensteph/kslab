@@ -157,9 +157,14 @@ var self = module.exports = {
                                     // console.log("QUANTITE A UTILISER : " + qte_to_use + " " +materiauName );
                                     // console.log(alert); 
                                     let stockByMateriau = await stockDB.listOfAllStockByProduct(materiauID, 1);
+                                    if(stockByMateriau.length==0){
+                                        console.log("Pending transaction for " + materiauName + "...");
+                                        await self.pendingStockEvolution(con, materiauID, qte_to_use, id_test_request);
+                                    }
                                     //ON VA PRELEVER LES MATERIAUX DANS LE STOCK LE PLUS ANCIEN
                                     let new_qte_to_take = qte_to_use;
                                     for (item of stockByMateriau) {
+                                        console.log(stockByMateriau);
                                         let numero_lot = item.numero_lot;
                                         let materiauId = item.materiau;
                                         let materiauName = item.nom_materiau;
@@ -168,17 +173,22 @@ var self = module.exports = {
                                         let commentaire = "";
                                         let qte_dispo_in_stock = item.qte_restante; //Current LOT
                                         let diff = qte_dispo_in_stock - qte;
-                                        if (qte_dispo_in_stock > qte) {
-                                            commentaire = qte + " " + materiauName + " a été prélevé du stock pour le test # " + id_test_request;
-                                            let rep = await stockDB.RemoveItemFromStock(con, numero_lot, materiauId, materiauName, transactionType, qte, commentaire, user, id_test_request);
-                                            break; //On sort de la boucle parce qu'on a deja preleve
+                                        if (qte_dispo_in_stock <= 0) { //Si il n'y a plus de materiaux dissponible 
+                                            console.log("Pending transaction for " + materiauName + "...");
+                                            await self.pendingStockEvolution(con, materiauId, qte, id_test_request);
                                         } else {
-                                            if (diff >= 0) {
+                                            if (qte_dispo_in_stock > qte) {
                                                 commentaire = qte + " " + materiauName + " a été prélevé du stock pour le test # " + id_test_request;
                                                 let rep = await stockDB.RemoveItemFromStock(con, numero_lot, materiauId, materiauName, transactionType, qte, commentaire, user, id_test_request);
-                                                new_qte_to_take = new_qte_to_take - qte;
-                                            }
+                                                break; //On sort de la boucle parce qu'on a deja preleve
+                                            } else {
+                                                if (diff >= 0) {
+                                                    commentaire = qte + " " + materiauName + " a été prélevé du stock pour le test # " + id_test_request;
+                                                    let rep = await stockDB.RemoveItemFromStock(con, numero_lot, materiauId, materiauName, transactionType, qte, commentaire, user, id_test_request);
+                                                    new_qte_to_take = new_qte_to_take - qte;
+                                                }
 
+                                            }
                                         }
 
                                     }
@@ -226,6 +236,56 @@ var self = module.exports = {
         //console.log(data); 
         return data;
     },
+    //Pending Stock evolution Transaction
+    pendingStockEvolution: async function (con, materiau_id, qte_a_enlever, test_id) {
+        let promise = new Promise((resolve, reject) => {
+            let sql =
+                'INSERT INTO tb_pending_stock_evolution (materiau_id,qte_a_enlever,test_request_id) VALUES (' + materiau_id + ',' + qte_a_enlever + ',' + test_id + ')';
+            con.query(sql, function (err, result) {
+                if (err) {
+                    console.log(err);
+                    // msg = {
+                    //     error: " Vous avez déja enregistré ces valeurs ",
+                    //     debug: err
+                    // };
+                    msg = self.updateStockPendingEvolution(materiau_id, qte_a_enlever);
+                } else {
+                    msg = {
+                        success:
+                            "Valeurs enregistrées avec succès.",
+                    };
+                }
+
+                resolve(msg);
+                //console.log(msg);
+            });
+        });
+        rep = await promise;
+        return rep;
+    },
+        //UPDATE Stock evolution Transaction
+        updateStockPendingEvolution: async function (materiauID, qte) {
+            let promise = new Promise((resolve, reject) => {
+                let sql = "UPDATE tb_pending_stock_evolution SET qte_a_enlever=qte_a_enlever+" + qte + " WHERE materiau_id =?";
+                con.query(sql, materiauID, function (err, rows) {
+                    if (err) {
+                        resolve({
+                            msg: "Une erreur est survenue. S'il vous palit réessayez.",
+                            error: "danger",
+                            debug: err
+                        });
+                    } else {
+                        resolve({
+                            msg: "Stock pendant modifie avec succès...",
+                            success: "success"
+                        });
+                    }
+                });
+            });
+            data = await promise;
+            //console.log(data);
+            return data;
+        },
     //LIST REQUEST TESTS
     testRequestlist: async function (dateFrom, dateTo, status) {
         let promise = new Promise((resolve, reject) => {
@@ -251,7 +311,7 @@ var self = module.exports = {
                             examens.push(info[i].nom_examen);
                         }
                         let patient_exams = examens.join();
-                        let line_info = { request_id: item.id_request, date_record: item.date_record, numero_patient: item.numero_patient, patient: item.fullname, docteur: item.docteur, age: item.age, sexe: item.sexe, examens: patient_exams, statut: item.test_status,acteur : item.acteur };
+                        let line_info = { request_id: item.id_request, date_record: item.date_record, numero_patient: item.numero_patient, patient: item.fullname, docteur: item.docteur, age: item.age, sexe: item.sexe, examens: patient_exams, statut: item.test_status, acteur: item.acteur };
                         line.push(line_info);
                     }
                     resolve(line);
