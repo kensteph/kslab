@@ -187,6 +187,25 @@ var self = module.exports = {
         //console.log(data); 
         return data;
     },
+    //Manage PENDING STOCK EVOLUTION
+    managePendingStock: async function (con, matInfo, qte) {
+        let pendingQtyForThisItem = await self.getCountPendingStockForMateriau(matInfo.id);
+        //Enlever automatiquement la quantite pendante de la qteRestante
+        if (pendingQtyForThisItem > qte) { // Mise a jour de la quantite pandante
+            console.log("Mise a jour de la quantite pandante");
+            await self.updateStockPending(con, matInfo.id, qte);
+            let commentaire =qte+" "+matInfo.name+" retiré(s) du lot "+matInfo.lot+" | Transaction pendante";
+            await self.RemoveItemFromStock(con,matInfo.lot, matInfo.id, matInfo.name, "substract", qte, commentaire, "System", -1);
+            qte = 0;
+        } else { // Suppression de la qte pandante
+            let commentaire =pendingQtyForThisItem+" "+matInfo.name+" retiré(s) du lot "+matInfo.lot+" | Transaction pendante";
+            await self.RemoveItemFromStock(con,matInfo.lot, matInfo.id, matInfo.name, "substract", pendingQtyForThisItem, commentaire, "System", -1);
+            qte = qte - pendingQtyForThisItem;
+            console.log("Suppression de la qte pandante");
+            await self.deleteStockPending(con, matInfo.id);
+        }
+        return qte;
+    },
     //Add STOCK Materiau
     addStock: async function (req) {
         let promise = new Promise(async (resolve, reject) => {
@@ -205,18 +224,9 @@ var self = module.exports = {
             let msg = { msg: "NO ACTION DONE..." };
             //   /* Begin transaction */
             con.beginTransaction(async (err) => {
-
-                let pendingQtyForThisItem = await self.getCountPendingStockForMateriau(materiauId);
-                //Enlever automatiquement la quantite pendante de la qteRestante
-                if (pendingQtyForThisItem > qteRestante) { // Mise a jour de la quantite pandante
-                    console.log("Mise a jour de la quantite pandante");
-                    await self.updateStockPending(con, materiauId, qteRestante);
-                    qteRestante = 0;
-                } else { // Suppression de la qte pandante
-                    qteRestante = qteRestante - pendingQtyForThisItem;
-                    console.log("Suppression de la qte pandante");
-                    await self.deleteStockPending(con, materiauId);
-                }
+                //VERIFY IF THERE IS PENDING REQUEST
+                let matInfo = { id: materiauId, name: materiauName, lot: numero_lot }
+                qteRestante = await self.managePendingStock(con, matInfo, qteRestante);
 
                 if (err) { throw err; }
                 let sql =
@@ -228,12 +238,12 @@ var self = module.exports = {
                             type: "danger",
                             error: true,
                             msg:
-                                "<font color='red'> Vous avez déja ajouté ce lot " + numero_lot + "</font> ",
+                                "<font color='red'> Vous avez déja ajouté ce lot " + numero_lot + "</font> "+err,
                             debug: err
                         };
                         resolve(msg);
                     } else {
-                        let commentaire = qteRecue + " " + materiauName + " ont été ajoutés au stock. QTE endomagée : " + qteEndomage + " QTE pendante : " + pendingQtyForThisItem;
+                        let commentaire = qteRecue + " " + materiauName + " ont été ajoutés au stock. QTE endomagée : " + qteEndomage ;
                         let transactionType = "add";
                         //Insert info into tb_evolution_stock table
                         let sql = 'INSERT INTO tb_evolution_stock (lot,materiau,qte,transaction,commentaire,acteur) VALUES ("' + numero_lot + '","' + materiauId + '","' + qteRecue + '","' + transactionType + '","' + commentaire + '","' + user + '")';
@@ -377,20 +387,20 @@ var self = module.exports = {
     async RemoveItemFromStock(con, numero_lot, materiauId, materiauName, transactionType, qte, commentaire, user, request_id) {
         let promise = new Promise((resolve, reject) => {
             //   /* Begin transaction */
-            con.beginTransaction(async function  (err) {
+            con.beginTransaction(async function (err) {
                 if (err) { throw err; }
-                
-                let pendingQtyForThisItem = await self.getCountPendingStockForMateriau(materiauId);
-                //Enlever automatiquement la quantite pendante de la qteRestante
-                if (pendingQtyForThisItem > qte) { // Mise a jour de la quantite pandante
-                    console.log("Mise a jour de la quantite pandante");
-                    await self.updateStockPending(con, materiauId, qte);
-                    qteRestante = 0;
-                } else { // Suppression de la qte pandante
-                    qte = qte - pendingQtyForThisItem;
-                    console.log("Suppression de la qte pandante");
-                    await self.deleteStockPending(con, materiauId);
-                }
+
+                // let pendingQtyForThisItem = await self.getCountPendingStockForMateriau(materiauId);
+                // //Enlever automatiquement la quantite pendante de la qteRestante
+                // if (pendingQtyForThisItem > qte) { // Mise a jour de la quantite pandante
+                //     console.log("Mise a jour de la quantite pandante");
+                //     await self.updateStockPending(con, materiauId, qte);
+                //     qteRestante = 0;
+                // } else { // Suppression de la qte pandante
+                //     qte = qte - pendingQtyForThisItem;
+                //     console.log("Suppression de la qte pandante");
+                //     await self.deleteStockPending(con, materiauId);
+                // }
                 //Insert info into tb_evolution_stock table
                 let sql = 'INSERT INTO tb_evolution_stock (lot,materiau,qte,transaction,commentaire,acteur,test) VALUES ("' + numero_lot + '","' + materiauId + '","' + qte + '","' + transactionType + '","' + commentaire + '","' + user + '",' + request_id + ')';
 
