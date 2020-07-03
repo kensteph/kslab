@@ -81,14 +81,15 @@ if (locals.page) {
                 <li class="<%=Home%>">
                     <a href="/home"><i class="fa fa-dashboard"></i> <span>Tableau de bord</span></a>
                 </li>
-                <% } %> 
+                <% } %>
                 <!-- MESSAGERIE -->
                 <li class="<%=Inbox%>">
                     <a href="/Inbox"><i class="fa fa-envelope"></i> <span>Messages</span></a>
                 </li>
                 <% if(UserData.user_menu_access.includes("Voir la liste des requetes de stock") || UserData.user_menu_access[0]=="All"){%>
                 <li class="<%=Request%>">
-                    <a id="NbRequest" href="/requests?statut=0"><i class="fa fa-comments"></i> <span>Demandes</span>  <span class="badge badge-pill bg-primary float-right">0</span> </a>
+                    <a id="NbRequest" href="/requests?statut=0"><i class="fa fa-comments"></i> <span>Demandes</span>
+                        <span class="badge badge-pill bg-primary float-right">0</span> </a>
                 </li>
                 <% } %>
                 <!-- TEST LABORATOIRE -->
@@ -149,9 +150,6 @@ if (locals.page) {
                     <a href="#"><i class="fa fa-list"></i> <span>Gestion de stock </span> <span
                             class="menu-arrow"></span></a>
                     <ul style="display: none;">
-                        <% if(UserData.user_sub_menu_access.includes("Ajouter Matériau") || UserData.user_sub_menu_access[0]=="All"){%>
-                        <li><a class="<%=AddMateriau%>" href="/add-materiau">Nouveau Matériau </a></li>
-                        <% } %>
                         <% if(UserData.user_sub_menu_access.includes("Lister les matériaux") || UserData.user_sub_menu_access[0]=="All"){%>
                         <li><a class="<%=ListMateriau%>" href="/materiaux">Liste des Matériaux</a></li>
                         <% } %>
@@ -160,6 +158,9 @@ if (locals.page) {
                         <% } %>
                         <% if(UserData.user_sub_menu_access.includes("Mouvement de stock") || UserData.user_sub_menu_access[0]=="All"){%>
                         <li><a class="<%=StockMoving%>" href="/mv-stock">Mouvement de stock </a></li>
+                        <% } %>
+                        <% if(UserData.user_sub_menu_access.includes("Ajouter Matériau") || UserData.user_sub_menu_access[0]=="All"){%>
+                        <li><a class="<%=AddMateriau%>" href="/add-materiau">Nouveau Matériau </a></li>
                         <% } %>
                     </ul>
                 </li>

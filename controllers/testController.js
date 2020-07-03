@@ -157,9 +157,9 @@ var self = module.exports = {
                                     // console.log("QUANTITE A UTILISER : " + qte_to_use + " " +materiauName );
                                     // console.log(alert); 
                                     let stockByMateriau = await stockDB.listOfAllStockByProduct(materiauID, 1);
-                                    if(stockByMateriau.length==0){
+                                    if (stockByMateriau.length == 0) {
                                         console.log("Pending transaction for " + materiauName + "...");
-                                        await self.pendingStockEvolution(con, materiauID, qte_to_use, id_test_request);
+                                        await self.pendingStockEvolution(con, materiauID, qte_to_use, test_id, id_test_request);
                                     }
                                     //ON VA PRELEVER LES MATERIAUX DANS LE STOCK LE PLUS ANCIEN
                                     let new_qte_to_take = qte_to_use;
@@ -175,7 +175,7 @@ var self = module.exports = {
                                         let diff = qte_dispo_in_stock - qte;
                                         if (qte_dispo_in_stock <= 0) { //Si il n'y a plus de materiaux dissponible 
                                             console.log("Pending transaction for " + materiauName + "...");
-                                            await self.pendingStockEvolution(con, materiauId, qte, id_test_request);
+                                            await self.pendingStockEvolution(con, materiauId, qte, test_id, id_test_request);
                                         } else {
                                             if (qte_dispo_in_stock > qte) {
                                                 commentaire = qte + " " + materiauName + " a été prélevé du stock pour le test # " + id_test_request;
@@ -237,10 +237,10 @@ var self = module.exports = {
         return data;
     },
     //Pending Stock evolution Transaction
-    pendingStockEvolution: async function (con, materiau_id, qte_a_enlever, test_id) {
+    pendingStockEvolution: async function (con, materiau_id, qte_a_enlever, test_id, req_id) {
         let promise = new Promise((resolve, reject) => {
             let sql =
-                'INSERT INTO tb_pending_stock_evolution (materiau_id,qte_a_enlever,test_request_id) VALUES (' + materiau_id + ',' + qte_a_enlever + ',' + test_id + ')';
+                'INSERT INTO tb_pending_stock_evolution (materiau_id,qte_a_enlever,test_id,request_id) VALUES (' + materiau_id + ',' + qte_a_enlever + ',' + test_id + ',' + req_id + ')';
             con.query(sql, function (err, result) {
                 if (err) {
                     console.log(err);
@@ -248,7 +248,7 @@ var self = module.exports = {
                     //     error: " Vous avez déja enregistré ces valeurs ",
                     //     debug: err
                     // };
-                    msg = self.updateStockPendingEvolution(materiau_id, qte_a_enlever);
+                    msg = self.updateStockPendingEvolution(materiau_id, qte_a_enlever, test_id, req_id);
                 } else {
                     msg = {
                         success:
@@ -263,29 +263,77 @@ var self = module.exports = {
         rep = await promise;
         return rep;
     },
-        //UPDATE Stock evolution Transaction
-        updateStockPendingEvolution: async function (materiauID, qte) {
-            let promise = new Promise((resolve, reject) => {
-                let sql = "UPDATE tb_pending_stock_evolution SET qte_a_enlever=qte_a_enlever+" + qte + " WHERE materiau_id =?";
-                con.query(sql, materiauID, function (err, rows) {
-                    if (err) {
-                        resolve({
-                            msg: "Une erreur est survenue. S'il vous palit réessayez.",
-                            error: "danger",
-                            debug: err
-                        });
-                    } else {
-                        resolve({
-                            msg: "Stock pendant modifie avec succès...",
-                            success: "success"
-                        });
-                    }
-                });
+    //UPDATE Stock evolution Transaction
+    updateStockPendingEvolution: async function (materiauID, qte, test_id, request_id) {
+        let promise = new Promise((resolve, reject) => {
+            let sql = "UPDATE tb_pending_stock_evolution SET qte_a_enlever=qte_a_enlever+" + qte + " WHERE materiau_id =? AND test_id=? AND request_id=?";
+            con.query(sql, [materiauID, test_id, request_id], function (err, rows) {
+                if (err) {
+                    resolve({
+                        msg: "Une erreur est survenue. S'il vous palit réessayez.",
+                        error: "danger",
+                        debug: err
+                    });
+                } else {
+                    resolve({
+                        msg: "Stock pendant modifie avec succès...",
+                        success: "success"
+                    });
+                }
             });
-            data = await promise;
-            //console.log(data);
-            return data;
-        },
+        });
+        data = await promise;
+        //console.log(data);
+        return data;
+    },
+    //DELETE PENDING STOCK
+    deletePendingStock: async function (id_test, id_request) {
+        let promise = new Promise((resolve, reject) => {
+            let sql1 = "DELETE FROM tb_pending_stock_evolution WHERE test_id=? AND request_id =?";
+            con.query(sql1, [id_test, id_request], function (err, rows) {
+                if (err) {
+                    resolve({
+                        msg: "Une erreur est survenue. S'il vous palit réessayez.",
+                        error: "danger",
+                        debug: err
+                    });
+                } else {
+                    resolve({
+                        msg: "Demande supprimée avec succès...",
+                        success: "success"
+                    });
+                }
+            });
+        });
+        data = await promise;
+        //console.log(data);
+        return data;
+    },
+    //DELETE PENDING STOCK BY REQUEST_ID
+    deletePendingStockByRequestId: async function (id_request) {
+        let promise = new Promise((resolve, reject) => {
+            let sql1 = "DELETE FROM tb_pending_stock_evolution WHERE  request_id =?";
+            con.query(sql1, id_request, function (err, rows) {
+                if (err) {
+                    resolve({
+                        msg: "Une erreur est survenue. S'il vous palit réessayez.",
+                        error: "danger",
+                        debug: err
+                    });
+                } else {
+                    resolve({
+                        msg: "Demande supprimée avec succès...",
+                        success: "success"
+                    });
+                }
+            });
+        });
+        data = await promise;
+        //console.log(data);
+        return data;
+    },
+
+
     //LIST REQUEST TESTS
     testRequestlist: async function (dateFrom, dateTo, status) {
         let promise = new Promise((resolve, reject) => {
@@ -392,7 +440,7 @@ var self = module.exports = {
     deleteTestRequest: async function (id_test) {
         let promise = new Promise((resolve, reject) => {
             let sql = "DELETE FROM tb_test_requests WHERE id =?";
-            con.query(sql, id_test, function (err, rows) {
+            con.query(sql, id_test, async function (err, rows) {
                 if (err) {
                     resolve({
                         msg: "Une erreur est survenue. S'il vous palit réessayez.",
@@ -400,6 +448,8 @@ var self = module.exports = {
                         debug: err
                     });
                 } else {
+                    //DELETE PENDING STOCK
+                    await self.deletePendingStockByRequestId(id_test);
                     let sql1 = "DELETE FROM tb_test_requests_contents WHERE test_request_id =?";
                     con.query(sql1, id_test, function (err, rows) {
                         if (err) {

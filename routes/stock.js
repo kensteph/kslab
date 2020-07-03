@@ -124,7 +124,10 @@ router.post('/inventaire', async (req, res) => {
 
 //MOUVEMENT DE STOCK
 router.get('/mv-stock', async (req, res) => {
-    console.log(req.body);
+    // let pst = await stockDB.getPendingStockForMateriau(25);
+    // console.log(pst.slice(0,2));
+    // let qte_a_utiliser = pst[0].qte_a_enlever;
+    // console.log(qte_a_utiliser);
     let dateF = helpers.getCurrentDate();
     let dateT = helpers.getCurrentDate();
     let materiauxList = await stockDB.listOfMateriaux("All");
@@ -454,6 +457,38 @@ router.post('/print-stock-move-report', async (req, res) => {
     stream.pipe(res);
 });
 
+//PRINT TEST REPORT
+router.post("/print-materiaux-usage", async (req, res) => {
+    console.log(req.body);
+    let dateFrom = req.body.DateFrom;
+    let dateTo = req.body.DateTo;
+    let data = await stockDB.materiauxUsageForPeriod(dateFrom,dateTo);
+    let dateN = helpers.getCurrentDate();
+    let text_date = "";
+    if (dateFrom == dateTo) {
+        text_date = "pour le " + helpers.formatDate(dateFrom, "FR");
+    } else {
+        text_date = "du " + helpers.formatDate(dateFrom, "FR") + " au " + helpers.formatDate(dateTo, "FR");
+    }
+    let pageTitle = "Rapport d'utilisation des matériaux "+ text_date;
+    let report = "usage-materiau-" + dateN;
+    let filename = report + ".pdf";
+    let pathfile = "./tmp/" + filename;
+    let template_name = "report-usage-materiaux";
+    params = {
+        data: data,
+        pageTitle: pageTitle
+    };
+    await printer.print(template_name, params, pathfile);
+    //Display the file in the browser
+    var stream = fs.ReadStream(pathfile);
+    // Be careful of special characters
+    filename = encodeURIComponent(filename);
+    // Ideally this should strip them
+    res.setHeader('Content-disposition', 'inline; filename="' + filename + '"');
+    res.setHeader('Content-type', 'application/pdf');
+    stream.pipe(res);
+});
 
 
 

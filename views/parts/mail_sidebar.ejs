@@ -11,9 +11,13 @@
                     <% }  %>
 
                 </li>
-                <li class="menu-title"><a href="/Compose" class="btn btn-primary btn-block">Nouveau Message</a></li>
+                <li class="menu-title">
+                    <a href="/Compose" class="btn btn-primary btn-block">
+                        <i class="fa fa-edit back-icon"></i>
+                        Nouveau Message</a>
+                    </li>
                 <li class="active">
-                    <a href="/Inbox">Boite de réception <span id="CountMessage" class="mail-count">(<%= CountNotifications%>)</span></a>
+                    <a href="/Inbox"><i class="fa fa-inbox back-icon"></i> <span>Boite de réception</span> <span id="CountMessage" class="mail-count">(<%= CountNotifications%>)</span></a>
                 </li>
                 
             </ul>

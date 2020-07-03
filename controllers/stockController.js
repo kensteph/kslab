@@ -1,5 +1,6 @@
 const con = require('./database');
 const helpers = require('../helpers/helpers');
+const testDB = require('./testController.js');
 var self = module.exports = {
     //Add Materiau
     addMateriau: async function (req) {
@@ -168,7 +169,7 @@ var self = module.exports = {
     //COUNT PENDING STOCK TRANSACTION FOR A MATERIAU
     getCountPendingStockForMateriau: async function (materiauID) {
         let promise = new Promise((resolve, reject) => {
-            let sql = "SELECT qte_a_enlever as nb FROM tb_pending_stock_evolution WHERE materiau_id=" + materiauID;
+            let sql = "SELECT COUNT(qte_a_enlever) as nb FROM tb_pending_stock_evolution WHERE materiau_id=" + materiauID;
             con.query(sql, function (err, rows) {
                 if (err) {
                     throw err;
@@ -193,13 +194,24 @@ var self = module.exports = {
         //Enlever automatiquement la quantite pendante de la qteRestante
         if (pendingQtyForThisItem > qte) { // Mise a jour de la quantite pandante
             console.log("Mise a jour de la quantite pandante");
-            await self.updateStockPending(con, matInfo.id, qte);
-            let commentaire =qte+" "+matInfo.name+" retiré(s) du lot "+matInfo.lot+" | Transaction pendante";
-            await self.RemoveItemFromStock(con,matInfo.lot, matInfo.id, matInfo.name, "substract", qte, commentaire, "System", -1);
+            //Parmis les stocks pendants on va choisir x pour supprimer
+            let pst = await self.getPendingStockForMateriau(matInfo.id);
+            //Determiner le nombre de stock a supprimer
+            let qte_a_utiliser = pst[0].qte_a_enlever;
+            let x = qte/qte_a_utiliser; x = Math.ceil(x);
+            //Stock a supprimer
+            let stocksDelete = pst.slice(0,x);
+            //await self.updateStockPending(con, matInfo.id, qte);
+            for(stck of stocksDelete){
+                //Remove stock
+                await testDB.deletePendingStock(stck.test_id,stck.request_id);
+            }
+            let commentaire = qte + " " + matInfo.name + " retiré(s) du lot " + matInfo.lot + " | Transaction pendante";
+            await self.RemoveItemFromStock(con, matInfo.lot, matInfo.id, matInfo.name, "substract", qte, commentaire, "System", -1);
             qte = 0;
         } else { // Suppression de la qte pandante
-            let commentaire =pendingQtyForThisItem+" "+matInfo.name+" retiré(s) du lot "+matInfo.lot+" | Transaction pendante";
-            await self.RemoveItemFromStock(con,matInfo.lot, matInfo.id, matInfo.name, "substract", pendingQtyForThisItem, commentaire, "System", -1);
+            let commentaire = pendingQtyForThisItem + " " + matInfo.name + " retiré(s) du lot " + matInfo.lot + " | Transaction pendante";
+            await self.RemoveItemFromStock(con, matInfo.lot, matInfo.id, matInfo.name, "substract", pendingQtyForThisItem, commentaire, "System", -1);
             qte = qte - pendingQtyForThisItem;
             console.log("Suppression de la qte pandante");
             await self.deleteStockPending(con, matInfo.id);
@@ -238,12 +250,12 @@ var self = module.exports = {
                             type: "danger",
                             error: true,
                             msg:
-                                "<font color='red'> Vous avez déja ajouté ce lot " + numero_lot + "</font> "+err,
+                                "<font color='red'> Vous avez déja ajouté ce lot " + numero_lot + "</font> " + err,
                             debug: err
                         };
                         resolve(msg);
                     } else {
-                        let commentaire = qteRecue + " " + materiauName + " ont été ajoutés au stock. QTE endomagée : " + qteEndomage ;
+                        let commentaire = qteRecue + " " + materiauName + " ont été ajoutés au stock. QTE endomagée : " + qteEndomage;
                         let transactionType = "add";
                         //Insert info into tb_evolution_stock table
                         let sql = 'INSERT INTO tb_evolution_stock (lot,materiau,qte,transaction,commentaire,acteur) VALUES ("' + numero_lot + '","' + materiauId + '","' + qteRecue + '","' + transactionType + '","' + commentaire + '","' + user + '")';
@@ -988,4 +1000,54 @@ var self = module.exports = {
         //console.log(data);
         return data;
     },
+    //======================== RAPPORT D'UTILISATION DES MATERIAUX =================================================
+    singleMateriauReport: async function (dateFrom, dateTo, materiau_id,typeTransaction) {
+        let promise = new Promise((resolve, reject) => {
+            let sql = "SELECT SUM(qte) as nb FROM tb_evolution_stock WHERE DATE(date_record) BETWEEN '" + dateFrom + "' AND '" + dateTo + "' AND materiau =? AND transaction =? AND approved=1";
+            //console.log(sql);
+            con.query(sql, [materiau_id,typeTransaction], async function (err, rows) {
+                if (err) {
+                    throw err;
+                } else {
+                    resolve(rows[0].nb);
+                }
+
+            });
+
+        });
+        data = await promise;
+        return data;
+    },
+    //LISTE DES TESTS EFFECTUES POUR UNE PERIODE
+    materiauxUsageForPeriod: async function (dateFrom, dateTo) {
+        let promise = new Promise((resolve, reject) => {
+            let line = [];
+            let sql = "SELECT DISTINCT(materiau) as materiau FROM tb_evolution_stock WHERE DATE(date_record) BETWEEN '" + dateFrom + "' AND '" + dateTo + "' ";
+            console.log(sql);
+            con.query(sql, async function (err, rows) {
+                if (err) {
+                    throw err;
+                } else {
+                    // console.log("RESULT " + rows);
+                    for (item of rows) {
+                        //Info about the materiau
+                        let infoExam = await self.getMateriau(item.materiau);
+                            let qteUtilisee = await self.singleMateriauReport(dateFrom, dateTo, item.materiau,"substract");
+                            let line_info = {
+                                Materiau: infoExam.nom_materiau,
+                                qty: qteUtilisee
+                            };
+                            line.push(line_info);
+                        console.log(line);
+
+                    }
+                    resolve(line);
+                }
+            });
+        });
+        data = await promise;
+        //console.log(data); 
+        return data;
+    },
+
 }

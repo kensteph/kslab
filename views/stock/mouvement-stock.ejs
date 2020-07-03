@@ -70,19 +70,28 @@
                             <button class="btn btn-success btn-block"> Recherher </button>
                         </div>
                     </form>
+
+                </div>
+                <div class="row">
                     <% if(data.length >0){   %>
                         <% if(UserData.user_sub_menu_access.includes("Imprimer Mouvement de Stock") || UserData.user_sub_menu_access[0]=="All"){%>
-                        <form id="PrintForm" target="_blank" action="/print-stock-move-report" method="POST">
+                        <form id="MVS" target="_blank" action="/print-stock-move-report" method="POST">
                             <input type="hidden" name="DateFrom" value="<%=dateFromDB%>">
                             <input type="hidden" name="DateTo" value="<%=dateToDB%>">
                             <input type="hidden" name="materiauSelected" value="<%=materiauSelected%>">
-                            <a href="#" class="dropdown-item" onclick="printReport()"><i class="fa fa-print fa-lg"></i>
+                            <a href="#" class="dropdown-item" onclick="printReport('MVS')"><i class="fa fa-print fa-lg"></i>
                                 Imprimer le rapport</a>
                         </form>
+                        <form id="RUM" target="_blank" action="/print-materiaux-usage" method="POST">
+                            <input type="hidden" name="DateFrom" value="<%=dateFromDB%>">
+                            <input type="hidden" name="DateTo" value="<%=dateToDB%>">
+                            <input type="hidden" name="materiauSelected" value="<%=materiauSelected%>">
+                            <a href="#" class="dropdown-item" onclick="printReport('RUM')"><i class="fa fa-print fa-lg"></i>
+                                Rapport d'usage des Matériaux</a>
+                        </form>
+                        <br><br>
                         <% }  %>
                     <% }  %>
-                </div>
-                <div class="row">
                     <div class="col-md-12">
                         <div class="table-responsive">
                             <table id="dtBasicExample" class="table table-striped custom-table">
@@ -170,8 +179,8 @@
             });
         }
 
-        function printReport() {
-            $("#PrintForm").submit();
+        function printReport(formToPrint) {
+            $("#"+formToPrint).submit();
         }
     </script>
     <!-- FOOTER -->

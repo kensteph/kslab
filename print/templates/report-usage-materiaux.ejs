@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="/assets/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="/assets/css/style.css">
+    <style>
+
+    </style>
+</head>
+
+<body>
+    
+
+
+    <div class="row-header">
+        <div class="logo">
+            <img style="margin-left: 10px;" src="data:image/jpeg;base64,<%=LOGO%>" alt="img" width="250" height="250">
+        </div>
+        <div class="header-form">
+            <p>
+                <strong class="line-header"> <%=line1%> </strong><br>
+                <strong class="line-header"><%=line2%></strong>
+                <br>
+                <% if(line3 !=""){ %>
+                 <%=line3%><br>
+                <% } %>
+                <% if(line4 !=""){ %>
+                    <%=line4%><br>
+                <% } %>
+                <% if(line5 !=""){ %>
+                    <%=line5%><br>
+                <% } %>
+                <% if(line6 !=""){ %>
+                    <%=line6%><br><br>
+                <% } %>
+            </p>
+        </div>
+    </div>
+    <hr style="width: 80%; margin-top: -30px;" >
+
+    <div class="row-header-table">
+        <div class="title-report"><%=pageTitle%></div>
+    </div>
+    <div class="row-report">
+        <div class="col-sm-12">
+            <div class="table-responsive">
+                <table class="table table-striped custom-table mb-0">
+                    <thead>
+                        <tr>
+                            <th class="resultat">Matériaux</th>
+                            <th class="resultat">Quantité utilisée</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% data.forEach((report) => {   %>
+                        <tr>
+                            <td class="report"><%=report.Materiau%></td>
+                            <td class="resultat"> <%=report.qty%></td>
+                        </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+   
+</body>
+
+</html>
