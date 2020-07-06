@@ -151,7 +151,7 @@
 
                                                     <% if(UserData.user_sub_menu_access.includes("Supprimer Stock") || UserData.user_sub_menu_access[0]=="All"){%>
                                                         <a class="dropdown-item" href="#"
-                                                            onclick="launchDeleteStock('<%=stock.stock_id%>','<%=stock.nom_materiau%>','<%=stock.numero_lot%>')"><i
+                                                            onclick="launchDeleteStock('<%=stock.stock_id%>','<%=stock.nom_materiau%>','<%=stock.numero_lot%>','<%=stock.materiau%>','<%=stock.qte_restante%>')"><i
                                                                 class="fa fa-trash-o m-r-5"></i> Supprimer</a>
                                                         <% } %>
                                                 </div>
@@ -325,9 +325,9 @@
             });
         }
     
-        function launchDeleteStock(stockID, stockName,lot) {
+        function launchDeleteStock(stockID, stockName,lot,materiauId,qteRestante) {
             $("#StockNameDelete").html("" + stockName + " | " + lot);
-            $("#stockName").val("" + stockName + " | " + lot);
+            $("#stockName").val("" + stockName + "|" + lot +"|"+materiauId+"|"+qteRestante);
             $("#stockID").val(stockID);
             $("#DeleteRequest").modal();
         }

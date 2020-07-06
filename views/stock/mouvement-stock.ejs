@@ -118,8 +118,11 @@
                                         }else if(stock.transaction == "substract"){
                                             fa = "fa fa-arrow-down";
                                             title = "Diminution de stock";
+                                        }else if(stock.transaction == "delete"){
+                                            fa = "fa fa-close";
+                                            title = "Suppresion de stock";
                                         }else{
-                                            fa = "fa fa-arrow-down ";
+                                            fa = "fa fa-trash ";
                                             title = "Stock endommagé";
                                         }
                                     %>

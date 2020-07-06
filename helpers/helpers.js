@@ -126,6 +126,12 @@ var self = module.exports = {
         aneAca = { Previous: aneAcaP, Next: aneAcaN };
         return aneAca;
     },
+    personAge(dob) {
+        let birthday = new Date(dob);
+        const diff = Date.now() - birthday.getTime();
+        const ageDate = new Date(diff);
+        return Math.abs(ageDate.getUTCFullYear() - 1970);
+    },
     createFolder(full_path_directory) {
         //Check if a directory is exists
         fs.access(full_path_directory, function (error) {

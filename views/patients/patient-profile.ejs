@@ -46,11 +46,11 @@
                                         <div class="col-md-5">
                                             <div class="profile-info-left">
                                                 <h3 class="user-name m-t-0 mb-0"><%=data.fullname%></h3>
-                                                <!-- <small class="text-muted">Gynecologist</small> -->
+                                                <small class="text-muted"><%=data.age%> ans</small>
                                                 <div class="staff-id">Patient ID : <%=data.numero_patient%></div>
                                                 <div class="staff-msg">
                                                     <% if(UserData.user_sub_menu_access.includes("Modifier Patients") || UserData.user_sub_menu_access[0]=="All"){ %>
-                                                    <a href="/edit-patient?patient=<%= data.id_personne %>"
+                                                    <a href="/edit-patient?patient=<%= data.id_personne %>&19870000"
                                                         class="btn btn-primary">Modifier</a>
 
                                                     <%if(dataExams.length==0) { %>

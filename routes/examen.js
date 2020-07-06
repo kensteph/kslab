@@ -215,6 +215,10 @@ router.get("/test-laboratoire", async (req, res) => {
     let data = await patientDB.listOfAllPatients();
     let dataExam = await examenDB.listOfTests();
     let patientSelected = -1;
+    if (req.query.patientSelected) {
+        patientSelected = req.query.patientSelected;
+    }
+    await testDB.test();
     //console.log("USER : "+req.session.user);
     params = {
         pageTitle: pageTitle,

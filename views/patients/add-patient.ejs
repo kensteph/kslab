@@ -37,28 +37,16 @@
             <div class="row">
 
                 <div class="col-lg-8 offset-lg-2">
-                    <% if( locals.notifications){ %>
-                    <div class="alert alert-<%= locals.notifications.type %> alert-dismissible fade show" role="alert">
-                        <%= locals.notifications.msg %>
-                        <% if( locals.notifications.success){ %>
-                        <form method="POST" action="/test-laboratoire">
-                            <input type="hidden" value="<%= locals.notifications.patientID%>" name="patientSelected">
-                            <button class="btn btn-primary ">Examen laboratoire</button>
-                        </form>
-                        <% } %>
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                            <span aria-hidden="true">×</span>
-                        </button>
-                    </div>
-                    <% } %>
 
                     <% if( locals.data ){
                         buttonText = "Modifier";
                         required = "required";
+                        Action = 1;
                         numero_patient = data.numero_patient;
                                 prenomVal = data.prenom;
                                 nomVal = data.nom;
-                                datenaisVal = data.date_nais;
+                                datenaisVal = data.date_nais_fr;
+                                age = data.age;
                                 adresseVal = data.adresse;
                                 telephoneVal = data.telephone;
                                 sexe = data.sexe;
@@ -67,11 +55,13 @@
                            %>
 
                     <% }else{ 
+                        Action = 0;
                         required = ""  ;
                         numero_patient = "";
                                 prenomVal = "";
                                 nomVal = "";
                                 datenaisVal = "";
+                                age = "";
                                 adresseVal = "";
                                 telephoneVal = "";
                                 sexe = "";
@@ -80,7 +70,7 @@
                                 buttonText = "Créer Patient";
                            }
                             %>
-                    <form method="POST" action="">
+                    <form method="POST" action="" id="patientForm">
                         <div class="row">
                             <div class="col-sm-6">
                                 <div class="form-group">
@@ -110,8 +100,18 @@
                                 <div class="form-group">
                                     <label>Date de naissance</label>
                                     <div class="cal-icon">
-                                        <input type="text" class="form-control" id="date" placeholder="jj-mm-yyyy"
-                                            required name="datenais" value="<%=datenaisVal%>">
+                                        <input type="text" id="dateNais" class="form-control" id="date" placeholder="jj-mm-yyyy"
+                                            name="datenais" value="<%=datenaisVal%>">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    <label>Age</label>
+                                    <div class="cal-icon">
+                                        <input required class="form-control" type="text" name="ageManuel" id="Age" required
+                                            value="<%=age%>">
                                     </div>
                                 </div>
                             </div>
@@ -171,7 +171,9 @@
                                 </div>
                                 <% } %>
                                 <div class="m-t-20 text-center">
-                                    <button class="btn btn-primary submit-btn"><%=buttonText%></button>
+                                    <div id="msg" class="m-b-20"></div>
+                                    <input type="hidden" name="Action" id="Action" value="<%=Action%>">
+                                    <button id="btnSave" class="btn btn-primary submit-btn"><%=buttonText%></button>
                                 </div>
                     </form>
                 </div>
@@ -190,8 +192,56 @@
     <script src="assets/js/bootstrap-datetimepicker.min.js"></script>
     <script src="assets/js/app.js"></script>
     <script>
-        $(":input").inputmask();
-        $("#date").inputmask({ "mask": "(999) 999-9999" });
+        $('#dateNais').on('change',function(){
+            let  date_nais =$('#dateNais').val();
+            let date_split = date_nais.split("-");
+            let year = date_split[2];
+            let month = date_split[1];
+            let day = date_split[0];
+            let dob = year+"-"+month+"-"+day;
+            let age =personAge(dob); //calculate_age(new Date(year, month, day));
+            if(isNaN(age)){ age="";}
+            $("#Age").val(age);
+        });
+       
+        $("#patientForm").submit(function (e) {
+            e.preventDefault();
+            $("#btnSave").prop("disabled", true);
+            savePatient();
+        });
+
+        savePatient = function () {
+            $("#msg").show().html();
+                let formData = $("#patientForm").serialize();
+                let  Action =$('#Action').val();
+                if(Action == 0){ //ENREGISTREMENT D'UN NOUVEAU PATIENT
+                $.post("/add-patient", formData, function (data) {
+                    console.log(data);
+                    if (data.success) { //Success 
+                        $("#btnSave").prop("disabled", true);
+                        $("#msg").html(data.msg).fadeOut( 3000,function(){
+                            window.location.replace("/test-laboratoire?patientSelected="+data.patientID);
+                        } );
+                    } else {
+                        $("#msg").html(data.msg);
+                    }
+                });
+                }else{ // MODIFICATION
+                    $.post("/edit-patient", formData, function (data) {
+                    console.log(data);
+                    if (data.success) { //Success 
+                        $("#btnSave").prop("disabled", false);
+                        $("#msg").html(data.msg).fadeOut( 3000,function(){
+                            window.location.replace("/search-patient?PatientSelected="+data.patientID+"&19870000");
+                        } );
+                    } else {
+                        $("#msg").html(data.msg);
+                        $("#btnSave").prop("disabled", false);
+                    }
+                });
+                }
+                
+        }
     </script>
     <!-- FOOTER -->
     <%- include("../parts/footer") -%>

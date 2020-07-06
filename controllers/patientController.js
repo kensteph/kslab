@@ -10,7 +10,11 @@ module.exports = {
         lastName = req.body.lastname;
         fullname = firstName + " " + lastName;
         gender = req.body.gender;
-        dateOfBirth = helpers.formatDate(req.body.datenais, "EN");
+        let dateOfBirth = null;
+        if(req.body.datenais.length>=8){
+            dateOfBirth = helpers.formatDate(req.body.datenais, "EN");
+        }
+        let age_manuel = req.body.ageManuel;
         adresse = req.body.adresse;
         phone = req.body.telephone;
         email = req.body.email;
@@ -20,7 +24,12 @@ module.exports = {
             con.beginTransaction(function (err) {
                 if (err) { throw err; }
                 //Insert info into personne table
-                let sql = "INSERT INTO tb_personnes (prenom,nom,sexe,date_nais,adresse,telephone,email) VALUES ('" + firstName + "','" + lastName + "','" + gender + "','" + dateOfBirth + "','" + adresse + "','" + phone + "','" + email + "')";
+                let sql  ="";
+                if(dateOfBirth == null){
+                    sql = "INSERT INTO tb_personnes (prenom,nom,sexe,age_manuel,adresse,telephone,email) VALUES ('" + firstName + "','" + lastName + "','" + gender + "'," + age_manuel + ",'" + adresse + "','" + phone + "','" + email + "')";
+                }else{
+                    sql = "INSERT INTO tb_personnes (prenom,nom,sexe,date_nais,age_manuel,adresse,telephone,email) VALUES ('" + firstName + "','" + lastName + "','" + gender + "','" + dateOfBirth + "'," + age_manuel + ",'" + adresse + "','" + phone + "','" + email + "')";
+                }
                 con.query(sql, function (err, result) {
                     if (err) {
                         //console.log(err);
@@ -28,7 +37,7 @@ module.exports = {
                             msg = {
                                 type: "danger",
                                 error: true,
-                                msg: err
+                                msg: "<font color='red'>Une erreur est survenue. S'il vous plait réessayez.</font>"+ err
                             }
                             resolve(msg);
                         });
@@ -70,7 +79,7 @@ module.exports = {
                                     type: "success",
                                     success: true,
                                     patientID: id_personne,
-                                    msg: "Nouveau patient " + fullname + " ajouté avec succès..."
+                                    msg: "<font color='green'><strong>Nouveau patient " + fullname + " ajouté avec succès...</strong></font>"
                                 }
                                 resolve(msg);
                             });
@@ -113,6 +122,10 @@ module.exports = {
                     resolve([{ fullname: "" }]);
                 } else {
                     let info = rows[0];
+                    let date_nais_fr ="à préciser";
+                    if(info.date_nais != null){
+                        date_nais_fr = helpers.formatDate(info.date_nais,"FR");
+                    }
                     let patient = {
                         id : info.id,
                         fullname : info.fullname,
@@ -120,7 +133,7 @@ module.exports = {
                         nom : info.nom,
                         sexe : info.sexe,
                         date_nais : info.date_nais,
-                        date_nais_fr : helpers.formatDate(info.date_nais,"FR"),
+                        date_nais_fr : date_nais_fr,
                         adresse : info.adresse,
                         telephone : info.telephone,
                         email : info.email,
@@ -129,7 +142,7 @@ module.exports = {
                         id_personne : info.id_personne,
                         numero_patient : info.numero_patient,
                         date_ajout : info.date_ajout,
-                        age : info.age,
+                        age : info.age_manuel,
                     };
                     resolve(patient);
                 }
@@ -188,27 +201,40 @@ module.exports = {
         lastName = req.body.lastname;
         fullname = firstName + " " + lastName;
         gender = req.body.gender;
-        dateOfBirth = req.body.datenais;// helpers.formatDate(req.body.datenais, "EN");
+        let dateOfBirth = null;
+        if(req.body.datenais.length>=8){
+            dateOfBirth = helpers.formatDate(req.body.datenais, "EN");
+        }
+        let age_manuel = req.body.ageManuel;
         adresse = req.body.adresse;
         phone = req.body.telephone;
         status = req.body.status;
         email = req.body.email;
         id_personne = req.body.patientID;
-        let params = [firstName, lastName, gender, dateOfBirth, adresse, phone, status, email, id_personne];
+        
         let promise = new Promise((resolve, reject) => {
-            let sql = "UPDATE tb_personnes SET prenom = ?,nom =? ,sexe =? ,date_nais =? ,adresse =? ,telephone =?,statut =?,email=? WHERE id =?";
-            //console.log(sql + " ID : " + id_personne);
+            let sql = "";
+            let params =[];
+            if(dateOfBirth == null){
+                 params = [firstName, lastName, gender,age_manuel, adresse, phone, status, email, id_personne];
+               sql = "UPDATE tb_personnes SET prenom = ?,nom =? ,sexe =? ,age_manuel =? ,adresse =? ,telephone =?,statut =?,email=? WHERE id =?";
+            }else{
+                 params = [firstName, lastName, gender, dateOfBirth,age_manuel, adresse, phone, status, email, id_personne];
+                sql = "UPDATE tb_personnes SET prenom = ?,nom =? ,sexe =? ,date_nais =?,age_manuel =? ,adresse =? ,telephone =?,statut =?,email=? WHERE id =?";
+            }
+                //console.log(sql + " ID : " + id_personne);
             con.query(sql, params, function (err, rows) {
                 if (err) {
                     resolve({
-                        msg: "Une erreur est survenue. S'il vous palit réessayez.",
-                        type: "danger",
+                        msg: "<font color='red'> <strong>Une erreur est survenue. S'il vous palit réessayez.</strong></font>"+err,
+                        error: "danger",
                         debug: err
                     });
                 } else {
                     resolve({
-                        msg: "Les informations concernant " + fullname + " ont été modifiées avec succès.",
-                        type: "success"
+                        msg: "<font color='green'> <strong>Les informations concernant " + fullname + " ont été modifiées avec succès.</strong></font>",
+                        success: true,
+                        patientID : id_personne,
                     });
                 }
             });

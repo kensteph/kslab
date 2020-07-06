@@ -80,5 +80,12 @@ $(document).ready(function () {
         });
     $('.dataTables_length').addClass('bs-select');
 
-
 });
+
+function personAge(dob) {
+    let birthday = new Date(dob);
+      const diff = Date.now() - birthday.getTime();
+      const ageDate = new Date(diff);
+      return Math.abs(ageDate.getUTCFullYear() - 1970);
+}
+

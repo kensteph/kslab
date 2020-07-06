@@ -33,14 +33,7 @@ router.post('/add-patient', async (req, res) => {
     console.log(req.body);
     let notifications = await patientDB.savePatient(req, res);
     console.log(notifications);
-    let pageTitle = "Nouveau patient";
-    params = {
-        pageTitle: pageTitle,
-        notifications: notifications,
-        UserData: req.session.UserData,
-        page: 'NewPatient'
-    };
-    res.render('patients/add-patient', params);
+    res.json(notifications);
 });
 
 // SEARCH PATIENT
@@ -52,6 +45,22 @@ router.post('/live-search-patient', async (req, res) => {
     res.json(patient);
 });
 //DISPLAY PATIENT SELECTED
+router.get('/search-patient', async (req, res) => {
+    console.log(req.query);
+    let patient = req.query.liveSearch;
+    let patientID = req.query.PatientSelected;
+    let data = await patientDB.getPatientById(patientID);
+    let dataExams = await testLabDB.testRequestlistPatient(patientID);
+    let pageTitle = "Recherche | " + patient;
+    params = {
+        pageTitle: pageTitle,
+        data: data,
+        dataExams: dataExams,
+        UserData: req.session.UserData,
+        page: 'SearchPatient'
+    };
+    res.render('patients/patient-profile', params);
+});
 router.post('/search-patient', async (req, res) => {
     console.log(req.body);
     let patient = req.body.liveSearch;
@@ -110,18 +119,10 @@ router.get('/edit-patient', async (req, res) => {
 });
 
 router.post('/edit-patient', async (req, res) => {
+    console.log(req.body);
     let notifications = await patientDB.updatePatient(req);
-    let data = await patientDB.getPatientById(req.body.patientID);
-    //console.log(data);
-    let pageTitle = "Modification du patient : ";
-    params = {
-        pageTitle: pageTitle,
-        data: data,
-        notifications: notifications,
-        UserData: req.session.UserData,
-        page: 'PatientsList'
-    };
-    res.render('patients/add-patient', params);
+    // let data = await patientDB.getPatientById(req.body.patientID);
+    res.json(notifications);
 });
 
 //DELETE PATIENT
