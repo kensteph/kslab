@@ -108,7 +108,7 @@ var self = module.exports = {
                         if (err) {
                             console.log(err);
                             con.rollback(function () {
-                                throw err;
+
                             });
                         }
                         var id_test_request = result.insertId;
@@ -131,70 +131,71 @@ var self = module.exports = {
                         con.query(sql2, [values], async function (err, result) {
                             if (err) {
                                 con.rollback(function () {
-                                    throw err;
+                                    console.log(err);
                                 });
-                            }
-                            //UPDATE THE STOCK
-                            //Pour chaque test demande on va verifier la disponibilite des materiaux
-                            let alert = [];
-                            for (test_id of testSelected) {
-                                console.log(test_id);
-                                let info = await stockDB.getTestMateriaux(test_id);
-                                console.log(info);
-                                //Pour chaque materiau verifier sa disponibilite
-                                for (materiau of info) {
-                                    let materiauID = materiau.materiau;
-                                    let materiauName = materiau.nom_materiau;
-                                    let qte_to_use = materiau.qte;
-                                    let qte_dispo = await stockDB.countAvailableMateriaux(materiauID);
-                                    if (qte_dispo == null) { qte_dispo = 0; }
-                                    let diference = qte_dispo - qte_to_use;
-                                    if (diference < 0) {
-                                        let sms = "<font color='red'>Il n'y a pas assez de <strong>" + materiauName + "</strong>. QTE DISPO : " + qte_dispo + " < QTE A UTILISER : " + qte_to_use + "</font>";
-                                        alert.push(sms);
-                                    } else {
-                                        console.log("GOOD TO GO ");
-                                    }
-                                    // console.log("QUANTITE DISPO : " + qte_dispo + " " +materiauName );
-                                    // console.log("QUANTITE A UTILISER : " + qte_to_use + " " +materiauName );
-                                    // console.log(alert); 
-                                    let stockByMateriau = await stockDB.listOfAllStockByProduct(materiauID, 1);
-                                    if (stockByMateriau.length == 0) {
-                                        console.log("Pending transaction for " + materiauName + "...");
-                                        await stockDB.pendingStockEvolution(con, materiauID, qte_to_use, test_id, id_test_request);
-                                    }
-                                    //ON VA PRELEVER LES MATERIAUX DANS LE STOCK LE PLUS ANCIEN
-                                    let new_qte_to_take = qte_to_use;
-                                    for (item of stockByMateriau) {
-                                        console.log(stockByMateriau);
-                                        let numero_lot = item.numero_lot;
-                                        let materiauId = item.materiau;
-                                        let materiauName = item.nom_materiau;
-                                        let transactionType = "substract";
-                                        let qte = new_qte_to_take;
-                                        let commentaire = "";
-                                        let qte_dispo_in_stock = item.qte_restante; //Current LOT
-                                        let diff = qte_dispo_in_stock - qte;
-                                        if (qte_dispo_in_stock <= 0) { //Si il n'y a plus de materiaux dissponible 
-                                            console.log("Pending transaction for " + materiauName + "...");
-                                            await stockDB.pendingStockEvolution(con, materiauId, qte, test_id, id_test_request);
+                            } else {
+                                //UPDATE THE STOCK
+                                //Pour chaque test demande on va verifier la disponibilite des materiaux
+                                let alert = [];
+                                for (test_id of testSelected) {
+                                    console.log(test_id);
+                                    let info = await stockDB.getTestMateriaux(test_id);
+                                    console.log(info);
+                                    //Pour chaque materiau verifier sa disponibilite
+                                    for (materiau of info) {
+                                        let materiauID = materiau.materiau;
+                                        let materiauName = materiau.nom_materiau;
+                                        let qte_to_use = materiau.qte;
+                                        let qte_dispo = await stockDB.countAvailableMateriaux(materiauID);
+                                        if (qte_dispo == null) { qte_dispo = 0; }
+                                        let diference = qte_dispo - qte_to_use;
+                                        if (diference < 0) {
+                                            let sms = "<font color='red'>Il n'y a pas assez de <strong>" + materiauName + "</strong>. QTE DISPO : " + qte_dispo + " < QTE A UTILISER : " + qte_to_use + "</font>";
+                                            alert.push(sms);
                                         } else {
-                                            if (qte_dispo_in_stock > qte) {
-                                                commentaire = qte + " " + materiauName + " a été prélevé du stock pour le test # " + id_test_request;
-                                                let rep = await stockDB.RemoveItemFromStock(con, numero_lot, materiauId, materiauName, transactionType, qte, commentaire, user, id_test_request);
-                                                break; //On sort de la boucle parce qu'on a deja preleve
+                                            console.log("GOOD TO GO ");
+                                        }
+                                        // console.log("QUANTITE DISPO : " + qte_dispo + " " +materiauName );
+                                        // console.log("QUANTITE A UTILISER : " + qte_to_use + " " +materiauName );
+                                        // console.log(alert); 
+                                        let stockByMateriau = await stockDB.listOfAllStockByProduct(materiauID, 1);
+                                        if (stockByMateriau.length == 0) {
+                                            console.log("Pending transaction for " + materiauName + "...");
+                                            await stockDB.pendingStockEvolution(con, materiauID, qte_to_use, test_id, id_test_request);
+                                        }
+                                        //ON VA PRELEVER LES MATERIAUX DANS LE STOCK LE PLUS ANCIEN
+                                        let new_qte_to_take = qte_to_use;
+                                        for (item of stockByMateriau) {
+                                            console.log(stockByMateriau);
+                                            let numero_lot = item.numero_lot;
+                                            let materiauId = item.materiau;
+                                            let materiauName = item.nom_materiau;
+                                            let transactionType = "substract";
+                                            let qte = new_qte_to_take;
+                                            let commentaire = "";
+                                            let qte_dispo_in_stock = item.qte_restante; //Current LOT
+                                            let diff = qte_dispo_in_stock - qte;
+                                            if (qte_dispo_in_stock <= 0) { //Si il n'y a plus de materiaux dissponible 
+                                                console.log("Pending transaction for " + materiauName + "...");
+                                                await stockDB.pendingStockEvolution(con, materiauId, qte, test_id, id_test_request);
                                             } else {
-                                                if (diff >= 0) {
+                                                if (qte_dispo_in_stock > qte) {
                                                     commentaire = qte + " " + materiauName + " a été prélevé du stock pour le test # " + id_test_request;
                                                     let rep = await stockDB.RemoveItemFromStock(con, numero_lot, materiauId, materiauName, transactionType, qte, commentaire, user, id_test_request);
-                                                    new_qte_to_take = new_qte_to_take - qte;
+                                                    break; //On sort de la boucle parce qu'on a deja preleve
+                                                } else {
+                                                    if (diff >= 0) {
+                                                        commentaire = qte + " " + materiauName + " a été prélevé du stock pour le test # " + id_test_request;
+                                                        let rep = await stockDB.RemoveItemFromStock(con, numero_lot, materiauId, materiauName, transactionType, qte, commentaire, user, id_test_request);
+                                                        new_qte_to_take = new_qte_to_take - qte;
+                                                    }
+
                                                 }
-
                                             }
-                                        }
 
+                                        }
+                                        // console.log(stockByMateriau);
                                     }
-                                    // console.log(stockByMateriau);
                                 }
                             }
 
@@ -210,7 +211,6 @@ var self = module.exports = {
                                                 "<font color='red'><strong>Une erreur est survenue. Veuillez réessayer s'il vous plait.</strong></font>",
                                         };
                                         resolve(msg);
-                                        throw err;
                                     });
                                 }
                                 msg = {
@@ -377,7 +377,7 @@ var self = module.exports = {
         return data;
     },
     //DELETE TEST REQUEST SINGLE ITEM
-    deleteSingleItemTestRequest: async function (test_request_id, id_exam) {
+    deleteSingleItemTestRequest: async function (test_request_id, id_exam, nom_exam) {
         let promise = new Promise((resolve, reject) => {
             let sql = "DELETE FROM tb_test_requests_contents WHERE test_request_id =? AND examen_id=?";
             con.query(sql, [test_request_id, id_exam], async function (err, rows) {
@@ -391,7 +391,7 @@ var self = module.exports = {
                     let rep = {}
                     //VERIFY IF THERE IS PENDING STOCK FOR THIS ITEM
                     //stock pendant pour ce test
-                    let pendingStock = await stockDB.getPendingStockForExamInTestRequest(TestRequestID, ExamID);
+                    let pendingStock = await stockDB.getPendingStockForExamInTestRequest(test_request_id, id_exam);
                     //DELETE PENDING STOCK
                     if (pendingStock.length > 0) {
                         rep = await stockDB.deletePendingStock(id_exam, test_request_id);
@@ -401,23 +401,29 @@ var self = module.exports = {
 
                         for (item of materiauxLinked) {
                             //GET THE USED STOCK
-                            let stockByMateriau = await stockDB.listOfAllStockByProduct(materiauID, 1);
-                            //ADD THE QUANTITY USED BACK TO THE STOCK
-                            let numero_lot = "";
-                            let materiauId = "";
-                            let materiauName = "";
-                            let transactionType = "";
-                            let qte = "";
-                            let commentaire = "";
-                            let user = "";
-                            let request_id = "";
-                            rep = await stockDB.RemoveItemFromStock(con, numero_lot, materiauId, materiauName, transactionType, qte, commentaire, user, request_id);
+                            let stockByMateriau = await stockDB.listOfAllStockByProduct(item.materiau, 1);
+                            for (stock of stockByMateriau) {
+                                //ADD THE QUANTITY USED BACK TO THE STOCK
+                                let numero_lot = stock.numero_lot;
+                                let materiauId = stock.materiau;
+                                let materiauName = stock.nom_materiau;
+                                let transactionType = "add";
+                                let qte = item.qte;
+                                let commentaire = qte + " " + materiauName + " ajouté au stock. Suite à la suppression de l'examen : " + nom_exam+" pour la demande #"+test_request_id;
+                                let user = "System";
+                                let request_id = test_request_id;
+                                rep = await stockDB.RemoveItemFromStock(con, numero_lot, materiauId, materiauName, transactionType, qte, commentaire, user, request_id);
+                                //UPDATE QTE UTILISE
+                                await stockDB.updateStockQtyUsedById(stock.id_stock,qte,"substract");
+                                break;
+                            }
+
                         }
                     }
 
                     if (rep.success) {
                         resolve({
-                            msg: "Demande supprimée avec succès...",
+                            msg: nom_exam + " supprimé avec succès...",
                             success: "success"
                         });
                     } else {
@@ -432,6 +438,142 @@ var self = module.exports = {
         });
         data = await promise;
         //console.log(data);
+        return data;
+    },
+    //ADD TEST IN REQUEST
+    addSingleItemTestRequest: async function (req) {
+        let promise = new Promise((resolve, reject) => {
+            if (req.body.testSelected) { // Si ili y a test
+                let id_test_request = req.body.RequestID;
+                let user = req.session.username;
+                //   /* Begin transaction */
+                con.beginTransaction(function (err) {
+
+                    //BULK INSERTION
+                    let testSelected = req.body.testSelected;
+                    let nbTests = testSelected.length;
+                    //console.log("NB TESTS : "+testSelected);
+                    var values = [];
+                    for (var i = 0; i < nbTests; i++) {
+                        let test = testSelected[i]; //Parametres
+                        //console.log("TESTS : "+test);
+                        line = [];
+                        line[0] = id_test_request;
+                        line[1] = test;
+                        values.push(line);
+                    };
+
+                    let sql2 = "INSERT INTO tb_test_requests_contents (test_request_id,examen_id) VALUES ?";
+                    con.query(sql2, [values], async function (err, result) {
+                        if (err) {
+                            msg = {
+                                error: "danger",
+                                msg:
+                                "<font color='red'><strong>Une erreur est survenue.Peut etre vous avez déja ajouté cet examen. Veuillez réessayer s'il vous plait.</strong></font>",
+                            };
+                            resolve(msg);
+                        } else {
+                            //UPDATE THE STOCK
+                            //Pour chaque test demande on va verifier la disponibilite des materiaux
+                            let alert = [];
+                            for (test_id of testSelected) {
+                                console.log(test_id);
+                                let info = await stockDB.getTestMateriaux(test_id);
+                                console.log(info);
+                                //Pour chaque materiau verifier sa disponibilite
+                                for (materiau of info) {
+                                    let materiauID = materiau.materiau;
+                                    let materiauName = materiau.nom_materiau;
+                                    let qte_to_use = materiau.qte;
+                                    let qte_dispo = await stockDB.countAvailableMateriaux(materiauID);
+                                    if (qte_dispo == null) { qte_dispo = 0; }
+                                    let diference = qte_dispo - qte_to_use;
+                                    if (diference < 0) {
+                                        let sms = "<font color='red'>Il n'y a pas assez de <strong>" + materiauName + "</strong>. QTE DISPO : " + qte_dispo + " < QTE A UTILISER : " + qte_to_use + "</font>";
+                                        alert.push(sms);
+                                    } else {
+                                        console.log("GOOD TO GO ");
+                                    }
+                                    // console.log("QUANTITE DISPO : " + qte_dispo + " " +materiauName );
+                                    // console.log("QUANTITE A UTILISER : " + qte_to_use + " " +materiauName );
+                                    // console.log(alert); 
+                                    let stockByMateriau = await stockDB.listOfAllStockByProduct(materiauID, 1);
+                                    if (stockByMateriau.length == 0) {
+                                        console.log("Pending transaction for " + materiauName + "...");
+                                        await stockDB.pendingStockEvolution(con, materiauID, qte_to_use, test_id, id_test_request);
+                                    }
+                                    //ON VA PRELEVER LES MATERIAUX DANS LE STOCK LE PLUS ANCIEN
+                                    let new_qte_to_take = qte_to_use;
+                                    for (item of stockByMateriau) {
+                                        console.log(stockByMateriau);
+                                        let numero_lot = item.numero_lot;
+                                        let materiauId = item.materiau;
+                                        let materiauName = item.nom_materiau;
+                                        let transactionType = "substract";
+                                        let qte = new_qte_to_take;
+                                        let commentaire = "";
+                                        let qte_dispo_in_stock = item.qte_restante; //Current LOT
+                                        let diff = qte_dispo_in_stock - qte;
+                                        if (qte_dispo_in_stock <= 0) { //Si il n'y a plus de materiaux dissponible 
+                                            console.log("Pending transaction for " + materiauName + "...");
+                                            await stockDB.pendingStockEvolution(con, materiauId, qte, test_id, id_test_request);
+                                        } else {
+                                            if (qte_dispo_in_stock > qte) {
+                                                commentaire = qte + " " + materiauName + " a été prélevé du stock pour le test # " + id_test_request;
+                                                let rep = await stockDB.RemoveItemFromStock(con, numero_lot, materiauId, materiauName, transactionType, qte, commentaire, user, id_test_request);
+                                                break; //On sort de la boucle parce qu'on a deja preleve
+                                            } else {
+                                                if (diff >= 0) {
+                                                    commentaire = qte + " " + materiauName + " a été prélevé du stock pour le test # " + id_test_request;
+                                                    let rep = await stockDB.RemoveItemFromStock(con, numero_lot, materiauId, materiauName, transactionType, qte, commentaire, user, id_test_request);
+                                                    new_qte_to_take = new_qte_to_take - qte;
+                                                }
+
+                                            }
+                                        }
+
+                                    }
+                                    // console.log(stockByMateriau);
+                                }
+                            }
+                        }
+
+                        //console.log("ALERT : " + alert);
+
+                        //COMMIT IF ALL DONE COMPLETELY
+                        con.commit(function (err) {
+                            if (err) {
+                                con.rollback(function () {
+                                    msg = {
+                                        type: "danger",
+                                        msg:
+                                            "<font color='red'><strong>Une erreur est survenue.Peut etre vous avez déja ajouté cet examen. Veuillez réessayer s'il vous plait.</strong></font>" ,
+                                    };
+                                    resolve(msg);
+                                });
+                            }
+                            msg = {
+                                type: "success",
+                                success: true,
+                                msg: "<font color='green'>Nouvel examen ajouté avec succès...</font>"
+                            }
+                            resolve(msg);
+                        });
+
+                    });
+                });
+                /* End transaction */
+            } else {
+                msg = {
+                    type: "danger",
+                    msg:
+                        "<font color='red'><strong>Vous devez choisir au moins un examen.</strong></font>",
+                };
+                resolve(msg);
+            }
+        });
+        data = await promise;
+        //console.log(data); 
         return data;
     },
     //LIST REQUEST TESTS

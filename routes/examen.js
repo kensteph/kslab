@@ -371,9 +371,11 @@ router.post("/SaveTestResult", async (req, res) => {
     if (ifCompleted) {
         pageTitle = "Modification résultat pour :";
     }
+    let dataExam = await examenDB.listOfTests();
     params = {
         pageTitle: pageTitle,
         data: data,
+        dataExam : dataExam,
         patientSelected: patientSelected,
         id_test_request: id_test_request,
         UserData: req.session.UserData,
@@ -478,18 +480,28 @@ router.post("/delete-test-in-request", async (req, res) => {
     console.log(req.body);
     let TestRequestID = req.body.TestRequestID;
     let ExamID = req.body.itemID;
+    let ExamName = req.body.itemName;
     //stock pendant pour ce test
    // let pendingStock = await stockDB.getPendingStockForExamInTestRequest(TestRequestID,ExamID);
     //Materiaux Linked
-    let materiauxLinked = await stockDB.listeMateriauxAssocieATest(ExamID);
-    console.log(materiauxLinked);
+    // let materiauxLinked = await stockDB.listeMateriauxAssocieATest(ExamID);
+    // console.log(materiauxLinked);
+    //Stock for this test
+    // let stockByMateriau = await stockDB.listOfAllStockByProduct(materiauID=1, 1);
+    // console.log(stockByMateriau);
     // let test_request_id = req.body.testRequestId;
     // let statut = req.body.statut;
-    // let notifications = await examenDB.updateTestResultStatus(
-    //     test_request_id,
-    //     statut
-    // );
-    // res.json(notifications);
+    let notifications = await testDB.deleteSingleItemTestRequest(TestRequestID,ExamID,ExamName);
+    console.log(notifications);
+    res.json(notifications);
+});
+
+//ADD ITEM IN TEST REQUEST
+router.post("/add-test-in-request", async (req, res) => {
+    console.log(req.body);
+    let notifications = await testDB.addSingleItemTestRequest(req);
+    console.log(notifications);
+    res.json(notifications);
 });
 
 //GET THES TEST'S RESULT
