@@ -93,7 +93,7 @@ var self = module.exports = {
         return data;
     },
     //Save Test in the DB
-    saveTestRequest : async function (req) {
+    saveTestRequest: async function (req) {
         let promise = new Promise((resolve, reject) => {
             if (req.body.testSelected) { // Si ili y a test
                 let patient = req.body.patient;
@@ -376,6 +376,64 @@ var self = module.exports = {
         //console.log(data);
         return data;
     },
+    //DELETE TEST REQUEST SINGLE ITEM
+    deleteSingleItemTestRequest: async function (test_request_id, id_exam) {
+        let promise = new Promise((resolve, reject) => {
+            let sql = "DELETE FROM tb_test_requests_contents WHERE test_request_id =? AND examen_id=?";
+            con.query(sql, [test_request_id, id_exam], async function (err, rows) {
+                if (err) {
+                    resolve({
+                        msg: "Une erreur est survenue. S'il vous palit réessayez.",
+                        error: "danger",
+                        debug: err
+                    });
+                } else {
+                    let rep = {}
+                    //VERIFY IF THERE IS PENDING STOCK FOR THIS ITEM
+                    //stock pendant pour ce test
+                    let pendingStock = await stockDB.getPendingStockForExamInTestRequest(TestRequestID, ExamID);
+                    //DELETE PENDING STOCK
+                    if (pendingStock.length > 0) {
+                        rep = await stockDB.deletePendingStock(id_exam, test_request_id);
+                    } else {
+                        //GET MATERIAUX ASS A CE TEST
+                        let materiauxLinked = await stockDB.listeMateriauxAssocieATest(id_exam);
+
+                        for (item of materiauxLinked) {
+                            //GET THE USED STOCK
+                            let stockByMateriau = await stockDB.listOfAllStockByProduct(materiauID, 1);
+                            //ADD THE QUANTITY USED BACK TO THE STOCK
+                            let numero_lot = "";
+                            let materiauId = "";
+                            let materiauName = "";
+                            let transactionType = "";
+                            let qte = "";
+                            let commentaire = "";
+                            let user = "";
+                            let request_id = "";
+                            rep = await stockDB.RemoveItemFromStock(con, numero_lot, materiauId, materiauName, transactionType, qte, commentaire, user, request_id);
+                        }
+                    }
+
+                    if (rep.success) {
+                        resolve({
+                            msg: "Demande supprimée avec succès...",
+                            success: "success"
+                        });
+                    } else {
+                        resolve({
+                            msg: "Une erreur est survenue. S'il vous palit réessayez.",
+                            error: "danger",
+                            debug: err
+                        });
+                    }
+                }
+            });
+        });
+        data = await promise;
+        //console.log(data);
+        return data;
+    },
     //LIST REQUEST TESTS
     singlePatientTestRequestlist: async function (patient) {
         let promise = new Promise((resolve, reject) => {
@@ -516,7 +574,7 @@ var self = module.exports = {
         return data;
     },
 
-    test : async function(){
+    test: async function () {
         let info = await examController.getExamById(1);
         console.log(info);
     }

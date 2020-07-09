@@ -606,7 +606,7 @@ var self = module.exports = {
                             throw err;
                         });
                     }
-                    sql2 = "UPDATE  tb_stocks SET qte_restante = qte_restante + " + qte + " WHERE numero_lot= ? AND materiau =?";
+                    sql2 = "UPDATE  tb_stocks SET qte_restante = qte_restante + " + qte + ",qte_utilisee = qte_utilisee - " + qte + " WHERE numero_lot= ? AND materiau =?";
                     let param = [numero_lot, materiauId];
                     con.query(sql2, param, function (err, result) {
                         if (err) {

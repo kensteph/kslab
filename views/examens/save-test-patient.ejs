@@ -72,6 +72,7 @@
                                     <tr>
                                         <th>Examen</th>
                                         <th>Résultat</th>
+                                        <th>Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -91,6 +92,13 @@
                                                 Résultat</a>
                                             <% } %>
                                         </td>
+                                        <td>
+                                            <a href="#" style="color: red;"
+                                                    title="Enlever <%= info.nom_examen %> de la liste "
+                                                    onclick="launchDeleteParam('<%=info.id%>','<%=info.nom_examen%>','Save')">
+                                                    <i class="fa fa-close"></i>
+                                                </a>
+                                        </td>
                                     </tr>
                                     <% }) %>
                                 </tbody>
@@ -99,6 +107,29 @@
                     </div>
                 </div>
             </div>
+
+
+            <div id="DeleteItem" class="modal fade delete-modal" role="dialog">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-body text-center">
+                            <img src="assets/img/sent.png" alt="" width="50" height="46">
+                            <h3>Voulez-vous supprimer <i id="itemToDelete"></i> ?</h3>
+                            <form id="removeItemForm">
+                                <input type="hidden" name="TestRequestID" value="<%=id_test_request%>">
+                                <input type="hidden" name="itemName" id="itemName">
+                                <input type="hidden" name="itemID" id="itemID">
+                                <input type="hidden" name="action" id="actionID">
+                            </form>
+                            <div id="msgRemoveItem" class="m-t-20 text-center"></div>
+                            <div class="m-t-20"> <a href="#" class="btn btn-white" data-dismiss="modal">NON</a>
+                                <button type="submit" onclick="removeItem()" class="btn btn-danger">OUI</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    
 
             <div id="addRemoveUnit" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
                 <div class="modal-dialog modal-lg">
@@ -270,7 +301,41 @@
                 }
             });
         }
-    </script>
+        saveTestMateriau = function () {
+            $("#msgSaveMat").show().html("");
+            let formData = $("#addMateriauForm").serialize();
+            $.post("/link-test-materiau", formData, function (data) {
+                if (data.success) { //Success 
+                    $("#msgSaveMat").html(data.msg);//.fadeOut( 5000 );
+                } else {
+                    $("#msgSaveMat").html(data.msg);
+                }
+            });
+        }
+        //REMOVE ITEM
+        function launchDeleteParam(id_exam, pname, action) {
+            $("#itemToDelete").html(pname);
+            $("#itemName").val(pname);
+            $("#itemID").val(id_exam);
+            $("#actionID").val(action);
+            $("#DeleteItem").modal();
+        }
+        removeItem = function () {
+            $("#msgRemoveItem").show().html("");
+            let formData = $("#removeItemForm").serialize();
+            $.post("/delete-test-in-request", formData, function (data) {
+                // if (data.success) { //Success 
+                //     $("#msgRemoveItem").html(data.msg).fadeOut(2000, function () { $("#DeleteItem").modal("hide"); });
+                //     let item = $("#actionID").val() + $("#itemID").val();
+                //     $("#" + item).fadeOut(5000);
+                // } else {
+                //     $("#msgRemoveItem").html(data.msg);
+                // }
+            });
+        }
+        
+   
+   </script>
     <!-- FOOTER -->
     <%- include("../parts/footer") -%>
 </body>

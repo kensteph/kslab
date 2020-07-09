@@ -472,7 +472,26 @@ router.post("/delete-test-request", async (req, res) => {
     }
     res.json(notifications);
 });
-//
+
+//DELETE ITEM IN TEST REQUEST
+router.post("/delete-test-in-request", async (req, res) => {
+    console.log(req.body);
+    let TestRequestID = req.body.TestRequestID;
+    let ExamID = req.body.itemID;
+    //stock pendant pour ce test
+   // let pendingStock = await stockDB.getPendingStockForExamInTestRequest(TestRequestID,ExamID);
+    //Materiaux Linked
+    let materiauxLinked = await stockDB.listeMateriauxAssocieATest(ExamID);
+    console.log(materiauxLinked);
+    // let test_request_id = req.body.testRequestId;
+    // let statut = req.body.statut;
+    // let notifications = await examenDB.updateTestResultStatus(
+    //     test_request_id,
+    //     statut
+    // );
+    // res.json(notifications);
+});
+
 //GET THES TEST'S RESULT
 router.post("/get-test-result", async (req, res) => {
     console.log(req.body);

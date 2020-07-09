@@ -41,7 +41,7 @@
                             <div class="form-group form-focus">
                                 <label class="focus-label">From</label>
                                 <div class="cal-icon">
-                                    <input class="form-control floating datetimepicker" name="DateFrom" type="text" value="<%=dateFrom%>">
+                                    <input class="form-control floating datetimepicker" id="DateFrom" name="DateFrom" type="text" value="<%=dateFrom%>">
                                 </div>
                             </div>
                         </div>
@@ -49,7 +49,7 @@
                             <div class="form-group form-focus">
                                 <label class="focus-label">To</label>
                                 <div class="cal-icon">
-                                    <input class="form-control floating datetimepicker" name="DateTo" type="text"  value="<%=dateTo%>">
+                                    <input class="form-control floating datetimepicker" id="DateTo" name="DateTo" type="text"  value="<%=dateTo%>">
                                 </div>
                             </div>
                         </div>
@@ -131,7 +131,7 @@
                                         <td><strong><%=stock.lot%></strong></td>
                                         <td><%=stock.nom_materiau%></td>
                                         <td><%=stock.qte%></td>
-                                        <td style = "<%= color %>"><i class="<%= fa%>" title="<%= title%>"></i></td>
+                                        <td style ="<%= color %>"><i class="<%= fa%>" title="<%= title%>"></i></td>
                                         <td><%=stock.commentaire%></td>
                                         <td><%=stock.acteur%></td>
                                     </tr>

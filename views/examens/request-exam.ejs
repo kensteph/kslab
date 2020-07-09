@@ -95,21 +95,26 @@
     <script src="assets/js/app.js"></script>
     <script>
         $("#btnSave").prop("disabled", false);
+        let nbPushButton = 0;
         saveTestParameters = function () {
             $("#msg").show().html();
             let patient = $("#patient").val();
             // alert(patient);
             if (patient != "") {
                 let formData = $("#saveParamForm").serialize();
-                $.post("/save-test-request", formData, function (data) {
-                    console.log(data);
-                    if (data.success) { //Success 
-                        $("#msg").html(data.msg);//.fadeOut( 5000 );
-                        $("#btnSave").prop("disabled", true);
-                    } else {
-                        $("#msg").html(data.msg);
-                    }
-                });
+                if (nbPushButton <= 0) { // Eviter l'utilisateur presser plus qu'une fois le boutton
+                    $.post("/save-test-request", formData, function (data) {
+                        console.log(data);
+                        if (data.success) { //Success 
+                            $("#msg").html(data.msg);//.fadeOut( 5000 );
+                            $("#btnSave").prop("disabled", true);
+                        } else {
+                            $("#msg").html(data.msg);
+                        }
+                    });
+                    nbPushButton ++;
+                }
+
             } else {
                 $("#msg").show().html("<font color='red'><strong>Vous devez choisir un patient.</strong></font>").fadeIn(5000);
             }

@@ -88,4 +88,57 @@ function personAge(dob) {
       const ageDate = new Date(diff);
       return Math.abs(ageDate.getUTCFullYear() - 1970);
 }
+function startOfWeek(date) {
+    var diff = date.getDate() - date.getDay() + (date.getDay() === 0 ? -6 : 1);
+
+    return new Date(date.setDate(diff));
+
+}
+
+function formatDate(dateP, lang) {
+    // console.log("Date Receive "+dateP);
+    let splitdat = dateP.split('-');
+    if (splitdat.length == 1) { //they use / instead of -
+        splitdat = dateP.split('/');
+    }
+    console.log("DATE FR : " + splitdat+" TO "+lang);
+    let date_f = dateP;
+    let Month =splitdat[1];
+    let Day = splitdat[2];
+    let Year = splitdat[0];
+
+    if (Month < 10) {
+        Month = '0' + Month;
+    }
+    
+    if (Day < 10) { Day = "0" + Day; }
+
+    if (lang == 'FR') {
+        date_f = Day + '-' + Month + '-' + Year;
+    }
+    
+    if (lang == 'EN') {
+        date_f = Year + '-' + Month + '-' + Day;
+
+    }
+    //console.log("DATE FORMAT : " + date_f+" TO "+lang);
+    return date_f;
+
+}
+function getStartAndEndDateOfTheWeekFromDate(givenDate){
+    let date = new Date(givenDate);
+    let sd = startOfWeek(date);
+    //On ajoute x jours
+    let startDate = sd.getFullYear() + '-' + (sd.getMonth() + 1) + '-' + sd.getDate();
+    sd.setDate(sd.getDate()+6);
+    let endDate = sd.getFullYear() + '-' + (sd.getMonth() + 1) + '-' + sd.getDate();
+    let info=[formatDate(startDate,"FR") , formatDate(endDate,"FR")];
+    $("#DateFrom").val(formatDate(startDate,"FR"));
+    $("#DateTo").val(formatDate(endDate,"FR"));
+    console.log(info);
+}
+
+
+getStartAndEndDateOfTheWeekFromDate(new Date());
+
 

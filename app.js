@@ -309,6 +309,7 @@ app.get('/notifications', async (req, res) => {
     //res.json(stockCritic);
 });
 
+helpers.getStartAndEndDateOfTheWeekFromDate("2020-07-09");
 const port = 8788;
 http.listen(port, () => {
     console.log('KSlab server is started at port: ' + port);

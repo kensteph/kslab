@@ -25,11 +25,14 @@ var con = mysql.createConnection({
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
     dateStrings: 'date',
-    charset : 'latin1_swedish_ci' //PRISE EN COMPTE DES CARACTERES SPECIAUX
+    charset: 'latin1_swedish_ci' //PRISE EN COMPTE DES CARACTERES SPECIAUX
 });
-con.connect(function(err) {
-        if (err) throw err;
+con.connect(function (err) {
+    if (err) {
+        console.log('DATABASE NOT AVAILABLE!');
+    } else {
         console.log('Connected!');
-    });
+    }
+});
 
 module.exports = con;

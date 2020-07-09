@@ -165,8 +165,25 @@ var self = module.exports = {
         //console.log(data); 
         return data;
     },
+
+    //PENDING STOCK TRANSACTION FOR A TESTREQUEST AND A PATICULAR EXAM
+    getPendingStockForExamInTestRequest: async function (testRequestID,examiD) {
+        let promise = new Promise((resolve, reject) => {
+            let sql = "SELECT * FROM tb_materiaux,tb_pending_stock_evolution WHERE tb_pending_stock_evolution.materiau_id=tb_materiaux.id AND request_id=? AND  test_id=?  ";
+            con.query(sql,[testRequestID,examiD], function (err, rows) {
+                if (err) {
+                    throw err;
+                } else {
+                    resolve(rows);
+                }
+            });
+        });
+        data = await promise;
+        console.log(testRequestID+"|"+examiD); 
+        return data;
+    },
     //COUNT PENDING STOCK TRANSACTION FOR A MATERIAU
-    getCountPendingStockForMateriau: async function (materiauID) {
+    getCountPendingStockForMateriau: async function (con, materiauID) {
         let promise = new Promise((resolve, reject) => {
             let sql = "SELECT COUNT(qte_a_enlever) as nb FROM tb_pending_stock_evolution WHERE materiau_id=" + materiauID;
             con.query(sql, function (err, rows) {
@@ -188,8 +205,10 @@ var self = module.exports = {
         return data;
     },
     //Manage PENDING STOCK EVOLUTION
-    managePendingStock: async function (con, matInfo, qte) {
-        let pendingQtyForThisItem = await self.getCountPendingStockForMateriau(matInfo.id);
+    managePendingStock: async function (con, matInfo, qte, pendingQtyForThisItem, action) {
+        if (pendingQtyForThisItem == 0) {
+            return qte;
+        }
         //Enlever automatiquement la quantite pendante de la qteRestante
         if (pendingQtyForThisItem > qte) { // Mise a jour de la quantite pandante
             console.log("Mise a jour de la quantite pandante");
@@ -197,124 +216,129 @@ var self = module.exports = {
             let pst = await self.getPendingStockForMateriau(matInfo.id);
             //Determiner le nombre de stock a supprimer
             let qte_a_utiliser = pst[0].qte_a_enlever;
-            let x = qte/qte_a_utiliser; x = Math.ceil(x);
+            let x = qte / qte_a_utiliser; x = Math.ceil(x);
             //Stock a supprimer
-            let stocksDelete = pst.slice(0,x);
+            let stocksDelete = pst.slice(0, x);
             //await self.updateStockPending(con, matInfo.id, qte);
-            for(stck of stocksDelete){
+            for (stck of stocksDelete) {
                 //Remove stock
-                await self.deletePendingStock(stck.test_id,stck.request_id);
+                await self.deletePendingStock(stck.test_id, stck.request_id);
             }
-            let commentaire = qte + " " + matInfo.name + " retiré(s) du lot " + matInfo.lot + " | Transaction pendante";
-            await self.RemoveItemFromStock(con, matInfo.lot, matInfo.id, matInfo.name, "substract", qte, commentaire, "System", -1);
+            if (action == "INSERT") {
+                let commentaire = qte + " " + matInfo.name + " retiré(s) du lot " + matInfo.lot + " | Transaction pendante";
+                await self.RemoveItemFromStock(con, matInfo.lot, matInfo.id, matInfo.name, "substract", qte, commentaire, "System", -1);
+            }
             qte = 0;
         } else { // Suppression de la qte pandante
-            let commentaire = pendingQtyForThisItem + " " + matInfo.name + " retiré(s) du lot " + matInfo.lot + " | Transaction pendante";
-            await self.RemoveItemFromStock(con, matInfo.lot, matInfo.id, matInfo.name, "substract", pendingQtyForThisItem, commentaire, "System", -1);
+            if (action == "INSERT") {
+                let commentaire = pendingQtyForThisItem + " " + matInfo.name + " retiré(s) du lot " + matInfo.lot + " | Transaction pendante";
+                await self.RemoveItemFromStock(con, matInfo.lot, matInfo.id, matInfo.name, "substract", pendingQtyForThisItem, commentaire, "System", -1);
+            }
             qte = qte - pendingQtyForThisItem;
             console.log("Suppression de la qte pandante");
             await self.deleteStockPending(con, matInfo.id);
+
         }
         return qte;
     },
-        //Pending Stock evolution Transaction
-        pendingStockEvolution: async function (con, materiau_id, qte_a_enlever, test_id, req_id) {
-            let promise = new Promise((resolve, reject) => {
-                let sql =
-                    'INSERT INTO tb_pending_stock_evolution (materiau_id,qte_a_enlever,test_id,request_id) VALUES (' + materiau_id + ',' + qte_a_enlever + ',' + test_id + ',' + req_id + ')';
-                con.query(sql, function (err, result) {
-                    if (err) {
-                        console.log(err);
-                        // msg = {
-                        //     error: " Vous avez déja enregistré ces valeurs ",
-                        //     debug: err
-                        // };
-                        msg = self.updateStockPendingEvolution(materiau_id, qte_a_enlever, test_id, req_id);
-                    } else {
-                        msg = {
-                            success:
-                                "Valeurs enregistrées avec succès.",
-                        };
-                    }
-    
-                    resolve(msg);
-                    //console.log(msg);
-                });
+    //Pending Stock evolution Transaction
+    pendingStockEvolution: async function (con, materiau_id, qte_a_enlever, test_id, req_id) {
+        let promise = new Promise((resolve, reject) => {
+            let sql =
+                'INSERT INTO tb_pending_stock_evolution (materiau_id,qte_a_enlever,test_id,request_id) VALUES (' + materiau_id + ',' + qte_a_enlever + ',' + test_id + ',' + req_id + ')';
+            con.query(sql, function (err, result) {
+                if (err) {
+                    console.log(err);
+                    // msg = {
+                    //     error: " Vous avez déja enregistré ces valeurs ",
+                    //     debug: err
+                    // };
+                    msg = self.updateStockPendingEvolution(materiau_id, qte_a_enlever, test_id, req_id);
+                } else {
+                    msg = {
+                        success:
+                            "Valeurs enregistrées avec succès.",
+                    };
+                }
+
+                resolve(msg);
+                //console.log(msg);
             });
-            rep = await promise;
-            return rep;
-        },
-        //UPDATE Stock evolution Transaction
-        updateStockPendingEvolution: async function (materiauID, qte, test_id, request_id) {
-            let promise = new Promise((resolve, reject) => {
-                let sql = "UPDATE tb_pending_stock_evolution SET qte_a_enlever=qte_a_enlever+" + qte + " WHERE materiau_id =? AND test_id=? AND request_id=?";
-                con.query(sql, [materiauID, test_id, request_id], function (err, rows) {
-                    if (err) {
-                        resolve({
-                            msg: "Une erreur est survenue. S'il vous palit réessayez.",
-                            error: "danger",
-                            debug: err
-                        });
-                    } else {
-                        resolve({
-                            msg: "Stock pendant modifie avec succès...",
-                            success: "success"
-                        });
-                    }
-                });
+        });
+        rep = await promise;
+        return rep;
+    },
+    //UPDATE Stock evolution Transaction
+    updateStockPendingEvolution: async function (materiauID, qte, test_id, request_id) {
+        let promise = new Promise((resolve, reject) => {
+            let sql = "UPDATE tb_pending_stock_evolution SET qte_a_enlever=qte_a_enlever+" + qte + " WHERE materiau_id =? AND test_id=? AND request_id=?";
+            con.query(sql, [materiauID, test_id, request_id], function (err, rows) {
+                if (err) {
+                    resolve({
+                        msg: "Une erreur est survenue. S'il vous palit réessayez.",
+                        error: "danger",
+                        debug: err
+                    });
+                } else {
+                    resolve({
+                        msg: "Stock pendant modifie avec succès...",
+                        success: "success"
+                    });
+                }
             });
-            data = await promise;
-            //console.log(data);
-            return data;
-        },
-        //DELETE PENDING STOCK
-        deletePendingStock: async function (id_test, id_request) {
-            let promise = new Promise((resolve, reject) => {
-                let sql1 = "DELETE FROM tb_pending_stock_evolution WHERE test_id=? AND request_id =?";
-                con.query(sql1, [id_test, id_request], function (err, rows) {
-                    if (err) {
-                        resolve({
-                            msg: "Une erreur est survenue. S'il vous palit réessayez.",
-                            error: "danger",
-                            debug: err
-                        });
-                    } else {
-                        resolve({
-                            msg: "Demande supprimée avec succès...",
-                            success: "success"
-                        });
-                    }
-                });
+        });
+        data = await promise;
+        //console.log(data);
+        return data;
+    },
+    //DELETE PENDING STOCK
+    deletePendingStock: async function (id_test, id_request) {
+        let promise = new Promise((resolve, reject) => {
+            let sql1 = "DELETE FROM tb_pending_stock_evolution WHERE test_id=? AND request_id =?";
+            con.query(sql1, [id_test, id_request], function (err, rows) {
+                if (err) {
+                    resolve({
+                        msg: "Une erreur est survenue. S'il vous palit réessayez.",
+                        error: "danger",
+                        debug: err
+                    });
+                } else {
+                    resolve({
+                        msg: "Demande supprimée avec succès...",
+                        success: "success"
+                    });
+                }
             });
-            data = await promise;
-            //console.log(data);
-            return data;
-        },
-        //DELETE PENDING STOCK BY REQUEST_ID
-        deletePendingStockByRequestId: async function (id_request) {
-            let promise = new Promise((resolve, reject) => {
-                let sql1 = "DELETE FROM tb_pending_stock_evolution WHERE  request_id =?";
-                con.query(sql1, id_request, function (err, rows) {
-                    if (err) {
-                        resolve({
-                            msg: "Une erreur est survenue. S'il vous palit réessayez.",
-                            error: "danger",
-                            debug: err
-                        });
-                    } else {
-                        resolve({
-                            msg: "Demande supprimée avec succès...",
-                            success: "success"
-                        });
-                    }
-                });
+        });
+        data = await promise;
+        //console.log(data);
+        return data;
+    },
+    //DELETE PENDING STOCK BY REQUEST_ID
+    deletePendingStockByRequestId: async function (id_request) {
+        let promise = new Promise((resolve, reject) => {
+            let sql1 = "DELETE FROM tb_pending_stock_evolution WHERE  request_id =?";
+            con.query(sql1, id_request, function (err, rows) {
+                if (err) {
+                    resolve({
+                        msg: "Une erreur est survenue. S'il vous palit réessayez.",
+                        error: "danger",
+                        debug: err
+                    });
+                } else {
+                    resolve({
+                        msg: "Demande supprimée avec succès...",
+                        success: "success"
+                    });
+                }
             });
-            data = await promise;
-            //console.log(data);
-            return data;
-        },
-    
-    
+        });
+        data = await promise;
+        //console.log(data);
+        return data;
+    },
+
+
     //Add STOCK Materiau
     addStock: async function (req) {
         let promise = new Promise(async (resolve, reject) => {
@@ -323,10 +347,10 @@ var self = module.exports = {
             let materiauName = req.body.materiauName;
             let dateRecue = helpers.formatDate(req.body.dateRecue, "EN");
             let dateExpiration = null;
-            if(req.body.dateExpiration.length>=8){
+            if (req.body.dateExpiration.length >= 8) {
                 dateExpiration = helpers.formatDate(req.body.dateExpiration, "EN");
             }
-            
+
             let qteRecue = parseInt(req.body.qteRecue);
             let qteEndomage = req.body.qteEndomage;
             let qteRestante = qteRecue - qteEndomage;
@@ -338,18 +362,17 @@ var self = module.exports = {
             //   /* Begin transaction */
             con.beginTransaction(async (err) => {
                 //VERIFY IF THERE IS PENDING REQUEST
-                let matInfo = { id: materiauId, name: materiauName, lot: numero_lot }
-                qteRestante = await self.managePendingStock(con, matInfo, qteRestante);
-
+                let pendingQtyForThisItem = await self.getCountPendingStockForMateriau(con, materiauId);
+                let matInfo = { id: materiauId, name: materiauName, lot: numero_lot };
                 if (err) { throw err; }
-                let sql ="";
-                if(dateExpiration!=null){
-                    sql ='INSERT INTO tb_stocks (numero_lot,materiau,date_recue,date_expiration,qte_recue,qte_endomage,qte_restante,acteur) VALUES ("' + numero_lot + '","' + materiauId + '","' + dateRecue + '","' + dateExpiration + '",' + qteRecue + ',' + qteEndomage + ',' + qteRestante + ',"' + user + '")';  
-                }else{
-                    sql ='INSERT INTO tb_stocks (numero_lot,materiau,date_recue,qte_recue,qte_endomage,qte_restante,acteur) VALUES ("' + numero_lot + '","' + materiauId + '","' + dateRecue + '",' + qteRecue + ',' + qteEndomage + ',' + qteRestante + ',"' + user + '")';  
+                let sql = "";
+                if (dateExpiration != null) {
+                    sql = 'INSERT INTO tb_stocks (numero_lot,materiau,date_recue,date_expiration,qte_recue,qte_endomage,qte_restante,acteur) VALUES ("' + numero_lot + '","' + materiauId + '","' + dateRecue + '","' + dateExpiration + '",' + qteRecue + ',' + qteEndomage + ',' + qteRestante + ',"' + user + '")';
+                } else {
+                    sql = 'INSERT INTO tb_stocks (numero_lot,materiau,date_recue,qte_recue,qte_endomage,qte_restante,acteur) VALUES ("' + numero_lot + '","' + materiauId + '","' + dateRecue + '",' + qteRecue + ',' + qteEndomage + ',' + qteRestante + ',"' + user + '")';
                 }
-                 
-                    con.query(sql, function (err, result) {
+
+                con.query(sql, function (err, result) {
                     console.log("TEST");
                     if (err) {
                         msg = {
@@ -381,7 +404,7 @@ var self = module.exports = {
                                     resolve(msg);
                                 });
                             } else {
-                                con.commit(function (err) {
+                                con.commit(async function (err) {
                                     if (err) {
                                         console.log(err);
                                         con.rollback(function () {
@@ -395,6 +418,7 @@ var self = module.exports = {
                                             };
                                         });
                                     }
+                                    await self.managePendingStock(con, matInfo, qteRestante, pendingQtyForThisItem, "INSERT");
                                     msg = {
                                         success: "success",
                                         msg:
@@ -507,18 +531,6 @@ var self = module.exports = {
             //   /* Begin transaction */
             con.beginTransaction(async function (err) {
                 if (err) { throw err; }
-
-                // let pendingQtyForThisItem = await self.getCountPendingStockForMateriau(materiauId);
-                // //Enlever automatiquement la quantite pendante de la qteRestante
-                // if (pendingQtyForThisItem > qte) { // Mise a jour de la quantite pandante
-                //     console.log("Mise a jour de la quantite pandante");
-                //     await self.updateStockPending(con, materiauId, qte);
-                //     qteRestante = 0;
-                // } else { // Suppression de la qte pandante
-                //     qte = qte - pendingQtyForThisItem;
-                //     console.log("Suppression de la qte pandante");
-                //     await self.deleteStockPending(con, materiauId);
-                // }
                 //Insert info into tb_evolution_stock table
                 let sql = 'INSERT INTO tb_evolution_stock (lot,materiau,qte,transaction,commentaire,acteur,test) VALUES ("' + numero_lot + '","' + materiauId + '","' + qte + '","' + transactionType + '","' + commentaire + '","' + user + '",' + request_id + ')';
 
@@ -555,7 +567,7 @@ var self = module.exports = {
                         }
 
                         //COMMIT IF ALL DONE COMPLETELY
-                        con.commit(function (err) {
+                        con.commit(async function (err) {
                             if (err) {
                                 con.rollback(function () {
                                     msg = {
@@ -569,6 +581,13 @@ var self = module.exports = {
 
                                 });
                             }
+                            // if (transactionType == "add") {
+                            //     //VERIFY IF THERE IS PENDING REQUEST
+                            //     let pendingQtyForThisItem = await self.getCountPendingStockForMateriau(con, materiauId);
+                            //     let matInfo = { id: materiauId, name: materiauName, lot: numero_lot };
+                            //     await self.managePendingStock(con, matInfo, qte, pendingQtyForThisItem, "UPDATE");
+                            // }
+
                             msg = {
                                 type: "success",
                                 success: true,
@@ -1079,15 +1098,15 @@ var self = module.exports = {
                         debug: err
                     });
                 } else {
-                     //LOG THE TRANSACTIONS
-                     let  materiauName = stockName_split[0];
-                     let  numero_lot = stockName_split[1];
-                     let  materiauId = stockName_split[2];
-                     let  qte = stockName_split[3];
-                     let  stock = materiauName+" | "+numero_lot;
-                     let  transactionType ="delete";
-                     let  commentaire="Suppression du stock "+stock;
-                     let  user= req.session.username;
+                    //LOG THE TRANSACTIONS
+                    let materiauName = stockName_split[0];
+                    let numero_lot = stockName_split[1];
+                    let materiauId = stockName_split[2];
+                    let qte = stockName_split[3];
+                    let stock = materiauName + " | " + numero_lot;
+                    let transactionType = "delete";
+                    let commentaire = "Suppression du stock " + stock;
+                    let user = req.session.username;
                     notifications = await self.RemoveItemFromStock(con, numero_lot, materiauId, materiauName, transactionType, qte, commentaire, user, id_test_request = -1);
                     resolve({
                         msg: "Le stock " + stock + " a été supprimé avec succès...",
@@ -1118,11 +1137,11 @@ var self = module.exports = {
         return data;
     },
     //======================== RAPPORT D'UTILISATION DES MATERIAUX =================================================
-    singleMateriauReport: async function (dateFrom, dateTo, materiau_id,typeTransaction) {
+    singleMateriauReport: async function (dateFrom, dateTo, materiau_id, typeTransaction) {
         let promise = new Promise((resolve, reject) => {
             let sql = "SELECT SUM(qte) as nb FROM tb_evolution_stock WHERE DATE(date_record) BETWEEN '" + dateFrom + "' AND '" + dateTo + "' AND materiau =? AND transaction =? AND approved=1";
             //console.log(sql);
-            con.query(sql, [materiau_id,typeTransaction], async function (err, rows) {
+            con.query(sql, [materiau_id, typeTransaction], async function (err, rows) {
                 if (err) {
                     throw err;
                 } else {
@@ -1149,12 +1168,12 @@ var self = module.exports = {
                     for (item of rows) {
                         //Info about the materiau
                         let infoExam = await self.getMateriau(item.materiau);
-                            let qteUtilisee = await self.singleMateriauReport(dateFrom, dateTo, item.materiau,"substract");
-                            let line_info = {
-                                Materiau: infoExam.nom_materiau,
-                                qty: qteUtilisee
-                            };
-                            line.push(line_info);
+                        let qteUtilisee = await self.singleMateriauReport(dateFrom, dateTo, item.materiau, "substract");
+                        let line_info = {
+                            Materiau: infoExam.nom_materiau,
+                            qty: qteUtilisee
+                        };
+                        line.push(line_info);
                         console.log(line);
 
                     }

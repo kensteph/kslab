@@ -234,7 +234,7 @@ var self = module.exports = {
             let sql = "SELECT * FROM tb_app_settings WHERE labo=1 ";
             con.query(sql, function (err, rows) {
                 if (err) {
-                    throw err;
+                    console.log(err);
                 } else {
                     resolve(rows[0]);
                 }
