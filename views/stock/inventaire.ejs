@@ -145,7 +145,7 @@
 
                                                     <% if(UserData.user_sub_menu_access.includes("Valider/Invalider Stock") || UserData.user_sub_menu_access[0]=="All"){%>
                                                     <a class="dropdown-item" href="#"
-                                                        onclick="launchStocValide('<%=stock.nom_materiau%>','<%=stock.id%>','<%=stock.numero_lot%>','<%=stock.statut%>')"><i
+                                                        onclick="launchStocValide('<%=stock.stock_id%>','<%=stock.nom_materiau%>','<%=stock.numero_lot%>','<%=stock.statut%>')"><i
                                                             class="fa fa-check m-r-5"></i> Valide/Invalide</a>
                                                     <% } %>
 
@@ -219,7 +219,9 @@
                         <h3>Voulez-vous modifier la validité de ce lot?</h3>
                         <div class="m-t-20">
                             <form id="validForm">
-                                <input type="hidden" name="lod_id" id="lot_id">
+                                <input type="hidden" name="stock_id" id="stock_id">
+                                <input type="hidden" name="stockName" id="stock_Name">
+                                <input type="hidden" name="lot" id="Lot">
                                 <input type="hidden" name="statut" id="statut">
                             </form>
                             <div id="Notif" class="m-b-10"></div>
@@ -283,11 +285,12 @@
             $("#lot").val(lot);
             $("#addRemoveUnit").modal();
         }
-        function launchStocValide(matName, matId, lot, statut) {
+        function launchStocValide(stockID,matName , lot, statut) {
+            $("#stock_id").val(stockID);
             $("#stockIdName").html(matName + "-" + lot);
-            $("#materiauId").val(matId);
-            $("#materiau").val(matName);
-            $("#lot_id").val(lot);
+            $("#stock_Name").val(matName + "-" + lot);
+            $("#Lot").val(lot);
+
             let text = "Valide";
             if (statut == 1) {
                 text = "Invalide"

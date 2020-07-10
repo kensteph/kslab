@@ -224,9 +224,7 @@ router.post('/add-remove-stock', async (req, res) => {
 //CHANGE STOCK STATUS
 router.post('/change-stock-status', async (req, res) => {
     console.log(req.body);
-    let statut = req.body.statut
-    let lot = req.body.lod_id;
-    let notifications = await stockDB.setStockStatus(lot, statut);
+    let notifications = await stockDB.setStockStatus(req);
     res.json(notifications);
 });
 

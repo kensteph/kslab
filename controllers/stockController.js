@@ -985,10 +985,16 @@ var self = module.exports = {
         return data;
     },
     //SET STOCK STATUS
-    setStockStatus: async function (numero_lot, statut) {
+    setStockStatus: async function (req) {
+        let  stock_id = req.body.stock_id;
+        let  stock_name= req.body.stockName;
+        let  lot = req.body.lot;
+        let  statut = req.body.statut;
+        let etat= ["invalide","valide"];
+        
         let promise = new Promise((resolve, reject) => {
-            let sql = "UPDATE tb_stocks SET statut =" + statut + " WHERE numero_lot =?";
-            con.query(sql, numero_lot, function (err, rows) {
+            let sql = "UPDATE tb_stocks SET statut =" + statut + " WHERE id =?";
+            con.query(sql, stock_id, function (err, rows) {
                 if (err) {
                     resolve({
                         msg: "Une erreur est survenue. S'il vous plait réessayez.",
@@ -997,7 +1003,7 @@ var self = module.exports = {
                     });
                 } else {
                     resolve({
-                        msg: "Les informations concernant " + numero_lot + " ont été modifiées avec succès.",
+                        msg: "Le stock "+stock_name+" est maintenant "+etat[statut],
                         type: "success"
                     });
                 }
