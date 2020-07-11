@@ -29,9 +29,9 @@ var con = mysql.createConnection({
 });
 con.connect(function (err) {
     if (err) {
-        console.log('DATABASE NOT AVAILABLE!');
+        console.log('DATABASE '+process.env.DB_NAME+' NOT AVAILABLE!');
     } else {
-        console.log('Connected!');
+        console.log('Connected to '+process.env.DB_NAME+'!');
     }
 });
 
