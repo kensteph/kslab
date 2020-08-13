@@ -76,17 +76,17 @@ $(document).ready(function () {
 
     //SEARCH INTO A TABLE
     $('#dtBasicExample').DataTable({
-        "order": [[ 0, "desc" ]]
-        });
+        "order": [[0, "desc"]]
+    });
     $('.dataTables_length').addClass('bs-select');
 
 });
 
 function personAge(dob) {
     let birthday = new Date(dob);
-      const diff = Date.now() - birthday.getTime();
-      const ageDate = new Date(diff);
-      return Math.abs(ageDate.getUTCFullYear() - 1970);
+    const diff = Date.now() - birthday.getTime();
+    const ageDate = new Date(diff);
+    return Math.abs(ageDate.getUTCFullYear() - 1970);
 }
 function startOfWeek(date) {
     var diff = date.getDate() - date.getDay() + (date.getDay() === 0 ? -6 : 1);
@@ -96,45 +96,47 @@ function startOfWeek(date) {
 }
 
 function formatDate(dateP, lang) {
-    // console.log("Date Receive "+dateP);
+    console.log("Date Receive " + dateP);
+    if (dateP == null) { return }
     let splitdat = dateP.split('-');
     if (splitdat.length == 1) { //they use / instead of -
         splitdat = dateP.split('/');
     }
-    console.log("DATE FR : " + splitdat+" TO "+lang);
+    console.log("DATE FR : " + splitdat + " TO " + lang);
     let date_f = dateP;
-    let Month =splitdat[1];
+    let Month = splitdat[1];
     let Day = splitdat[2];
     let Year = splitdat[0];
 
-    if (Month < 10) {
+    if (Month < 10 && Month.length == 1) {
         Month = '0' + Month;
     }
-    
-    if (Day < 10) { Day = "0" + Day; }
+
+    if (Day < 10 && Day.length == 1) { Day = "0" + Day; }
 
     if (lang == 'FR') {
         date_f = Day + '-' + Month + '-' + Year;
     }
-    
+
     if (lang == 'EN') {
         date_f = Year + '-' + Month + '-' + Day;
 
     }
     //console.log("DATE FORMAT : " + date_f+" TO "+lang);
+    //}
     return date_f;
 
 }
-function getStartAndEndDateOfTheWeekFromDate(givenDate){
+function getStartAndEndDateOfTheWeekFromDate(givenDate) {
     let date = new Date(givenDate);
     let sd = startOfWeek(date);
     //On ajoute x jours
     let startDate = sd.getFullYear() + '-' + (sd.getMonth() + 1) + '-' + sd.getDate();
-    sd.setDate(sd.getDate()+6);
+    sd.setDate(sd.getDate() + 6);
     let endDate = sd.getFullYear() + '-' + (sd.getMonth() + 1) + '-' + sd.getDate();
-    let info=[formatDate(startDate,"FR") , formatDate(endDate,"FR")];
-    $("#DateFrom").val(formatDate(startDate,"FR"));
-    $("#DateTo").val(formatDate(endDate,"FR"));
+    let info = [formatDate(startDate, "FR"), formatDate(endDate, "FR")];
+    $("#DateFrom").val(formatDate(startDate, "FR"));
+    $("#DateTo").val(formatDate(endDate, "FR"));
     console.log(info);
 }
 

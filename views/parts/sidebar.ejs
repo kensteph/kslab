@@ -124,7 +124,7 @@ if (locals.page) {
                         <li><a class="<%=NewPatient%>" href="/add-patient">Nouveau </a></li>
                         <% } %>
                         <% if(UserData.user_sub_menu_access.includes("Liste des Patients") || UserData.user_sub_menu_access[0]=="All"){%>
-                        <!-- <li><a class="<%=PatientsList%>" href="/patients">Liste des patients</a></li> -->
+                        <li><a class="<%=PatientsList%>" href="/patients">Liste des patients</a></li>
                         <% } %>
                     </ul>
                 </li>

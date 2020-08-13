@@ -41,7 +41,8 @@
                             <div class="form-group form-focus">
                                 <label class="focus-label">From</label>
                                 <div class="cal-icon">
-                                    <input class="form-control floating datetimepicker" id="DateFrom" name="DateFrom" type="text" value="<%=dateFrom%>">
+                                    <input class="form-control floating datetimepicker" id="DateFrom" name="DateFrom"
+                                        type="text" value="<%=dateFrom%>">
                                 </div>
                             </div>
                         </div>
@@ -49,7 +50,8 @@
                             <div class="form-group form-focus">
                                 <label class="focus-label">To</label>
                                 <div class="cal-icon">
-                                    <input class="form-control floating datetimepicker" id="DateTo" name="DateTo" type="text"  value="<%=dateTo%>">
+                                    <input class="form-control floating datetimepicker" id="DateTo" name="DateTo"
+                                        type="text" value="<%=dateTo%>">
                                 </div>
                             </div>
                         </div>
@@ -59,7 +61,8 @@
                                 <select class="select floating" name="materiauSelected">
                                     <option value="All">Tous</option>
                                     <% materiauxList.forEach((materiau) => { %>
-                                    <option value="<%=materiau.id%>" <% if( materiauSelected == materiau.id ){ %> <%= "selected" %> <% } %> > 
+                                    <option value="<%=materiau.id%>" <% if( materiauSelected == materiau.id ){ %>
+                                        <%= "selected" %> <% } %>>
                                         <%=materiau.nom_materiau%>
                                     </option>
                                     <% }) %>
@@ -74,29 +77,30 @@
                 </div>
                 <div class="row">
                     <% if(data.length >0){   %>
-                        <% if(UserData.user_sub_menu_access.includes("Imprimer Mouvement de Stock") || UserData.user_sub_menu_access[0]=="All"){%>
-                        <form id="MVS" target="_blank" action="/print-stock-move-report" method="POST">
-                            <input type="hidden" name="DateFrom" value="<%=dateFromDB%>">
-                            <input type="hidden" name="DateTo" value="<%=dateToDB%>">
-                            <input type="hidden" name="materiauSelected" value="<%=materiauSelected%>">
-                            <a href="#" class="dropdown-item" onclick="printReport('MVS')"><i class="fa fa-print fa-lg"></i>
-                                Imprimer le rapport</a>
-                        </form>
-                        <form id="RUM" target="_blank" action="/print-materiaux-usage" method="POST">
-                            <input type="hidden" name="DateFrom" value="<%=dateFromDB%>">
-                            <input type="hidden" name="DateTo" value="<%=dateToDB%>">
-                            <input type="hidden" name="materiauSelected" value="<%=materiauSelected%>">
-                            <a href="#" class="dropdown-item" onclick="printReport('RUM')"><i class="fa fa-print fa-lg"></i>
-                                Rapport d'usage des Matériaux</a>
-                        </form>
-                        <br><br>
-                        <% }  %>
+                    <% if(UserData.user_sub_menu_access.includes("Imprimer Mouvement de Stock") || UserData.user_sub_menu_access[0]=="All"){%>
+                    <form id="MVS" target="_blank" action="/print-stock-move-report" method="POST">
+                        <input type="hidden" name="DateFrom" value="<%=dateFromDB%>">
+                        <input type="hidden" name="DateTo" value="<%=dateToDB%>">
+                        <input type="hidden" name="materiauSelected" value="<%=materiauSelected%>">
+                        <a href="#" class="dropdown-item" onclick="printReport('MVS')"><i class="fa fa-print fa-lg"></i>
+                            Imprimer le rapport</a>
+                    </form>
+                    <form id="RUM" target="_blank" action="/print-materiaux-usage" method="POST">
+                        <input type="hidden" name="DateFrom" value="<%=dateFromDB%>">
+                        <input type="hidden" name="DateTo" value="<%=dateToDB%>">
+                        <input type="hidden" name="materiauSelected" value="<%=materiauSelected%>">
+                        <a href="#" class="dropdown-item" onclick="printReport('RUM')"><i class="fa fa-print fa-lg"></i>
+                            Rapport d'usage des Matériaux</a>
+                    </form>
+                    <br><br>
+                    <% }  %>
                     <% }  %>
                     <div class="col-md-12">
                         <div class="table-responsive">
                             <table id="dtBasicExample" class="table table-striped custom-table">
                                 <thead>
                                     <tr>
+                                        <th>Id transaction</th>
                                         <th>Date transaction</th>
                                         <th>Numéro Lot</th>
                                         <th>Matériau</th>
@@ -104,6 +108,7 @@
                                         <th>Transaction</th>
                                         <th>Commentaire</th>
                                         <th>Acteur</th>
+                                        <th>Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -121,23 +126,57 @@
                                         }else if(stock.transaction == "delete"){
                                             fa = "fa fa-close";
                                             title = "Suppresion de stock";
+                                        }else if(stock.transaction == "adjustment"){
+                                            fa = "fa fa-refresh ";
                                         }else{
                                             fa = "fa fa-trash ";
                                             title = "Stock endommagé";
                                         }
+
+                                        let info = JSON.stringify(stock);
+                                       
                                     %>
                                     <tr>
+                                        <td><%=stock.trans_id%></td>
                                         <td><%=stock.date_record%></td>
                                         <td><strong><%=stock.lot%></strong></td>
                                         <td><%=stock.nom_materiau%></td>
                                         <td><%=stock.qte%></td>
-                                        <td style ="<%= color %>"><i class="<%= fa%>" title="<%= title%>"></i></td>
+                                        <td style="<%= color %>"><i class="<%= fa%>" title="<%= title%>"></i></td>
                                         <td><%=stock.commentaire%></td>
                                         <td><%=stock.acteur%></td>
+                                        <td>
+                                            <a href="#" title="Annuler cette transaction " style='<%= color %>'
+                                                id="btnCancellTransaction"
+                                                onclick="launchCancellTransaction('<%= info %>')"
+                                                class="dropdown-item"><i class="fa fa-refresh"></i>
+                                                Annuler</a>
+                                        </td>
                                     </tr>
                                     <% }) %>
                                 </tbody>
                             </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+
+        <div id="CancellTransaction" class="modal fade delete-modal" role="dialog" data-keyboard="false">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-body text-center">
+                        <img src="assets/img/sent.png" alt="" width="50" height="46"><br>
+                        <form id="CancelForm">
+                            <input type="hidden" name="formData" id="formData">
+                        </form>
+                        <strong id="Transaction"></strong>
+                        <br>Voulez-vous annuler cette transaction ?
+                        <div id="msg"></div>
+                        <div class="m-t-20"> <a href="#" class="btn btn-danger" data-dismiss="modal">Non</a>
+                            <button type="submit" class="btn btn-success" onclick="cancelTransaction()">Oui</button>
                         </div>
                     </div>
                 </div>
@@ -158,21 +197,21 @@
     <script src="assets/js/bootstrap-datetimepicker.min.js"></script>
     <script src="assets/js/app.js"></script>
     <script>
-        $("#addRemoveStockForm").submit(function (e) {
+        $("#CancelForm").submit(function (e) {
             e.preventDefault();
-            addorRemoveStock();
+            cancelTransaction();
         });
-        function launchStockManagement(matName, matId, lot) {
-            $("#materiauName").html(matName + "-" + lot);
-            $("#materiauId").val(matId);
-            $("#materiau").val(matName);
-            $("#lot").val(lot);
-            $("#addRemoveUnit").modal();
+        function launchCancellTransaction(info) {
+            $("#formData").val(info);
+            info = JSON.parse(info);
+            console.log("TRANSACTION : ", info.stock_id);
+            $("#Transaction").html(info.commentaire);
+            $("#CancellTransaction").modal();
         }
-        addorRemoveStock = function () {
+        cancelTransaction = function () {
             $("#notify").show().html();
-            let formData = $("#addRemoveStockForm").serialize();
-            $.post("/add-remove-stock", formData, function (data) {
+            let formData = $("#CancelForm").serialize();
+            $.post("/cancel-transaction", formData, function (data) {
                 console.log(data);
                 if (data.success) { //Success 
                     $("#notify").html(data.msg);//.fadeOut(5000);
@@ -183,7 +222,7 @@
         }
 
         function printReport(formToPrint) {
-            $("#"+formToPrint).submit();
+            $("#" + formToPrint).submit();
         }
     </script>
     <!-- FOOTER -->

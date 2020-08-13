@@ -234,7 +234,7 @@ var self = module.exports = {
             let sql = "SELECT * FROM tb_app_settings WHERE labo=1 ";
             con.query(sql, function (err, rows) {
                 if (err) {
-                    console.log(err);
+                    console.log("NO CONNECTION FOUND! PLEASE RESTART THE SERVER", err);
                 } else {
                     resolve(rows[0]);
                 }
@@ -306,7 +306,7 @@ var self = module.exports = {
     userNotificationList: async function (user) {
         let promise = new Promise((resolve, reject) => {
             let sql = "SELECT * FROM `tb_notifications` WHERE a LIKE '%" + user + "%' OR a='All' OR de LIKE '%" + user + "%'  ORDER BY id DESC";
-           // console.log(sql);
+            // console.log(sql);
             con.query(sql, function (err, rows) {
                 let myNotifications = [];
                 for (notification of rows) {

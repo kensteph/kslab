@@ -87,6 +87,7 @@ router.post('/add-user', async (req, res) => {
 router.get('/users', async (req, res) => {
     let data = await settingsDB.listOfAllUsers();
     let pageTitle = "Liste des utilisateurs";
+    console.log("USERS : ", data);
     params = {
         pageTitle: pageTitle,
         data: data,
@@ -226,14 +227,14 @@ router.get('/Inbox', async (req, res) => {
     let data = await stats.userNotificationList(Username);
     let UserList = await settingsDB.listOfAllUsers();
     let unRead = await settingsDB.userNotificationUnRead(Username);
-    let pageTitle = "Notifications "+unRead;
+    let pageTitle = "Notifications " + unRead;
     params = {
         pageTitle: pageTitle,
         notifications: data,
         UserList: UserList,
         UserData: req.session.UserData,
         CountNotifications: unRead,
-        UnreadMessage : unRead,
+        UnreadMessage: unRead,
         page: 'Inbox'
     };
     res.render('setting/inbox', params);

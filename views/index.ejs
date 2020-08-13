@@ -12,12 +12,13 @@
     <link rel="stylesheet" type="text/css" href="assets/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="assets/css/font-awesome.min.css">
     <link rel="stylesheet" type="text/css" href="assets/css/style.css">
-    
+
     <!--[if lt IE 9]>
 		<script src="assets/js/html5shiv.min.js"></script>
 		<script src="assets/js/respond.min.js"></script>
 	<![endif]-->
 </head>
+
 <body>
     <div class="main-wrapper">
         <!-- HEADER -->
@@ -75,25 +76,29 @@
                     </div>
 
                     <div class="col-md-6 col-sm-6 col-lg-6 col-xl-3">
-                        <div class="dash-widget">
-                            <span class="dash-widget-bg2"><i class="fa fa-user-o"></i></span>
-                            <div class="dash-widget-info text-right">
-                                <h3><%=stats.NbPatientsActif%></h3>
-                                <span class="widget-title2">Patients <i class="fa fa-check"
-                                        aria-hidden="true"></i></span>
+                        <a href="/patients">
+                            <div class="dash-widget">
+                                <span class="dash-widget-bg2"><i class="fa fa-user-o"></i></span>
+                                <div class="dash-widget-info text-right">
+                                    <h3><%=stats.NbPatientsActif%></h3>
+                                    <span class="widget-title2">Patients <i class="fa fa-check"
+                                            aria-hidden="true"></i></span>
+                                </div>
                             </div>
-                        </div>
+                        </a>
                     </div>
                     <div class="col-md-6 col-sm-6 col-lg-6 col-xl-3">
-                        <div class="dash-widget">
-                            <span class="dash-widget-bg5"> <img src="assets/img/stock2.png" width="40" height="40"
-                                    alt=""> </span>
-                            <div class="dash-widget-info text-right">
-                                <h3><%=stats.TotProduct%></h3>
-                                <span class="widget-title3">Matériaux <i class="fa fa-check"
-                                        aria-hidden="true"></i></span>
+                        <a href="/materiaux">
+                            <div class="dash-widget">
+                                <span class="dash-widget-bg5"> <img src="assets/img/stock2.png" width="40" height="40"
+                                        alt=""> </span>
+                                <div class="dash-widget-info text-right">
+                                    <h3><%=stats.TotProduct%></h3>
+                                    <span class="widget-title3">Matériaux <i class="fa fa-check"
+                                            aria-hidden="true"></i></span>
+                                </div>
                             </div>
-                        </div>
+                        </a>
                     </div>
 
                     <div class="col-md-6 col-sm-6 col-lg-6 col-xl-3">
@@ -133,7 +138,8 @@
                             <div class="card-body">
                                 <div class="chart-title">
                                     <h4>Demande d'examens</h4>
-                                    <span class="float-right"><i class="<%=stats.classVal%>" aria-hidden="true"></i> <%=stats.comment%></span>
+                                    <span class="float-right"><i class="<%=stats.classVal%>" aria-hidden="true"></i>
+                                        <%=stats.comment%></span>
                                 </div>
                                 <canvas id="linegraph"></canvas>
                             </div>
@@ -148,8 +154,10 @@
                                     <h4>Patients</h4>
                                     <div class="float-right">
                                         <ul class="chat-user-total">
-                                            <li><i class="fa fa-circle status-blue" aria-hidden="true"></i> Cette année</li>
-                                            <li><i class="fa fa-circle status-orange" aria-hidden="true"></i> Année passée</li>
+                                            <li><i class="fa fa-circle status-blue" aria-hidden="true"></i> Cette
+                                                année</li>
+                                            <li><i class="fa fa-circle status-orange" aria-hidden="true"></i> Année
+                                                passée</li>
                                         </ul>
                                     </div>
                                 </div>

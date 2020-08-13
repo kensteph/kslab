@@ -1,6 +1,6 @@
 const con = require('./database');
 const helpers = require('../helpers/helpers');
-module.exports = {
+var self = module.exports = {
     //Save Teacher in the DB
     async savePatient(req, res) {
         //DATA RECEIVING
@@ -11,7 +11,7 @@ module.exports = {
         fullname = firstName + " " + lastName;
         gender = req.body.gender;
         let dateOfBirth = null;
-        if(req.body.datenais.length>=8){
+        if (req.body.datenais.length >= 8) {
             dateOfBirth = helpers.formatDate(req.body.datenais, "EN");
         }
         let age_manuel = req.body.ageManuel;
@@ -24,10 +24,10 @@ module.exports = {
             con.beginTransaction(function (err) {
                 if (err) { throw err; }
                 //Insert info into personne table
-                let sql  ="";
-                if(dateOfBirth == null){
+                let sql = "";
+                if (dateOfBirth == null) {
                     sql = "INSERT INTO tb_personnes (prenom,nom,sexe,age_manuel,adresse,telephone,email) VALUES ('" + firstName + "','" + lastName + "','" + gender + "'," + age_manuel + ",'" + adresse + "','" + phone + "','" + email + "')";
-                }else{
+                } else {
                     sql = "INSERT INTO tb_personnes (prenom,nom,sexe,date_nais,age_manuel,adresse,telephone,email) VALUES ('" + firstName + "','" + lastName + "','" + gender + "','" + dateOfBirth + "'," + age_manuel + ",'" + adresse + "','" + phone + "','" + email + "')";
                 }
                 con.query(sql, function (err, result) {
@@ -37,7 +37,7 @@ module.exports = {
                             msg = {
                                 type: "danger",
                                 error: true,
-                                msg: "<font color='red'>Une erreur est survenue. S'il vous plait réessayez.</font>"+ err
+                                msg: "<font color='red'>Une erreur est survenue. S'il vous plait réessayez.</font>" + err
                             }
                             resolve(msg);
                         });
@@ -98,17 +98,53 @@ module.exports = {
     //Load All The Courses Categories
     listOfAllPatients: async function () {
         let promise = new Promise((resolve, reject) => {
-            let sql = "SELECT *,CONCAT(prenom,' ',nom) as fullname,DATEDIFF( NOW(), date_nais )/365 as age FROM tb_personnes, tb_patients WHERE tb_patients.id_personne = tb_personnes.id";
+            let infoList = [];
+            let sql = "SELECT *,CONCAT(prenom,' ',nom) as fullname,DATEDIFF( NOW(), date_nais )/365 as age FROM tb_personnes, tb_patients WHERE tb_patients.id_personne = tb_personnes.id ";
+            //console.log(sql+" ID : "+id_personne);
             con.query(sql, function (err, rows) {
                 if (err) {
-                    // conso err;
+                    //throw err;
+                    resolve([{ fullname: "" }]);
                 } else {
-                    resolve(rows);
+                    for (info of rows) {
+                        let date_nais_fr = "à préciser";
+                        let age = 0;
+                        if (info.date_nais != null) {
+                            date_nais_fr = helpers.formatDate(info.date_nais, "FR");
+                            age = helpers.personAge(info.date_nais);
+                        }
+
+                        if (info.age_manuel != null) {
+                            age = info.age_manuel;
+                        }
+                        // console.log("AGE CLT : ", age);
+                        let patient = {
+                            id: info.id,
+                            fullname: info.fullname,
+                            prenom: info.prenom,
+                            nom: info.nom,
+                            sexe: info.sexe,
+                            date_nais: info.date_nais,
+                            date_nais_fr: date_nais_fr,
+                            adresse: info.adresse,
+                            telephone: info.telephone,
+                            email: info.email,
+                            statut: info.statut,
+                            visible: info.visible,
+                            id_personne: info.id_personne,
+                            numero_patient: info.numero_patient,
+                            date_ajout: info.date_ajout,
+                            age: age,
+                        };
+                        infoList.push(patient);
+                    }
+
+                    resolve(infoList);
                 }
             });
         });
         data = await promise;
-        //console.log(data); 
+        //console.log(data);
         return data;
     },
     //Load All The Courses Categories
@@ -122,34 +158,41 @@ module.exports = {
                     resolve([{ fullname: "" }]);
                 } else {
                     let info = rows[0];
-                    let date_nais_fr ="à préciser";
-                    if(info.date_nais != null){
-                        date_nais_fr = helpers.formatDate(info.date_nais,"FR");
+                    console.log("PATIENT : ", info);
+                    let age = 0;
+                    let date_nais_fr = "à préciser";
+                    if (info.date_nais != null) {
+                        date_nais_fr = helpers.formatDate(info.date_nais, "FR");
+                        age = info.age.toFixed(1); //helpers.personAge(info.date_nais);
+                        //UPDATE AGE_MANUEL IF WE HAVE THE DOB
+                        self.updatePersonneAge(age, info.id);
+                    } else {
+                        age = info.age_manuel;
                     }
+
                     let patient = {
-                        id : info.id,
-                        fullname : info.fullname,
-                        prenom : info.prenom,
-                        nom : info.nom,
-                        sexe : info.sexe,
-                        date_nais : info.date_nais,
-                        date_nais_fr : date_nais_fr,
-                        adresse : info.adresse,
-                        telephone : info.telephone,
-                        email : info.email,
-                        statut : info.statut,
-                        visible : info.visible,
-                        id_personne : info.id_personne,
-                        numero_patient : info.numero_patient,
-                        date_ajout : info.date_ajout,
-                        age : info.age_manuel,
+                        id: info.id,
+                        fullname: info.fullname,
+                        prenom: info.prenom,
+                        nom: info.nom,
+                        sexe: info.sexe,
+                        date_nais: info.date_nais,
+                        date_nais_fr: date_nais_fr,
+                        adresse: info.adresse,
+                        telephone: info.telephone,
+                        email: info.email,
+                        statut: info.statut,
+                        visible: info.visible,
+                        id_personne: info.id_personne,
+                        numero_patient: info.numero_patient,
+                        date_ajout: info.date_ajout,
+                        age: age,
                     };
                     resolve(patient);
                 }
             });
         });
         data = await promise;
-        //console.log(data);
         return data;
     },
 
@@ -202,7 +245,7 @@ module.exports = {
         fullname = firstName + " " + lastName;
         gender = req.body.gender;
         let dateOfBirth = null;
-        if(req.body.datenais.length>=8){
+        if (req.body.datenais.length >= 8) {
             dateOfBirth = helpers.formatDate(req.body.datenais, "EN");
         }
         let age_manuel = req.body.ageManuel;
@@ -211,22 +254,22 @@ module.exports = {
         status = req.body.status;
         email = req.body.email;
         id_personne = req.body.patientID;
-        
+
         let promise = new Promise((resolve, reject) => {
             let sql = "";
-            let params =[];
-            if(dateOfBirth == null){
-                 params = [firstName, lastName, gender,age_manuel, adresse, phone, status, email, id_personne];
-               sql = "UPDATE tb_personnes SET prenom = ?,nom =? ,sexe =? ,age_manuel =? ,adresse =? ,telephone =?,statut =?,email=? WHERE id =?";
-            }else{
-                 params = [firstName, lastName, gender, dateOfBirth,age_manuel, adresse, phone, status, email, id_personne];
+            let params = [];
+            if (dateOfBirth == null) {
+                params = [firstName, lastName, gender, age_manuel, adresse, phone, status, email, id_personne];
+                sql = "UPDATE tb_personnes SET prenom = ?,nom =? ,sexe =? ,age_manuel =? ,adresse =? ,telephone =?,statut =?,email=? WHERE id =?";
+            } else {
+                params = [firstName, lastName, gender, dateOfBirth, age_manuel, adresse, phone, status, email, id_personne];
                 sql = "UPDATE tb_personnes SET prenom = ?,nom =? ,sexe =? ,date_nais =?,age_manuel =? ,adresse =? ,telephone =?,statut =?,email=? WHERE id =?";
             }
-                //console.log(sql + " ID : " + id_personne);
+            //console.log(sql + " ID : " + id_personne);
             con.query(sql, params, function (err, rows) {
                 if (err) {
                     resolve({
-                        msg: "<font color='red'> <strong>Une erreur est survenue. S'il vous palit réessayez.</strong></font>"+err,
+                        msg: "<font color='red'> <strong>Une erreur est survenue. S'il vous palit réessayez.</strong></font>" + err,
                         error: "danger",
                         debug: err
                     });
@@ -234,7 +277,35 @@ module.exports = {
                     resolve({
                         msg: "<font color='green'> <strong>Les informations concernant " + fullname + " ont été modifiées avec succès.</strong></font>",
                         success: true,
-                        patientID : id_personne,
+                        patientID: id_personne,
+                    });
+                }
+            });
+        });
+        data = await promise;
+        //console.log(data);
+        return data;
+    },
+
+    //UPDATE INFO PATIENT
+    updatePersonneAge: async function (age, id_personne) {
+
+        let promise = new Promise((resolve, reject) => {
+            let sql = "";
+            sql = "UPDATE tb_personnes SET age_manuel =? WHERE id =?";
+
+            con.query(sql, [age, id_personne], function (err, rows) {
+                if (err) {
+                    resolve({
+                        msg: "<font color='red'> <strong>Une erreur est survenue. S'il vous palit réessayez.</strong></font>" + err,
+                        error: "danger",
+                        debug: err
+                    });
+                } else {
+                    resolve({
+                        msg: "<font color='green'> <strong>L'age a été modifiées avec succès.</strong></font>",
+                        success: true,
+                        patientID: id_personne,
                     });
                 }
             });

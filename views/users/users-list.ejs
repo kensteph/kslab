@@ -61,9 +61,13 @@
 									<% data.forEach((patient) => {
 										let active_desact = "Désactiver";
 										let action = 0;
+										let age = 0;
 										if(patient.statut == 0){
 											active_desact = "Activer";
 											action = 1;
+										}
+										if(patient.age!= null){
+											age = patient.age.toFixed(1);
 										}
 									%>
 									<tr id="row<%= patient.id %>">
@@ -71,7 +75,7 @@
 										<td><%= patient.user_name %></td>
 										<td><%= patient.id_employe %></td>
 										<td><%= patient.sexe %></td>
-										<td title="<%= patient.date_nais %>"><%= patient.age.toFixed(1) %></td>
+										<td title="<%= patient.date_nais %>"><%= age %></td>
 										<td><%= patient.adresse %></td>
 										<td><%= patient.telephone %></td>
 										<td><%= patient.email %></td>

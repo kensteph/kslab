@@ -85,8 +85,9 @@
                             <table id="dtBasicExample" class="table table-striped">
                                 <thead>
                                     <tr>
-                                        <th>Numéro Lot</th>
                                         <th>Matériau</th>
+                                        <th>Stock</th>
+                                        <th>Lot</th>
                                         <th>Date réception</th>
                                         <th>Date expiration</th>
                                         <th>Qté initiale</th>
@@ -110,9 +111,11 @@
                                             type = "red";
                                             nb_jours_restant = "Expiré ("+Math.abs(nb_jours_restant)+")";
                                         }
+
+                                        let stockInfo = JSON.stringify(stock);
                                      %>
-                                    <tr id="rowStock<%=stock.stock_id%>" title="<%=stock.nom_materiau+' | '+stock.numero_lot%>">
-                                        <td><%=stock.numero_lot%></td>
+                                    <tr id="rowStock<%=stock.stock_id%>"
+                                        title="<%=stock.nom_materiau+' | '+stock.numero_lot%>">
                                         <td>
                                             <% if(UserData.user_sub_menu_access.includes("Ajouter Stock") || UserData.user_sub_menu_access[0]=="All"){%>
                                             <a href="/materiaux?mat=<%=stock.id%>"><%=stock.nom_materiau%></a>
@@ -120,6 +123,8 @@
                                             <%= stock.nom_materiau %>
                                             <% } %>
                                         </td>
+                                        <td><%=stock.stock_id%></td>
+                                        <td><%=stock.numero_lot%></td>
                                         <td><%=stock.date_recue%></td>
                                         <td><%=stock.date_expiration%></td>
                                         <td><%=stock.qte_recue%></td>
@@ -138,11 +143,16 @@
                                                     <% if(UserData.user_sub_menu_access.includes("Requete Ajouter/Retirer article du Stock") || UserData.user_sub_menu_access[0]=="All"){%>
                                                     <a class="dropdown-item" href="#" title="Mouvement de Stock"
                                                         id="btnStock<%=stock.id%>"
-                                                        onclick="launchStockManagement('<%=stock.nom_materiau%>','<%=stock.id%>','<%=stock.numero_lot%>')"><i
+                                                        onclick="launchStockManagement('<%=stock.nom_materiau%>','<%=stock.id%>','<%=stock.numero_lot%>','<%=stock.stock_id%>')"><i
                                                             class="fa fa-plus-square m-r-5"></i> <i
                                                             class="fa fa-minus-square m-r-5"></i> Ajout/retrait</a>
                                                     <% } %>
 
+                                                    <% if(UserData.user_sub_menu_access.includes("Valider/Invalider Stock") || UserData.user_sub_menu_access[0]=="All"){%>
+                                                    <a class="dropdown-item" href="#"
+                                                        onclick="launchEditStock('<%=stockInfo%>')"><i
+                                                            class="fa fa-pencil m-r-5"></i> Modifier Stock</a>
+                                                    <% } %>
                                                     <% if(UserData.user_sub_menu_access.includes("Valider/Invalider Stock") || UserData.user_sub_menu_access[0]=="All"){%>
                                                     <a class="dropdown-item" href="#"
                                                         onclick="launchStocValide('<%=stock.stock_id%>','<%=stock.nom_materiau%>','<%=stock.numero_lot%>','<%=stock.statut%>')"><i
@@ -150,10 +160,10 @@
                                                     <% } %>
 
                                                     <% if(UserData.user_sub_menu_access.includes("Supprimer Stock") || UserData.user_sub_menu_access[0]=="All"){%>
-                                                        <a class="dropdown-item" href="#"
-                                                            onclick="launchDeleteStock('<%=stock.stock_id%>','<%=stock.nom_materiau%>','<%=stock.numero_lot%>','<%=stock.materiau%>','<%=stock.qte_restante%>')"><i
-                                                                class="fa fa-trash-o m-r-5"></i> Supprimer</a>
-                                                        <% } %>
+                                                    <a class="dropdown-item" href="#"
+                                                        onclick="launchDeleteStock('<%=stock.stock_id%>','<%=stock.nom_materiau%>','<%=stock.numero_lot%>','<%=stock.materiau%>','<%=stock.qte_restante%>')"><i
+                                                            class="fa fa-trash-o m-r-5"></i> Supprimer</a>
+                                                    <% } %>
                                                 </div>
                                             </div>
                                         </td>
@@ -167,6 +177,70 @@
             </div>
 
         </div>
+
+        <div id="EditStock" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content modal-md">
+                    <div class="modal-header">
+                        <h5 class="modal-title"><strong id="materiauName"></strong></h5>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="EditStockForm">
+                            <input type="hidden" id="oldInfo" name="oldInfo">
+                            <div class="form-inline">
+                                <div class="col-sm-6 col-md-6 col-lg-6">
+                                    <label>Date reçue <span class="text-danger">*</span></label>
+                                    <div class="cal-icon">
+                                        <input required class="form-control datetimepicker" type="text" name="dateRecue"
+                                            id="dateRecue">
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-6 col-md-6 col-lg-6">
+                                    <label>Date d'expiration <span class="text-danger"></span></label>
+                                    <div class="cal-icon">
+                                        <input class="form-control datetimepicker" type="text" name="dateExpiration"
+                                            id="dateExpiration">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-inline">
+                                <div class="col-sm-6 col-md-6 col-lg-6">
+                                    <label>Quantité reçue <span class="text-danger">*</span></label>
+                                    <input required onclick="select()" class="form-control" type="number" min="1"
+                                        name="qteRecue" id="qteRecue">
+                                </div>
+                                <div class="col-sm-6 col-md-6 col-lg-6">
+                                    <label>Quantité endommagée <span class="text-danger">*</span></label>
+                                    <input onclick="select()" class="form-control" type="number" min="0"
+                                        name="qteEndomage" id="qteEndomage">
+                                </div>
+                            </div>
+                            <div class="form-inline">
+                                <div class="col-sm-6 col-md-6 col-lg-6">
+                                    <label>Quantité utilisée <span class="text-danger">*</span></label>
+                                    <input required onclick="select()" class="form-control" type="number" min="0"
+                                        name="qteUtilise" id="qteUtilise">
+                                </div>
+                                <div class="col-sm-6 col-md-6 col-lg-6">
+                                    <label>Quantité restante <span class="text-danger">*</span></label>
+                                    <input onclick="select()" class="form-control" type="number" min="0"
+                                        name="qteRestante" id="qteRestante">
+                                </div>
+                            </div>
+                            <div id="notifyStockUp" class="m-t-20 text-center"></div>
+                            <div class="m-t-20 text-center">
+                                <button class="btn btn-primary submit-btn">Modifier le stock</button>
+                            </div>
+                        </form>
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
         <div id="addRemoveUnit" class="modal fade" role="dialog">
             <div class="modal-dialog">
                 <div class="modal-content modal-md">
@@ -179,6 +253,7 @@
                             <input type="hidden" id="materiauId" name="materiauId">
                             <input type="hidden" id="materiau" name="materiauName">
                             <input type="hidden" id="lot" name="lot">
+                            <input type="hidden" id="stock_ID" name="stock_ID">
                             <div class="form-inline">
                                 <div class="col-sm-6 col-md-6 col-lg-6">
                                     <label>Type transaction</label>
@@ -209,7 +284,6 @@
                 </div>
             </div>
         </div>
-
         <div id="stockValide" class="modal fade delete-modal" role="dialog">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
@@ -275,17 +349,37 @@
             //NOTIFY THE CHANGE
             socket.emit('test', 'New Request!');
         });
-        function launchStockManagement(matName, matId, lot) {
+        $("#EditStockForm").submit(function (e) {
+            e.preventDefault();
+            editStock();
+        });
+        function launchEditStock(StockInfos) {
+            $("#oldInfo").val(StockInfos);
+            StockInfo = JSON.parse(StockInfos);
+            console.log(StockInfo);
+            // $("#btnAddOrRemove").prop("disabled", false);
+            $("#materiauName").html(StockInfo.nom_materiau + " | " + StockInfo.numero_lot);
+            $("#qteRecue").val(StockInfo.qte_recue);
+            $("#qteEndomage").val(StockInfo.qte_endomage);
+            $("#qteUtilise").val(StockInfo.qte_utilisee);
+            $("#qteRestante").val(StockInfo.qte_restante);
+            $("#dateRecue").val(formatDate(StockInfo.date_recue, "FR"));
+            $("#dateExpiration").val(formatDate(StockInfo.date_expiration, "FR"));
+            // $("#StockSelected").val(lot);
+            $("#EditStock").modal();
+        }
+        function launchStockManagement(matName, matId, lot, stock_ID) {
             $("#btnAddOrRemove").prop("disabled", false);
             $("#notifyStock").show().html("");
             $("#materiauName").html(matName + "-" + lot);
             $("#qte").val("");
             $("#materiauId").val(matId);
+            $("#stock_ID").val(stock_ID);
             $("#materiau").val(matName);
             $("#lot").val(lot);
             $("#addRemoveUnit").modal();
         }
-        function launchStocValide(stockID,matName , lot, statut) {
+        function launchStocValide(stockID, matName, lot, statut) {
             $("#stock_id").val(stockID);
             $("#stockIdName").html(matName + "-" + lot);
             $("#stock_Name").val(matName + "-" + lot);
@@ -327,10 +421,10 @@
                 }
             });
         }
-    
-        function launchDeleteStock(stockID, stockName,lot,materiauId,qteRestante) {
+
+        function launchDeleteStock(stockID, stockName, lot, materiauId, qteRestante) {
             $("#StockNameDelete").html("" + stockName + " | " + lot);
-            $("#stockName").val("" + stockName + "|" + lot +"|"+materiauId+"|"+qteRestante);
+            $("#stockName").val("" + stockName + "|" + lot + "|" + materiauId + "|" + qteRestante);
             $("#stockID").val(stockID);
             $("#DeleteRequest").modal();
         }
@@ -348,6 +442,21 @@
                 }
             });
         }
+
+        editStock = function () {
+            let formData = $("#EditStockForm").serialize();
+            $.post("/edit-stock", formData, function (data) {
+                console.log(data);
+                if (data.success) { //Success 
+                    $('#EditStock').modal('hide');
+                    window.location.replace("/inventaire?stockSelected=" + data.stockSelected);
+                } else {
+                    $("#notifyStockUp").html(data.error);
+                }
+            });
+        }
+
+
 
     </script>
     <!-- FOOTER -->

@@ -72,7 +72,11 @@ router.get('/inventaire', async (req, res) => {
     } else if (statut == "Valide") {
         data = await stockDB.listOfAllValidStock(materiauSelected);
     } else {
-        data = await stockDB.listOfAllStock(materiauSelected);
+        if (req.query.stockSelected) {
+            data = await stockDB.stockById(req.query.stockSelected);
+        } else {
+            data = await stockDB.listOfAllStock(materiauSelected);
+        }
     }
     await stockDB.stockToNotify(global.NBJOUR_STOCK_ALERT);
     statut_text = statut != "All" ? statut + "s" : "";
@@ -92,7 +96,7 @@ router.get('/inventaire', async (req, res) => {
 
 //INVENTAIRE POST
 router.post('/inventaire', async (req, res) => {
-    console.log(req.body);
+    console.log(req.query.stockSelected);
     let statut = 'All';
     let materiauSelected = 'All';
     if (req.body.statut) { statut = req.body.statut; }
@@ -105,7 +109,11 @@ router.post('/inventaire', async (req, res) => {
     } else if (statut == "Valide") {
         data = await stockDB.listOfAllValidStock(materiauSelected);
     } else {
-        data = await stockDB.listOfAllStock(materiauSelected);
+        if (req.query.stockSelected) {
+            data = await stockDB.stockById(req.query.stockSelected);
+        } else {
+            data = await stockDB.listOfAllStock(materiauSelected);
+        }
     }
     statut_text = statut != "All" ? statut + "s" : "";
     let pageTitle = "Inventaire des stocks " + statut_text;
@@ -201,6 +209,7 @@ router.post('/add-stock', async (req, res) => {
 router.post('/add-remove-stock', async (req, res) => {
     //console.log(req.body);
     let numero_lot = req.body.lot;
+    let stock_ID = req.body.stock_ID;
     let materiauId = req.body.materiauId;
     let materiauName = req.body.materiauName;
     let transactionType = req.body.type;
@@ -211,7 +220,7 @@ router.post('/add-remove-stock', async (req, res) => {
     let notifications = {};
     if (UserData.user_sub_menu_access.includes("Autoriser Ajouter/Retirer article du Stock") || UserData.user_sub_menu_access[0] == "All") {
         //Si l'utiisateur a le droit de retirer ou ajouter du stock sans demande d'autorisation
-        notifications = await stockDB.RemoveItemFromStock(con, numero_lot, materiauId, materiauName, transactionType, qte, commentaire, user, id_test_request = -1);
+        notifications = await stockDB.RemoveItemFromStock(con, numero_lot, stock_ID, materiauId, materiauName, transactionType, qte, commentaire, user, id_test_request = -1);
     } else {
         //Dans le cas contraire demande de retrait/ajout
         console.log("Demande en attente d'approbation...");
@@ -235,6 +244,24 @@ router.post('/delete-stock', async (req, res) => {
     res.json(notifications);
 });
 
+//CANCEL TRANSACTION
+router.post('/cancel-transaction', async (req, res) => {
+    let info = JSON.parse(req.body.formData);
+    console.log("DATA POSTED : ", info);
+    // let notifications = await stockDB.deleteStock(req);
+    // res.json(notifications);
+});
+
+//EDIT STOCK
+router.post('/edit-stock', async (req, res) => {
+    let info = JSON.parse(req.body.oldInfo);
+    let StockID = info.stock_id;
+    let newDta = req.body;
+    let user = req.session.username;
+    let notifications = await stockDB.updateStock(StockID, newDta, user);
+    console.log("RESPONSE : ", notifications);
+    res.json(notifications);
+});
 
 //APPROVED OR REJECTED A REQUEST ADD OR REMOVE ITEM FROM STOVK
 router.post('/approved-rejected', async (req, res) => {
@@ -460,7 +487,7 @@ router.post("/print-materiaux-usage", async (req, res) => {
     console.log(req.body);
     let dateFrom = req.body.DateFrom;
     let dateTo = req.body.DateTo;
-    let data = await stockDB.materiauxUsageForPeriod(dateFrom,dateTo);
+    let data = await stockDB.materiauxUsageForPeriod(dateFrom, dateTo);
     let dateN = helpers.getCurrentDate();
     let text_date = "";
     if (dateFrom == dateTo) {
@@ -468,7 +495,7 @@ router.post("/print-materiaux-usage", async (req, res) => {
     } else {
         text_date = "du " + helpers.formatDate(dateFrom, "FR") + " au " + helpers.formatDate(dateTo, "FR");
     }
-    let pageTitle = "Rapport d'utilisation des matériaux "+ text_date;
+    let pageTitle = "Rapport d'utilisation des matériaux " + text_date;
     let report = "usage-materiau-" + dateN;
     let filename = report + ".pdf";
     let pathfile = "./tmp/" + filename;

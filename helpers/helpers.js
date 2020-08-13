@@ -1,7 +1,17 @@
 var mkdirp = require('mkdirp');
 var fs = require('fs');
+var exec = require('child_process').exec;
+
 
 var self = module.exports = {
+    //EXECUTE AN EXE FILE
+    excuteApp: function (path) {
+        console.log("fun() start");
+        exec(path, function (err, data) {
+            console.log("ERROR : ", err)
+            console.log(data.toString());
+        });
+    },
     //Generate Code for the Student
     generateCode: function (initial, idPersonne) {
         var dt = new Date();
@@ -130,7 +140,7 @@ var self = module.exports = {
         let birthday = new Date(dob);
         const diff = Date.now() - birthday.getTime();
         const ageDate = new Date(diff);
-        return Math.abs(ageDate.getUTCFullYear() - 1970);
+        return (ageDate.getUTCFullYear() - 1970);
     },
     startOfWeek(date) {
         var diff = date.getDate() - date.getDay() + (date.getDay() === 0 ? -6 : 1);
@@ -138,16 +148,16 @@ var self = module.exports = {
         return new Date(date.setDate(diff));
 
     },
-getStartAndEndDateOfTheWeekFromDate(givenDate){
-    let date = new Date(givenDate);
-    let sd = self.startOfWeek(date);
-    //On ajoute x jours
-    let startDate = sd.getFullYear() + '-' + (sd.getMonth() + 1) + '-' + sd.getDate();
-    sd.setDate(sd.getDate()+6);
-    let endDate = sd.getFullYear() + '-' + (sd.getMonth() + 1) + '-' + sd.getDate();
-    let info=[startDate , endDate];
-    console.log("First week day : "+info);
-},
+    getStartAndEndDateOfTheWeekFromDate(givenDate) {
+        let date = new Date(givenDate);
+        let sd = self.startOfWeek(date);
+        //On ajoute x jours
+        let startDate = sd.getFullYear() + '-' + (sd.getMonth() + 1) + '-' + sd.getDate();
+        sd.setDate(sd.getDate() + 6);
+        let endDate = sd.getFullYear() + '-' + (sd.getMonth() + 1) + '-' + sd.getDate();
+        let info = [startDate, endDate];
+        console.log("First week day : " + info);
+    },
     createFolder(full_path_directory) {
         //Check if a directory is exists
         fs.access(full_path_directory, function (error) {

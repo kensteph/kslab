@@ -10,10 +10,11 @@ const cron = require("node-cron");
 const stockDB = require('./controllers/stockController');
 const fileupload = require('express-fileupload');
 const session = require('express-session');
+const auth = require('./middleware/auth');
 
 //LIVE COMMUNICATION
 const http = require('http').Server(app);
-const  io = require('socket.io')(http);
+const io = require('socket.io')(http);
 //Uses
 app.use(express.static('public')); // All our static files
 app.use(express.static(path.join(__dirname, '/public')));
@@ -32,6 +33,9 @@ app.use(require('./routes/examen'));
 app.use(require('./routes/stock'));
 app.use(require('./routes/setting'));
 app.use(require('./routes/print'));
+// app.use(function (req, res) {
+//     res.send(404);
+// });
 
 //Entry Point
 app.get('/', async (req, res) => {
@@ -63,7 +67,7 @@ app.get('/', async (req, res) => {
     global.USER_HOME_PAGE = '/Inbox';//Default for sample User
     //MENU ACCESS
     global.MENU_ITEM = ['Tableau de bord', 'Test Patient', 'Test Laboratoire', 'Patients', 'Examens', 'Gestion de stock', 'Paramètres', 'Administration'];
-    global.SUBMENU_ITEM = ['Ajouter Patient', 'Liste des Patients', 'Modifier Patients', 'Rechercher Patient', 'Liste des demandes de Tests','Supprimer une demandes de Test','Enregistrer Résultat','Modifier Résultat','Valider Résultat','Ajouter Signature','Imprimer Résultat', 'Ajouter examens', 'Voir la liste des examens','Supprimer examens', 'Modifier examens','Ajouter valeurs normales','Détails Examens','Ajouter Matériau','Modifier Matériau','Lister les matériaux','Ajouter Stock','Inventaire','Imprimer Inventaire','Requete Ajouter/Retirer article du Stock','Autoriser Ajouter/Retirer article du Stock','Approuver requete relative au stock','Voir la liste des requetes de stock','Valider/Invalider Stock','Supprimer Stock','Mouvement de stock','Imprimer Mouvement de Stock'];
+    global.SUBMENU_ITEM = ['Ajouter Patient', 'Liste des Patients', 'Modifier Patients', 'Rechercher Patient', 'Liste des demandes de Tests', 'Supprimer une demandes de Test', 'Enregistrer Résultat', 'Modifier Résultat', 'Valider Résultat', 'Ajouter Signature', 'Imprimer Résultat', 'Ajouter examens', 'Voir la liste des examens', 'Supprimer examens', 'Modifier examens', 'Ajouter valeurs normales', 'Détails Examens', 'Ajouter Matériau', 'Modifier Matériau', 'Lister les matériaux', 'Ajouter Stock', 'Inventaire', 'Imprimer Inventaire', 'Requete Ajouter/Retirer article du Stock', 'Autoriser Ajouter/Retirer article du Stock', 'Approuver requete relative au stock', 'Voir la liste des requetes de stock', 'Valider/Invalider Stock', 'Supprimer Stock', 'Mouvement de stock', 'Imprimer Mouvement de Stock'];
     res.render('login');
 });
 //Exit Point
@@ -78,14 +82,14 @@ app.get('/logout', async (req, res) => {
 });
 
 //CHANGE PASSWORD
-app.get('/change-pwd', async (req, res) => {
+app.get('/change-pwd', auth, async (req, res) => {
     if (typeof req.session.UserData != "undefined") {
         res.render('users/change-pwd', { UserData: req.session.UserData });
     } else {
         res.redirect('/');
     }
 });
-app.post('/change-pwd', async (req, res) => {
+app.post('/change-pwd', auth, async (req, res) => {
     console.log(req.body);
     let user = req.body.user_id;
     let Opass = req.body.Opass;
@@ -138,35 +142,35 @@ app.post('/login', async (req, res) => {
         //console.log("SESSION ID " + req.session.UserData.user_sub_menu_access);
 
         //REAL TIME INFORMATIONS
-io.on('connection', async function(socket){
-    console.log("User " + user_name+" is connected..." );
-    await stats.updateNbStockRequest(io);
-    //UPDATE THE NUMBER OF STOCK REQUESTS MADE BY USERS WHEN A REQUEST IS MADE
-    socket.on('updateNbRequestsStock',async function(msg){
-        await stats.updateNbStockRequest(io);
-        console.log("User " + msg);
-    });
-    //UPDATE THE NUMBER OF STOCK REQUESTS MADE BY USERS EVERY 60 SECS
-    setTimeout( async() => {
-        await stats.updateNbStockRequest(io);
-        await stats.unreadUserMessage(user_name,InfoUser.id_personne,io);
-    }, 1000);
+        io.on('connection', async function (socket) {
+            console.log("User " + user_name + " is connected...");
+            await stats.updateNbStockRequest(io);
+            //UPDATE THE NUMBER OF STOCK REQUESTS MADE BY USERS WHEN A REQUEST IS MADE
+            socket.on('updateNbRequestsStock', async function (msg) {
+                await stats.updateNbStockRequest(io);
+                console.log("User " + msg);
+            });
+            //UPDATE THE NUMBER OF STOCK REQUESTS MADE BY USERS EVERY 60 SECS
+            setTimeout(async () => {
+                await stats.updateNbStockRequest(io);
+                await stats.unreadUserMessage(user_name, InfoUser.id_personne, io);
+            }, 1000);
 
-    //UPDATE THE NUMBER OF STOCK REQUESTS MADE BY USERS EVERY 60 SECS
-    // setTimeout( async() => {
-    //     await stats.updateNbNotifications(io);
-    // }, 5000);
+            //UPDATE THE NUMBER OF STOCK REQUESTS MADE BY USERS EVERY 60 SECS
+            // setTimeout( async() => {
+            //     await stats.updateNbNotifications(io);
+            // }, 5000);
 
-    //UPDATE THE NUMBER OF STOCK REQUESTS MADE BY USERS WHEN A REQUEST IS MADE
-    socket.on('updateNotificationCount',async function(data){
-        await stats.updateNbNotifications(io,data,{user : user_name, userId : InfoUser.id_personne});
-        await stats.unreadUserMessage(user_name,InfoUser.id_personne,io);
-        console.log(data);
-    });
+            //UPDATE THE NUMBER OF STOCK REQUESTS MADE BY USERS WHEN A REQUEST IS MADE
+            socket.on('updateNotificationCount', async function (data) {
+                await stats.updateNbNotifications(io, data, { user: user_name, userId: InfoUser.id_personne });
+                await stats.unreadUserMessage(user_name, InfoUser.id_personne, io);
+                console.log(data);
+            });
 
-    
 
-  });
+
+        });
 
         if (InfoUser.change_pass) {  // Force the User to change his password
             res.render("users/change-pwd", { page: "Home", UserData: req.session.UserData, }); // Change Password
@@ -181,7 +185,7 @@ io.on('connection', async function(socket){
     }
 });
 
-app.get('/home', async (req, res) => {
+app.get('/home', auth, async (req, res) => {
     if (typeof req.session.UserData != "undefined") {
         if (req.session.UserData.user_menu_access.includes("Tableau de bord") || req.session.UserData.user_menu_access[0] == "All") {
 
@@ -282,16 +286,16 @@ cron.schedule("0 17 * * 1-6", async function () {
     // }else{
     //     console.log("The directory is already empty...");
     // }
-        let settings = await stats.getSettings();
-        let path_back_up = settings.back_db_path;
-        let rep = helpers.DatatbaseBackup(path_back_up);
-        if (rep) {
-            msg = { success: true, msg: "<font color='green'>Sauvegarde effectuée avec succès.</font> Chemin : " + path_back_up };
-            console.log(msg);
-        } else {
-            msg = { success: false, msg: "<font color='red'>Une erreur s'est produite. Veuillez réessayer.</font>" };
-            console.log(msg);
-        }
+    let settings = await stats.getSettings();
+    let path_back_up = settings.back_db_path;
+    let rep = helpers.DatatbaseBackup(path_back_up);
+    if (rep) {
+        msg = { success: true, msg: "<font color='green'>Sauvegarde effectuée avec succès.</font> Chemin : " + path_back_up };
+        console.log(msg);
+    } else {
+        msg = { success: false, msg: "<font color='red'>Une erreur s'est produite. Veuillez réessayer.</font>" };
+        console.log(msg);
+    }
     console.log("---------------------");
 });
 
@@ -299,11 +303,11 @@ cron.schedule("0 17 * * 1-6", async function () {
 app.get('/notifications', async (req, res) => {
     let myNotifications = await stats.userNotificationList(req.session.username);
     let pageTitle = "Liste des notifications";
-    params={
+    params = {
         UserData: req.session.UserData,
-        notifications : myNotifications,
+        notifications: myNotifications,
         page: 'Home',
-        pageTitle : pageTitle,
+        pageTitle: pageTitle,
     }
     res.render('setting/notifications', params);
     //res.json(stockCritic);

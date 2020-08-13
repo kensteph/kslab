@@ -22,68 +22,67 @@
                 <strong class="line-header"><%=line2%></strong>
                 <br>
                 <% if(line3 !=""){ %>
-                 <%=line3%><br>
+                <%=line3%><br>
                 <% } %>
                 <% if(line4 !=""){ %>
-                    <%=line4%><br>
+                <%=line4%><br>
                 <% } %>
                 <% if(line5 !=""){ %>
-                    <%=line5%><br>
+                <%=line5%><br>
                 <% } %>
                 <% if(line6 !=""){ %>
-                    <%=line6%><br><br>
+                <%=line6%><br><br>
                 <% } %>
             </p>
         </div>
     </div>
-    <hr style="width: 80%; margin-top: -30px;" >
+    <hr style="width: 80%; margin-top: -30px;">
 
     <div class="row-header-table">
         <div class="title-report"><%=pageTitle%></div>
     </div>
-    
-                <table class="table-report">
-                    <thead>
-                        <tr>
-                            <th class="report">Numéro Lot</th>
-                            <th class="report" >Matériau</th>
-                            <th class="report" >Date réception</th>
-                            <th class="report">Date expiration</th>
-                            <th class="report">Qté initiale</th>
-                            <th class="report">Qté utilisée</th>
-                            <th class="report">Qté endomagée</th>
-                            <th class="report">Qté restante</th>
-                            <th class="report">Stock_min</th>
-                            <th class="report">Nbre de jours</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <% data.forEach((stock) => {
+
+    <table class="table-report">
+        <thead>
+            <tr>
+                <th class="report">Numéro Lot</th>
+                <th class="report">Matériau</th>
+                <th class="report">Date réception</th>
+                <th class="report">Date expiration</th>
+                <th class="report">Qté initiale</th>
+                <th class="report">Qté utilisée</th>
+                <th class="report">Qté endomagée</th>
+                <th class="report">Qté restante</th>
+                <th class="report">Stock_min</th>
+                <th class="report">Nbre de jours</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% data.forEach((stock) => {
                             let nb_jours_restant = stock.days;
-                            let type = "green";
                             if( nb_jours_restant <=31 && nb_jours_restant >0 ){
-                                type = "orange";
                             }else if(nb_jours_restant <=0){
-                                type = "red";
-                                nb_jours_restant = "Expiré";
+                                if(stock.date_expiration!=null){ nb_jours_restant = "Expiré";}
+                               
                             }
-                         %>
-                        <tr>
-                            <td class="report"><%=stock.numero_lot%></td>
-                            <td class="report"><%=stock.nom_materiau%></a></td>
-                            <td class="report"><%=stock.date_recue%></td>
-                            <td class="report"><%=stock.date_expiration%></td>
-                            <td class="report"><%=stock.qte_recue%></td>
-                            <td class="report"><%=stock.qte_utilisee%></td>
-                            <td class="report"><%=stock.qte_endomage%></td>
-                            <td class="report"><%=stock.qte_restante%></td>
-                            <td class="report"><%=stock.min_stock%></td>
-                            <td class="report"><%= nb_jours_restant %></td>
-                        </tr>
-                        <% }) %>
-                    </tbody>
-                </table>
- 
+                            console.log("JOURS RESTANTS : ",nb_jours_restant);
+            %>
+            <tr>
+                <td class="report"><%=stock.numero_lot%></td>
+                <td class="report"><%=stock.nom_materiau%></a></td>
+                <td class="report"><%=stock.date_recue%></td>
+                <td class="report"><%=stock.date_expiration%></td>
+                <td class="report"><%=stock.qte_recue%></td>
+                <td class="report"><%=stock.qte_utilisee%></td>
+                <td class="report"><%=stock.qte_endomage%></td>
+                <td class="report"><%=stock.qte_restante%></td>
+                <td class="report"><%=stock.min_stock%></td>
+                <td class="report"><%= nb_jours_restant %></td>
+            </tr>
+            <% }) %>
+        </tbody>
+    </table>
+
 
 </body>
 

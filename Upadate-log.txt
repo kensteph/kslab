@@ -1,21 +1,4 @@
 ===================================Database==========================
-1- NEW table 
 
-CREATE TABLE `tb_pending_stock_evolution` (
-  `id` int(11) NOT NULL,
-  `materiau_id` int(11) DEFAULT NULL,
-  `qte_a_enlever` int(11) NOT NULL,
-  `test_id` int(11) NOT NULL,
-  `request_id` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
-ALTER TABLE `tb_pending_stock_evolution`
-  ADD PRIMARY KEY (`id`);
-
-ALTER TABLE `tb_pending_stock_evolution`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;
-
-ALTER TABLE `tb_personnes` ADD `age_manuel` FLOAT NULL DEFAULT NULL AFTER `date_nais`;
-ALTER TABLE `tb_personnes` CHANGE `date_nais` `date_nais` DATE NULL DEFAULT NULL;
-ALTER TABLE `tb_stocks` CHANGE `date_expiration` `date_expiration` DATE NULL DEFAULT NULL;
+ALTER TABLE `tb_evolution_stock` ADD `stock_id` INT NULL DEFAULT NULL AFTER `id`;
 

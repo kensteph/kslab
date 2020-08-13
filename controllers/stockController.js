@@ -72,6 +72,7 @@ var self = module.exports = {
             } else {
                 sql = "SELECT * FROM tb_materiaux WHERE id=" + materiauId;
             }
+            console.log(sql);
             con.query(sql, function (err, rows) {
                 if (err) {
                     throw err;
@@ -414,8 +415,10 @@ var self = module.exports = {
                     } else {
                         let commentaire = qteRecue + " " + materiauName + " ont été ajoutés au stock. QTE endomagée : " + qteEndomage;
                         let transactionType = "add";
+                        let stock_id = result.insertId;
+                        console.log("STOCK ID : ", stock_id);
                         //Insert info into tb_evolution_stock table
-                        let sql = 'INSERT INTO tb_evolution_stock (lot,materiau,qte,transaction,commentaire,acteur) VALUES ("' + numero_lot + '","' + materiauId + '","' + qteRecue + '","' + transactionType + '","' + commentaire + '","' + user + '")';
+                        let sql = 'INSERT INTO tb_evolution_stock (stock_id,lot,materiau,qte,transaction,commentaire,acteur) VALUES (' + stock_id + ',"' + numero_lot + '","' + materiauId + '","' + qteRecue + '","' + transactionType + '","' + commentaire + '","' + user + '")';
 
                         con.query(sql, function (err, result) {
                             if (err) {
@@ -471,6 +474,94 @@ var self = module.exports = {
         console.log("RSPONSE : " + rep);
         return rep;
     },
+
+    //EDIT STOCK
+    updateStock: async function (stockID, infoStock, acteur) {
+        let promise = new Promise((resolve, reject) => {
+            let oldInfo = JSON.parse(infoStock.oldInfo);
+            console.log("OLD INFO RECUE : ", oldInfo, "NEW INFO : ", infoStock);
+            let { numero_lot, materiau, qte_recue, qte_utilisee, qte_restante, qte_endomage, transactionType, commentaire, user, request_id } = oldInfo;
+            let { qteRecue, qteUtilise, qteEndomage, qteRestante, dateRecue, dateExpiration } = infoStock;
+            console.log("LOT : ", numero_lot);
+            let date_recue = helpers.formatDate(dateRecue, "EN");
+            let date_exp = null;
+            if (dateExpiration.length >= 8) {
+                date_exp = helpers.formatDate(dateExpiration, "EN");
+                date_exp = "date_expiration='" + date_exp + "'";
+            } else {
+                date_exp = "date_expiration=null";
+            }
+            transactionType = "adjustment";
+            let oldVal = "Qte recue : " + qte_recue + " Qte utilisée : " + qte_utilisee + " Qte endomagée : " + qte_endomage + " Qte restante : " + qte_restante;
+            let newVal = "Qte recue : " + qteRecue + " Qte utilisée : " + qteUtilise + " Qte endomagée : " + qteEndomage + " Qte restante : " + qteRestante;
+            commentaire = "Ajustement du stock " + stockID + " | " + numero_lot + " ANCIENNES VALEURS : [" + oldVal + "]" + " NOUVELLES VALEURS : [" + newVal + "]";
+
+
+            //BEGIN TRANSACTION
+            con.beginTransaction(async function (err) {
+
+                let sql = "UPDATE tb_stocks SET date_recue ='" + date_recue + "'," + date_exp + ",  qte_utilisee=" + qteUtilise + ",qte_recue=" + qteRecue + ",qte_restante=" + qteRestante + ",qte_endomage=" + qteEndomage + " WHERE id=?";
+                // console.log(sql);
+                con.query(sql, stockID, function (err, rows) {
+                    if (err) {
+                        con.rollback(function () {
+                            resolve({
+                                msg: "Une erreur est survenue. S'il vous palit réessayez.",
+                                error: "danger",
+                                debug: err
+                            });
+                        });
+
+                    } else {
+                        let sql1 = 'INSERT INTO tb_evolution_stock (lot,materiau,transaction,commentaire,acteur) VALUES ("' + numero_lot + '","' + materiau + '","' + transactionType + '","' + commentaire + '","' + acteur + '")';
+
+                        con.query(sql1, function (err, result) {
+                            if (err) {
+                                con.rollback(function () {
+                                    resolve({
+                                        msg: "Une erreur est survenue. S'il vous palit réessayez.",
+                                        error: "danger",
+                                        debug: err
+                                    });
+                                });
+                            }
+                            //COMMIT IF ALL DONE COMPLETELY
+                            con.commit(async function (err) {
+                                if (err) {
+                                    con.rollback(function () {
+                                        msg = {
+                                            type: "danger",
+                                            error: true,
+                                            msg: "<font color='red'>Une erreur est survenue</font>",
+                                            debug: err
+                                        }
+                                        resolve(msg);
+
+                                    });
+                                }
+
+                                resolve({
+                                    msg: "Stock modifié avec succès...",
+                                    success: "success",
+                                    stockSelected: stockID
+                                });
+                            });
+
+
+                        });
+
+                    }
+                });
+
+            });
+            //END TRANSACTION
+
+        });
+        data = await promise;
+        //console.log(data);
+        return data;
+    },
+
 
     //Add or REMOVE ITEMS STOCK Materiau
 
@@ -662,7 +753,7 @@ var self = module.exports = {
         return data;
     },
 
-    //STOCK BY ID
+    //MATERIAU BY ID
     getMateriau: async function (id) {
         let promise = new Promise((resolve, reject) => {
             let sql = "SELECT * FROM tb_materiaux WHERE id = ? ";
@@ -680,7 +771,24 @@ var self = module.exports = {
         //console.log(data);
         return data;
     },
+
     //LIST OF STOCKS
+    stockById: async function (stockID) {
+        let promise = new Promise((resolve, reject) => {
+            let sql = "SELECT *,DATEDIFF( date_expiration , Now() ) as days,tb_stocks.id as stock_id FROM tb_stocks,tb_materiaux WHERE tb_stocks.materiau=tb_materiaux.id AND tb_stocks.id=" + stockID;
+
+            con.query(sql, function (err, rows) {
+                if (err) {
+                    throw err;
+                } else {
+                    resolve(rows);
+                }
+            });
+        });
+        data = await promise;
+        //console.log(data);
+        return data;
+    },
     //Load All stock
     listOfAllStock: async function (materiauId) {
         let promise = new Promise((resolve, reject) => {
@@ -849,9 +957,9 @@ var self = module.exports = {
         let promise = new Promise((resolve, reject) => {
             let sql = "";
             if (materiauSelected == "All") {
-                sql = "SELECT *FROM tb_evolution_stock,tb_materiaux WHERE tb_evolution_stock.materiau=tb_materiaux.id AND DATE(date_record) BETWEEN '" + dateFrom + "' AND '" + dateTo + "' AND approved=1 ORDER BY date_record ";
+                sql = "SELECT *,tb_evolution_stock.id as trans_id FROM tb_evolution_stock,tb_materiaux WHERE tb_evolution_stock.materiau=tb_materiaux.id AND DATE(date_record) BETWEEN '" + dateFrom + "' AND '" + dateTo + "' AND approved=1 ORDER BY date_record ";
             } else {
-                sql = "SELECT *FROM tb_evolution_stock,tb_materiaux WHERE tb_evolution_stock.materiau=tb_materiaux.id AND DATE(date_record) BETWEEN '" + dateFrom + "' AND '" + dateTo + "' AND materiau=" + materiauSelected + " AND approved=1 ORDER BY date_record";
+                sql = "SELECT *,tb_evolution_stock.id as trans_id FROM tb_evolution_stock,tb_materiaux WHERE tb_evolution_stock.materiau=tb_materiaux.id AND DATE(date_record) BETWEEN '" + dateFrom + "' AND '" + dateTo + "' AND materiau=" + materiauSelected + " AND approved=1 ORDER BY date_record";
             }
             //console.log(sql);
             con.query(sql, function (err, rows) {
@@ -986,12 +1094,12 @@ var self = module.exports = {
     },
     //SET STOCK STATUS
     setStockStatus: async function (req) {
-        let  stock_id = req.body.stock_id;
-        let  stock_name= req.body.stockName;
-        let  lot = req.body.lot;
-        let  statut = req.body.statut;
-        let etat= ["invalide","valide"];
-        
+        let stock_id = req.body.stock_id;
+        let stock_name = req.body.stockName;
+        let lot = req.body.lot;
+        let statut = req.body.statut;
+        let etat = ["invalide", "valide"];
+
         let promise = new Promise((resolve, reject) => {
             let sql = "UPDATE tb_stocks SET statut =" + statut + " WHERE id =?";
             con.query(sql, stock_id, function (err, rows) {
@@ -1003,7 +1111,7 @@ var self = module.exports = {
                     });
                 } else {
                     resolve({
-                        msg: "Le stock "+stock_name+" est maintenant "+etat[statut],
+                        msg: "Le stock " + stock_name + " est maintenant " + etat[statut],
                         type: "success"
                     });
                 }
