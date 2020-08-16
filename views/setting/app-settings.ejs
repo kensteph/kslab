@@ -3,6 +3,7 @@
 
 
 <!-- theme-settings24:04-->
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
@@ -29,12 +30,12 @@
                 <div class="row">
                     <div class="col-lg-8 offset-lg-2">
                         <% if(typeof update !="undefined"){ %>
-                            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                                <%= update.success %> 
-                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                    <span aria-hidden="true">×</span>
-                                </button>
-                            </div>
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            <%= update.success %>
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
                         <% } %>
                         <form method="POST" action="/settings" id="settingsForm" enctype="multipart/form-data">
                             <h4 class="page-title">Paramètres</h4>
@@ -80,7 +81,8 @@
                                     <input class="form-control" type="file" name="logo">
                                 </div>
                                 <div class="col-lg-2">
-                                    <div class="img-thumbnail float-right"><img src="data:image/jpeg;base64,<%=LOGO%>" alt="" width="40" height="40"></div>
+                                    <div class="img-thumbnail float-right"><img src="data:image/jpeg;base64,<%=LOGO%>"
+                                            alt="" width="40" height="40"></div>
                                 </div>
                             </div>
                             <div class="form-group row">
@@ -89,20 +91,31 @@
                                     <input class="form-control" type="file" name="logo_menu">
                                 </div>
                                 <div class="col-lg-2">
-                                    <div class="img-thumbnail float-right bg-dark"><img src="data:image/jpeg;base64,<%=LOGO_MENU%>" alt="" width="40" height="40"></div>
+                                    <div class="img-thumbnail float-right bg-dark"><img
+                                            src="data:image/jpeg;base64,<%=LOGO_MENU%>" alt="" width="40" height="40">
+                                    </div>
                                 </div>
                             </div>
                             <div class="form-group row">
                                 <label class="col-lg-3 col-form-label">Lieu de sauvegarde de la base de données</label>
                                 <div class="col-lg-9">
-                                    <input name="backupPath" class="form-control" value="<%=data.back_db_path%>" type="text">
+                                    <input name="backupPath" class="form-control" value="<%=data.back_db_path%>"
+                                        type="text">
                                 </div>
                             </div>
                             <h5>Affichage du nom de l'entreprise dans la barre de menu</h5>
                             <div class="form-group row">
                                 <label class="col-lg-3 col-form-label">Nom de l'entreprise</label>
                                 <div class="col-lg-9">
-                                    <input name="entreprise_name" class="form-control" value="<%=data.entreprise_name%>" type="text">
+                                    <input name="entreprise_name" class="form-control" value="<%=data.entreprise_name%>"
+                                        type="text">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-lg-3 col-form-label">Devise de l'entreprise</label>
+                                <div class="col-lg-9">
+                                    <input name="entreprise_devise" class="form-control" value="<%=data.devise%>"
+                                        type="text">
                                 </div>
                             </div>
                             <div id="notify"></div>
@@ -118,32 +131,33 @@
     </div>
     <div class="sidebar-overlay" data-reff=""></div>
     <script src="assets/js/jquery-3.2.1.min.js"></script>
-	<script src="assets/js/popper.min.js"></script>
+    <script src="assets/js/popper.min.js"></script>
     <script src="assets/js/bootstrap.min.js"></script>
     <script src="assets/js/jquery.slimscroll.js"></script>
     <script src="assets/js/app.js"></script>
 </body>
 
 <script>
-           saveSettings = function () {
-            $("#notify").show().html("");
-            let formData = $("#settingsForm").serialize();
-            $.post("/settings", formData, function (data) {
-                console.log(data);
-                if (data.success) { //Success 
-                    $("#notify").html(data.msg).fadeOut(5000);
-                } else { // already saved get the result
-                    $.post("/settings", formData, function (data1) {
-                        for(rs of data1){
-                            console.log(rs);
-                            $("#"+rs.examen_id).val(rs.resultat);
-                        }
-                        $("#notify").html(data.msg);
-                        //show the modify button and hide the save button
-                    });   
-                }
-            });
-        }
+    saveSettings = function () {
+        $("#notify").show().html("");
+        let formData = $("#settingsForm").serialize();
+        $.post("/settings", formData, function (data) {
+            console.log(data);
+            if (data.success) { //Success 
+                $("#notify").html(data.msg).fadeOut(5000);
+            } else { // already saved get the result
+                $.post("/settings", formData, function (data1) {
+                    for (rs of data1) {
+                        console.log(rs);
+                        $("#" + rs.examen_id).val(rs.resultat);
+                    }
+                    $("#notify").html(data.msg);
+                    //show the modify button and hide the save button
+                });
+            }
+        });
+    }
 </script>
 <!-- theme-settings24:05-->
+
 </html>

@@ -58,6 +58,7 @@ app.get('/', async (req, res) => {
     global.LOGO_MENU = helpers.base64("public/logo/" + settings.logo_menu);
     global.EMAIL_ENT = settings.email_ent;
     global.ENT_NAME = settings.entreprise_name;
+    global.ENT_DEVISE = settings.devise;
     global.TEST_STATUS = ['En attente', 'Enregistré', 'Validé', 'Livré'];
     global.STOCK_STATUS = ['Invalide', 'Valide'];
     global.USER_STATUS = ['Désactivé', 'Activé'];
@@ -299,6 +300,20 @@ cron.schedule("0 17 * * 1-6", async function () {
     console.log("---------------------");
 });
 
+//schedule tasks to be run on the server "* * * * *" every 30 minutes
+cron.schedule("*/30 * * * *", async function () {
+    // # ┌────────────── second (optional)
+    // # │ ┌──────────── minute
+    // # │ │ ┌────────── hour
+    // # │ │ │ ┌──────── day of month
+    // # │ │ │ │ ┌────── month
+    // # │ │ │ │ │ ┌──── day of week
+    // # │ │ │ │ │ │
+    // # │ │ │ │ │ │
+    // # * * * * * *
+    let settings = await stats.getSettings();
+    console.log("Running Cron Job", new Date(), "DATA : ", settings.line1);
+});
 //GET NOTIFICATIONS
 app.get('/notifications', async (req, res) => {
     let myNotifications = await stats.userNotificationList(req.session.username);

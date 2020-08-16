@@ -39,10 +39,11 @@
                             <%}%>
                         </h4>
                             <form id="displayResult" target="_blank" action="/display-test-result" method="POST">
-                                <input type="hidden" name="id_test_request" value="<%=id_test_request%>">
+                            <input type="hidden" name="id_test_request" value="<%=id_test_request%>">
                             <input type="hidden" name="patient" value="<%=patientSelected.dossier%>">
                             <input type="hidden" name="patientSexe" value="<%=patientSelected.sexe%>">
                             <input type="hidden" name="docteur" value="<%=patientSelected.docteur%>">
+                            <input type="hidden" name="memo" value="<%=patientSelected.memo%>">
                             </form>
 
                     </div>
@@ -52,17 +53,24 @@
                         <% if(UserData.user_sub_menu_access.includes("Modifier Résultat") || UserData.user_menu_access[0]=="All"){%>
                         <form id="editDocteurForm" class="m-b-10">
                             <div class="row">
-                                <div class="col-md-4">
+                                <div class="col-md-3">
                                     <input class="form-control" title="Docteur/Institution"
                                         placeholder="Docteur/Institution" onfocus="select()" type="text" name="Docteur"
                                         id="Docteur" value="<%=patientSelected.docteur%>">
                                     <input type="hidden" name="id_test_request" value="<%=id_test_request%>">
                                     <strong id="Enotify"></strong>
                                 </div>
-                                <a href="#" data-toggle="modal" data-target="#editDocteur">
-                                    <i style="cursor: pointer;" title="Modifier le docteur/Institution"
-                                        class="fa fa-save fa-2x"></i>
-                                </a>
+                                <div class="col-md-4">
+                                    <textarea placeholder="Mémo" name="Memo" class="form-control"
+                                        cols="100"><%=patientSelected.memo%></textarea>
+                                </div>
+                                <div class="col-md-3">
+                                    <a href="#" data-toggle="modal" data-target="#editDocteur">
+                                        <i style="cursor: pointer;" title="Modifier le docteur/Institution"
+                                            class="fa fa-save fa-2x"></i>
+                                    </a>
+                                </div>
+
                             </div>
                         </form>
                         <% } %>
@@ -206,7 +214,8 @@
                     <div class="modal-content">
                         <div class="modal-body text-center">
                             <img src="assets/img/sent.png" alt="" width="50" height="46" class="m-b-10"><br>
-                            Voulez-vous modifier <strong id="DocteurInstitution"><%=patientSelected.docteur%></strong> ?
+                            Voulez-vous modifier <strong id="DocteurInstitution"><%=patientSelected.docteur%></strong>
+                            et la MEMO ?
                             <div id="msg"></div>
                             <div class="m-t-20"> <a href="#" class="btn btn-danger" data-dismiss="modal">Non</a>
                                 <button type="submit" class="btn btn-success" onclick="editDoctorInfo()">Oui</button>

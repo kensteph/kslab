@@ -340,6 +340,7 @@ router.post("/SaveTestResult", async (req, res) => {
     let fullname = req.body.patientName;
     let num_patient = req.body.patientNumber;
     let docteur = req.body.docteur;
+    let memo = req.body.memo;
     let sexe_patient = req.body.patientSexe;
     let dossier_patient = fullname + " [" + num_patient + "]";
     let patientSelected = {
@@ -348,6 +349,7 @@ router.post("/SaveTestResult", async (req, res) => {
         num_patient: num_patient,
         dossier: dossier_patient,
         docteur: docteur,
+        memo: memo,
     };
     let id_test_request = req.body.testRequestId;
     let requestStatus = req.body.statut;
@@ -375,7 +377,7 @@ router.post("/SaveTestResult", async (req, res) => {
     params = {
         pageTitle: pageTitle,
         data: data,
-        dataExam : dataExam,
+        dataExam: dataExam,
         patientSelected: patientSelected,
         id_test_request: id_test_request,
         UserData: req.session.UserData,
@@ -417,9 +419,8 @@ router.post("/edit-test-result", async (req, res) => {
 
 //EDIT DOCTOR OR INSTITUTION
 router.post("/edit-doctor-info", async (req, res) => {
-    let testRequestId = req.body.id_test_request;
-    let doctor = req.body.Docteur;
-    let notifications = await testDB.modifyDoctorInfo(testRequestId, doctor);
+    let { Docteur, Memo, id_test_request } = req.body;
+    let notifications = await testDB.modifyDoctorInfo(id_test_request, Docteur, Memo);
     res.json(notifications);
 });
 
@@ -482,7 +483,7 @@ router.post("/delete-test-in-request", async (req, res) => {
     let ExamID = req.body.itemID;
     let ExamName = req.body.itemName;
     //stock pendant pour ce test
-   // let pendingStock = await stockDB.getPendingStockForExamInTestRequest(TestRequestID,ExamID);
+    // let pendingStock = await stockDB.getPendingStockForExamInTestRequest(TestRequestID,ExamID);
     //Materiaux Linked
     // let materiauxLinked = await stockDB.listeMateriauxAssocieATest(ExamID);
     // console.log(materiauxLinked);
@@ -491,7 +492,7 @@ router.post("/delete-test-in-request", async (req, res) => {
     // console.log(stockByMateriau);
     // let test_request_id = req.body.testRequestId;
     // let statut = req.body.statut;
-    let notifications = await testDB.deleteSingleItemTestRequest(TestRequestID,ExamID,ExamName);
+    let notifications = await testDB.deleteSingleItemTestRequest(TestRequestID, ExamID, ExamName);
     console.log(notifications);
     res.json(notifications);
 });
@@ -532,6 +533,7 @@ router.post("/display-test-result", async (req, res) => {
     let patientSexe = req.body.patientSexe;
     let patientNumber = req.body.patientNumber;
     let docteur = req.body.docteur;
+    let memo = req.body.memo;
     let title = helpers.titleByAge(patientAge, patientSexe);
     let signature = await examenDB.getTestSignature(test_request_id);
     //console.log("SIGNATURE : " + signature.realiser_par);
@@ -597,7 +599,7 @@ router.post("/display-test-result", async (req, res) => {
             Parameters: infoParams,
             Resultats: Resultats,
             VN: ValeurNormal,
-            Count : infoParams.length
+            Count: infoParams.length
         };
         resultaFinal.push(info);
     }
@@ -607,24 +609,25 @@ router.post("/display-test-result", async (req, res) => {
     resultaFinal = helpers.sortArrayObj(resultaFinal);
     let dataSize = resultaFinal.length;
     let midArray = 0;
-    if(dataSize >=4){
-        midArray = Math.ceil(dataSize/1.4);
-    }else{
-        midArray = Math.ceil(dataSize/2);
+    if (dataSize >= 4) {
+        midArray = Math.ceil(dataSize / 1.4);
+    } else {
+        midArray = Math.ceil(dataSize / 2);
     }
-    
-    let Division = {first : resultaFinal.slice(0,midArray ), second : resultaFinal.slice(midArray)};
-    console.log("TOTAL : " +dataSize+" HALF : "+midArray +"  DIVISION "+Division+" DATA "+resultaFinal);
+
+    let Division = { first: resultaFinal.slice(0, midArray), second: resultaFinal.slice(midArray) };
+    console.log("TOTAL : " + dataSize + " HALF : " + midArray + "  DIVISION " + Division + " DATA " + resultaFinal);
     let pageTitle = "Résultat Tests Laboratoire";
     params = {
         pageTitle: pageTitle,
         data: resultaFinal,
-        Division : Division,
+        Division: Division,
         patient: patient,
         testNumber: test_request_id,
         patientNumber: patientNumber,
         patientSexe: patientSexe,
         docteur: docteur,
+        memo: memo,
         date: date_resultat,
         UserData: req.session.UserData,
         signature: signature,

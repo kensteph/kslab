@@ -17,14 +17,14 @@ th {
     padding: 0px;
 }
 
-td{
+td {
     border: 1px solid #dddddd;
     padding: 1px;
 }
 
-.td-vn{
+.td-vn {
     border: 1px solid #dddddd;
-    padding: 1px;  
+    padding: 1px;
     text-align: center !important;
 }
 
@@ -32,12 +32,13 @@ tr:nth-child(even) {
     /* background-color: #d4d4d4; */
 }
 
-.logo{
+.logo {
     margin-top: 5px;
     padding-left: 10px;
 }
-hr{
-    text-align:center;
+
+hr {
+    text-align: center;
     width: 50%;
     margin-top: 0px;
 }
@@ -48,9 +49,11 @@ hr{
     margin-top: 45px;
     margin-left: 0px;
 }
-.line-header{
+
+.line-header {
     font-size: 15px;
 }
+
 .row-header {
     display: -ms-flexbox;
     display: flex;
@@ -70,27 +73,34 @@ hr{
 
 }
 
-.signature{
+.memo {
     position: relative;
-    width: 50%;
-    padding-left:450px;
+    width: 90%;
+    margin-top: 10px;
+    padding-left: 55px;
 }
-.realisateur{
-    text-align:center;
+
+.memo-text {
+    font-size: 13px;
+}
+
+.realisateur {
+    text-align: center;
     margin-bottom: -7px;
     font-size: 14px;
     font-weight: bold;
 }
 
 
-.hr-signature{
+.hr-signature {
     width: 100%;
     margin-top: 10px;
 }
 
-.poste{
+.poste {
     text-align: center;
     font-size: 13px;
+    margin-bottom: 10px;
 }
 
 
@@ -151,6 +161,9 @@ h4 {
 
 }
 
+body {
+    min-height: 100%;
+}
 
 /* .col-sm-6 {
     position: relative;
@@ -164,11 +177,13 @@ h4 {
     flex: 0 0 50%;
     max-width: 50%;
 }
+
 .col-sm-12 {
     -ms-flex: 0 0 100%;
     flex: 0 0 100%;
     max-width: 100%;
 }
+
 .col-sm-3 {
     position: relative;
     width: 60%;
@@ -183,6 +198,7 @@ h4 {
     font-family: arial, sans-serif;
     font-size: 12px;
 }
+
 .col-sm-3-resultat {
     position: relative;
     width: 45%;
@@ -191,23 +207,26 @@ h4 {
     font-size: 12px;
 }
 
-.m-t-10{
- margin-top: 10PX;       
+.m-t-10 {
+    margin-top: 10PX;
 }
-.m-t-5{
-    margin-top: 10PX;       
-   }
+
+.m-t-5 {
+    margin-top: 10PX;
+}
+
 .exam {
     font-size: 10px;
     font-weight: bold;
-    padding:0px; 
-    margin:0px;
+    padding: 0px;
+    margin: 0px;
     height: 2px;
 }
 
 .test-parameter {
     font-size: 10px;
 }
+
 .resultat {
     font-size: 10px;
     text-align: center !important;
@@ -224,4 +243,25 @@ h4 {
 
 li {
     list-style-type: none;
+}
+
+.signature {
+    position: fixed;
+    bottom: 25px;
+    width: 50%;
+    padding-left: 450px;
+}
+
+
+.footer {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    text-align: center;
+}
+
+.devise {
+    font-size: 15px;
+    margin-bottom: 20px;
 }

@@ -148,6 +148,11 @@
             <% pos++; }) %>
         </div>
     </div>
+    <% if(memo != null && memo != ""){ %>
+    <div class="memo">
+        <p class="memo-text"> <strong>Mémo : </strong><%=memo%></p>
+    </div>
+    <% } %>
 
     <% if(signature.realiser_par != null && signature.realiser_par != ""){ %>
     <div class="signature">
@@ -158,6 +163,11 @@
         <div class="poste"><%=signature.poste%></div>
     </div>
     <% } %>
+
+    <div class="footer">
+        <hr style="width: 95%; margin-bottom: 0px;">
+        <strong class="devise"><%=ENT_DEVISE%></strong>
+    </div>
 </body>
 
 </html>

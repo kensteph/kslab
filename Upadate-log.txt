@@ -1,4 +1,4 @@
 ===================================Database==========================
 
-ALTER TABLE `tb_evolution_stock` ADD `stock_id` INT NULL DEFAULT NULL AFTER `id`;
-
+ALTER TABLE `tb_app_settings` ADD `devise` VARCHAR(250) NULL DEFAULT NULL AFTER `entreprise_name`;
+ALTER TABLE `tb_test_requests` ADD `memo` VARCHAR(250) NULL DEFAULT NULL AFTER `poste`;

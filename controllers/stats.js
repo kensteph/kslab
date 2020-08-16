@@ -179,9 +179,10 @@ var self = module.exports = {
             let line5 = req.body.line5;
             let line6 = req.body.line6;
             let entreprise_name = req.body.entreprise_name;
+            let entreprise_devise = req.body.entreprise_devise;
             let back_db_path = req.body.backupPath;
             back_db_path.replace('/', '-');
-            let sql = "UPDATE tb_app_settings SET line1='" + line1 + "',line2='" + line2 + "',line3='" + line3 + "',line4='" + line4 + "',line5='" + line5 + "',line6='" + line6 + "',back_db_path='" + back_db_path + "',entreprise_name='" + entreprise_name + "' WHERE labo=1 ";
+            let sql = "UPDATE tb_app_settings SET line1='" + line1 + "',line2='" + line2 + "',line3='" + line3 + "',line4='" + line4 + "',line5='" + line5 + "',line6='" + line6 + "',back_db_path='" + back_db_path + "',entreprise_name='" + entreprise_name + "',devise='" + entreprise_devise + "' WHERE labo=1 ";
             //console.log(sql);
             con.query(sql, function (err, rows) {
                 if (err) {

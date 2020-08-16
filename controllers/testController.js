@@ -263,7 +263,7 @@ var self = module.exports = {
                             examens.push(info[i].nom_examen);
                         }
                         let patient_exams = examens.join();
-                        let line_info = { request_id: item.id_request, date_record: item.date_record, numero_patient: item.numero_patient, patient: item.fullname, docteur: item.docteur, age: item.age, sexe: item.sexe, examens: patient_exams, statut: item.test_status, acteur: item.acteur };
+                        let line_info = { request_id: item.id_request, date_record: item.date_record, numero_patient: item.numero_patient, patient: item.fullname, docteur: item.docteur, memo: item.memo, age: item.age, sexe: item.sexe, examens: patient_exams, statut: item.test_status, acteur: item.acteur };
                         line.push(line_info);
                     }
                     resolve(line);
@@ -295,10 +295,10 @@ var self = module.exports = {
     },
 
     //EDIT DOCTOR OR INSTITUTION
-    modifyDoctorInfo: async function (id_test, doctor) {
+    modifyDoctorInfo: async function (id_test, doctor, memo) {
         let promise = new Promise((resolve, reject) => {
-            let sql = "UPDATE tb_test_requests SET docteur ='" + doctor + "' WHERE id =?";
-            con.query(sql, id_test, function (err, rows) {
+            let sql = "UPDATE tb_test_requests SET docteur =?,memo=? WHERE id =?";
+            con.query(sql, [doctor, memo, id_test], function (err, rows) {
                 if (err) {
                     resolve({
                         msg: "Une erreur est survenue. S'il vous palit réessayez.",
@@ -314,7 +314,7 @@ var self = module.exports = {
             });
         });
         data = await promise;
-        //console.log(data);
+        console.log(data);
         return data;
     },
     //EDIT SIGNATURE AU BAS DE LA PAGE
@@ -409,12 +409,12 @@ var self = module.exports = {
                                 let materiauName = stock.nom_materiau;
                                 let transactionType = "add";
                                 let qte = item.qte;
-                                let commentaire = qte + " " + materiauName + " ajouté au stock. Suite à la suppression de l'examen : " + nom_exam+" pour la demande #"+test_request_id;
+                                let commentaire = qte + " " + materiauName + " ajouté au stock. Suite à la suppression de l'examen : " + nom_exam + " pour la demande #" + test_request_id;
                                 let user = "System";
                                 let request_id = test_request_id;
                                 rep = await stockDB.RemoveItemFromStock(con, numero_lot, materiauId, materiauName, transactionType, qte, commentaire, user, request_id);
                                 //UPDATE QTE UTILISE
-                                await stockDB.updateStockQtyUsedById(stock.id_stock,qte,"substract");
+                                await stockDB.updateStockQtyUsedById(stock.id_stock, qte, "substract");
                                 break;
                             }
 
@@ -469,7 +469,7 @@ var self = module.exports = {
                             msg = {
                                 error: "danger",
                                 msg:
-                                "<font color='red'><strong>Une erreur est survenue.Peut etre vous avez déja ajouté cet examen. Veuillez réessayer s'il vous plait.</strong></font>",
+                                    "<font color='red'><strong>Une erreur est survenue.Peut etre vous avez déja ajouté cet examen. Veuillez réessayer s'il vous plait.</strong></font>",
                             };
                             resolve(msg);
                         } else {
@@ -547,7 +547,7 @@ var self = module.exports = {
                                     msg = {
                                         type: "danger",
                                         msg:
-                                            "<font color='red'><strong>Une erreur est survenue.Peut etre vous avez déja ajouté cet examen. Veuillez réessayer s'il vous plait.</strong></font>" ,
+                                            "<font color='red'><strong>Une erreur est survenue.Peut etre vous avez déja ajouté cet examen. Veuillez réessayer s'il vous plait.</strong></font>",
                                     };
                                     resolve(msg);
                                 });
@@ -631,7 +631,7 @@ var self = module.exports = {
                         let patient_exams = examens.join("|");
                         //console.log(patient_exams);
                         let dateExam = helpers.formatDate(item.date_record.substring(0, 10), "FR");
-                        let line_info = { request_id: item.id_request, date_record: dateExam, numero_patient: item.numero_patient, patient: item.fullname, docteur: item.docteur, age: item.age, sexe: item.sexe, examens: patient_exams, statut: item.test_status };
+                        let line_info = { request_id: item.id_request, date_record: dateExam, numero_patient: item.numero_patient, patient: item.fullname, docteur: item.docteur, memo: item.memo, age: item.age, sexe: item.sexe, examens: patient_exams, statut: item.test_status };
                         line.push(line_info);
                     }
                     resolve(line);

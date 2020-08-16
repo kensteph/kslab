@@ -41,8 +41,8 @@
                             <div class="form-group form-focus">
                                 <label class="focus-label">Du</label>
                                 <div class="cal-icon">
-                                    <input class="form-control floating datetimepicker" id="DateFrom" value="<%= dateFrom %>"
-                                        type="text" name="dateFrom">
+                                    <input class="form-control floating datetimepicker" id="DateFrom"
+                                        value="<%= dateFrom %>" type="text" name="dateFrom">
                                 </div>
                             </div>
                         </div>
@@ -50,8 +50,8 @@
                             <div class="form-group form-focus">
                                 <label class="focus-label">Au</label>
                                 <div class="cal-icon">
-                                    <input class="form-control floating datetimepicker" id="DateTo" value="<%= dateTo %>"
-                                        type="text" name="dateTo">
+                                    <input class="form-control floating datetimepicker" id="DateTo"
+                                        value="<%= dateTo %>" type="text" name="dateTo">
                                 </div>
                             </div>
                         </div>
@@ -136,6 +136,7 @@
                                                             value="<%=stock.request_id%>">
                                                         <input type="hidden" name="statut" value="<%=stock.statut%>">
                                                         <input type="hidden" name="docteur" value="<%=stock.docteur%>">
+                                                        <input type="hidden" name="memo" value="<%=stock.memo%>">
                                                         <input type="hidden" name="patientSexe" value="<%=stock.sexe%>">
                                                         <a href="#" class="dropdown-item"
                                                             onclick="submitForm('<%=stock.request_id%>')"><i
@@ -181,6 +182,7 @@
                                                         <input type="hidden" name="patientNumber"
                                                             value="<%=stock.numero_patient%>">
                                                         <input type="hidden" name="docteur" value="<%=stock.docteur%>">
+                                                        <input type="hidden" name="memo" value="<%=stock.memo%>">
                                                         <a href="#" class="dropdown-item"
                                                             onclick="printTest('<%=stock.request_id%>')"><i
                                                                 class="fa fa-print fa-lg"></i> Imprimer les
@@ -273,6 +275,9 @@
                 </div>
             </div>
         </div>
+
+
+
 
 
     </div>
