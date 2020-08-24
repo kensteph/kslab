@@ -55,12 +55,14 @@
                                     </tr>
                                 </thead>
                                 <tbody id="table">
-                                    <% data.forEach((materiau) => { %>
+                                    <% data.forEach((materiau) => { 
+                                        let materiauName = materiau.nom_materiau.replace("'","");
+                                    %>
                                     <tr id="row<%= materiau.id %>">
                                         <td>
                                             <% if(UserData.user_sub_menu_access.includes("Ajouter Stock") || UserData.user_sub_menu_access[0]=="All"){%>
                                             <a href="#" title="Ajouter un nouveau stock <%= materiau.nom_materiau %>"
-                                                onclick="launchStockUp('<%= materiau.nom_materiau %>','<%= materiau.id %>')">
+                                                onclick="launchStockUp('<%= materiauName %>','<%= materiau.id %>')">
                                                 <%= materiau.nom_materiau %>
                                             </a>
                                             <% }else{ %>
@@ -121,8 +123,7 @@
                                 <div class="col-sm-6 col-md-6 col-lg-6">
                                     <label>Date d'expiration <span class="text-danger"></span></label>
                                     <div class="cal-icon">
-                                        <input  class="form-control datetimepicker" type="text"
-                                            name="dateExpiration">
+                                        <input class="form-control datetimepicker" type="text" name="dateExpiration">
                                     </div>
                                 </div>
                             </div>

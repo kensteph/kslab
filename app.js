@@ -1,13 +1,24 @@
 //jshint esversion:6
+
 require('dotenv').config()
 const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
 const helpers = require('./helpers/helpers');
+// //TRY TO LAUNCH THE DATABASE  SERVER FIRST
+// console.log("TRYING TO LAUNCH DB AND RECONNECT : ");
+// var exec = require('child_process').execFile;
+// exec('./db_server/UwAmp.exe', function (err, data) {
+//     if (err) {
+//         //console.error(`exec error: ${err}`);
+
+//     }
+
+// });
+
 const stats = require('./controllers/stats');
 const path = require('path');
 const cron = require("node-cron");
-const stockDB = require('./controllers/stockController');
 const fileupload = require('express-fileupload');
 const session = require('express-session');
 const auth = require('./middleware/auth');
@@ -24,52 +35,20 @@ app.use(bodyParser.urlencoded({ extended: true })); // Allow to submit forms
 app.use(fileupload({ createParentPath: true }));
 //Use Session
 app.use(session({ secret: 'St&phani&1987', resave: false, saveUninitialized: false }));
-// app.use(flash());
-// app.use(passport.initialize());
-// app.use(passport.session());
 // External routes
 app.use(require('./routes/patient'));
 app.use(require('./routes/examen'));
 app.use(require('./routes/stock'));
 app.use(require('./routes/setting'));
 app.use(require('./routes/print'));
-// app.use(function (req, res) {
-//     res.send(404);
-// });
+
 
 //Entry Point
 app.get('/', async (req, res) => {
-    // Global variables
-    let settings = await stats.getSettings();
-    //console.log(settings);
-    global.appName = 'KSlab ';
-    global.nbRequestStock = 0;
-    global.ifNotify = false;
-    global.dataBaseCollation = 'KSlab ';
-    global.favicon = ""
-    global.line1 = settings.line1;
-    global.line2 = settings.line2;
-    global.line3 = settings.line3;
-    global.line4 = settings.line4;
-    global.line5 = settings.line5;
-    global.line6 = settings.line6;
-    global.backupPath = settings.back_db_path;
-    global.LOGO = helpers.base64("public/logo/" + settings.logo);
-    global.LOGO_MENU = helpers.base64("public/logo/" + settings.logo_menu);
-    global.EMAIL_ENT = settings.email_ent;
-    global.ENT_NAME = settings.entreprise_name;
-    global.ENT_DEVISE = settings.devise;
-    global.TEST_STATUS = ['En attente', 'Enregistré', 'Validé', 'Livré'];
-    global.STOCK_STATUS = ['Invalide', 'Valide'];
-    global.USER_STATUS = ['Désactivé', 'Activé'];
-    global.PERISSABLE = ['Non', 'Oui'];
-    global.TYPE_RESULTAT = ['', 'Valeurs normales', 'Positif/Négatif', 'Commentaires'];
-    global.NBJOUR_STOCK_ALERT = 90;
-    global.USER_HOME_PAGE = '/Inbox';//Default for sample User
-    //MENU ACCESS
-    global.MENU_ITEM = ['Tableau de bord', 'Test Patient', 'Test Laboratoire', 'Patients', 'Examens', 'Gestion de stock', 'Paramètres', 'Administration'];
-    global.SUBMENU_ITEM = ['Ajouter Patient', 'Liste des Patients', 'Modifier Patients', 'Rechercher Patient', 'Liste des demandes de Tests', 'Supprimer une demandes de Test', 'Enregistrer Résultat', 'Modifier Résultat', 'Valider Résultat', 'Ajouter Signature', 'Imprimer Résultat', 'Ajouter examens', 'Voir la liste des examens', 'Supprimer examens', 'Modifier examens', 'Ajouter valeurs normales', 'Détails Examens', 'Ajouter Matériau', 'Modifier Matériau', 'Lister les matériaux', 'Ajouter Stock', 'Inventaire', 'Imprimer Inventaire', 'Requete Ajouter/Retirer article du Stock', 'Autoriser Ajouter/Retirer article du Stock', 'Approuver requete relative au stock', 'Voir la liste des requetes de stock', 'Valider/Invalider Stock', 'Supprimer Stock', 'Mouvement de stock', 'Imprimer Mouvement de Stock'];
+    await stats.intitValues();
     res.render('login');
+    //console.log("RESPONSE : ", response)
+
 });
 //Exit Point
 app.get('/logout', async (req, res) => {
@@ -101,6 +80,7 @@ app.post('/change-pwd', auth, async (req, res) => {
 });
 
 app.post('/login', async (req, res) => {
+
     let user_name = req.body.username;
     let pass_word = req.body.password;
     // const hashPass = await bcrypt.hash(pass_word, 10);
@@ -329,7 +309,12 @@ app.get('/notifications', async (req, res) => {
 });
 
 helpers.getStartAndEndDateOfTheWeekFromDate("2020-07-09");
+app.use(function (req, res) {
+    res.status(404).json({ msg: ' cccccccc' });
+});
 const port = 8788;
 http.listen(port, () => {
     console.log('KSlab server is started at port: ' + port);
 });
+
+

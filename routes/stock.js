@@ -193,16 +193,10 @@ router.post('/mv-stock', async (req, res) => {
 
 //ADD STOCK
 router.post('/add-stock', async (req, res) => {
-    if (helpers.is_session(req, res)) {
-        console.log(req.body);
-        console.log("USER ACT: " + req.session.username);
-        let notifications = await stockDB.addStock(req);
-        console.log("NOTIF : " + notifications);
-        res.json(notifications);
-    } else {
-        res.redirect("http://localhost:8788/");
-        console.log("Redirect to LOGIN");
-    }
+    console.log(req.body);
+    let notifications = await stockDB.addStock(req);
+    console.log("NOTIF : " + notifications);
+    res.json(notifications);
 });
 
 //ADD OR REMOVE ITEMS STOCK
@@ -251,6 +245,21 @@ router.post('/cancel-transaction', async (req, res) => {
     // let notifications = await stockDB.deleteStock(req);
     // res.json(notifications);
 });
+
+//PENDING TRANSACTIONS
+router.get('/pending-transactions', async (req, res) => {
+    let pst = await stockDB.getPendingStockForMateriau("All");
+    console.log(pst);
+    let pageTitle = "Transactions pendantes";
+    params = {
+        pageTitle: pageTitle,
+        data: pst,
+        UserData: req.session.UserData,
+        page: 'PendingTransactions'
+    };
+    res.render('stock/pending-transactions', params);
+});
+
 
 //EDIT STOCK
 router.post('/edit-stock', async (req, res) => {

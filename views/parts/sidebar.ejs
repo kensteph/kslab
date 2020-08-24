@@ -14,6 +14,7 @@ if (locals.page) {
     ListMateriau = "";
     Inventaire = "";
     StockMoving = "";
+    PendingTransactions = "";
 
     NewTest = "";
     ListTest = "";
@@ -48,6 +49,8 @@ if (locals.page) {
        case 'Inventaire' :   Inventaire = "active";
                              break;
        case 'StockMoving' :  StockMoving = "active";
+                             break;
+       case 'PendingTransactions' :  PendingTransactions = "active";
                              break;
        case 'NewTest' :      NewTest = "active";
                              break;
@@ -158,6 +161,10 @@ if (locals.page) {
                         <% } %>
                         <% if(UserData.user_sub_menu_access.includes("Mouvement de stock") || UserData.user_sub_menu_access[0]=="All"){%>
                         <li><a class="<%=StockMoving%>" href="/mv-stock">Mouvement de stock </a></li>
+                        <% } %>
+                        <% if(UserData.user_sub_menu_access.includes("Mouvement de stock") || UserData.user_sub_menu_access[0]=="All"){%>
+                        <li><a class="<%=PendingTransactions%>" href="/pending-transactions">Transactions Pendantes </a>
+                        </li>
                         <% } %>
                         <% if(UserData.user_sub_menu_access.includes("Ajouter Matériau") || UserData.user_sub_menu_access[0]=="All"){%>
                         <li><a class="<%=AddMateriau%>" href="/add-materiau">Nouveau Matériau </a></li>

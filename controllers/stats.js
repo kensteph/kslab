@@ -180,15 +180,15 @@ var self = module.exports = {
             let line6 = req.body.line6;
             let entreprise_name = req.body.entreprise_name;
             let entreprise_devise = req.body.entreprise_devise;
+            let memo = req.body.memo;
             let back_db_path = req.body.backupPath;
-            back_db_path.replace('/', '-');
-            let sql = "UPDATE tb_app_settings SET line1='" + line1 + "',line2='" + line2 + "',line3='" + line3 + "',line4='" + line4 + "',line5='" + line5 + "',line6='" + line6 + "',back_db_path='" + back_db_path + "',entreprise_name='" + entreprise_name + "',devise='" + entreprise_devise + "' WHERE labo=1 ";
+            //back_db_path = back_db_path.replace('/', '-');
+            let sql = "UPDATE tb_app_settings SET line1=?,line2=?,line3=?,line4=?,line5=?,line6=?,back_db_path=?,entreprise_name=?,devise=?,memo=? WHERE labo=1 ";
             //console.log(sql);
-            con.query(sql, function (err, rows) {
+            con.query(sql, [line1, line2, line3, line4, line5, line6, back_db_path, entreprise_name, entreprise_devise, memo], function (err, rows) {
                 if (err) {
                     throw err;
                 } else {
-                    global.ENT_NAME = entreprise_name;
                     resolve({ success: "Modification effectuée avec succès.." });
                 }
             });
@@ -261,9 +261,9 @@ var self = module.exports = {
             message = message.replace('"', '\"');
             let publier = 1;
             let sql =
-                'INSERT INTO tb_notifications (de,a,type_notif,titre,contenu,publier,see_by) VALUES ("' + from + '","' + to + '","' + type_notif + '","' + subject + '","' + message + '",' + publier + ',"' + from + '")';
+                'INSERT INTO tb_notifications (de,a,type_notif,titre,contenu,publier,see_by) VALUES (?,?,?,?,?,?,?)';
             //console.log(sql);
-            con.query(sql, function (err, result) {
+            con.query(sql, [from, to, type_notif, subject, message, publier, from], function (err, result) {
                 if (err) {
                     msg = {
                         type: "danger",
@@ -527,8 +527,8 @@ var self = module.exports = {
             con.beginTransaction(function (err) {
                 if (err) { throw err; }
                 //Insert info into personne table
-                let sql = "INSERT INTO tb_personnes (prenom,nom,sexe,date_nais,adresse,telephone,email) VALUES ('" + firstName + "','" + lastName + "','" + gender + "','" + dateOfBirth + "','" + adresse + "','" + phone + "','" + email + "')";
-                con.query(sql, function (err, result) {
+                let sql = "INSERT INTO tb_personnes (prenom,nom,sexe,date_nais,adresse,telephone,email) VALUES (?,?,?,?,?,?,?)";
+                con.query(sql, [firstName, lastName, gender, dateOfBirth, adresse, phone, email], function (err, result) {
                     if (err) {
                         console.log(err);
                         con.rollback(function () {
@@ -540,8 +540,8 @@ var self = module.exports = {
                     let initial = firstName.charAt(0) + lastName.charAt(0);
                     let numero_patient = helpers.generateCode(initial, id_personne);
                     //Insert info into professeur  table
-                    let sql2 = "INSERT INTO tb_users (id_personne,id_employe,user_name,pass_word,menu_access,sub_menu_access,poste) VALUES (" + id_personne + ",'" + numero_patient + "','" + user_name + "','" + hash_pass + "','" + default_menu_access + "','" + default_sub_menu_access + "','" + poste + "')";
-                    con.query(sql2, function (err, result) {
+                    let sql2 = "INSERT INTO tb_users (id_personne,id_employe,user_name,pass_word,menu_access,sub_menu_access,poste) VALUES (?,?,?,?,?,?,?)";
+                    con.query(sql2, [id_personne, numero_patient, user_name, hash_pass, default_menu_access, default_sub_menu_access, poste], function (err, result) {
                         if (err) {
                             con.rollback(function () {
                                 throw err;
@@ -683,9 +683,9 @@ var self = module.exports = {
         password = await bcrypt.hash(password, 8);
         let promise = new Promise((resolve, reject) => {
             let sql =
-                'UPDATE tb_users SET pass_word="' + password + '",change_pass=0 WHERE id_personne =' + id_user;
+                'UPDATE tb_users SET pass_word=?,change_pass=0 WHERE id_personne =?';
             //console.log(sql);
-            con.query(sql, function (err, result) {
+            con.query(sql, [password, id_user], function (err, result) {
                 if (err) {
                     msg = {
                         type: "danger",
@@ -715,9 +715,9 @@ var self = module.exports = {
         password = await bcrypt.hash(password, 8);
         let promise = new Promise((resolve, reject) => {
             let sql =
-                'UPDATE tb_users SET pass_word="' + password + '",change_pass=1 WHERE id_personne =' + id_user;
+                'UPDATE tb_users SET pass_word=?,change_pass=1 WHERE id_personne =?';
             //console.log(sql);
-            con.query(sql, function (err, result) {
+            con.query(sql, [password, id_user], function (err, result) {
                 if (err) {
                     msg = {
                         type: "danger",
@@ -746,9 +746,9 @@ var self = module.exports = {
     activateOrDesactvateUser: async function (id_user, action) {
         let promise = new Promise((resolve, reject) => {
             let sql =
-                'UPDATE tb_personnes SET statut =' + action + ' WHERE id=' + id_user;
+                'UPDATE tb_personnes SET statut =? WHERE id=?';
             //console.log(sql);
-            con.query(sql, function (err, result) {
+            con.query(sql, [action, id_user], function (err, result) {
                 if (err) {
                     msg = {
                         type: "danger",
@@ -779,8 +779,9 @@ var self = module.exports = {
             let SubMenu = req.body.SubMenu.join("|");
             let user_id = req.body.user_id;
             let sql =
-                'UPDATE tb_users SET menu_access = "' + Menu + '",sub_menu_access = "' + SubMenu + '" WHERE id_personne=?';
-            con.query(sql, user_id, function (err, result) {
+                'UPDATE tb_users SET menu_access = ?,sub_menu_access = ? WHERE id_personne=?';
+            console.log(sql);
+            con.query(sql, [Menu, SubMenu, user_id], function (err, result) {
                 if (err) {
                     msg = {
                         type: "danger",
@@ -798,10 +799,47 @@ var self = module.exports = {
                 }
 
                 resolve(msg);
-                //console.log(msg);
+                console.log(msg);
             });
         });
         rep = await promise;
         return rep;
     },
+    //SYSTEM IGNITION
+    async intitValues() {
+        console.log("INITIALISATION....... : ")
+        // Global variables
+        let settings = await self.getSettings();
+        //console.log(settings);
+        global.appName = 'KSlab ';
+        global.nbRequestStock = 0;
+        global.ifNotify = false;
+        global.dataBaseCollation = 'KSlab ';
+        global.favicon = ""
+        global.line1 = settings.line1;
+        global.line2 = settings.line2;
+        global.line3 = settings.line3;
+        global.line4 = settings.line4;
+        global.line5 = settings.line5;
+        global.line6 = settings.line6;
+        global.backupPath = settings.back_db_path;
+        global.LOGO = helpers.base64("public/logo/" + settings.logo);
+        global.LOGO_MENU = helpers.base64("public/logo/" + settings.logo_menu);
+        global.EMAIL_ENT = settings.email_ent;
+        global.ENT_NAME = settings.entreprise_name;
+        global.ENT_DEVISE = settings.devise;
+        global.ENT_MEMO = settings.memo;
+        global.TEST_STATUS = ['En attente', 'Enregistré', 'Validé', 'Livré'];
+        global.STOCK_STATUS = ['Invalide', 'Valide'];
+        global.USER_STATUS = ['Désactivé', 'Activé'];
+        global.PERISSABLE = ['Non', 'Oui'];
+        global.TYPE_RESULTAT = ['', 'Valeurs normales', 'Positif/Négatif', 'Commentaires'];
+        global.NBJOUR_STOCK_ALERT = 90;
+        global.USER_HOME_PAGE = '/Inbox';//Default for sample User
+        //MENU ACCESS
+        global.MENU_ITEM = ['Tableau de bord', 'Test Patient', 'Test Laboratoire', 'Patients', 'Examens', 'Gestion de stock', 'Paramètres', 'Administration'];
+        global.SUBMENU_ITEM = ['Ajouter Patient', 'Liste des Patients', 'Modifier Patients', 'Rechercher Patient', 'Liste des demandes de Tests', 'Supprimer une demandes de Test', 'Enregistrer Résultat', 'Modifier Résultat', 'Valider Résultat', 'Ajouter Signature', 'Imprimer Résultat', 'Ajouter examens', 'Voir la liste des examens', 'Supprimer examens', 'Modifier examens', 'Ajouter valeurs normales', 'Détails Examens', 'Ajouter Matériau', 'Modifier Matériau', 'Lister les matériaux', 'Ajouter Stock', 'Inventaire', 'Imprimer Inventaire', 'Requete Ajouter/Retirer article du Stock', 'Autoriser Ajouter/Retirer article du Stock', 'Approuver requete relative au stock', 'Voir la liste des requetes de stock', 'Valider/Invalider Stock', 'Modifier Stock', 'Supprimer Stock', 'Mouvement de stock', 'Imprimer Mouvement de Stock'];
+        //res.render('login');
+    }
+
 }

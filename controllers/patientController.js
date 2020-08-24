@@ -25,12 +25,16 @@ var self = module.exports = {
                 if (err) { throw err; }
                 //Insert info into personne table
                 let sql = "";
+                let params = [];
+
                 if (dateOfBirth == null) {
-                    sql = "INSERT INTO tb_personnes (prenom,nom,sexe,age_manuel,adresse,telephone,email) VALUES ('" + firstName + "','" + lastName + "','" + gender + "'," + age_manuel + ",'" + adresse + "','" + phone + "','" + email + "')";
+                    params = [firstName, lastName, gender, age_manuel, adresse, phone, email];
+                    sql = "INSERT INTO tb_personnes (prenom,nom,sexe,age_manuel,adresse,telephone,email) VALUES (?,?,?,?,?,?,?)";
                 } else {
-                    sql = "INSERT INTO tb_personnes (prenom,nom,sexe,date_nais,age_manuel,adresse,telephone,email) VALUES ('" + firstName + "','" + lastName + "','" + gender + "','" + dateOfBirth + "'," + age_manuel + ",'" + adresse + "','" + phone + "','" + email + "')";
+                    params = [firstName, lastName, gender, dateOfBirth, age_manuel, adresse, phone, email];
+                    sql = "INSERT INTO tb_personnes (prenom,nom,sexe,date_nais,age_manuel,adresse,telephone,email) VALUES (?,?,?,?,?,?,?,?)";
                 }
-                con.query(sql, function (err, result) {
+                con.query(sql, params, function (err, result) {
                     if (err) {
                         //console.log(err);
                         con.rollback(function () {
@@ -50,8 +54,8 @@ var self = module.exports = {
                         }
 
                         //Insert info into professeur  table
-                        let sql2 = "INSERT INTO tb_patients (id_personne,numero_patient) VALUES ('" + id_personne + "','" + numero_patient + "')";
-                        con.query(sql2, function (err, result) {
+                        let sql2 = "INSERT INTO tb_patients (id_personne,numero_patient) VALUES (?,?)";
+                        con.query(sql2, [id_personne, numero_patient], function (err, result) {
                             if (err) {
                                 con.rollback(function () {
                                     msg = {

@@ -164,7 +164,13 @@
     </div>
     <% } %>
 
+
     <div class="footer">
+        <% if(ENT_MEMO != null && ENT_MEMO != ""){ %>
+        <div style="padding-left: 20px;padding-right: 20px;">
+            <p class="memo-text"> <%=ENT_MEMO%></p>
+        </div>
+        <% } %>
         <hr style="width: 95%; margin-bottom: 0px;">
         <strong class="devise"><%=ENT_DEVISE%></strong>
     </div>

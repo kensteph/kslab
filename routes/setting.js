@@ -2,8 +2,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const router = express.Router();
-// const helpers = require('../helpers/helpers');
-const stockDB = require('../controllers/stockController.js');
 const settingsDB = require('../controllers/stats');
 const helpers = require('../helpers/helpers');
 const stats = require('../controllers/stats');
@@ -46,12 +44,11 @@ router.post('/settings', async (req, res) => {
         }
 
     }
-
-    // helpers.simpleUpload(req,"logo_menu",path);
-    //console.log(req.body); // the uploaded file object
     let response_insert = await settingsDB.updateSettings(req);
     console.log(response_insert);
     let response = await settingsDB.getSettings();
+    //UPDATE
+    await stats.intitValues();
     let pageTitle = "Paramètres ";
     res.render('setting/app-settings', { page: 'GeneralSettings', pageTitle: pageTitle, data: response, UserData: req.session.UserData, update: response_insert });
 });

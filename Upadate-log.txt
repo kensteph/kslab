@@ -1,4 +1,5 @@
 ===================================Database==========================
 
-ALTER TABLE `tb_app_settings` ADD `devise` VARCHAR(250) NULL DEFAULT NULL AFTER `entreprise_name`;
-ALTER TABLE `tb_test_requests` ADD `memo` VARCHAR(250) NULL DEFAULT NULL AFTER `poste`;
+ALTER TABLE `tb_app_settings` ADD `memo` TEXT NULL DEFAULT NULL AFTER `back_db_path`;
+ALTER TABLE `tb_pending_stock_evolution` ADD `date_trans` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `request_id`;
+

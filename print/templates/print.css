@@ -1,168 +1,162 @@
 table {
-    font-family: arial, sans-serif;
-    border-collapse: collapse;
-    width: 95%;
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 95%;
 }
 
 .table-report {
-    font-family: arial, sans-serif;
-    border-collapse: collapse;
-    margin: 10px;
-    width: 95%;
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  margin: 10px;
+  width: 95%;
 }
 
 th {
-    border: 1px solid #dddddd;
-    text-align: left;
-    padding: 0px;
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 0px;
 }
 
 td {
-    border: 1px solid #dddddd;
-    padding: 1px;
+  border: 1px solid #dddddd;
+  padding: 1px;
 }
 
 .td-vn {
-    border: 1px solid #dddddd;
-    padding: 1px;
-    text-align: center !important;
+  border: 1px solid #dddddd;
+  padding: 1px;
+  text-align: center !important;
 }
 
 tr:nth-child(even) {
-    /* background-color: #d4d4d4; */
+  /* background-color: #d4d4d4; */
 }
 
 .logo {
-    margin-top: 5px;
-    padding-left: 10px;
+  margin-top: 5px;
+  padding-left: 10px;
 }
 
 hr {
-    text-align: center;
-    width: 50%;
-    margin-top: 0px;
+  text-align: center;
+  width: 50%;
+  margin-top: 0px;
 }
 
 .header-form {
-    text-align: right;
-    width: 60%;
-    margin-top: 45px;
-    margin-left: 0px;
+  text-align: right;
+  width: 60%;
+  margin-top: 45px;
+  margin-left: 0px;
 }
 
 .line-header {
-    font-size: 15px;
+  font-size: 15px;
 }
 
 .row-header {
-    display: -ms-flexbox;
-    display: flex;
-    -ms-flex-wrap: wrap;
-    flex-wrap: wrap;
-    margin-bottom: -30px;
-    margin-left: 5%;
-
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+  margin-bottom: -30px;
+  margin-left: 5%;
 }
 
 .row-header-table {
-    display: -ms-flexbox;
-    display: flex;
-    -ms-flex-wrap: wrap;
-    flex-wrap: wrap;
-    margin-left: 0%;
-
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+  margin-left: 0%;
 }
 
 .memo {
-    position: relative;
-    width: 90%;
-    margin-top: 10px;
-    padding-left: 55px;
+  position: relative;
+  width: 90%;
+  margin-top: 10px;
+  padding-left: 55px;
 }
 
 .memo-text {
-    font-size: 13px;
+  font-size: 13px;
 }
 
 .realisateur {
-    text-align: center;
-    margin-bottom: -7px;
-    font-size: 14px;
-    font-weight: bold;
+  text-align: center;
+  margin-bottom: -7px;
+  font-size: 14px;
+  font-weight: bold;
 }
 
-
 .hr-signature {
-    width: 100%;
-    margin-top: 10px;
+  width: 100%;
+  margin-top: 10px;
 }
 
 .poste {
-    text-align: center;
-    font-size: 13px;
-    margin-bottom: 10px;
+  text-align: center;
+  font-size: 13px;
+  margin-bottom: 10px;
 }
 
-
 .title {
-    text-align: center;
-    width: 100%;
-    margin-top: 10px;
-    font-size: 18px;
-    font-weight: bold;
+  text-align: center;
+  width: 100%;
+  margin-top: 10px;
+  font-size: 18px;
+  font-weight: bold;
 }
 
 .title-report {
-    text-align: center;
-    width: 100%;
-    margin-top: 10px;
-    font-size: 13px;
-    font-weight: bold;
-    margin-left: -15px;
+  text-align: center;
+  width: 100%;
+  margin-top: 10px;
+  font-size: 13px;
+  font-weight: bold;
+  margin-left: -15px;
 }
 
 h3 {
-    color: #0f0f0f;
-    font-family: arial, sans-serif;
-    font-size: 12px;
-    font-weight: bold;
-    margin-top: 0px;
-    margin-left: -15px;
-    margin-bottom: 1px;
+  color: #0f0f0f;
+  font-family: arial, sans-serif;
+  font-size: 12px;
+  font-weight: bold;
+  margin-top: 0px;
+  margin-left: -15px;
+  margin-bottom: 1px;
 }
 
 h4 {
-    color: #0f0f0f;
-    font-family: arial, sans-serif;
-    font-size: 10px;
-    font-weight: bold;
-    margin-top: 7px;
-    margin-bottom: 7px;
+  color: #0f0f0f;
+  font-family: arial, sans-serif;
+  font-size: 10px;
+  font-weight: bold;
+  margin-top: 7px;
+  margin-bottom: 7px;
 }
 
 .row {
-    display: -ms-flexbox;
-    display: flex;
-    -ms-flex-wrap: wrap;
-    flex-wrap: wrap;
-    /* margin-right: -15px; */
-    margin-left: 7%;
-
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+  /* margin-right: -15px; */
+  margin-left: 7%;
 }
 
 .row-report {
-    display: -ms-flexbox;
-    display: flex;
-    -ms-flex-wrap: wrap;
-    flex-wrap: wrap;
-    margin-top: 10px;
-    /* margin-right: -15px; */
-    margin-left: 7%;
-
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+  margin-top: 10px;
+  /* margin-right: -15px; */
+  margin-left: 7%;
 }
 
 body {
-    min-height: 100%;
+  min-height: 100%;
 }
 
 /* .col-sm-6 {
@@ -173,95 +167,95 @@ body {
 } */
 
 .col-sm-6 {
-    -ms-flex: 0 0 50%;
-    flex: 0 0 50%;
-    max-width: 50%;
+  -ms-flex: 0 0 50%;
+  flex: 0 0 50%;
+  max-width: 50%;
 }
 
 .col-sm-12 {
-    -ms-flex: 0 0 100%;
-    flex: 0 0 100%;
-    max-width: 100%;
+  -ms-flex: 0 0 100%;
+  flex: 0 0 100%;
+  max-width: 100%;
 }
 
 .col-sm-3 {
-    position: relative;
-    width: 60%;
-    padding-left: 15px;
-    font-family: arial, sans-serif;
-    font-size: 12px;
+  position: relative;
+  width: 60%;
+  padding-left: 15px;
+  font-family: arial, sans-serif;
+  font-size: 12px;
 }
 
 .col-sm-3-right {
-    position: relative;
-    width: 35%;
-    font-family: arial, sans-serif;
-    font-size: 12px;
+  position: relative;
+  width: 35%;
+  font-family: arial, sans-serif;
+  font-size: 12px;
 }
 
 .col-sm-3-resultat {
-    position: relative;
-    width: 45%;
-    padding-left: 15px;
-    font-family: arial, sans-serif;
-    font-size: 12px;
+  position: relative;
+  width: 45%;
+  padding-left: 15px;
+  font-family: arial, sans-serif;
+  font-size: 12px;
 }
 
 .m-t-10 {
-    margin-top: 10PX;
+  margin-top: 10px;
 }
 
 .m-t-5 {
-    margin-top: 10PX;
+  margin-top: 10px;
 }
 
 .exam {
-    font-size: 10px;
-    font-weight: bold;
-    padding: 0px;
-    margin: 0px;
-    height: 2px;
+  font-size: 10px;
+  font-weight: bold;
+  padding: 0px;
+  margin: 0px;
+  height: 2px;
 }
 
 .test-parameter {
-    font-size: 10px;
+  font-size: 10px;
 }
 
 .resultat {
-    font-size: 10px;
-    text-align: center !important;
+  font-size: 10px;
+  text-align: center !important;
 }
 
 .resultat-vn {
-    font-size: 10px;
-    text-align: center !important;
+  font-size: 10px;
+  text-align: center !important;
 }
 
 .report {
-    font-size: 10px;
+  font-size: 10px;
 }
 
 li {
-    list-style-type: none;
+  list-style-type: none;
 }
 
 .signature {
-    position: fixed;
-    bottom: 25px;
-    width: 50%;
-    padding-left: 450px;
+  position: fixed;
+  bottom: 25px;
+  width: 50%;
+  padding-left: 450px;
 }
-
 
 .footer {
-    position: fixed;
-    left: 0;
-    bottom: 0;
-    width: 100%;
-    text-align: center;
+  position: fixed;
+  left: 0;
+  bottom: 10px;
+  width: 100%;
+  text-align: center;
 }
 
+
 .devise {
-    font-size: 15px;
-    margin-bottom: 20px;
+  font-size: 15px;
+  margin-bottom: 20px;
 }

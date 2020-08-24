@@ -9,8 +9,8 @@ var self = module.exports = {
             let ifbilan = req.body.ifbilan;
             let ifTest = req.body.is_test;
             let sql =
-                'INSERT INTO tb_examens (nom_examen,type_resultat,is_bilan,if_test_or_param_test) VALUES ("' + nom_examen + '","' + type_examen + '","' + ifbilan + '","' + ifTest + '")';
-            con.query(sql, function (err, result) {
+                'INSERT INTO tb_examens (nom_examen,type_resultat,is_bilan,if_test_or_param_test) VALUES (?,?,?,?)';
+            con.query(sql, [nom_examen, type_examen, ifbilan, ifTest], function (err, result) {
                 if (err) {
                     msg = {
                         type: "danger",
@@ -44,9 +44,9 @@ var self = module.exports = {
             let is_bilan = req.body.is_bilan;
             let is_test = req.body.is_test;
             let sql =
-                'UPDATE tb_examens SET nom_examen="' + examen + '", type_resultat =' + type_resultat + ', is_bilan=' + is_bilan + ',if_test_or_param_test=' + is_test + ' WHERE id=?';
+                'UPDATE tb_examens SET nom_examen=?, type_resultat =?, is_bilan=?,if_test_or_param_test=? WHERE id=?';
             // console.log(sql);
-            con.query(sql, examenID, function (err, result) {
+            con.query(sql, [examen, type_resultat, is_bilan, is_test, examenID], function (err, result) {
                 if (err) {
                     msg = {
                         type: "danger",
@@ -258,16 +258,16 @@ var self = module.exports = {
                     resolve(rows);
                 }
             });
-        });  
+        });
         data = await promise;
         //console.log(data);
         return data;
     },
     //SET EXAM POSITION
-    reOrderExam: async function (id_examen,id_param_exam,position) {
+    reOrderExam: async function (id_examen, id_param_exam, position) {
         let promise = new Promise((resolve, reject) => {
-            let sql = "UPDATE tb_parametres_examens SET position =" + position + " WHERE id_examen =? AND id_param_exam=?";
-            con.query(sql,[id_examen,id_param_exam], function (err, rows) {
+            let sql = "UPDATE tb_parametres_examens SET position =? WHERE id_examen =? AND id_param_exam=?";
+            con.query(sql, [position, id_examen, id_param_exam], function (err, rows) {
                 if (err) {
                     resolve({
                         msg: "Une erreur est survenue. S'il vous plait réessayez.",
@@ -324,32 +324,32 @@ var self = module.exports = {
         //console.log(data);
         return data;
     },
-   //TEST SIGNATURE
-   deleteExam: async function (id) {
-    let promise = new Promise((resolve, reject) => {
-        let sql = "DELETE FROM  tb_examens WHERE id=? ";
-        //console.log(sql+" ID : "+id);
-        con.query(sql, id, function (err, rows) {
-            if (err) {
-                //throw err;
-                resolve({
-                    msg: "Une erreur est survenue. S'il vous plait réessayez.",
-                    type: "danger",
-                    debug: err
-                });
-            } else {
-                resolve({
-                    msg: "Suppression effectuée avec succès....",
-                    success: true,
-                    debug: err
-                });
-            }
+    //TEST SIGNATURE
+    deleteExam: async function (id) {
+        let promise = new Promise((resolve, reject) => {
+            let sql = "DELETE FROM  tb_examens WHERE id=? ";
+            //console.log(sql+" ID : "+id);
+            con.query(sql, id, function (err, rows) {
+                if (err) {
+                    //throw err;
+                    resolve({
+                        msg: "Une erreur est survenue. S'il vous plait réessayez.",
+                        type: "danger",
+                        debug: err
+                    });
+                } else {
+                    resolve({
+                        msg: "Suppression effectuée avec succès....",
+                        success: true,
+                        debug: err
+                    });
+                }
+            });
         });
-    });
-    data = await promise;
-    //console.log(data);
-    return data;
-},
+        data = await promise;
+        //console.log(data);
+        return data;
+    },
     //============================= SAVE TEST RESULT ==================================================
     //Save Test Result
     saveTestResult: async function (req) {
@@ -362,11 +362,11 @@ var self = module.exports = {
                 let ExamParent = req.body.ExamID;
                 let values = [];
                 let pos = 0;
-                
+
                 for (item of testResults) {
                     let resultat = testResults[pos];
                     let examen_id = tests_id[pos];
-                    let saveID = test_request_id+""+ExamParent+""+examen_id;
+                    let saveID = test_request_id + "" + ExamParent + "" + examen_id;
                     let line = [];
                     line[0] = test_request_id;
                     line[1] = examen_id;
@@ -414,11 +414,11 @@ var self = module.exports = {
         return rep;
     },
     //Save Single Test Result
-    saveSingleTestResult: async function (test_request_id, examen_id, resultat,save_id,exam_parent) {
+    saveSingleTestResult: async function (test_request_id, examen_id, resultat, save_id, exam_parent) {
         let promise = new Promise((resolve, reject) => {
             let sql =
-                'INSERT INTO tb_resultats (test_request_id,examen_id,exam_parent,resultat,save_id) VALUES (' + test_request_id + ',' + examen_id + ',' + exam_parent + ',"' + resultat + '","' + save_id + '")';
-            con.query(sql, async function (err, result) {
+                'INSERT INTO tb_resultats (test_request_id,examen_id,exam_parent,resultat,save_id) VALUES (?,?,?,?,?)';
+            con.query(sql, [test_request_id, examen_id, exam_parent, resultat, save_id], async function (err, result) {
                 if (err) {
                     msg = {
                         type: "danger",
@@ -458,7 +458,7 @@ var self = module.exports = {
                 let resultat = testResults[pos];
                 let examen_id = tests_id[pos];
                 let savedId = SavedIDs[pos];
-                await self.editSingleTestResult(test_request_id, examen_id, resultat,savedId,ExamParent);
+                await self.editSingleTestResult(test_request_id, examen_id, resultat, savedId, ExamParent);
                 pos++;
             }
             msg = {
@@ -479,12 +479,12 @@ var self = module.exports = {
     },
 
     //UPDATE SINGLE TEST RESULTS
-    editSingleTestResult: async function (test_request_id, examen_id, resultat,saveId,ExamParent) {
+    editSingleTestResult: async function (test_request_id, examen_id, resultat, saveId, ExamParent) {
         let promise = new Promise((resolve, reject) => {
             let sql =
-                'UPDATE tb_resultats SET resultat="' + resultat + '" WHERE id_save=' + saveId + ' ';
+                'UPDATE tb_resultats SET resultat=? WHERE id_save=? ';
             //console.log(sql);
-            con.query(sql, async function (err, result) {
+            con.query(sql, [resultat, saveId], async function (err, result) {
                 if (err) {
                     msg = {
                         type: "danger",
@@ -496,8 +496,8 @@ var self = module.exports = {
                     let nb_success = result.affectedRows;
                     if (nb_success == 0) { //Enregistrer le nouveau test
                         console.log("SAve the test...");
-                        let save_id = test_request_id+""+ExamParent+""+examen_id;
-                        await self.saveSingleTestResult(test_request_id, examen_id, resultat,save_id,ExamParent);
+                        let save_id = test_request_id + "" + ExamParent + "" + examen_id;
+                        await self.saveSingleTestResult(test_request_id, examen_id, resultat, save_id, ExamParent);
                     }
                     msg = {
                         type: "success",
@@ -516,11 +516,11 @@ var self = module.exports = {
         return rep;
     },
     //TEST REQUEST CONTENTS
-    getTestResult: async function (test_request_id, examen_id,ExamParent) {
+    getTestResult: async function (test_request_id, examen_id, ExamParent) {
         let promise = new Promise((resolve, reject) => {
             let sql = "SELECT * FROM tb_resultats,tb_examens WHERE tb_resultats.examen_id=tb_examens.id AND test_request_id =? AND tb_resultats.examen_id = ? AND exam_parent=? ";
-           //console.log(sql+" EXAMEN ID : "+examen_id+" REQUEST ID "+test_request_id);
-            con.query(sql, [test_request_id, examen_id,ExamParent], function (err, rows) {
+            //console.log(sql+" EXAMEN ID : "+examen_id+" REQUEST ID "+test_request_id);
+            con.query(sql, [test_request_id, examen_id, ExamParent], function (err, rows) {
                 if (err) {
                     throw err;
                     resolve([{ fullname: "" }]);
@@ -537,9 +537,9 @@ var self = module.exports = {
     updateTestResultStatus: async function (test_request_id, statut) {
         let promise = new Promise((resolve, reject) => {
             let sql =
-                'UPDATE tb_test_requests SET statut=' + statut + ',date_resultat=NOW() WHERE id =' + test_request_id;
+                'UPDATE tb_test_requests SET statut=?,date_resultat=NOW() WHERE id =?';
             //console.log(sql);
-            con.query(sql, function (err, result) {
+            con.query(sql, [statut, test_request_id], function (err, result) {
                 if (err) {
                     msg = {
                         type: "danger",
@@ -597,9 +597,9 @@ var self = module.exports = {
                 let commentaire = qte + " " + materiauName + " ajouté(s) au lot " + numero_lot + " | Suppression Test numéro " + test_request_id;
                 console.log(commentaire);
                 //Insert info into tb_evolution_stock table
-                let sql = 'INSERT INTO tb_evolution_stock (lot,materiau,qte,transaction,commentaire,acteur,test) VALUES ("' + numero_lot + '","' + materiauId + '","' + qte + '","' + transactionType + '","' + commentaire + '","' + user + '",' + test_request_id + ')';
+                let sql = 'INSERT INTO tb_evolution_stock (lot,materiau,qte,transaction,commentaire,acteur,test) VALUES (?,?,?,?,?,?,?)';
 
-                con.query(sql, function (err, result) {
+                con.query(sql, [numero_lot, materiauId, qte, transactionType, commentaire, user, test_request_id], function (err, result) {
                     if (err) {
                         console.log(err);
                         con.rollback(function () {

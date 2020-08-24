@@ -8,8 +8,8 @@ var self = module.exports = {
             let min_stock = req.body.min_stock;
             let expirable = req.body.perissable;
             let sql =
-                'INSERT INTO tb_materiaux (nom_materiau,min_stock,expirable) VALUES ("' + nom_materiau + '",' + min_stock + ',' + expirable + ')';
-            con.query(sql, function (err, result) {
+                'INSERT INTO tb_materiaux (nom_materiau,min_stock,expirable) VALUES (?,?,?)';
+            con.query(sql, [nom_materiau, min_stock, expirable], function (err, result) {
                 if (err) {
                     msg = {
                         type: "danger",
@@ -41,8 +41,8 @@ var self = module.exports = {
             let materiauName = info.materiauName;
             let perissable = info.perissable;
             let materiauId = info.materiauId;
-            let sql = "UPDATE tb_materiaux SET nom_materiau ='" + materiauName + "',min_stock =" + min_stock + ",expirable =" + perissable + " WHERE id =?";
-            con.query(sql, materiauId, function (err, rows) {
+            let sql = "UPDATE tb_materiaux SET nom_materiau =?,min_stock =?,expirable =? WHERE id =?";
+            con.query(sql, [materiauName, min_stock, perissable, materiauId], function (err, rows) {
                 if (err) {
                     resolve({
                         msg: "Une erreur est survenue. S'il vous plait réessayez.",
@@ -65,6 +65,7 @@ var self = module.exports = {
 
     //Materiaux LIST
     listOfMateriaux: async function (materiauId) {
+        let CD = helpers.getCurrentDate();
         let promise = new Promise((resolve, reject) => {
             let sql = "";
             if (materiauId == "All") {
@@ -72,7 +73,7 @@ var self = module.exports = {
             } else {
                 sql = "SELECT * FROM tb_materiaux WHERE id=" + materiauId;
             }
-            console.log(sql);
+            console.log(sql, "Current DATE ", CD);
             con.query(sql, function (err, rows) {
                 if (err) {
                     throw err;
@@ -153,7 +154,13 @@ var self = module.exports = {
     //PENDING STOCK TRANSACTION FOR A MATERIAU
     getPendingStockForMateriau: async function (materiauID) {
         let promise = new Promise((resolve, reject) => {
-            let sql = "SELECT * FROM tb_materiaux,tb_pending_stock_evolution WHERE tb_pending_stock_evolution.materiau_id=tb_materiaux.id AND materiau_id=" + materiauID;
+            let sql = "";
+            if (materiauID == "All") {
+                sql = " SELECT *,tb_pending_stock_evolution.id as id_trans FROM tb_materiaux,tb_pending_stock_evolution,tb_examens WHERE tb_pending_stock_evolution.materiau_id=tb_materiaux.id AND tb_pending_stock_evolution.test_id=tb_examens.id";
+            } else {
+                sql = "SELECT * FROM tb_materiaux,tb_pending_stock_evolution WHERE tb_pending_stock_evolution.materiau_id=tb_materiaux.id AND materiau_id=" + materiauID;
+            }
+            console.log("PENDING : ", sql);
             con.query(sql, function (err, rows) {
                 if (err) {
                     throw err;
@@ -206,7 +213,7 @@ var self = module.exports = {
         return data;
     },
     //Manage PENDING STOCK EVOLUTION
-    managePendingStock: async function (con, matInfo, qte, pendingQtyForThisItem, action) {
+    managePendingStock: async function (con, matInfo, qte, pendingQtyForThisItem, stock_id, action) {
         if (pendingQtyForThisItem == 0) {
             return qte;
         }
@@ -227,13 +234,13 @@ var self = module.exports = {
             }
             if (action == "INSERT") {
                 let commentaire = qte + " " + matInfo.name + " retiré(s) du lot " + matInfo.lot + " | Transaction pendante";
-                await self.RemoveItemFromStock(con, matInfo.lot, matInfo.id, matInfo.name, "substract", qte, commentaire, "System", -1);
+                await self.RemoveItemFromStock(con, matInfo.lot, stock_id, matInfo.id, matInfo.name, "substract", qte, commentaire, "System", -1);
             }
             qte = 0;
         } else { // Suppression de la qte pandante
             if (action == "INSERT") {
                 let commentaire = pendingQtyForThisItem + " " + matInfo.name + " retiré(s) du lot " + matInfo.lot + " | Transaction pendante";
-                await self.RemoveItemFromStock(con, matInfo.lot, matInfo.id, matInfo.name, "substract", pendingQtyForThisItem, commentaire, "System", -1);
+                await self.RemoveItemFromStock(con, matInfo.lot, stock_id, matInfo.id, matInfo.name, "substract", pendingQtyForThisItem, commentaire, "System", -1);
             }
             qte = qte - pendingQtyForThisItem;
             console.log("Suppression de la qte pandante");
@@ -246,8 +253,8 @@ var self = module.exports = {
     pendingStockEvolution: async function (con, materiau_id, qte_a_enlever, test_id, req_id) {
         let promise = new Promise((resolve, reject) => {
             let sql =
-                'INSERT INTO tb_pending_stock_evolution (materiau_id,qte_a_enlever,test_id,request_id) VALUES (' + materiau_id + ',' + qte_a_enlever + ',' + test_id + ',' + req_id + ')';
-            con.query(sql, function (err, result) {
+                'INSERT INTO tb_pending_stock_evolution (materiau_id,qte_a_enlever,test_id,request_id) VALUES (?,?,?,?)';
+            con.query(sql, [materiau_id, qte_a_enlever, test_id, req_id], function (err, result) {
                 if (err) {
                     console.log(err);
                     // msg = {
@@ -395,13 +402,16 @@ var self = module.exports = {
                 let matInfo = { id: materiauId, name: materiauName, lot: numero_lot };
                 if (err) { throw err; }
                 let sql = "";
+                let params = [];
                 if (dateExpiration != null) {
-                    sql = 'INSERT INTO tb_stocks (numero_lot,materiau,date_recue,date_expiration,qte_recue,qte_endomage,qte_restante,acteur) VALUES ("' + numero_lot + '","' + materiauId + '","' + dateRecue + '","' + dateExpiration + '",' + qteRecue + ',' + qteEndomage + ',' + qteRestante + ',"' + user + '")';
+                    params = [numero_lot, materiauId, dateRecue, dateExpiration, qteRecue, qteEndomage, qteRestante, user];
+                    sql = 'INSERT INTO tb_stocks (numero_lot,materiau,date_recue,date_expiration,qte_recue,qte_endomage,qte_restante,acteur) VALUES (?,?,?,?,?,?,?,?)';
                 } else {
-                    sql = 'INSERT INTO tb_stocks (numero_lot,materiau,date_recue,qte_recue,qte_endomage,qte_restante,acteur) VALUES ("' + numero_lot + '","' + materiauId + '","' + dateRecue + '",' + qteRecue + ',' + qteEndomage + ',' + qteRestante + ',"' + user + '")';
+                    params = [numero_lot, materiauId, dateRecue, qteRecue, qteEndomage, qteRestante, user];
+                    sql = 'INSERT INTO tb_stocks (numero_lot,materiau,date_recue,qte_recue,qte_endomage,qte_restante,acteur) VALUES (?,?,?,?,?,?,?)';
                 }
 
-                con.query(sql, function (err, result) {
+                con.query(sql, params, function (err, result) {
                     console.log("TEST");
                     if (err) {
                         msg = {
@@ -449,7 +459,7 @@ var self = module.exports = {
                                             };
                                         });
                                     }
-                                    await self.managePendingStock(con, matInfo, qteRestante, pendingQtyForThisItem, "INSERT");
+                                    await self.managePendingStock(con, matInfo, qteRestante, pendingQtyForThisItem, stock_id, "INSERT");
                                     msg = {
                                         success: "success",
                                         msg:
@@ -487,9 +497,6 @@ var self = module.exports = {
             let date_exp = null;
             if (dateExpiration.length >= 8) {
                 date_exp = helpers.formatDate(dateExpiration, "EN");
-                date_exp = "date_expiration='" + date_exp + "'";
-            } else {
-                date_exp = "date_expiration=null";
             }
             transactionType = "adjustment";
             let oldVal = "Qte recue : " + qte_recue + " Qte utilisée : " + qte_utilisee + " Qte endomagée : " + qte_endomage + " Qte restante : " + qte_restante;
@@ -500,9 +507,9 @@ var self = module.exports = {
             //BEGIN TRANSACTION
             con.beginTransaction(async function (err) {
 
-                let sql = "UPDATE tb_stocks SET date_recue ='" + date_recue + "'," + date_exp + ",  qte_utilisee=" + qteUtilise + ",qte_recue=" + qteRecue + ",qte_restante=" + qteRestante + ",qte_endomage=" + qteEndomage + " WHERE id=?";
+                let sql = "UPDATE tb_stocks SET date_recue =?,date_expiration=?,  qte_utilisee=?,qte_recue=?,qte_restante=?,qte_endomage=? WHERE id=?";
                 // console.log(sql);
-                con.query(sql, stockID, function (err, rows) {
+                con.query(sql, [date_recue, date_exp, qteUtilise, qteRecue, qteRestante, qteEndomage, stockID], function (err, rows) {
                     if (err) {
                         con.rollback(function () {
                             resolve({
@@ -513,9 +520,9 @@ var self = module.exports = {
                         });
 
                     } else {
-                        let sql1 = 'INSERT INTO tb_evolution_stock (lot,materiau,transaction,commentaire,acteur) VALUES ("' + numero_lot + '","' + materiau + '","' + transactionType + '","' + commentaire + '","' + acteur + '")';
+                        let sql1 = 'INSERT INTO tb_evolution_stock (lot,materiau,transaction,commentaire,acteur) VALUES (?,?,?,?,?)';
 
-                        con.query(sql1, function (err, result) {
+                        con.query(sql1, [numero_lot, materiau, transactionType, commentaire, acteur], function (err, result) {
                             if (err) {
                                 con.rollback(function () {
                                     resolve({
@@ -565,15 +572,15 @@ var self = module.exports = {
 
     //Add or REMOVE ITEMS STOCK Materiau
 
-    async RemoveItemFromStock(con, numero_lot, materiauId, materiauName, transactionType, qte, commentaire, user, request_id) {
+    async RemoveItemFromStock(con, numero_lot, stock_id, materiauId, materiauName, transactionType, qte, commentaire, user, request_id) {
         let promise = new Promise((resolve, reject) => {
             //   /* Begin transaction */
             con.beginTransaction(async function (err) {
                 if (err) { throw err; }
                 //Insert info into tb_evolution_stock table
-                let sql = 'INSERT INTO tb_evolution_stock (lot,materiau,qte,transaction,commentaire,acteur,test) VALUES ("' + numero_lot + '","' + materiauId + '","' + qte + '","' + transactionType + '","' + commentaire + '","' + user + '",' + request_id + ')';
+                let sql = 'INSERT INTO tb_evolution_stock (lot,materiau,qte,transaction,commentaire,acteur,test) VALUES (?,?,?,?,?,?,?)';
 
-                con.query(sql, function (err, result) {
+                con.query(sql, [numero_lot, materiauId, qte, transactionType, commentaire, user, request_id], function (err, result) {
                     if (err) {
                         console.log(err);
                         con.rollback(function () {
@@ -586,18 +593,18 @@ var self = module.exports = {
                     let action = " enlevé(s) du lot " + numero_lot;
                     if (transactionType == "endommagee") {
                         // qte endomage
-                        sql2 = "UPDATE  tb_stocks SET qte_restante = qte_restante - " + qte + ",qte_endomage = qte_endomage + " + qte + "  WHERE numero_lot= ? AND materiau =?";
+                        sql2 = "UPDATE  tb_stocks SET qte_restante = qte_restante - " + qte + ",qte_endomage = qte_endomage + " + qte + "  WHERE id=?";
                     } else {
 
                         if (transactionType == "substract") {
-                            sql2 = "UPDATE  tb_stocks SET qte_restante = qte_restante - " + qte + ",qte_utilisee = qte_utilisee + " + qte + "  WHERE numero_lot= ? AND materiau =?";
+                            sql2 = "UPDATE  tb_stocks SET qte_restante = qte_restante - " + qte + ",qte_utilisee = qte_utilisee + " + qte + "  WHERE id=?";
                         } else {
-                            sql2 = "UPDATE  tb_stocks SET qte_restante = qte_restante + " + qte + " WHERE numero_lot= ? AND materiau =?";
+                            sql2 = "UPDATE  tb_stocks SET qte_restante = qte_restante + " + qte + " WHERE id=?";
                             action = " ajouté(s) au lot " + numero_lot;
                         }
                     }
 
-                    let param = [numero_lot, materiauId];
+                    let param = [stock_id];
                     con.query(sql2, param, function (err, result) {
                         if (err) {
                             con.rollback(function () {

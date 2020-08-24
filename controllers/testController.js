@@ -167,6 +167,7 @@ var self = module.exports = {
                                         let new_qte_to_take = qte_to_use;
                                         for (item of stockByMateriau) {
                                             console.log(stockByMateriau);
+                                            let stock_id = stockByMateriau.id_stock;
                                             let numero_lot = item.numero_lot;
                                             let materiauId = item.materiau;
                                             let materiauName = item.nom_materiau;
@@ -181,12 +182,12 @@ var self = module.exports = {
                                             } else {
                                                 if (qte_dispo_in_stock > qte) {
                                                     commentaire = qte + " " + materiauName + " a été prélevé du stock pour le test # " + id_test_request;
-                                                    let rep = await stockDB.RemoveItemFromStock(con, numero_lot, materiauId, materiauName, transactionType, qte, commentaire, user, id_test_request);
+                                                    let rep = await stockDB.RemoveItemFromStock(con, numero_lot, stock_id, materiauId, materiauName, transactionType, qte, commentaire, user, id_test_request);
                                                     break; //On sort de la boucle parce qu'on a deja preleve
                                                 } else {
                                                     if (diff >= 0) {
                                                         commentaire = qte + " " + materiauName + " a été prélevé du stock pour le test # " + id_test_request;
-                                                        let rep = await stockDB.RemoveItemFromStock(con, numero_lot, materiauId, materiauName, transactionType, qte, commentaire, user, id_test_request);
+                                                        let rep = await stockDB.RemoveItemFromStock(con, numero_lot, stock_id, materiauId, materiauName, transactionType, qte, commentaire, user, id_test_request);
                                                         new_qte_to_take = new_qte_to_take - qte;
                                                     }
 

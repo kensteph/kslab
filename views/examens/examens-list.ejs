@@ -52,7 +52,9 @@
 									</tr>
 								</thead>
 								<tbody id="table">
-									<% data.forEach((examen) => { %>
+									<% data.forEach((examen) => {
+										let examenName = examen.nom_examen.replace("'","");	
+									%>
 									<tr id="row<%= examen.id %>">
 										<td>
 											<%= examen.nom_examen %>
@@ -77,13 +79,13 @@
 											<% } %>
 											<% if(UserData.user_sub_menu_access.includes("Modifier examens") || UserData.user_sub_menu_access[0]=="All"){%>
 											| <a href="#"
-												onclick="launchEditExamen('<%= examen.nom_examen %>','<%= examen.id %>','<%= examen.type_resultat %>','<%= examen.is_bilan %>','<%= examen.if_test_or_param_test %>')"><i
+												onclick="launchEditExamen('<%= examenName %>','<%= examen.id %>','<%= examen.type_resultat %>','<%= examen.is_bilan %>','<%= examen.if_test_or_param_test %>')"><i
 													class="fa fa-pencil m-r-5"></i> Modifier</a>
 											<% } %>
 											<% if(UserData.user_sub_menu_access.includes("Supprimer examens") || UserData.user_sub_menu_access[0]=="All"){%>
 											|
 											<a href="#"
-												onclick="launchDeleteExamen('<%= examen.nom_examen %>','<%= examen.id %>')"><i
+												onclick="launchDeleteExamen('<%= examenName %>','<%= examen.id %>')"><i
 													class="fa fa-trash m-r-5"></i> Supprimer</a>
 											<% } %>
 										</td>
