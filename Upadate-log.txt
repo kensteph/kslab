@@ -2,4 +2,6 @@
 
 ALTER TABLE `tb_app_settings` ADD `memo` TEXT NULL DEFAULT NULL AFTER `back_db_path`;
 ALTER TABLE `tb_pending_stock_evolution` ADD `date_trans` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `request_id`;
+ALTER TABLE `tb_evolution_stock` CHANGE `qte` `qte` INT(11) NULL DEFAULT NULL;
+
 

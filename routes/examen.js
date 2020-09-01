@@ -358,16 +358,20 @@ router.post("/SaveTestResult", async (req, res) => {
     //console.log("REQUEST STATUS : " + requestStatus);
     let ifCompleted = false;
     let data = [];
-    if (requestStatus == 0) {
-        //A pending request
-        //Verifier le nombre de resultat à enregistrer pour ce TEST
-        let infoTest = await testDB.testResultSavedVerification(id_test_request);
-        data = infoTest["TestRequestContent"];
-        ifCompleted = infoTest["ifCompleted"];
-    } else {
-        data = await examenDB.testRequestContent(id_test_request);
-        ifCompleted = true;
-    }
+    // if (requestStatus == 0) {
+    //     //A pending request
+    //     //Verifier le nombre de resultat à enregistrer pour ce TEST
+    //     let infoTest = await testDB.testResultSavedVerification(id_test_request);
+    //     data = infoTest["TestRequestContent"];
+    //     ifCompleted = infoTest["ifCompleted"];
+    // } else {
+    //     data = await examenDB.testRequestContent(id_test_request);
+    //     ifCompleted = true;
+    // }
+
+    let infoTest = await testDB.testResultSavedVerification(id_test_request);
+    data = infoTest["TestRequestContent"];
+    ifCompleted = infoTest["ifCompleted"];
 
     let pageTitle = "Enregistrement résultat pour :";
     if (ifCompleted) {

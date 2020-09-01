@@ -5,17 +5,6 @@ const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
 const helpers = require('./helpers/helpers');
-// //TRY TO LAUNCH THE DATABASE  SERVER FIRST
-// console.log("TRYING TO LAUNCH DB AND RECONNECT : ");
-// var exec = require('child_process').execFile;
-// exec('./db_server/UwAmp.exe', function (err, data) {
-//     if (err) {
-//         //console.error(`exec error: ${err}`);
-
-//     }
-
-// });
-
 const stats = require('./controllers/stats');
 const path = require('path');
 const cron = require("node-cron");
@@ -310,7 +299,7 @@ app.get('/notifications', async (req, res) => {
 
 helpers.getStartAndEndDateOfTheWeekFromDate("2020-07-09");
 app.use(function (req, res) {
-    res.status(404).json({ msg: ' cccccccc' });
+    res.status(404).json({ msg: ' This route is not defined...' });
 });
 const port = 8788;
 http.listen(port, () => {

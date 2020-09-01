@@ -35,16 +35,16 @@ con.connect(function (err) {
     if (err) {
         console.log('DATABASE ' + process.env.DB_NAME + ' NOT AVAILABLE!');
         console.log("CON : ", conState);
-        //TRY TO LAUNCH THE DATABASE  SERVER FIRST
-        console.log("TRYING TO LAUNCH DB AND RECONNECT : ", conState);
-        var exec = require('child_process').execFile;
-        var response = exec('./db_server/UwAmp.exe', function (err, data) {
-            if (err) {
-                //console.error(`exec error: ${err}`);
+        // //TRY TO LAUNCH THE DATABASE  SERVER FIRST
+        // console.log("TRYING TO LAUNCH DB AND RECONNECT : ", conState);
+        // var exec = require('child_process').execFile;
+        // var response = exec('./db_server/UwAmp.exe', function (err, data) {
+        //     if (err) {
+        //         //console.error(`exec error: ${err}`);
 
-            }
+        //     }
 
-        });
+        // });
         con.connect();
     } else {
         console.log('Connected to ' + process.env.DB_NAME + '!');

@@ -73,7 +73,7 @@ var self = module.exports = {
             } else {
                 sql = "SELECT * FROM tb_materiaux WHERE id=" + materiauId;
             }
-            console.log(sql, "Current DATE ", CD);
+            //console.log(sql, "Current DATE ", CD);
             con.query(sql, function (err, rows) {
                 if (err) {
                     throw err;
@@ -131,7 +131,7 @@ var self = module.exports = {
     updateStockPending: async function (con, materiauID, qte) {
         let promise = new Promise((resolve, reject) => {
             let sql = "UPDATE tb_pending_stock_evolution SET qte_a_enlever=qte_a_enlever-" + qte + " WHERE materiau_id =?";
-            console.log(sql);
+            //console.log(sql);
             con.query(sql, materiauID, function (err, rows) {
                 if (err) {
                     resolve({
@@ -160,7 +160,7 @@ var self = module.exports = {
             } else {
                 sql = "SELECT * FROM tb_materiaux,tb_pending_stock_evolution WHERE tb_pending_stock_evolution.materiau_id=tb_materiaux.id AND materiau_id=" + materiauID;
             }
-            console.log("PENDING : ", sql);
+            //console.log("PENDING : ", sql);
             con.query(sql, function (err, rows) {
                 if (err) {
                     throw err;

@@ -508,6 +508,7 @@ var self = module.exports = {
                                     for (item of stockByMateriau) {
                                         console.log(stockByMateriau);
                                         let numero_lot = item.numero_lot;
+                                        let id_stock = item.id_stock;
                                         let materiauId = item.materiau;
                                         let materiauName = item.nom_materiau;
                                         let transactionType = "substract";
@@ -521,12 +522,12 @@ var self = module.exports = {
                                         } else {
                                             if (qte_dispo_in_stock > qte) {
                                                 commentaire = qte + " " + materiauName + " a été prélevé du stock pour le test # " + id_test_request;
-                                                let rep = await stockDB.RemoveItemFromStock(con, numero_lot, materiauId, materiauName, transactionType, qte, commentaire, user, id_test_request);
+                                                let rep = await stockDB.RemoveItemFromStock(con, numero_lot, id_stock, materiauId, materiauName, transactionType, qte, commentaire, user, id_test_request);
                                                 break; //On sort de la boucle parce qu'on a deja preleve
                                             } else {
                                                 if (diff >= 0) {
                                                     commentaire = qte + " " + materiauName + " a été prélevé du stock pour le test # " + id_test_request;
-                                                    let rep = await stockDB.RemoveItemFromStock(con, numero_lot, materiauId, materiauName, transactionType, qte, commentaire, user, id_test_request);
+                                                    let rep = await stockDB.RemoveItemFromStock(con, numero_lot, id_stock, materiauId, materiauName, transactionType, qte, commentaire, user, id_test_request);
                                                     new_qte_to_take = new_qte_to_take - qte;
                                                 }
 
@@ -542,7 +543,7 @@ var self = module.exports = {
                         //console.log("ALERT : " + alert);
 
                         //COMMIT IF ALL DONE COMPLETELY
-                        con.commit(function (err) {
+                        con.commit(async function (err) {
                             if (err) {
                                 con.rollback(function () {
                                     msg = {
@@ -553,6 +554,8 @@ var self = module.exports = {
                                     resolve(msg);
                                 });
                             }
+                            //SET THE STATUS TO 0
+                            await examController.updateTestResultStatus(id_test_request, 0);
                             msg = {
                                 type: "success",
                                 success: true,

@@ -40,8 +40,10 @@
                         <div class="table-responsive">
                             <table id="dtBasicExample" class="table table-border table-striped custom-table">
                                 <thead>
-                                    <tr><th>Id Transaction</th>
+                                    <tr>
+                                        <th>Id Transaction</th>
                                         <th>Date Transaction</th>
+                                        <th>Qté</th>
                                         <th>Matériau</th>
                                         <th>Examen</th>
                                     </tr>
@@ -51,6 +53,7 @@
                                     <tr id="row<%= pending.id_trans %>">
                                         <td><%= pending.id_trans %></td>
                                         <td><%= pending.date_trans %></td>
+                                        <td><%= pending.qte_a_enlever %></td>
                                         <td><%= pending. nom_materiau %></td>
                                         <td><%= pending.nom_examen %></td>
                                     </tr>

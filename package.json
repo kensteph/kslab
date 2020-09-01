@@ -7,9 +7,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "pkg": {
-    "assets": "views/**/*"
-  },
+  "pkg": {},
   "author": "Link",
   "license": "ISC",
   "dependencies": {

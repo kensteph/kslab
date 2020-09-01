@@ -249,7 +249,7 @@ router.post('/cancel-transaction', async (req, res) => {
 //PENDING TRANSACTIONS
 router.get('/pending-transactions', async (req, res) => {
     let pst = await stockDB.getPendingStockForMateriau("All");
-    console.log(pst);
+    //console.log(pst);
     let pageTitle = "Transactions pendantes";
     params = {
         pageTitle: pageTitle,

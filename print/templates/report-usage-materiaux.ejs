@@ -11,7 +11,7 @@
 </head>
 
 <body>
-    
+
 
 
     <div class="row-header">
@@ -24,21 +24,21 @@
                 <strong class="line-header"><%=line2%></strong>
                 <br>
                 <% if(line3 !=""){ %>
-                 <%=line3%><br>
+                <%=line3%><br>
                 <% } %>
                 <% if(line4 !=""){ %>
-                    <%=line4%><br>
+                <%=line4%><br>
                 <% } %>
                 <% if(line5 !=""){ %>
-                    <%=line5%><br>
+                <%=line5%><br>
                 <% } %>
                 <% if(line6 !=""){ %>
-                    <%=line6%><br><br>
+                <%=line6%><br><br>
                 <% } %>
             </p>
         </div>
     </div>
-    <hr style="width: 80%; margin-top: -30px;" >
+    <hr style="width: 80%; margin-top: -30px;">
 
     <div class="row-header-table">
         <div class="title-report"><%=pageTitle%></div>
@@ -54,18 +54,20 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <% data.forEach((report) => {   %>
+                        <% data.forEach((report) => {
+                            if(report.qty>0){
+                        %>
                         <tr>
                             <td class="report"><%=report.Materiau%></td>
                             <td class="resultat"> <%=report.qty%></td>
                         </tr>
-                        <% }) %>
+                        <% } }) %>
                     </tbody>
                 </table>
             </div>
         </div>
     </div>
-   
+
 </body>
 
 </html>
