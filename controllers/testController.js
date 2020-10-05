@@ -159,6 +159,7 @@ var self = module.exports = {
                                         // console.log("QUANTITE A UTILISER : " + qte_to_use + " " +materiauName );
                                         // console.log(alert); 
                                         let stockByMateriau = await stockDB.listOfAllStockByProduct(materiauID, 1);
+                                        console.log(stockByMateriau);
                                         if (stockByMateriau.length == 0) {
                                             console.log("Pending transaction for " + materiauName + "...");
                                             await stockDB.pendingStockEvolution(con, materiauID, qte_to_use, test_id, id_test_request);
@@ -166,8 +167,8 @@ var self = module.exports = {
                                         //ON VA PRELEVER LES MATERIAUX DANS LE STOCK LE PLUS ANCIEN
                                         let new_qte_to_take = qte_to_use;
                                         for (item of stockByMateriau) {
-                                            console.log(stockByMateriau);
-                                            let stock_id = stockByMateriau.id_stock;
+                                            //console.log(stockByMateriau);
+                                            let stock_id = item.id_stock;
                                             let numero_lot = item.numero_lot;
                                             let materiauId = item.materiau;
                                             let materiauName = item.nom_materiau;
@@ -180,6 +181,7 @@ var self = module.exports = {
                                                 console.log("Pending transaction for " + materiauName + "...");
                                                 await stockDB.pendingStockEvolution(con, materiauId, qte, test_id, id_test_request);
                                             } else {
+                                                //console.log("STOCKID : ", stock_id);
                                                 if (qte_dispo_in_stock > qte) {
                                                     commentaire = qte + " " + materiauName + " a été prélevé du stock pour le test # " + id_test_request;
                                                     let rep = await stockDB.RemoveItemFromStock(con, numero_lot, stock_id, materiauId, materiauName, transactionType, qte, commentaire, user, id_test_request);

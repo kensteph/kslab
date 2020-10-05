@@ -603,7 +603,7 @@ var self = module.exports = {
                             action = " ajouté(s) au lot " + numero_lot;
                         }
                     }
-
+                    console.log("DEBUG", sql2, "ID_STOCK : ", stock_id);
                     let param = [stock_id];
                     con.query(sql2, param, function (err, result) {
                         if (err) {
@@ -943,10 +943,10 @@ var self = module.exports = {
 
         return stockList;
     },
-    //Load All stock
+    //Load All stock VALID AND QTE REST>0
     listOfAllStockByProduct: async function (id_product, stock_status) {
         let promise = new Promise((resolve, reject) => {
-            let sql = "SELECT *,DATEDIFF( date_expiration , Now() ) as days,tb_stocks.id as id_stock FROM tb_stocks,tb_materiaux WHERE tb_stocks.materiau=tb_materiaux.id AND tb_stocks.materiau=? AND statut=? ORDER BY date_expiration ASC";
+            let sql = "SELECT *,DATEDIFF( date_expiration , Now() ) as days,tb_stocks.id as id_stock FROM tb_stocks,tb_materiaux WHERE tb_stocks.materiau=tb_materiaux.id AND tb_stocks.materiau=? AND statut=? AND qte_restante>0 ORDER BY date_expiration ASC";
             con.query(sql, [id_product, stock_status], function (err, rows) {
                 if (err) {
                     throw err;
@@ -1198,6 +1198,43 @@ var self = module.exports = {
                     throw err;
                 } else {
                     resolve(rows);
+                }
+            });
+        });
+        data = await promise;
+        //console.log(data);
+        return data;
+    },
+    //DELETE PENDING TRANSACTIONS
+    deletePendingTransaction: async function (req) {
+        let PendingTransId = req.body.PendingTransId;
+        let PendingTransaction = req.body.PendingTransaction;
+        let sql = "";
+        let promise = new Promise((resolve, reject) => {
+            if (PendingTransId == "All") {
+                sql = "DELETE FROM tb_pending_stock_evolution";
+            } else {
+                sql = "DELETE FROM tb_pending_stock_evolution WHERE id =?";
+            }
+
+            con.query(sql, PendingTransId, async function (err, rows) {
+                if (err) {
+                    resolve({
+                        msg: "Une erreur est survenue. S'il vous plait réessayez.",
+                        error: "danger",
+                        debug: err
+                    });
+                } else {
+                    let msg = "";
+                    if (PendingTransId == "All") {
+                        msg = "Toutes les transactions ont été supprimées avec succès...";
+                    } else {
+                        msg = "La transaction '" + PendingTransaction + "' a été supprimée avec succès...";
+                    }
+                    resolve({
+                        msg: msg,
+                        success: "success"
+                    });
                 }
             });
         });

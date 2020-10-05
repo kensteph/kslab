@@ -33,6 +33,9 @@
                 <div class="row">
                     <div class="col-sm-4 col-3">
                         <h4 class="page-title"> <%=pageTitle%> </h4>
+                        <a title="Supprimer toutes les transactions" href="#"
+                            onclick="launchDeletePendingTransactions('Toutes les transactions','All')"><i
+                                class="fa fa-trash fa-3x m-r-5 red"></i> Supprimer toutes les transactions</a>
                     </div>
                 </div>
                 <div class="row">
@@ -46,6 +49,7 @@
                                         <th>Qté</th>
                                         <th>Matériau</th>
                                         <th>Examen</th>
+                                        <th>Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -56,10 +60,37 @@
                                         <td><%= pending.qte_a_enlever %></td>
                                         <td><%= pending. nom_materiau %></td>
                                         <td><%= pending.nom_examen %></td>
+                                        <td>
+                                            <% if(UserData.user_sub_menu_access.includes("Supprimer transactions pendantes") || UserData.user_sub_menu_access[0]=="All"){%>
+                                            <a href="#"
+                                                onclick="launchDeletePendingTransactions('<%= pending. nom_materiau %>','<%= pending.id_trans %>')"><i
+                                                    class="fa fa-trash m-r-5"></i> Supprimer</a>
+                                            <% } %>
+                                        </td>
                                     </tr>
                                     <% }) %>
                                 </tbody>
                             </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div id="DeletePendingTransaction" class="modal fade delete-modal" role="dialog" data-keyboard="false">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-body text-center">
+                        <img src="assets/img/sent.png" alt="" width="50" height="46">
+                        <form id="deleteForm">
+                            <input type="hidden" name="PendingTransId" id="PendingTransId">
+                            <input type="hidden" name="PendingTransaction" id="PendingTransaction">
+                        </form>
+                        <h3>Voulez-vou supprimer <i id="PendingTrans"></i>?</h3>
+                        <div id="DeleteExamNotif"></div>
+                        <div class="m-t-20"> <a href="#" class="btn btn-white" data-dismiss="modal">NON</a>
+                            <button type="submit" class="btn btn-danger" onclick="deletePendingTrans()">OUI</button>
                         </div>
                     </div>
                 </div>
@@ -81,23 +112,34 @@
     <script src="assets/js/app.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
     <script>
-        function setId(value) {
-            $("#patientID").val(value);
-            $("#delete_patient").modal();
+        //DELETE TRANSACTIONS
+        function launchDeletePendingTransactions(exam, examId) {
+            $("#DeleteExamNotif").show().html("");
+            $("#PendingTrans").html(examId + " | " + exam);
+            $("#PendingTransaction").val(examId + " | " + exam);
+            $("#PendingTransId").val(examId);
+            $("#DeletePendingTransaction").modal();
         }
-        deletePatient = function () {
-            $("#msg").show().html();
-            let patientID = $("#patientID").val();
+        deletePendingTrans = function () {
+            $("#DeleteExamNotif").show().html("");
             let formData = $("#deleteForm").serialize();
-            $.post("/delete-patient", formData, function (data) {
-                $("#loader").hide();
-                console.log(data);
+            $.post("/delete-pending-transaction", formData, function (data) {
                 if (data.success) { //Success 
-                    $("#msg").html(data.success).fadeOut(5000);
-                    //remove line
-                    $("#row" + patientID).fadeOut(5000);
+                    $("#DeleteExamNotif").html(data.msg).fadeOut(2000, function () {
+                        $("#DeleteExamen").modal('hide');
+                        let item = $("#PendingTransId").val();
+                        if (item == "All") {
+                            window.location.href = "/pending-transactions";
+                        } else {
+                            $("#row" + item).fadeOut(3000, function () {
+                                $("#DeletePendingTransaction").modal('hide');
+                            });
+                        }
+
+                    });
+
                 } else {
-                    $("#msg").html(data.error);
+                    $("#DeleteExamNotif").html(data.msg);
                 }
             });
         }

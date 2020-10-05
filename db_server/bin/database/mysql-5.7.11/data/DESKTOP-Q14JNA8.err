@@ -1440,3 +1440,262 @@ Version: '5.7.11'  socket: ''  port: 3306  MySQL Community Server (GPL)
 2020-08-31T17:36:54.714599Z 0 [Note] Shutting down plugin 'binlog'
 2020-08-31T17:36:54.715599Z 0 [Note] D:\WEB\ks_lab\db_server\bin\database\mysql-5.7.11\bin\mysqld.exe: Shutdown complete
 
+2020-10-03T20:25:04.136306Z 0 [Warning] TIMESTAMP with implicit DEFAULT value is deprecated. Please use --explicit_defaults_for_timestamp server option (see documentation for more details).
+2020-10-03T20:25:04.156295Z 0 [Warning] 'NO_ZERO_DATE', 'NO_ZERO_IN_DATE' and 'ERROR_FOR_DIVISION_BY_ZERO' sql modes should be used with strict mode. They will be merged with strict mode in a future release.
+2020-10-03T20:25:04.156295Z 0 [Warning] 'NO_AUTO_CREATE_USER' sql mode was not set.
+2020-10-03T20:25:04.156295Z 0 [Warning] Insecure configuration for --secure-file-priv: Current value does not restrict location of generated files. Consider setting it to a valid, non-empty path.
+2020-10-03T20:25:04.162290Z 0 [Note] D:\WEB\ks_lab\db_server\bin\database\mysql-5.7.11\bin\mysqld.exe (mysqld 5.7.11) starting as process 10076 ...
+2020-10-03T20:25:06.111195Z 0 [ERROR] Can't open shared library 'D:\WEB\ks_lab\db_server\bin\database\mysql-5.7.11\lib\plugin\keyring_file.dll' (errno: 126 The specified module could not be found.)
+2020-10-03T20:25:06.112194Z 0 [ERROR] Couldn't load plugin named 'keyring_file' with soname 'keyring_file.dll'.
+2020-10-03T20:25:06.509179Z 0 [Note] InnoDB: Mutexes and rw_locks use Windows interlocked functions
+2020-10-03T20:25:06.510169Z 0 [Note] InnoDB: Uses event mutexes
+2020-10-03T20:25:06.511168Z 0 [Note] InnoDB: Memory barrier is not used
+2020-10-03T20:25:06.511168Z 0 [Note] InnoDB: Compressed tables use zlib 1.2.3
+2020-10-03T20:25:06.775004Z 0 [Note] InnoDB: Number of pools: 1
+2020-10-03T20:25:06.788996Z 0 [Note] InnoDB: Not using CPU crc32 instructions
+2020-10-03T20:25:06.853565Z 0 [Note] InnoDB: Initializing buffer pool, total size = 128M, instances = 1, chunk size = 128M
+2020-10-03T20:25:06.882550Z 0 [Note] InnoDB: Completed initialization of buffer pool
+2020-10-03T20:25:07.255316Z 0 [Note] InnoDB: Highest supported file format is Barracuda.
+2020-10-03T20:25:14.773251Z 0 [Note] InnoDB: Creating shared tablespace for temporary tables
+2020-10-03T20:25:14.774251Z 0 [Note] InnoDB: Setting file '.\ibtmp1' size to 12 MB. Physically writing the file full; Please wait ...
+2020-10-03T20:25:16.983447Z 0 [Note] InnoDB: File '.\ibtmp1' size is now 12 MB.
+2020-10-03T20:25:17.124359Z 0 [Note] InnoDB: 96 redo rollback segment(s) found. 96 redo rollback segment(s) are active.
+2020-10-03T20:25:17.125358Z 0 [Note] InnoDB: 32 non-redo rollback segment(s) are active.
+2020-10-03T20:25:17.126358Z 0 [Note] InnoDB: Waiting for purge to start
+2020-10-03T20:25:17.183874Z 0 [Note] InnoDB: Waiting for purge to start
+2020-10-03T20:25:17.246834Z 0 [Note] InnoDB: Waiting for purge to start
+2020-10-03T20:25:17.308607Z 0 [Note] InnoDB: Waiting for purge to start
+2020-10-03T20:25:17.371568Z 0 [Note] InnoDB: Waiting for purge to start
+2020-10-03T20:25:17.434528Z 0 [Note] InnoDB: page_cleaner: 1000ms intended loop took 10536ms. The settings might not be optimal. (flushed=0 and evicted=0, during the time.)
+2020-10-03T20:25:17.454516Z 0 [Note] InnoDB: 5.7.11 started; log sequence number 4251545
+2020-10-03T20:25:17.602427Z 0 [Note] InnoDB: Loading buffer pool(s) from D:\WEB\ks_lab\db_server\bin\database\mysql-5.7.11\data\ib_buffer_pool
+2020-10-03T20:25:17.774163Z 0 [Note] Plugin 'FEDERATED' is disabled.
+2020-10-03T20:25:19.800612Z 0 [Warning] Failed to set up SSL because of the following SSL library error: SSL context is not usable without certificate and private key
+2020-10-03T20:25:19.804607Z 0 [Note] Server hostname (bind-address): '*'; port: 3306
+2020-10-03T20:25:19.805607Z 0 [Note] IPv6 is available.
+2020-10-03T20:25:20.334249Z 0 [Note]   - '::' resolves to '::';
+2020-10-03T20:25:20.334249Z 0 [Note] Server socket created on IP: '::'.
+2020-10-03T20:25:24.610637Z 0 [Note] InnoDB: Buffer pool(s) load completed at 201003 16:25:24
+2020-10-03T20:25:36.120963Z 0 [Note] Event Scheduler: Loaded 0 events
+2020-10-03T20:25:36.120963Z 0 [Note] D:\WEB\ks_lab\db_server\bin\database\mysql-5.7.11\bin\mysqld.exe: ready for connections.
+Version: '5.7.11'  socket: ''  port: 3306  MySQL Community Server (GPL)
+2020-10-03T20:27:02.432215Z 2 [Note] Aborted connection 2 to db: 'kslab' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2020-10-03T20:56:32.709293Z 3 [Note] Aborted connection 3 to db: 'kslab' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2020-10-03T21:13:44.301559Z 4 [Note] Aborted connection 4 to db: 'kslab' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2020-10-03T21:13:45.782655Z 5 [Note] Aborted connection 5 to db: 'kslab' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2020-10-03T21:13:56.455659Z 6 [Note] Aborted connection 6 to db: 'kslab' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2020-10-03T21:13:58.313910Z 7 [Note] Aborted connection 7 to db: 'kslab' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2020-10-03T21:13:59.945795Z 8 [Note] Aborted connection 8 to db: 'kslab' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2020-10-03T21:14:42.274467Z 10 [Note] Access denied for user 'root'@'localhost' (using password: YES)
+2020-10-03T21:16:13.520461Z 9 [Note] Aborted connection 9 to db: 'kslab' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2020-10-03T21:16:15.593266Z 23 [Note] Aborted connection 23 to db: 'kslab' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2020-10-03T21:16:19.152904Z 24 [Note] Aborted connection 24 to db: 'kslab' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2020-10-03T21:25:16.275480Z 25 [Note] Aborted connection 25 to db: 'kslab' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2020-10-03T21:25:18.417033Z 26 [Note] Aborted connection 26 to db: 'kslab' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2020-10-03T21:25:23.090886Z 27 [Note] Aborted connection 27 to db: 'kslab' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2020-10-03T21:25:30.863113Z 28 [Note] Aborted connection 28 to db: 'kslab' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2020-10-03T21:25:32.321046Z 29 [Note] Aborted connection 29 to db: 'kslab' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2020-10-03T21:25:33.898648Z 30 [Note] Aborted connection 30 to db: 'kslab' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2020-10-03T21:25:36.677667Z 31 [Note] Aborted connection 31 to db: 'kslab' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2020-10-03T21:25:39.400212Z 32 [Note] Aborted connection 32 to db: 'kslab' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2020-10-03T21:25:40.584660Z 33 [Note] Aborted connection 33 to db: 'kslab' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2020-10-03T21:25:42.090955Z 34 [Note] Aborted connection 34 to db: 'kslab' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2020-10-03T21:26:47.271911Z 35 [Note] Aborted connection 35 to db: 'kslab' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2020-10-03T21:26:59.449290Z 36 [Note] Aborted connection 36 to db: 'kslab' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2020-10-03T21:27:12.346790Z 37 [Note] Aborted connection 37 to db: 'kslab' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2020-10-03T21:27:53.132403Z 38 [Note] Aborted connection 38 to db: 'kslab' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2020-10-03T21:28:43.842577Z 39 [Note] Aborted connection 39 to db: 'kslab' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2020-10-03T21:32:07.154089Z 40 [Note] Aborted connection 40 to db: 'kslab' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2020-10-03T21:32:10.353460Z 41 [Note] Aborted connection 41 to db: 'kslab' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2020-10-03T21:32:12.259635Z 42 [Note] Aborted connection 42 to db: 'kslab' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2020-10-03T21:32:15.099009Z 43 [Note] Aborted connection 43 to db: 'kslab' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2020-10-03T21:32:16.458694Z 44 [Note] Aborted connection 44 to db: 'kslab' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2020-10-03T21:32:18.405305Z 45 [Note] Aborted connection 45 to db: 'kslab' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2020-10-03T21:32:25.304638Z 46 [Note] Aborted connection 46 to db: 'kslab' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2020-10-03T21:32:27.143422Z 47 [Note] Aborted connection 47 to db: 'kslab' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2020-10-03T21:32:28.472042Z 48 [Note] Aborted connection 48 to db: 'kslab' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2020-10-03T21:32:29.914216Z 49 [Note] Aborted connection 49 to db: 'kslab' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2020-10-03T21:32:33.078551Z 50 [Note] Aborted connection 50 to db: 'kslab' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2020-10-03T21:32:35.588138Z 51 [Note] Aborted connection 51 to db: 'kslab' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2020-10-03T21:34:27.178646Z 52 [Note] Aborted connection 52 to db: 'kslab' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2020-10-03T21:35:25.846707Z 53 [Note] Aborted connection 53 to db: 'kslab' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2020-10-03T21:35:43.744921Z 54 [Note] Aborted connection 54 to db: 'kslab' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2020-10-03T21:35:48.692744Z 55 [Note] Aborted connection 55 to db: 'kslab' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2020-10-03T21:35:50.416961Z 56 [Note] Aborted connection 56 to db: 'kslab' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2020-10-03T21:36:09.513649Z 57 [Note] Aborted connection 57 to db: 'kslab' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2020-10-03T21:36:23.518116Z 58 [Note] Aborted connection 58 to db: 'kslab' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2020-10-03T21:37:29.110576Z 59 [Note] Aborted connection 59 to db: 'kslab' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2020-10-04T01:06:12.337497Z 0 [Note] InnoDB: page_cleaner: 1000ms intended loop took 2941326ms. The settings might not be optimal. (flushed=0 and evicted=0, during the time.)
+2020-10-04T03:37:44.126159Z 60 [Note] Aborted connection 60 to db: 'kslab' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2020-10-05T11:08:15.818629Z 0 [Warning] TIMESTAMP with implicit DEFAULT value is deprecated. Please use --explicit_defaults_for_timestamp server option (see documentation for more details).
+2020-10-05T11:08:18.385658Z 0 [Warning] 'NO_ZERO_DATE', 'NO_ZERO_IN_DATE' and 'ERROR_FOR_DIVISION_BY_ZERO' sql modes should be used with strict mode. They will be merged with strict mode in a future release.
+2020-10-05T11:08:18.385658Z 0 [Warning] 'NO_AUTO_CREATE_USER' sql mode was not set.
+2020-10-05T11:08:18.385658Z 0 [Warning] Insecure configuration for --secure-file-priv: Current value does not restrict location of generated files. Consider setting it to a valid, non-empty path.
+2020-10-05T11:08:20.524616Z 0 [Note] D:\WEB\ks_lab\db_server\bin\database\mysql-5.7.11\bin\mysqld.exe (mysqld 5.7.11) starting as process 7396 ...
+2020-10-05T11:08:35.123744Z 0 [ERROR] Can't open shared library 'D:\WEB\ks_lab\db_server\bin\database\mysql-5.7.11\lib\plugin\keyring_file.dll' (errno: 126 The specified module could not be found.)
+2020-10-05T11:08:35.123744Z 0 [ERROR] Couldn't load plugin named 'keyring_file' with soname 'keyring_file.dll'.
+2020-10-05T11:08:39.194854Z 0 [Note] InnoDB: Mutexes and rw_locks use Windows interlocked functions
+2020-10-05T11:08:39.225298Z 0 [Note] InnoDB: Uses event mutexes
+2020-10-05T11:08:39.225298Z 0 [Note] InnoDB: Memory barrier is not used
+2020-10-05T11:08:39.225298Z 0 [Note] InnoDB: Compressed tables use zlib 1.2.3
+2020-10-05T11:08:41.318854Z 0 [Note] InnoDB: Number of pools: 1
+2020-10-05T11:08:41.385382Z 0 [Note] InnoDB: Not using CPU crc32 instructions
+2020-10-05T11:08:41.625709Z 0 [Note] InnoDB: Initializing buffer pool, total size = 128M, instances = 1, chunk size = 128M
+2020-10-05T11:08:41.694856Z 0 [Note] InnoDB: Completed initialization of buffer pool
+2020-10-05T11:08:52.379158Z 0 [Note] InnoDB: Highest supported file format is Barracuda.
+2020-10-05T11:08:53.662884Z 0 [Note] InnoDB: Log scan progressed past the checkpoint lsn 5926277
+2020-10-05T11:08:53.662884Z 0 [Note] InnoDB: Doing recovery: scanned up to log sequence number 5926286
+2020-10-05T11:08:53.662884Z 0 [Note] InnoDB: Doing recovery: scanned up to log sequence number 5926286
+2020-10-05T11:08:53.666880Z 0 [Note] InnoDB: Database was not shutdown normally!
+2020-10-05T11:08:53.666880Z 0 [Note] InnoDB: Starting crash recovery.
+2020-10-05T11:09:37.641447Z 0 [Note] InnoDB: Removed temporary tablespace data file: "ibtmp1"
+2020-10-05T11:09:37.645443Z 0 [Note] InnoDB: Creating shared tablespace for temporary tables
+2020-10-05T11:09:37.645443Z 0 [Note] InnoDB: Setting file '.\ibtmp1' size to 12 MB. Physically writing the file full; Please wait ...
+2020-10-05T11:09:39.411872Z 0 [Note] InnoDB: File '.\ibtmp1' size is now 12 MB.
+2020-10-05T11:09:40.152717Z 0 [Note] InnoDB: 96 redo rollback segment(s) found. 96 redo rollback segment(s) are active.
+2020-10-05T11:09:40.152717Z 0 [Note] InnoDB: 32 non-redo rollback segment(s) are active.
+2020-10-05T11:09:40.156714Z 0 [Note] InnoDB: Waiting for purge to start
+2020-10-05T11:09:40.210839Z 0 [Note] InnoDB: Waiting for purge to start
+2020-10-05T11:09:40.271412Z 0 [Note] InnoDB: Waiting for purge to start
+2020-10-05T11:09:40.331368Z 0 [Note] InnoDB: Waiting for purge to start
+2020-10-05T11:09:40.391364Z 0 [Note] InnoDB: Waiting for purge to start
+2020-10-05T11:09:40.456365Z 0 [Note] InnoDB: Waiting for purge to start
+2020-10-05T11:09:40.516653Z 0 [Note] InnoDB: Waiting for purge to start
+2020-10-05T11:09:40.576635Z 0 [Note] InnoDB: Waiting for purge to start
+2020-10-05T11:09:40.636617Z 0 [Note] InnoDB: Waiting for purge to start
+2020-10-05T11:09:40.696599Z 0 [Note] InnoDB: Waiting for purge to start
+2020-10-05T11:09:40.756579Z 0 [Note] InnoDB: Waiting for purge to start
+2020-10-05T11:09:40.816579Z 0 [Note] InnoDB: Waiting for purge to start
+2020-10-05T11:09:40.999419Z 0 [Note] InnoDB: Waiting for purge to start
+2020-10-05T11:09:41.059640Z 0 [Note] InnoDB: Waiting for purge to start
+2020-10-05T11:09:41.119619Z 0 [Note] InnoDB: Waiting for purge to start
+2020-10-05T11:09:41.179621Z 0 [Note] InnoDB: Waiting for purge to start
+2020-10-05T11:09:41.239601Z 0 [Note] InnoDB: Waiting for purge to start
+2020-10-05T11:09:41.299582Z 0 [Note] InnoDB: Waiting for purge to start
+2020-10-05T11:09:41.359566Z 0 [Note] InnoDB: Waiting for purge to start
+2020-10-05T11:09:41.419549Z 0 [Note] InnoDB: Waiting for purge to start
+2020-10-05T11:09:41.479529Z 0 [Note] InnoDB: Waiting for purge to start
+2020-10-05T11:09:41.541572Z 0 [Note] InnoDB: Waiting for purge to start
+2020-10-05T11:09:41.604131Z 0 [Note] InnoDB: Waiting for purge to start
+2020-10-05T11:09:41.668658Z 0 [Note] InnoDB: Waiting for purge to start
+2020-10-05T11:09:41.732636Z 0 [Note] InnoDB: Waiting for purge to start
+2020-10-05T11:09:41.788623Z 0 [Note] InnoDB: Waiting for purge to start
+2020-10-05T11:09:41.848604Z 0 [Note] InnoDB: page_cleaner: 1000ms intended loop took 59938ms. The settings might not be optimal. (flushed=0 and evicted=0, during the time.)
+2020-10-05T11:09:42.449628Z 0 [Note] InnoDB: 5.7.11 started; log sequence number 5926286
+2020-10-05T11:09:43.319230Z 0 [Note] InnoDB: Loading buffer pool(s) from D:\WEB\ks_lab\db_server\bin\database\mysql-5.7.11\data\ib_buffer_pool
+2020-10-05T11:09:44.515870Z 0 [Note] Plugin 'FEDERATED' is disabled.
+2020-10-05T11:09:47.522496Z 0 [Note] InnoDB: Buffer pool(s) load completed at 201005  7:09:47
+2020-10-05T11:09:51.632527Z 0 [Warning] Failed to set up SSL because of the following SSL library error: SSL context is not usable without certificate and private key
+2020-10-05T11:09:51.636510Z 0 [Note] Server hostname (bind-address): '*'; port: 3306
+2020-10-05T11:09:51.640509Z 0 [Note] IPv6 is available.
+2020-10-05T11:09:51.808912Z 0 [Note]   - '::' resolves to '::';
+2020-10-05T11:09:51.808912Z 0 [Note] Server socket created on IP: '::'.
+2020-10-05T11:10:35.814474Z 0 [Note] Event Scheduler: Loaded 0 events
+2020-10-05T11:10:35.814474Z 0 [Note] D:\WEB\ks_lab\db_server\bin\database\mysql-5.7.11\bin\mysqld.exe: ready for connections.
+Version: '5.7.11'  socket: ''  port: 3306  MySQL Community Server (GPL)
+2020-10-05T11:25:43.891984Z 0 [Warning] TIMESTAMP with implicit DEFAULT value is deprecated. Please use --explicit_defaults_for_timestamp server option (see documentation for more details).
+2020-10-05T11:25:43.949661Z 0 [Warning] 'NO_ZERO_DATE', 'NO_ZERO_IN_DATE' and 'ERROR_FOR_DIVISION_BY_ZERO' sql modes should be used with strict mode. They will be merged with strict mode in a future release.
+2020-10-05T11:25:43.949661Z 0 [Warning] 'NO_AUTO_CREATE_USER' sql mode was not set.
+2020-10-05T11:25:43.949661Z 0 [Warning] Insecure configuration for --secure-file-priv: Current value does not restrict location of generated files. Consider setting it to a valid, non-empty path.
+2020-10-05T11:25:43.986012Z 0 [Note] D:\WEB\ks_lab\db_server\bin\database\mysql-5.7.11\bin\mysqld.exe (mysqld 5.7.11) starting as process 15556 ...
+2020-10-05T11:25:45.311189Z 0 [ERROR] Can't open shared library 'D:\WEB\ks_lab\db_server\bin\database\mysql-5.7.11\lib\plugin\keyring_file.dll' (errno: 126 The specified module could not be found.)
+2020-10-05T11:25:45.312190Z 0 [ERROR] Couldn't load plugin named 'keyring_file' with soname 'keyring_file.dll'.
+2020-10-05T11:25:45.764111Z 0 [Note] InnoDB: Mutexes and rw_locks use Windows interlocked functions
+2020-10-05T11:25:45.765112Z 0 [Note] InnoDB: Uses event mutexes
+2020-10-05T11:25:45.765112Z 0 [Note] InnoDB: Memory barrier is not used
+2020-10-05T11:25:45.766112Z 0 [Note] InnoDB: Compressed tables use zlib 1.2.3
+2020-10-05T11:25:45.832427Z 0 [Note] InnoDB: Number of pools: 1
+2020-10-05T11:25:45.883839Z 0 [Note] InnoDB: Not using CPU crc32 instructions
+2020-10-05T11:25:45.947799Z 0 [Note] InnoDB: Initializing buffer pool, total size = 128M, instances = 1, chunk size = 128M
+2020-10-05T11:25:45.956794Z 0 [Note] InnoDB: Completed initialization of buffer pool
+2020-10-05T11:25:46.629392Z 0 [Note] InnoDB: Highest supported file format is Barracuda.
+2020-10-05T11:25:46.675444Z 0 [Note] InnoDB: Log scan progressed past the checkpoint lsn 5926314
+2020-10-05T11:25:46.675444Z 0 [Note] InnoDB: Doing recovery: scanned up to log sequence number 5926323
+2020-10-05T11:25:46.678444Z 0 [Note] InnoDB: Doing recovery: scanned up to log sequence number 5926323
+2020-10-05T11:25:46.679444Z 0 [Note] InnoDB: Database was not shutdown normally!
+2020-10-05T11:25:46.679444Z 0 [Note] InnoDB: Starting crash recovery.
+2020-10-05T11:26:01.599044Z 0 [Note] InnoDB: Removed temporary tablespace data file: "ibtmp1"
+2020-10-05T11:26:01.599680Z 0 [Note] InnoDB: Creating shared tablespace for temporary tables
+2020-10-05T11:26:01.600684Z 0 [Note] InnoDB: Setting file '.\ibtmp1' size to 12 MB. Physically writing the file full; Please wait ...
+2020-10-05T11:26:02.800512Z 0 [Note] InnoDB: File '.\ibtmp1' size is now 12 MB.
+2020-10-05T11:26:03.054813Z 0 [Note] InnoDB: 96 redo rollback segment(s) found. 96 redo rollback segment(s) are active.
+2020-10-05T11:26:03.055812Z 0 [Note] InnoDB: 32 non-redo rollback segment(s) are active.
+2020-10-05T11:26:03.056814Z 0 [Note] InnoDB: Waiting for purge to start
+2020-10-05T11:26:03.118774Z 0 [Note] InnoDB: Waiting for purge to start
+2020-10-05T11:26:03.180736Z 0 [Note] InnoDB: Waiting for purge to start
+2020-10-05T11:26:03.242696Z 0 [Note] InnoDB: page_cleaner: 1000ms intended loop took 17283ms. The settings might not be optimal. (flushed=0 and evicted=0, during the time.)
+2020-10-05T11:26:03.400892Z 0 [Note] InnoDB: 5.7.11 started; log sequence number 5926323
+2020-10-05T11:26:03.401894Z 0 [Note] InnoDB: Loading buffer pool(s) from D:\WEB\ks_lab\db_server\bin\database\mysql-5.7.11\data\ib_buffer_pool
+2020-10-05T11:26:03.575850Z 0 [Note] Plugin 'FEDERATED' is disabled.
+2020-10-05T11:26:04.745906Z 0 [Note] InnoDB: Buffer pool(s) load completed at 201005  7:26:04
+2020-10-05T11:26:06.149798Z 0 [Warning] Failed to set up SSL because of the following SSL library error: SSL context is not usable without certificate and private key
+2020-10-05T11:26:06.153796Z 0 [Note] Server hostname (bind-address): '*'; port: 3306
+2020-10-05T11:26:06.154795Z 0 [Note] IPv6 is available.
+2020-10-05T11:26:06.154795Z 0 [Note]   - '::' resolves to '::';
+2020-10-05T11:26:06.155794Z 0 [Note] Server socket created on IP: '::'.
+2020-10-05T11:26:18.158844Z 0 [Note] Event Scheduler: Loaded 0 events
+2020-10-05T11:26:18.158844Z 0 [Note] D:\WEB\ks_lab\db_server\bin\database\mysql-5.7.11\bin\mysqld.exe: ready for connections.
+Version: '5.7.11'  socket: ''  port: 3306  MySQL Community Server (GPL)
+2020-10-05T11:32:08.088731Z 2 [Note] Aborted connection 2 to db: 'kslab' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2020-10-05T11:43:54.803053Z 3 [Note] Aborted connection 3 to db: 'kslab' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2020-10-05T11:43:59.415193Z 4 [Note] Aborted connection 4 to db: 'kslab' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2020-10-05T11:44:02.527943Z 5 [Note] Aborted connection 5 to db: 'kslab' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2020-10-05T11:44:08.225073Z 6 [Note] Aborted connection 6 to db: 'kslab' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2020-10-05T11:44:13.470549Z 7 [Note] Aborted connection 7 to db: 'kslab' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2020-10-05T11:44:18.128449Z 8 [Note] Aborted connection 8 to db: 'kslab' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2020-10-05T11:44:23.222384Z 9 [Note] Aborted connection 9 to db: 'kslab' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2020-10-05T11:44:28.158521Z 10 [Note] Aborted connection 10 to db: 'kslab' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2020-10-05T11:48:13.970237Z 11 [Note] Aborted connection 11 to db: 'kslab' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2020-10-05T11:49:35.650396Z 12 [Note] Aborted connection 12 to db: 'kslab' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2020-10-05T11:52:43.855459Z 13 [Note] Aborted connection 13 to db: 'kslab' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2020-10-05T11:52:48.890364Z 14 [Note] Aborted connection 14 to db: 'kslab' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2020-10-05T11:54:23.667844Z 15 [Note] Aborted connection 15 to db: 'kslab' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2020-10-05T11:54:26.190892Z 16 [Note] Aborted connection 16 to db: 'kslab' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2020-10-05T11:54:37.653695Z 17 [Note] Aborted connection 17 to db: 'kslab' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2020-10-05T11:55:54.715194Z 18 [Note] Aborted connection 18 to db: 'kslab' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2020-10-05T11:57:21.681455Z 19 [Note] Aborted connection 19 to db: 'kslab' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2020-10-05T11:57:54.225914Z 20 [Note] Aborted connection 20 to db: 'kslab' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2020-10-05T11:57:59.754184Z 21 [Note] Aborted connection 21 to db: 'kslab' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2020-10-05T11:58:06.692505Z 22 [Note] Aborted connection 22 to db: 'kslab' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2020-10-05T11:58:08.919043Z 23 [Note] Aborted connection 23 to db: 'kslab' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2020-10-05T12:10:40.060308Z 24 [Note] Aborted connection 24 to db: 'kslab' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2020-10-05T12:14:10.546955Z 25 [Note] Aborted connection 25 to db: 'kslab' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2020-10-05T12:14:12.851010Z 26 [Note] Aborted connection 26 to db: 'kslab' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2020-10-05T12:14:39.749410Z 27 [Note] Aborted connection 27 to db: 'kslab' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2020-10-05T12:14:44.085161Z 28 [Note] Aborted connection 28 to db: 'kslab' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2020-10-05T12:15:14.739799Z 29 [Note] Aborted connection 29 to db: 'kslab' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2020-10-05T12:15:20.999651Z 30 [Note] Aborted connection 30 to db: 'kslab' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2020-10-05T12:15:25.549753Z 31 [Note] Aborted connection 31 to db: 'kslab' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2020-10-05T12:15:53.716800Z 33 [Note] Access denied for user 'root'@'localhost' (using password: YES)
+2020-10-05T12:19:51.371077Z 32 [Note] Aborted connection 32 to db: 'kslab' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2020-10-05T12:20:01.288853Z 44 [Note] Aborted connection 44 to db: 'kslab' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2020-10-05T12:20:10.130530Z 45 [Note] Aborted connection 45 to db: 'kslab' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2020-10-05T12:20:40.894037Z 46 [Note] Aborted connection 46 to db: 'kslab' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2020-10-05T12:21:29.200119Z 49 [Note] Aborted connection 49 to db: 'kslab' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2020-10-05T12:21:48.422892Z 50 [Note] Aborted connection 50 to db: 'kslab' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2020-10-05T12:21:53.221804Z 51 [Note] Aborted connection 51 to db: 'kslab' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2020-10-05T12:21:58.711378Z 52 [Note] Aborted connection 52 to db: 'kslab' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2020-10-05T12:22:05.976851Z 53 [Note] Aborted connection 53 to db: 'kslab' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2020-10-05T12:22:17.202830Z 54 [Note] Aborted connection 54 to db: 'kslab' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2020-10-05T12:22:19.708281Z 55 [Note] Aborted connection 55 to db: 'kslab' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2020-10-05T12:22:22.928029Z 56 [Note] Aborted connection 56 to db: 'kslab' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2020-10-05T12:22:30.741842Z 57 [Note] Aborted connection 57 to db: 'kslab' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2020-10-05T12:22:34.139698Z 58 [Note] Aborted connection 58 to db: 'kslab' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2020-10-05T12:22:38.101745Z 59 [Note] Aborted connection 59 to db: 'kslab' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2020-10-05T12:22:42.189070Z 60 [Note] Aborted connection 60 to db: 'kslab' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2020-10-05T12:22:44.066323Z 61 [Note] Aborted connection 61 to db: 'kslab' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2020-10-05T12:22:45.341389Z 62 [Note] Aborted connection 62 to db: 'kslab' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2020-10-05T12:23:01.062669Z 63 [Note] Aborted connection 63 to db: 'kslab' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2020-10-05T12:23:05.006485Z 64 [Note] Aborted connection 64 to db: 'kslab' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2020-10-05T12:23:07.298247Z 65 [Note] Aborted connection 65 to db: 'kslab' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2020-10-05T12:23:08.962598Z 66 [Note] Aborted connection 66 to db: 'kslab' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2020-10-05T12:23:27.444926Z 67 [Note] Aborted connection 67 to db: 'kslab' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2020-10-05T12:23:29.485349Z 68 [Note] Aborted connection 68 to db: 'kslab' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2020-10-05T12:23:34.634463Z 69 [Note] Aborted connection 69 to db: 'kslab' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2020-10-05T12:23:36.828198Z 70 [Note] Aborted connection 70 to db: 'kslab' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2020-10-05T12:23:38.023648Z 71 [Note] Aborted connection 71 to db: 'kslab' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2020-10-05T12:23:57.599415Z 72 [Note] Aborted connection 72 to db: 'kslab' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2020-10-05T12:24:09.893485Z 73 [Note] Aborted connection 73 to db: 'kslab' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2020-10-05T12:24:15.494369Z 74 [Note] Aborted connection 74 to db: 'kslab' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2020-10-05T12:24:31.891071Z 75 [Note] Aborted connection 75 to db: 'kslab' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2020-10-05T12:24:46.071799Z 76 [Note] Aborted connection 76 to db: 'kslab' user: 'root' host: 'localhost' (Got an error reading communication packets)

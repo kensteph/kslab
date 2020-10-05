@@ -260,6 +260,13 @@ router.get('/pending-transactions', async (req, res) => {
     res.render('stock/pending-transactions', params);
 });
 
+//DELETE PENDING TRANSACTIONS
+router.post('/delete-pending-transaction', async (req, res) => {
+    console.log("DATA POSTED : ", req.body);
+    let notifications = await stockDB.deletePendingTransaction(req);
+    res.json(notifications);
+});
+
 
 //EDIT STOCK
 router.post('/edit-stock', async (req, res) => {
