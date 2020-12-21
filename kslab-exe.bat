@@ -9,9 +9,10 @@ goto FIN
 :FOUND
 echo DATABASE IS READY (%EXE% is already running)
 :FIN
-TIMEOUT /T 20
 cd ".\"
-START /MIN cmd /C "nodemon app.js"
+START /MIN cmd /C "node app.js"
+START /MIN cmd /C "node app.js"
+TIMEOUT /T 20
 START .\KSlab-shortcut.html
 goto :EOF
 :minimized

@@ -332,3 +332,220 @@
 [Mon Oct 05 07:25:53.302417 2020] [ssl:warn] [pid 9400:tid 616] AH01906: main-serveur:443:0 server certificate is a CA certificate (BasicConstraints: CA == TRUE !?)
 [Mon Oct 05 07:25:53.302417 2020] [ssl:warn] [pid 9400:tid 616] AH01909: main-serveur:443:0 server certificate does NOT include an ID which matches the server name
 [Mon Oct 05 07:25:53.333398 2020] [mpm_winnt:notice] [pid 9400:tid 616] AH00354: Child: Starting 64 worker threads.
+[Mon Oct 05 09:33:40.339490 2020] [mpm_winnt:crit] [pid 9400:tid 616] AH02538: Child: Parent process exited abruptly. Child process is ending
+[Wed Oct 07 18:27:04.686999 2020] [ssl:warn] [pid 272:tid 596] AH01906: main-serveur:443:0 server certificate is a CA certificate (BasicConstraints: CA == TRUE !?)
+[Wed Oct 07 18:27:05.088747 2020] [ssl:warn] [pid 272:tid 596] AH01909: main-serveur:443:0 server certificate does NOT include an ID which matches the server name
+[Wed Oct 07 18:27:08.436113 2020] [core:warn] [pid 272:tid 596] AH00098: pid file D:/WEB/ks_lab/db_server/bin/apache/logs/httpd.pid overwritten -- Unclean shutdown of previous Apache run?
+[Wed Oct 07 18:27:08.778379 2020] [ssl:warn] [pid 272:tid 596] AH01873: Init: Session Cache is not configured [hint: SSLSessionCache]
+[Wed Oct 07 18:27:08.778379 2020] [ssl:warn] [pid 272:tid 596] AH01906: main-serveur:443:0 server certificate is a CA certificate (BasicConstraints: CA == TRUE !?)
+[Wed Oct 07 18:27:08.778379 2020] [ssl:warn] [pid 272:tid 596] AH01909: main-serveur:443:0 server certificate does NOT include an ID which matches the server name
+[Wed Oct 07 18:29:10.388665 2020] [mpm_winnt:notice] [pid 272:tid 596] AH00455: Apache/2.4.18 (Win32) OpenSSL/1.0.2f PHP/5.6.18 configured -- resuming normal operations
+[Wed Oct 07 18:29:10.388665 2020] [mpm_winnt:notice] [pid 272:tid 596] AH00456: Server built: Jan 28 2016 09:58:25
+[Wed Oct 07 18:29:10.388665 2020] [core:notice] [pid 272:tid 596] AH00094: Command line: 'D:\\WEB\\ks_lab\\db_server\\bin\\apache\\bin\\httpd.exe -d D:/WEB/ks_lab/db_server/bin/apache -f D:\\WEB\\ks_lab\\db_server\\bin\\apache\\conf\\httpd.conf'
+[Wed Oct 07 18:29:10.392662 2020] [mpm_winnt:notice] [pid 272:tid 596] AH00418: Parent: Created child process 5992
+[Wed Oct 07 18:29:11.597882 2020] [ssl:warn] [pid 5992:tid 228] AH01906: main-serveur:443:0 server certificate is a CA certificate (BasicConstraints: CA == TRUE !?)
+[Wed Oct 07 18:29:11.597882 2020] [ssl:warn] [pid 5992:tid 228] AH01909: main-serveur:443:0 server certificate does NOT include an ID which matches the server name
+[Wed Oct 07 18:29:12.013756 2020] [ssl:warn] [pid 5992:tid 228] AH01873: Init: Session Cache is not configured [hint: SSLSessionCache]
+[Wed Oct 07 18:29:12.013756 2020] [ssl:warn] [pid 5992:tid 228] AH01906: main-serveur:443:0 server certificate is a CA certificate (BasicConstraints: CA == TRUE !?)
+[Wed Oct 07 18:29:12.013756 2020] [ssl:warn] [pid 5992:tid 228] AH01909: main-serveur:443:0 server certificate does NOT include an ID which matches the server name
+[Wed Oct 07 18:29:12.053485 2020] [mpm_winnt:notice] [pid 5992:tid 228] AH00354: Child: Starting 64 worker threads.
+[Wed Oct 07 19:21:54.329155 2020] [mpm_winnt:crit] [pid 5992:tid 228] AH02538: Child: Parent process exited abruptly. Child process is ending
+[Sat Oct 10 12:38:59.884509 2020] [ssl:warn] [pid 13536:tid 624] AH01906: main-serveur:443:0 server certificate is a CA certificate (BasicConstraints: CA == TRUE !?)
+[Sat Oct 10 12:38:59.923454 2020] [ssl:warn] [pid 13536:tid 624] AH01909: main-serveur:443:0 server certificate does NOT include an ID which matches the server name
+[Sat Oct 10 12:39:00.527241 2020] [core:warn] [pid 13536:tid 624] AH00098: pid file D:/WEB/ks_lab/db_server/bin/apache/logs/httpd.pid overwritten -- Unclean shutdown of previous Apache run?
+[Sat Oct 10 12:39:00.623210 2020] [ssl:warn] [pid 13536:tid 624] AH01873: Init: Session Cache is not configured [hint: SSLSessionCache]
+[Sat Oct 10 12:39:00.623210 2020] [ssl:warn] [pid 13536:tid 624] AH01906: main-serveur:443:0 server certificate is a CA certificate (BasicConstraints: CA == TRUE !?)
+[Sat Oct 10 12:39:00.623210 2020] [ssl:warn] [pid 13536:tid 624] AH01909: main-serveur:443:0 server certificate does NOT include an ID which matches the server name
+[Sat Oct 10 12:39:22.690505 2020] [mpm_winnt:notice] [pid 13536:tid 624] AH00455: Apache/2.4.18 (Win32) OpenSSL/1.0.2f PHP/5.6.18 configured -- resuming normal operations
+[Sat Oct 10 12:39:22.690505 2020] [mpm_winnt:notice] [pid 13536:tid 624] AH00456: Server built: Jan 28 2016 09:58:25
+[Sat Oct 10 12:39:22.690505 2020] [core:notice] [pid 13536:tid 624] AH00094: Command line: 'D:\\WEB\\ks_lab\\db_server\\bin\\apache\\bin\\httpd.exe -d D:/WEB/ks_lab/db_server/bin/apache -f D:\\WEB\\ks_lab\\db_server\\bin\\apache\\conf\\httpd.conf'
+[Sat Oct 10 12:39:22.694395 2020] [mpm_winnt:notice] [pid 13536:tid 624] AH00418: Parent: Created child process 11912
+[Sat Oct 10 12:39:23.709870 2020] [ssl:warn] [pid 11912:tid 620] AH01906: main-serveur:443:0 server certificate is a CA certificate (BasicConstraints: CA == TRUE !?)
+[Sat Oct 10 12:39:23.709870 2020] [ssl:warn] [pid 11912:tid 620] AH01909: main-serveur:443:0 server certificate does NOT include an ID which matches the server name
+[Sat Oct 10 12:39:23.888963 2020] [ssl:warn] [pid 11912:tid 620] AH01873: Init: Session Cache is not configured [hint: SSLSessionCache]
+[Sat Oct 10 12:39:23.888963 2020] [ssl:warn] [pid 11912:tid 620] AH01906: main-serveur:443:0 server certificate is a CA certificate (BasicConstraints: CA == TRUE !?)
+[Sat Oct 10 12:39:23.888963 2020] [ssl:warn] [pid 11912:tid 620] AH01909: main-serveur:443:0 server certificate does NOT include an ID which matches the server name
+[Sat Oct 10 12:39:23.992321 2020] [mpm_winnt:notice] [pid 11912:tid 620] AH00354: Child: Starting 64 worker threads.
+[Sat Oct 10 13:02:37.409686 2020] [mpm_winnt:crit] [pid 11912:tid 620] AH02538: Child: Parent process exited abruptly. Child process is ending
+[Wed Oct 14 07:28:56.884412 2020] [ssl:warn] [pid 6576:tid 608] AH01906: main-serveur:443:0 server certificate is a CA certificate (BasicConstraints: CA == TRUE !?)
+[Wed Oct 14 07:28:56.909844 2020] [ssl:warn] [pid 6576:tid 608] AH01909: main-serveur:443:0 server certificate does NOT include an ID which matches the server name
+[Wed Oct 14 07:28:57.472689 2020] [core:warn] [pid 6576:tid 608] AH00098: pid file D:/WEB/ks_lab/db_server/bin/apache/logs/httpd.pid overwritten -- Unclean shutdown of previous Apache run?
+[Wed Oct 14 07:28:58.050271 2020] [ssl:warn] [pid 6576:tid 608] AH01873: Init: Session Cache is not configured [hint: SSLSessionCache]
+[Wed Oct 14 07:28:58.054270 2020] [ssl:warn] [pid 6576:tid 608] AH01906: main-serveur:443:0 server certificate is a CA certificate (BasicConstraints: CA == TRUE !?)
+[Wed Oct 14 07:28:58.054270 2020] [ssl:warn] [pid 6576:tid 608] AH01909: main-serveur:443:0 server certificate does NOT include an ID which matches the server name
+[Wed Oct 14 07:29:27.188915 2020] [mpm_winnt:notice] [pid 6576:tid 608] AH00455: Apache/2.4.18 (Win32) OpenSSL/1.0.2f PHP/5.6.18 configured -- resuming normal operations
+[Wed Oct 14 07:29:27.188915 2020] [mpm_winnt:notice] [pid 6576:tid 608] AH00456: Server built: Jan 28 2016 09:58:25
+[Wed Oct 14 07:29:27.188915 2020] [core:notice] [pid 6576:tid 608] AH00094: Command line: 'D:\\WEB\\ks_lab\\db_server\\bin\\apache\\bin\\httpd.exe -d D:/WEB/ks_lab/db_server/bin/apache -f D:\\WEB\\ks_lab\\db_server\\bin\\apache\\conf\\httpd.conf'
+[Wed Oct 14 07:29:27.192926 2020] [mpm_winnt:notice] [pid 6576:tid 608] AH00418: Parent: Created child process 11492
+[Wed Oct 14 07:29:28.159580 2020] [ssl:warn] [pid 11492:tid 616] AH01906: main-serveur:443:0 server certificate is a CA certificate (BasicConstraints: CA == TRUE !?)
+[Wed Oct 14 07:29:28.159580 2020] [ssl:warn] [pid 11492:tid 616] AH01909: main-serveur:443:0 server certificate does NOT include an ID which matches the server name
+[Wed Oct 14 07:29:28.363293 2020] [ssl:warn] [pid 11492:tid 616] AH01873: Init: Session Cache is not configured [hint: SSLSessionCache]
+[Wed Oct 14 07:29:28.363293 2020] [ssl:warn] [pid 11492:tid 616] AH01906: main-serveur:443:0 server certificate is a CA certificate (BasicConstraints: CA == TRUE !?)
+[Wed Oct 14 07:29:28.363293 2020] [ssl:warn] [pid 11492:tid 616] AH01909: main-serveur:443:0 server certificate does NOT include an ID which matches the server name
+[Wed Oct 14 07:29:28.811933 2020] [mpm_winnt:notice] [pid 11492:tid 616] AH00354: Child: Starting 64 worker threads.
+[Fri Oct 23 08:06:14.762701 2020] [ssl:warn] [pid 15592:tid 604] AH01906: main-serveur:443:0 server certificate is a CA certificate (BasicConstraints: CA == TRUE !?)
+[Fri Oct 23 08:06:14.778696 2020] [ssl:warn] [pid 15592:tid 604] AH01909: main-serveur:443:0 server certificate does NOT include an ID which matches the server name
+[Fri Oct 23 08:06:15.036616 2020] [core:warn] [pid 15592:tid 604] AH00098: pid file D:/WEB/ks_lab/db_server/bin/apache/logs/httpd.pid overwritten -- Unclean shutdown of previous Apache run?
+[Fri Oct 23 08:06:15.251049 2020] [ssl:warn] [pid 15592:tid 604] AH01873: Init: Session Cache is not configured [hint: SSLSessionCache]
+[Fri Oct 23 08:06:15.251049 2020] [ssl:warn] [pid 15592:tid 604] AH01906: main-serveur:443:0 server certificate is a CA certificate (BasicConstraints: CA == TRUE !?)
+[Fri Oct 23 08:06:15.251049 2020] [ssl:warn] [pid 15592:tid 604] AH01909: main-serveur:443:0 server certificate does NOT include an ID which matches the server name
+[Fri Oct 23 08:06:29.519763 2020] [mpm_winnt:notice] [pid 15592:tid 604] AH00455: Apache/2.4.18 (Win32) OpenSSL/1.0.2f PHP/5.6.18 configured -- resuming normal operations
+[Fri Oct 23 08:06:29.519763 2020] [mpm_winnt:notice] [pid 15592:tid 604] AH00456: Server built: Jan 28 2016 09:58:25
+[Fri Oct 23 08:06:29.519763 2020] [core:notice] [pid 15592:tid 604] AH00094: Command line: 'D:\\WEB\\ks_lab\\db_server\\bin\\apache\\bin\\httpd.exe -d D:/WEB/ks_lab/db_server/bin/apache -f D:\\WEB\\ks_lab\\db_server\\bin\\apache\\conf\\httpd.conf'
+[Fri Oct 23 08:06:29.523764 2020] [mpm_winnt:notice] [pid 15592:tid 604] AH00418: Parent: Created child process 10692
+[Fri Oct 23 08:06:30.508547 2020] [ssl:warn] [pid 10692:tid 216] AH01906: main-serveur:443:0 server certificate is a CA certificate (BasicConstraints: CA == TRUE !?)
+[Fri Oct 23 08:06:30.512547 2020] [ssl:warn] [pid 10692:tid 216] AH01909: main-serveur:443:0 server certificate does NOT include an ID which matches the server name
+[Fri Oct 23 08:06:30.755530 2020] [ssl:warn] [pid 10692:tid 216] AH01873: Init: Session Cache is not configured [hint: SSLSessionCache]
+[Fri Oct 23 08:06:30.755530 2020] [ssl:warn] [pid 10692:tid 216] AH01906: main-serveur:443:0 server certificate is a CA certificate (BasicConstraints: CA == TRUE !?)
+[Fri Oct 23 08:06:30.755530 2020] [ssl:warn] [pid 10692:tid 216] AH01909: main-serveur:443:0 server certificate does NOT include an ID which matches the server name
+[Fri Oct 23 08:06:31.294287 2020] [mpm_winnt:notice] [pid 10692:tid 216] AH00354: Child: Starting 64 worker threads.
+[Fri Oct 23 08:35:53.088886 2020] [mpm_winnt:crit] [pid 10692:tid 216] AH02538: Child: Parent process exited abruptly. Child process is ending
+[Wed Oct 28 18:10:23.964039 2020] [ssl:warn] [pid 11916:tid 544] AH01906: main-serveur:443:0 server certificate is a CA certificate (BasicConstraints: CA == TRUE !?)
+[Wed Oct 28 18:10:23.993016 2020] [ssl:warn] [pid 11916:tid 544] AH01909: main-serveur:443:0 server certificate does NOT include an ID which matches the server name
+[Wed Oct 28 18:10:24.803092 2020] [core:warn] [pid 11916:tid 544] AH00098: pid file D:/WEB/ks_lab/db_server/bin/apache/logs/httpd.pid overwritten -- Unclean shutdown of previous Apache run?
+[Wed Oct 28 18:10:24.928015 2020] [ssl:warn] [pid 11916:tid 544] AH01873: Init: Session Cache is not configured [hint: SSLSessionCache]
+[Wed Oct 28 18:10:24.928015 2020] [ssl:warn] [pid 11916:tid 544] AH01906: main-serveur:443:0 server certificate is a CA certificate (BasicConstraints: CA == TRUE !?)
+[Wed Oct 28 18:10:24.928015 2020] [ssl:warn] [pid 11916:tid 544] AH01909: main-serveur:443:0 server certificate does NOT include an ID which matches the server name
+[Wed Oct 28 18:10:37.061094 2020] [mpm_winnt:notice] [pid 11916:tid 544] AH00455: Apache/2.4.18 (Win32) OpenSSL/1.0.2f PHP/5.6.18 configured -- resuming normal operations
+[Wed Oct 28 18:10:37.061094 2020] [mpm_winnt:notice] [pid 11916:tid 544] AH00456: Server built: Jan 28 2016 09:58:25
+[Wed Oct 28 18:10:37.061094 2020] [core:notice] [pid 11916:tid 544] AH00094: Command line: 'D:\\WEB\\ks_lab\\db_server\\bin\\apache\\bin\\httpd.exe -d D:/WEB/ks_lab/db_server/bin/apache -f D:\\WEB\\ks_lab\\db_server\\bin\\apache\\conf\\httpd.conf'
+[Wed Oct 28 18:10:37.064092 2020] [mpm_winnt:notice] [pid 11916:tid 544] AH00418: Parent: Created child process 13380
+[Wed Oct 28 18:10:38.403358 2020] [ssl:warn] [pid 13380:tid 616] AH01906: main-serveur:443:0 server certificate is a CA certificate (BasicConstraints: CA == TRUE !?)
+[Wed Oct 28 18:10:38.404355 2020] [ssl:warn] [pid 13380:tid 616] AH01909: main-serveur:443:0 server certificate does NOT include an ID which matches the server name
+[Wed Oct 28 18:10:38.817099 2020] [ssl:warn] [pid 13380:tid 616] AH01873: Init: Session Cache is not configured [hint: SSLSessionCache]
+[Wed Oct 28 18:10:38.818099 2020] [ssl:warn] [pid 13380:tid 616] AH01906: main-serveur:443:0 server certificate is a CA certificate (BasicConstraints: CA == TRUE !?)
+[Wed Oct 28 18:10:38.818099 2020] [ssl:warn] [pid 13380:tid 616] AH01909: main-serveur:443:0 server certificate does NOT include an ID which matches the server name
+[Wed Oct 28 18:10:41.082286 2020] [mpm_winnt:notice] [pid 13380:tid 616] AH00354: Child: Starting 64 worker threads.
+[Sat Nov 28 12:56:49.315157 2020] [ssl:warn] [pid 2552:tid 588] AH01906: main-serveur:443:0 server certificate is a CA certificate (BasicConstraints: CA == TRUE !?)
+[Sat Nov 28 12:56:49.377677 2020] [ssl:warn] [pid 2552:tid 588] AH01909: main-serveur:443:0 server certificate does NOT include an ID which matches the server name
+[Sat Nov 28 12:56:49.533911 2020] [core:warn] [pid 2552:tid 588] AH00098: pid file D:/WEB/ks_lab/db_server/bin/apache/logs/httpd.pid overwritten -- Unclean shutdown of previous Apache run?
+[Sat Nov 28 12:56:49.627658 2020] [ssl:warn] [pid 2552:tid 588] AH01873: Init: Session Cache is not configured [hint: SSLSessionCache]
+[Sat Nov 28 12:56:49.627658 2020] [ssl:warn] [pid 2552:tid 588] AH01906: main-serveur:443:0 server certificate is a CA certificate (BasicConstraints: CA == TRUE !?)
+[Sat Nov 28 12:56:49.627658 2020] [ssl:warn] [pid 2552:tid 588] AH01909: main-serveur:443:0 server certificate does NOT include an ID which matches the server name
+[Sat Nov 28 12:57:05.320504 2020] [mpm_winnt:notice] [pid 2552:tid 588] AH00455: Apache/2.4.18 (Win32) OpenSSL/1.0.2f PHP/5.6.18 configured -- resuming normal operations
+[Sat Nov 28 12:57:05.320504 2020] [mpm_winnt:notice] [pid 2552:tid 588] AH00456: Server built: Jan 28 2016 09:58:25
+[Sat Nov 28 12:57:05.320504 2020] [core:notice] [pid 2552:tid 588] AH00094: Command line: 'D:\\WEB\\ks_lab\\db_server\\bin\\apache\\bin\\httpd.exe -d D:/WEB/ks_lab/db_server/bin/apache -f D:\\WEB\\ks_lab\\db_server\\bin\\apache\\conf\\httpd.conf'
+[Sat Nov 28 12:57:05.334520 2020] [mpm_winnt:notice] [pid 2552:tid 588] AH00418: Parent: Created child process 6188
+[Sat Nov 28 12:57:07.008888 2020] [ssl:warn] [pid 6188:tid 576] AH01906: main-serveur:443:0 server certificate is a CA certificate (BasicConstraints: CA == TRUE !?)
+[Sat Nov 28 12:57:07.024515 2020] [ssl:warn] [pid 6188:tid 576] AH01909: main-serveur:443:0 server certificate does NOT include an ID which matches the server name
+[Sat Nov 28 12:57:07.790174 2020] [ssl:warn] [pid 6188:tid 576] AH01873: Init: Session Cache is not configured [hint: SSLSessionCache]
+[Sat Nov 28 12:57:07.790174 2020] [ssl:warn] [pid 6188:tid 576] AH01906: main-serveur:443:0 server certificate is a CA certificate (BasicConstraints: CA == TRUE !?)
+[Sat Nov 28 12:57:07.790174 2020] [ssl:warn] [pid 6188:tid 576] AH01909: main-serveur:443:0 server certificate does NOT include an ID which matches the server name
+[Sat Nov 28 12:57:07.993315 2020] [mpm_winnt:notice] [pid 6188:tid 576] AH00354: Child: Starting 64 worker threads.
+[Sat Nov 28 13:10:14.504734 2020] [mpm_winnt:crit] [pid 6188:tid 576] AH02538: Child: Parent process exited abruptly. Child process is ending
+[Sat Nov 28 13:10:43.702174 2020] [ssl:warn] [pid 7408:tid 564] AH01906: main-serveur:443:0 server certificate is a CA certificate (BasicConstraints: CA == TRUE !?)
+[Sat Nov 28 13:10:43.703173 2020] [ssl:warn] [pid 7408:tid 564] AH01909: main-serveur:443:0 server certificate does NOT include an ID which matches the server name
+[Sat Nov 28 13:10:44.016608 2020] [core:warn] [pid 7408:tid 564] AH00098: pid file D:/WEB/ks_lab/db_server/bin/apache/logs/httpd.pid overwritten -- Unclean shutdown of previous Apache run?
+[Sat Nov 28 13:10:44.084653 2020] [ssl:warn] [pid 7408:tid 564] AH01873: Init: Session Cache is not configured [hint: SSLSessionCache]
+[Sat Nov 28 13:10:44.084653 2020] [ssl:warn] [pid 7408:tid 564] AH01906: main-serveur:443:0 server certificate is a CA certificate (BasicConstraints: CA == TRUE !?)
+[Sat Nov 28 13:10:44.084653 2020] [ssl:warn] [pid 7408:tid 564] AH01909: main-serveur:443:0 server certificate does NOT include an ID which matches the server name
+[Sat Nov 28 13:10:44.103665 2020] [mpm_winnt:notice] [pid 7408:tid 564] AH00455: Apache/2.4.18 (Win32) OpenSSL/1.0.2f PHP/5.6.18 configured -- resuming normal operations
+[Sat Nov 28 13:10:44.103665 2020] [mpm_winnt:notice] [pid 7408:tid 564] AH00456: Server built: Jan 28 2016 09:58:25
+[Sat Nov 28 13:10:44.103665 2020] [core:notice] [pid 7408:tid 564] AH00094: Command line: 'D:\\WEB\\ks_lab\\db_server\\bin\\apache\\bin\\httpd.exe -d D:/WEB/ks_lab/db_server/bin/apache -f D:\\WEB\\ks_lab\\db_server\\bin\\apache\\conf\\httpd.conf'
+[Sat Nov 28 13:10:44.105666 2020] [mpm_winnt:notice] [pid 7408:tid 564] AH00418: Parent: Created child process 4612
+[Sat Nov 28 13:10:44.732098 2020] [ssl:warn] [pid 4612:tid 552] AH01906: main-serveur:443:0 server certificate is a CA certificate (BasicConstraints: CA == TRUE !?)
+[Sat Nov 28 13:10:44.732098 2020] [ssl:warn] [pid 4612:tid 552] AH01909: main-serveur:443:0 server certificate does NOT include an ID which matches the server name
+[Sat Nov 28 13:10:45.241888 2020] [ssl:warn] [pid 4612:tid 552] AH01873: Init: Session Cache is not configured [hint: SSLSessionCache]
+[Sat Nov 28 13:10:45.241888 2020] [ssl:warn] [pid 4612:tid 552] AH01906: main-serveur:443:0 server certificate is a CA certificate (BasicConstraints: CA == TRUE !?)
+[Sat Nov 28 13:10:45.241888 2020] [ssl:warn] [pid 4612:tid 552] AH01909: main-serveur:443:0 server certificate does NOT include an ID which matches the server name
+[Sat Nov 28 13:10:45.260900 2020] [mpm_winnt:notice] [pid 4612:tid 552] AH00354: Child: Starting 64 worker threads.
+[Sat Nov 28 14:50:30.531998 2020] [ssl:warn] [pid 4716:tid 512] AH01906: main-serveur:443:0 server certificate is a CA certificate (BasicConstraints: CA == TRUE !?)
+[Sat Nov 28 14:50:30.531998 2020] [ssl:warn] [pid 4716:tid 512] AH01909: main-serveur:443:0 server certificate does NOT include an ID which matches the server name
+[Sat Nov 28 14:50:42.252164 2020] [core:warn] [pid 4716:tid 512] AH00098: pid file D:/WEB/ks_lab/db_server/bin/apache/logs/httpd.pid overwritten -- Unclean shutdown of previous Apache run?
+[Sat Nov 28 14:50:42.345919 2020] [ssl:warn] [pid 4716:tid 512] AH01873: Init: Session Cache is not configured [hint: SSLSessionCache]
+[Sat Nov 28 14:50:42.345919 2020] [ssl:warn] [pid 4716:tid 512] AH01906: main-serveur:443:0 server certificate is a CA certificate (BasicConstraints: CA == TRUE !?)
+[Sat Nov 28 14:50:42.345919 2020] [ssl:warn] [pid 4716:tid 512] AH01909: main-serveur:443:0 server certificate does NOT include an ID which matches the server name
+[Sat Nov 28 14:50:51.953746 2020] [mpm_winnt:notice] [pid 4716:tid 512] AH00455: Apache/2.4.18 (Win32) OpenSSL/1.0.2f PHP/5.6.18 configured -- resuming normal operations
+[Sat Nov 28 14:50:51.953746 2020] [mpm_winnt:notice] [pid 4716:tid 512] AH00456: Server built: Jan 28 2016 09:58:25
+[Sat Nov 28 14:50:51.953746 2020] [core:notice] [pid 4716:tid 512] AH00094: Command line: 'D:\\WEB\\ks_lab\\db_server\\bin\\apache\\bin\\httpd.exe -d D:/WEB/ks_lab/db_server/bin/apache -f D:\\WEB\\ks_lab\\db_server\\bin\\apache\\conf\\httpd.conf'
+[Sat Nov 28 14:50:51.957342 2020] [mpm_winnt:notice] [pid 4716:tid 512] AH00418: Parent: Created child process 6652
+[Sat Nov 28 14:50:52.975916 2020] [ssl:warn] [pid 6652:tid 592] AH01906: main-serveur:443:0 server certificate is a CA certificate (BasicConstraints: CA == TRUE !?)
+[Sat Nov 28 14:50:52.976416 2020] [ssl:warn] [pid 6652:tid 592] AH01909: main-serveur:443:0 server certificate does NOT include an ID which matches the server name
+[Sat Nov 28 14:50:53.347318 2020] [ssl:warn] [pid 6652:tid 592] AH01873: Init: Session Cache is not configured [hint: SSLSessionCache]
+[Sat Nov 28 14:50:53.348410 2020] [ssl:warn] [pid 6652:tid 592] AH01906: main-serveur:443:0 server certificate is a CA certificate (BasicConstraints: CA == TRUE !?)
+[Sat Nov 28 14:50:53.348410 2020] [ssl:warn] [pid 6652:tid 592] AH01909: main-serveur:443:0 server certificate does NOT include an ID which matches the server name
+[Sat Nov 28 14:50:54.760688 2020] [mpm_winnt:notice] [pid 6652:tid 592] AH00354: Child: Starting 64 worker threads.
+[Sat Nov 28 23:07:46.053698 2020] [ssl:warn] [pid 6012:tid 708] AH01906: main-serveur:443:0 server certificate is a CA certificate (BasicConstraints: CA == TRUE !?)
+[Sat Nov 28 23:07:46.069343 2020] [ssl:warn] [pid 6012:tid 708] AH01909: main-serveur:443:0 server certificate does NOT include an ID which matches the server name
+[Sat Nov 28 23:07:46.506807 2020] [core:warn] [pid 6012:tid 708] AH00098: pid file D:/WEB/ks_lab/db_server/bin/apache/logs/httpd.pid overwritten -- Unclean shutdown of previous Apache run?
+[Sat Nov 28 23:07:46.631797 2020] [ssl:warn] [pid 6012:tid 708] AH01873: Init: Session Cache is not configured [hint: SSLSessionCache]
+[Sat Nov 28 23:07:46.631797 2020] [ssl:warn] [pid 6012:tid 708] AH01906: main-serveur:443:0 server certificate is a CA certificate (BasicConstraints: CA == TRUE !?)
+[Sat Nov 28 23:07:46.631797 2020] [ssl:warn] [pid 6012:tid 708] AH01909: main-serveur:443:0 server certificate does NOT include an ID which matches the server name
+[Sat Nov 28 23:07:54.506534 2020] [mpm_winnt:notice] [pid 6012:tid 708] AH00455: Apache/2.4.18 (Win32) OpenSSL/1.0.2f PHP/5.6.18 configured -- resuming normal operations
+[Sat Nov 28 23:07:54.506534 2020] [mpm_winnt:notice] [pid 6012:tid 708] AH00456: Server built: Jan 28 2016 09:58:25
+[Sat Nov 28 23:07:54.506534 2020] [core:notice] [pid 6012:tid 708] AH00094: Command line: 'D:\\WEB\\ks_lab\\db_server\\bin\\apache\\bin\\httpd.exe -d D:/WEB/ks_lab/db_server/bin/apache -f D:\\WEB\\ks_lab\\db_server\\bin\\apache\\conf\\httpd.conf'
+[Sat Nov 28 23:07:54.522157 2020] [mpm_winnt:notice] [pid 6012:tid 708] AH00418: Parent: Created child process 7144
+[Sat Nov 28 23:07:55.725234 2020] [ssl:warn] [pid 7144:tid 660] AH01906: main-serveur:443:0 server certificate is a CA certificate (BasicConstraints: CA == TRUE !?)
+[Sat Nov 28 23:07:55.725234 2020] [ssl:warn] [pid 7144:tid 660] AH01909: main-serveur:443:0 server certificate does NOT include an ID which matches the server name
+[Sat Nov 28 23:07:55.959600 2020] [ssl:warn] [pid 7144:tid 660] AH01873: Init: Session Cache is not configured [hint: SSLSessionCache]
+[Sat Nov 28 23:07:55.959600 2020] [ssl:warn] [pid 7144:tid 660] AH01906: main-serveur:443:0 server certificate is a CA certificate (BasicConstraints: CA == TRUE !?)
+[Sat Nov 28 23:07:55.959600 2020] [ssl:warn] [pid 7144:tid 660] AH01909: main-serveur:443:0 server certificate does NOT include an ID which matches the server name
+[Sat Nov 28 23:07:56.615831 2020] [mpm_winnt:notice] [pid 7144:tid 660] AH00354: Child: Starting 64 worker threads.
+[Sun Nov 29 12:42:17.807436 2020] [mpm_winnt:crit] [pid 7144:tid 660] AH02538: Child: Parent process exited abruptly. Child process is ending
+[Sun Nov 29 21:37:14.353637 2020] [ssl:warn] [pid 9468:tid 708] AH01906: main-serveur:443:0 server certificate is a CA certificate (BasicConstraints: CA == TRUE !?)
+[Sun Nov 29 21:37:14.369268 2020] [ssl:warn] [pid 9468:tid 708] AH01909: main-serveur:443:0 server certificate does NOT include an ID which matches the server name
+[Sun Nov 29 21:37:15.303130 2020] [core:warn] [pid 9468:tid 708] AH00098: pid file D:/WEB/ks_lab/db_server/bin/apache/logs/httpd.pid overwritten -- Unclean shutdown of previous Apache run?
+[Sun Nov 29 21:37:15.441212 2020] [ssl:warn] [pid 9468:tid 708] AH01873: Init: Session Cache is not configured [hint: SSLSessionCache]
+[Sun Nov 29 21:37:15.441212 2020] [ssl:warn] [pid 9468:tid 708] AH01906: main-serveur:443:0 server certificate is a CA certificate (BasicConstraints: CA == TRUE !?)
+[Sun Nov 29 21:37:15.441212 2020] [ssl:warn] [pid 9468:tid 708] AH01909: main-serveur:443:0 server certificate does NOT include an ID which matches the server name
+[Sun Nov 29 21:37:29.190348 2020] [mpm_winnt:notice] [pid 9468:tid 708] AH00455: Apache/2.4.18 (Win32) OpenSSL/1.0.2f PHP/5.6.18 configured -- resuming normal operations
+[Sun Nov 29 21:37:29.190348 2020] [mpm_winnt:notice] [pid 9468:tid 708] AH00456: Server built: Jan 28 2016 09:58:25
+[Sun Nov 29 21:37:29.190348 2020] [core:notice] [pid 9468:tid 708] AH00094: Command line: 'D:\\WEB\\ks_lab\\db_server\\bin\\apache\\bin\\httpd.exe -d D:/WEB/ks_lab/db_server/bin/apache -f D:\\WEB\\ks_lab\\db_server\\bin\\apache\\conf\\httpd.conf'
+[Sun Nov 29 21:37:29.194343 2020] [mpm_winnt:notice] [pid 9468:tid 708] AH00418: Parent: Created child process 8404
+[Sun Nov 29 21:37:31.015317 2020] [ssl:warn] [pid 8404:tid 628] AH01906: main-serveur:443:0 server certificate is a CA certificate (BasicConstraints: CA == TRUE !?)
+[Sun Nov 29 21:37:31.017316 2020] [ssl:warn] [pid 8404:tid 628] AH01909: main-serveur:443:0 server certificate does NOT include an ID which matches the server name
+[Sun Nov 29 21:37:31.322055 2020] [ssl:warn] [pid 8404:tid 628] AH01873: Init: Session Cache is not configured [hint: SSLSessionCache]
+[Sun Nov 29 21:37:31.322055 2020] [ssl:warn] [pid 8404:tid 628] AH01906: main-serveur:443:0 server certificate is a CA certificate (BasicConstraints: CA == TRUE !?)
+[Sun Nov 29 21:37:31.322055 2020] [ssl:warn] [pid 8404:tid 628] AH01909: main-serveur:443:0 server certificate does NOT include an ID which matches the server name
+[Sun Nov 29 21:37:31.353304 2020] [mpm_winnt:notice] [pid 8404:tid 628] AH00354: Child: Starting 64 worker threads.
+[Sun Nov 29 21:47:05.129823 2020] [mpm_winnt:crit] [pid 8404:tid 628] AH02538: Child: Parent process exited abruptly. Child process is ending
+[Thu Dec 10 19:41:30.088713 2020] [ssl:warn] [pid 5348:tid 692] AH01906: main-serveur:443:0 server certificate is a CA certificate (BasicConstraints: CA == TRUE !?)
+[Thu Dec 10 19:41:30.230547 2020] [ssl:warn] [pid 5348:tid 692] AH01909: main-serveur:443:0 server certificate does NOT include an ID which matches the server name
+[Thu Dec 10 19:41:31.434027 2020] [core:warn] [pid 5348:tid 692] AH00098: pid file D:/WEB/ks_lab/db_server/bin/apache/logs/httpd.pid overwritten -- Unclean shutdown of previous Apache run?
+[Thu Dec 10 19:41:31.643341 2020] [ssl:warn] [pid 5348:tid 692] AH01873: Init: Session Cache is not configured [hint: SSLSessionCache]
+[Thu Dec 10 19:41:31.643341 2020] [ssl:warn] [pid 5348:tid 692] AH01906: main-serveur:443:0 server certificate is a CA certificate (BasicConstraints: CA == TRUE !?)
+[Thu Dec 10 19:41:31.643341 2020] [ssl:warn] [pid 5348:tid 692] AH01909: main-serveur:443:0 server certificate does NOT include an ID which matches the server name
+[Thu Dec 10 19:41:55.514998 2020] [mpm_winnt:notice] [pid 5348:tid 692] AH00455: Apache/2.4.18 (Win32) OpenSSL/1.0.2f PHP/5.6.18 configured -- resuming normal operations
+[Thu Dec 10 19:41:55.514998 2020] [mpm_winnt:notice] [pid 5348:tid 692] AH00456: Server built: Jan 28 2016 09:58:25
+[Thu Dec 10 19:41:55.514998 2020] [core:notice] [pid 5348:tid 692] AH00094: Command line: 'D:\\WEB\\ks_lab\\db_server\\bin\\apache\\bin\\httpd.exe -d D:/WEB/ks_lab/db_server/bin/apache -f D:\\WEB\\ks_lab\\db_server\\bin\\apache\\conf\\httpd.conf'
+[Thu Dec 10 19:41:55.522986 2020] [mpm_winnt:notice] [pid 5348:tid 692] AH00418: Parent: Created child process 11412
+[Thu Dec 10 19:41:56.616231 2020] [ssl:warn] [pid 11412:tid 708] AH01906: main-serveur:443:0 server certificate is a CA certificate (BasicConstraints: CA == TRUE !?)
+[Thu Dec 10 19:41:56.617231 2020] [ssl:warn] [pid 11412:tid 708] AH01909: main-serveur:443:0 server certificate does NOT include an ID which matches the server name
+[Thu Dec 10 19:41:57.308829 2020] [ssl:warn] [pid 11412:tid 708] AH01873: Init: Session Cache is not configured [hint: SSLSessionCache]
+[Thu Dec 10 19:41:57.308829 2020] [ssl:warn] [pid 11412:tid 708] AH01906: main-serveur:443:0 server certificate is a CA certificate (BasicConstraints: CA == TRUE !?)
+[Thu Dec 10 19:41:57.308829 2020] [ssl:warn] [pid 11412:tid 708] AH01909: main-serveur:443:0 server certificate does NOT include an ID which matches the server name
+[Thu Dec 10 19:41:57.546768 2020] [mpm_winnt:notice] [pid 11412:tid 708] AH00354: Child: Starting 64 worker threads.
+[Thu Dec 10 19:44:56.810872 2020] [mpm_winnt:crit] [pid 11412:tid 708] AH02538: Child: Parent process exited abruptly. Child process is ending
+[Wed Dec 16 20:47:18.427003 2020] [ssl:warn] [pid 7060:tid 624] AH01906: main-serveur:443:0 server certificate is a CA certificate (BasicConstraints: CA == TRUE !?)
+[Wed Dec 16 20:47:18.442626 2020] [ssl:warn] [pid 7060:tid 624] AH01909: main-serveur:443:0 server certificate does NOT include an ID which matches the server name
+[Wed Dec 16 20:47:19.364480 2020] [core:warn] [pid 7060:tid 624] AH00098: pid file D:/WEB/ks_lab/db_server/bin/apache/logs/httpd.pid overwritten -- Unclean shutdown of previous Apache run?
+[Wed Dec 16 20:47:19.473835 2020] [ssl:warn] [pid 7060:tid 624] AH01873: Init: Session Cache is not configured [hint: SSLSessionCache]
+[Wed Dec 16 20:47:19.473835 2020] [ssl:warn] [pid 7060:tid 624] AH01906: main-serveur:443:0 server certificate is a CA certificate (BasicConstraints: CA == TRUE !?)
+[Wed Dec 16 20:47:19.473835 2020] [ssl:warn] [pid 7060:tid 624] AH01909: main-serveur:443:0 server certificate does NOT include an ID which matches the server name
+[Wed Dec 16 20:47:43.859014 2020] [mpm_winnt:notice] [pid 7060:tid 624] AH00455: Apache/2.4.18 (Win32) OpenSSL/1.0.2f PHP/5.6.18 configured -- resuming normal operations
+[Wed Dec 16 20:47:43.859014 2020] [mpm_winnt:notice] [pid 7060:tid 624] AH00456: Server built: Jan 28 2016 09:58:25
+[Wed Dec 16 20:47:43.859014 2020] [core:notice] [pid 7060:tid 624] AH00094: Command line: 'D:\\WEB\\ks_lab\\db_server\\bin\\apache\\bin\\httpd.exe -d D:/WEB/ks_lab/db_server/bin/apache -f D:\\WEB\\ks_lab\\db_server\\bin\\apache\\conf\\httpd.conf'
+[Wed Dec 16 20:47:43.866005 2020] [mpm_winnt:notice] [pid 7060:tid 624] AH00418: Parent: Created child process 2652
+[Wed Dec 16 20:47:44.818987 2020] [ssl:warn] [pid 2652:tid 708] AH01906: main-serveur:443:0 server certificate is a CA certificate (BasicConstraints: CA == TRUE !?)
+[Wed Dec 16 20:47:44.819986 2020] [ssl:warn] [pid 2652:tid 708] AH01909: main-serveur:443:0 server certificate does NOT include an ID which matches the server name
+[Wed Dec 16 20:47:45.290586 2020] [ssl:warn] [pid 2652:tid 708] AH01873: Init: Session Cache is not configured [hint: SSLSessionCache]
+[Wed Dec 16 20:47:45.291585 2020] [ssl:warn] [pid 2652:tid 708] AH01906: main-serveur:443:0 server certificate is a CA certificate (BasicConstraints: CA == TRUE !?)
+[Wed Dec 16 20:47:45.291585 2020] [ssl:warn] [pid 2652:tid 708] AH01909: main-serveur:443:0 server certificate does NOT include an ID which matches the server name
+[Wed Dec 16 20:47:46.008423 2020] [mpm_winnt:notice] [pid 2652:tid 708] AH00354: Child: Starting 64 worker threads.
+[Sun Dec 20 10:44:54.210589 2020] [ssl:warn] [pid 5992:tid 700] AH01906: main-serveur:443:0 server certificate is a CA certificate (BasicConstraints: CA == TRUE !?)
+[Sun Dec 20 10:44:54.210589 2020] [ssl:warn] [pid 5992:tid 700] AH01909: main-serveur:443:0 server certificate does NOT include an ID which matches the server name
+[Sun Dec 20 10:44:54.335590 2020] [core:warn] [pid 5992:tid 700] AH00098: pid file D:/WEB/ks_lab/db_server/bin/apache/logs/httpd.pid overwritten -- Unclean shutdown of previous Apache run?
+[Sun Dec 20 10:44:54.429331 2020] [ssl:warn] [pid 5992:tid 700] AH01873: Init: Session Cache is not configured [hint: SSLSessionCache]
+[Sun Dec 20 10:44:54.429331 2020] [ssl:warn] [pid 5992:tid 700] AH01906: main-serveur:443:0 server certificate is a CA certificate (BasicConstraints: CA == TRUE !?)
+[Sun Dec 20 10:44:54.460585 2020] [ssl:warn] [pid 5992:tid 700] AH01909: main-serveur:443:0 server certificate does NOT include an ID which matches the server name
+[Sun Dec 20 10:44:57.866718 2020] [mpm_winnt:notice] [pid 5992:tid 700] AH00455: Apache/2.4.18 (Win32) OpenSSL/1.0.2f PHP/5.6.18 configured -- resuming normal operations
+[Sun Dec 20 10:44:57.866718 2020] [mpm_winnt:notice] [pid 5992:tid 700] AH00456: Server built: Jan 28 2016 09:58:25
+[Sun Dec 20 10:44:57.866718 2020] [core:notice] [pid 5992:tid 700] AH00094: Command line: 'D:\\WEB\\ks_lab\\db_server\\bin\\apache\\bin\\httpd.exe -d D:/WEB/ks_lab/db_server/bin/apache -f D:\\WEB\\ks_lab\\db_server\\bin\\apache\\conf\\httpd.conf'
+[Sun Dec 20 10:44:57.866718 2020] [mpm_winnt:notice] [pid 5992:tid 700] AH00418: Parent: Created child process 5768
+[Sun Dec 20 10:44:58.851060 2020] [ssl:warn] [pid 5768:tid 632] AH01906: main-serveur:443:0 server certificate is a CA certificate (BasicConstraints: CA == TRUE !?)
+[Sun Dec 20 10:44:58.851060 2020] [ssl:warn] [pid 5768:tid 632] AH01909: main-serveur:443:0 server certificate does NOT include an ID which matches the server name
+[Sun Dec 20 10:44:59.085426 2020] [ssl:warn] [pid 5768:tid 632] AH01873: Init: Session Cache is not configured [hint: SSLSessionCache]
+[Sun Dec 20 10:44:59.085426 2020] [ssl:warn] [pid 5768:tid 632] AH01906: main-serveur:443:0 server certificate is a CA certificate (BasicConstraints: CA == TRUE !?)
+[Sun Dec 20 10:44:59.085426 2020] [ssl:warn] [pid 5768:tid 632] AH01909: main-serveur:443:0 server certificate does NOT include an ID which matches the server name
+[Sun Dec 20 10:44:59.116677 2020] [mpm_winnt:notice] [pid 5768:tid 632] AH00354: Child: Starting 64 worker threads.
+[Sun Dec 20 11:11:37.708883 2020] [mpm_winnt:crit] [pid 5768:tid 632] AH02538: Child: Parent process exited abruptly. Child process is ending

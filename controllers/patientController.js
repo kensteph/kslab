@@ -167,7 +167,10 @@ var self = module.exports = {
                     let date_nais_fr = "à préciser";
                     if (info.date_nais != null) {
                         date_nais_fr = helpers.formatDate(info.date_nais, "FR");
-                        age = info.age.toFixed(1); //helpers.personAge(info.date_nais);
+                        if (info.age != null) {
+                            age = info.age.toFixed(1); //helpers.personAge(info.date_nais);
+                        }
+
                         //UPDATE AGE_MANUEL IF WE HAVE THE DOB
                         self.updatePersonneAge(age, info.id);
                     } else {

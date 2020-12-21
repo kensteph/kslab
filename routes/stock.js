@@ -60,7 +60,7 @@ router.get('/materiaux', async (req, res) => {
 
 //INVENTAIRE
 router.get('/inventaire', async (req, res) => {
-    let statut = 'All';
+    let statut = 'Valide';
     let materiauSelected = 'All';
     if (req.query.statut) { statut = req.query.statut; }
     if (req.query.materiauSelected) { statut = req.query.materiauSelected; }

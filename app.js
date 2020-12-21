@@ -20,6 +20,7 @@ app.use(express.static('public')); // All our static files
 app.use(express.static(path.join(__dirname, '/public')));
 app.set('view engine', 'ejs'); // Templating
 app.use(bodyParser.urlencoded({ extended: true })); // Allow to submit forms
+
 // enable files upload
 app.use(fileupload({ createParentPath: true }));
 //Use Session
